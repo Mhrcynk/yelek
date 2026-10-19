@@ -171,22 +171,48 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .cmp .bar2 i{display:block;height:100%}
 .lineup{display:grid;gap:16px;align-items:start}
 @media (min-width:700px){.lineup{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}}
-.field{position:relative;width:100%;max-width:440px;margin:0 auto;aspect-ratio:68/100;border-radius:18px;overflow:hidden;
+.field{position:relative;width:100%;max-width:460px;margin:0 auto;aspect-ratio:68/100;border-radius:18px;overflow:hidden;
   background:repeating-linear-gradient(180deg,#1F7E46 0 8.33%,#1A6F3D 8.33% 16.66%);box-shadow:inset 0 0 60px rgba(0,0,0,.35)}
 .field svg.lines{position:absolute;inset:0;width:100%;height:100%}
-.formlbl{position:absolute;font-family:var(--display);font-weight:900;font-size:.9rem;color:#fff;background:rgba(0,0,0,.4);padding:2px 8px;border-radius:7px;letter-spacing:.04em}
-.tok{position:absolute;transform:translate(-50%,-50%);border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;width:22%;color:#fff}
-.tok .shirt{width:clamp(32px,10.5vw,44px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:clamp(.95rem,3.4vw,1.2rem);box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.tok{position:absolute;transform:translate(-50%,-50%);border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;color:#fff;max-width:24%;transition:left .25s,top .25s}
+.field.both .tok{max-width:21%;gap:2px}
+.tok .shirt{position:relative;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:1.2rem;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.field.both .tok .shirt{width:30px;height:30px;font-size:.95rem}
 .tok.a .shirt{background:#FF7A1A;color:#1A0E02}
 .tok.b .shirt{background:#F3F6F2;color:#13261B}
-.tok .tn{font-size:clamp(.64rem,2.5vw,.78rem);font-weight:700;background:rgba(0,0,0,.5);padding:1px 6px;border-radius:5px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tok .to{font-family:var(--display);font-weight:900;font-size:.72rem;opacity:.9}
-.tok.empty .shirt{background:transparent;border:2px dashed rgba(255,255,255,.7);color:#fff;font-size:.75rem;box-shadow:none}
-.tok.sel .shirt{outline:3px solid #FFE066;outline-offset:2px}
-.tok.gk .shirt{border:3px solid #FFE066}
+.tok .ov{position:absolute;right:-9px;top:-7px;font-style:normal;font-family:var(--display);font-weight:900;font-size:.7rem;background:#0A1510;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:0 3px;line-height:1.35}
+.field.both .tok .ov{font-size:.62rem;right:-8px;top:-6px}
+.tok .tn{font-size:.7rem;font-weight:700;background:rgba(5,15,10,.74);padding:1px 7px;border-radius:6px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.45}
+.field.both .tok .tn{font-size:.6rem;padding:0 5px;line-height:1.35}
+.tok.empty .shirt{background:rgba(0,0,0,.15);border:2px dashed rgba(255,255,255,.7);color:#fff;font-size:.75rem;box-shadow:none}
+.tok.empty .tn{background:none;opacity:.8}
+.tok.sel .shirt{outline:3px solid #FFE066;outline-offset:3px}
+.tok.gk .shirt{box-shadow:0 0 0 3px #FFE066,0 4px 10px rgba(0,0,0,.35)}
 .field.edit{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .field.edit .tok{touch-action:none;cursor:grab}
-.field.edit .tok.dragging{cursor:grabbing;z-index:5}
+.field.edit .tok.dragging{cursor:grabbing;z-index:5;transition:none}
+.field.edit .tok.dragging .shirt{transform:scale(1.15)}
+.seg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:3px;gap:3px}
+.seg3.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg3 button{border:0;background:none;border-radius:10px;min-height:40px;font-weight:700;font-size:.82rem;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:2px;white-space:nowrap;overflow:hidden;padding:0 6px}
+.seg3 button.on{background:var(--card3);color:var(--ink)}
+.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:440px){.legend{grid-template-columns:minmax(0,1fr)}}
+.lg{background:var(--card2);border-radius:14px;padding:10px 12px;display:grid;gap:4px;min-width:0}
+.lgh{display:flex;align-items:center;gap:8px;min-width:0}
+.lgh b{font-family:var(--display);font-weight:800;font-size:1.05rem;text-transform:uppercase;white-space:nowrap}
+.lgh .avg{margin-left:auto;font-family:var(--display);font-weight:900;font-size:1.4rem}
+.str{display:grid;gap:10px;background:var(--card2);border-radius:14px;padding:12px}
+.str .eyebrow{text-align:center}
+.sr{display:grid;grid-template-columns:2.1em minmax(0,1fr) 5.4em minmax(0,1fr) 2.1em;align-items:center;gap:8px}
+.sr b{font-family:var(--display);font-weight:900;font-size:1.15rem;color:var(--muted)}
+.sr b.hi{color:var(--ink)}
+.sr b:last-child{text-align:right}
+.sr .lbl{text-align:center;font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sr .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;display:flex}
+.sr .bar.l{justify-content:flex-end}
+.sr .bar i{display:block;height:100%;border-radius:99px}
+.sr .bar.l i{background:var(--bib)}.sr .bar.r i{background:#E8EFE9}
 .side{display:grid;gap:6px}
 .form-pick{display:flex;flex-wrap:wrap;gap:6px}
 .form-pick button{border:1px solid var(--line2);background:var(--card2);border-radius:10px;padding:6px 10px;font-family:var(--display);font-weight:900;font-size:1rem;min-height:36px}
@@ -444,6 +470,7 @@ const ICON={
   hand:sv('<path d="M8 13V6a1.5 1.5 0 0 1 3 0v5M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v8a6 6 0 0 1-6 6 6 6 0 0 1-5-2.7L3.6 13.6a1.5 1.5 0 0 1 2.5-1.7L8 14"/>'),
   back:sv('<path d="M15 6l-6 6 6 6"/>'),
   pin:sv('<path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11z"/><circle cx="12" cy="10" r="2"/>'),
+  share:sv('<path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>'),
   wa:sv('<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2z"/>')
 };
 
@@ -654,7 +681,7 @@ function rsvpLists(m){
 }
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
-  if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2></div>${editorPanel(m)}</section>`;
+  if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip warn">Yönetici</span></div>${editorPanel(m)}</section>`;
   const L=rsvpLists(m);let h="";
   if(m.state==="kayit"){
     const txt=waText(m,L);
@@ -732,50 +759,82 @@ function fieldSvg(){return `<svg class="lines" viewBox="0 0 68 100" preserveAspe
   <rect x="29" y="1" width="10" height="2"/><rect x="29" y="97" width="10" height="2"/></g></svg>`}
 function pos2(k,x,y){return k==="A"?{l:x,t:96-y*.44}:{l:100-x,t:4+y*.44}}
 function unpos2(k,l,t){return k==="A"?{x:l,y:(96-t)/.44}:{x:100-l,y:(t-4)/.44}}
-function fieldHtml(lblA,lblB,pa,pb,la,lb,editable,sel){
-  let h=`<div class="field${editable?" edit":""}">${fieldSvg()}<span class="formlbl" style="right:3%;bottom:1.2%"><span class="bibdot"></span>${esc(lblA)}</span><span class="formlbl" style="left:3%;top:1.2%"><span class="nobib"></span>${esc(lblB)}</span>`;
-  for(const[k,PS,L]of[["A",pa,la],["B",pb,lb]]){PS.forEach(([x,y,r],i)=>{const p=pos2(k,x,y);const id=L[i];const s=sel&&sel.kind==="slot"&&sel.team===k&&sel.idx===i;
-    const attrs=editable?`data-act="slot" data-k="${k}" data-i="${i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
-    h+=id?`<button class="tok ${k.toLowerCase()}${i===0?" gk":""}${s?" sel":""}" style="left:${p.l}%;top:${p.t}%" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[r]}"><span class="shirt">${esc(P(id)?.no||initials(nameOf(id)))}</span><span class="tn">${esc(shortName(nameOf(id)))}</span><span class="to num">${ovrOf(id)} ${r}</span></button>`
-      :`<button class="tok empty ${k.toLowerCase()}${s?" sel":""}" style="left:${p.l}%;top:${p.t}%" ${attrs} aria-label="Boş ${ROLE_NAME[r]} yeri"><span class="shirt">${r}</span></button>`})}
-  return h+`</div>`;
+function layout(mode,pa,pb,la,lb){
+  const toks=[];
+  const add=(k,PS,L)=>PS.forEach(([x,y,r],i)=>{let l,t;if(mode==="both"){({l,t}=pos2(k,x,y))}else{l=x;t=95-y*.88}toks.push({k,i,id:L[i],r,l,t})});
+  if(mode!=="B")add("A",pa,la);if(mode!=="A")add("B",pb,lb);
+  const wx=mode==="both"?22:25,wy=mode==="both"?11.5:14;
+  const lim=T=>{T.l=clamp(T.l,10,90);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,92):clamp(T.t,7,44);else T.t=clamp(T.t,7,92)};
+  toks.forEach(lim);
+  for(let it=0;it<200;it++){let moved=false;
+    for(let a=0;a<toks.length;a++)for(let b=a+1;b<toks.length;b++){const A=toks[a],B=toks[b];
+      const ox=wx-Math.abs(A.l-B.l),oy=wy-Math.abs(A.t-B.t);if(ox<=0||oy<=0)continue;moved=true;
+      if(ox/wx<oy/wy){const d=(A.l>B.l||(A.l===B.l&&a%2)?1:-1)*(ox/2+.15);A.l+=d;B.l-=d}
+      else{const d=(A.t>B.t||(A.t===B.t&&a%2)?1:-1)*(oy/2+.15);A.t+=d;B.t-=d}}
+    toks.forEach(lim);if(!moved)break}
+  return toks;
+}
+function tokHtml(T,editable,sel){
+  const id=T.id,kc=T.k.toLowerCase(),s=sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;
+  const attrs=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
+  const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
+  if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${ROLE_NAME[T.r]} yeri"><span class="shirt">${T.r}</span><span class="tn">Boş</span></button>`;
+  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[T.r]}, reyting ${ovrOf(id)}"><span class="shirt">${esc(P(id)?.no||initials(nameOf(id)))}<i class="ov">${ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
+}
+function fieldHtml(mode,pa,pb,la,lb,editable,sel){
+  return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel)).join("")}</div>`;
 }
 const posArr=(m,k)=>{const p=k==="A"?m.pos_a:m.pos_b;return p&&p.length===TEAM_SIZE?p:FORMS[formOf(m,k)].slots};
 const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
-const cmpBar=(a,b)=>`<div class="cmp num"><span style="color:var(--bib)">${a}</span><span class="bar2"><i style="width:${a+b?a/(a+b)*100:50}%;background:var(--bib)"></i><i style="flex:1;background:#E8EFE9"></i></span><span>${b}</span></div>`;
-function teamsView(m){
+const formText=(fk,ps)=>samePos(ps,fk)?fk:"Özel diziliş";
+const dot=k=>k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>';
+function viewSeg(mode,act,both){
+  const opts=both?[["both","İki takım"],["A",TEAM.A],["B",TEAM.B]]:[["A",TEAM.A],["B",TEAM.B]];
+  return `<div class="seg3${both?"":" two"}" role="tablist" aria-label="Görünüm">${opts.map(([v,l])=>`<button data-act="${act}" data-v="${v}" class="${mode===v?"on":""}" role="tab" aria-selected="${mode===v}">${v==="both"?"":dot(v)}${l}</button>`).join("")}</div>`;
+}
+function roleGroups(L,PS){const g={ATT:[],MID:[],DEF:[]};L.forEach((id,i)=>{if(!id)return;const r=i===0?"KL":(PS[i]?.[2]||"OS");(r==="KL"||r==="DF"?g.DEF:r==="OS"?g.MID:g.ATT).push(id)});return g}
+function strengthHtml(A,B,la,pa,lb,pb){
+  const a=roleGroups(la,pa),b=roleGroups(lb,pb);
+  const row=(l,x,y)=>{const w=v=>v?Math.max(6,(v-40)/59*100):0;return `<div class="sr"><b class="num${x>y?" hi":""}">${x||"–"}</b><span class="bar l"><i style="width:${w(x)}%"></i></span><span class="lbl">${l}</span><span class="bar r"><i style="width:${w(y)}%"></i></span><b class="num${y>x?" hi":""}">${y||"–"}</b></div>`};
+  return `<div class="str"><div class="eyebrow">${dot("A")}${TEAM.A} · güç karşılaştırması · ${TEAM.B}${dot("B").replace('margin-right:6px','')}</div>${row("Genel",sumAvg(A),sumAvg(B))}${row("Hücum",sumAvg(a.ATT),sumAvg(b.ATT))}${row("Orta saha",sumAvg(a.MID),sumAvg(b.MID))}${row("Savunma",sumAvg(a.DEF),sumAvg(b.DEF))}</div>`;
+}
+function legendHtml(k,fk,ps,ids,L){const bench=ids.filter(x=>!L.includes(x));
+  return `<div class="lg"><div class="lgh">${dot(k)}<b>${TEAM[k]}</b><span class="chip muted">${esc(formLabel(fk,ps))}</span><span class="avg num">${sumAvg(ids)}</span></div><p class="small muted">${samePos(ps,fk)?FORMS[fk].d:"Yöneticinin kendi yerleştirdiği düzen"}</p>${bench.length?`<p class="small">Yedek: ${bench.map(x=>esc(nameOf(x))).join(", ")}</p>`:""}</div>`}
+function teamsView(m,noShare){
   const fa=formOf(m,"A"),fb=formOf(m,"B");const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");
-  const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
-  const bench=(ids,L)=>ids.filter(x=>!L.includes(x));const ba=bench(A,la),bb=bench(B,lb);
-  const desc=(fk,ps)=>samePos(ps,fk)?FORMS[fk].d:"Yöneticinin kendi yerleştirdiği düzen";
-  return `${cmpBar(sumAvg(A),sumAvg(B))}<div class="lineup">${fieldHtml(formLabel(fa,pa),formLabel(fb,pb),pa,pb,la,lb,false)}<div style="display:grid;gap:12px;align-content:start">
-    <div class="side"><h3><span class="bibdot"></span>${TEAM.A} · ${esc(formLabel(fa,pa)==="Özel"?"Özel diziliş":formLabel(fa,pa))}</h3><p class="muted small">${desc(fa,pa)}</p>${ba.length?`<p class="small">Yedek: ${ba.map(x=>esc(nameOf(x))).join(", ")}</p>`:""}</div>
-    <div class="side"><h3><span class="nobib"></span>${TEAM.B} · ${esc(formLabel(fb,pb)==="Özel"?"Özel diziliş":formLabel(fb,pb))}</h3><p class="muted small">${desc(fb,pb)}</p>${bb.length?`<p class="small">Yedek: ${bb.map(x=>esc(nameOf(x))).join(", ")}</p>`:""}</div>
-    <p class="muted small">Sarı çerçeveli oyuncu kalede. Oyuncuya dokununca kartı açılır.</p></div></div>`;
+  const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||"both";
+  return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false)}
+    <div class="legend">${legendHtml("A",fa,pa,A,la)}${legendHtml("B",fb,pb,B,lb)}</div>
+    ${strengthHtml(A,B,la,pa,lb,pb)}
+    ${noShare?"":`<button class="btn block" data-act="shareImg" data-id="${esc(m.id)}">${ICON.share} Dizilişi görsel olarak paylaş</button>`}
+    <p class="muted small" style="text-align:center">Oyuncuya dokununca kartı açılır. Sarı halkalı oyuncu kalede.</p>`;
 }
 function editorPanel(m){
-  const t=S.teams;const a=sumAvg(t.A),b=sumAvg(t.B);
-  const bench=k=>t[k].filter(x=>!t["l"+k.toLowerCase()].includes(x));
-  const benchBtns=k=>bench(k).map(id=>{const s=t.sel&&t.sel.kind==="bench"&&t.sel.pid===id;return `<button class="tp${s?" sel":""}" data-act="bench" data-k="${k}" data-id="${esc(id)}"><span class="o num">${ovrOf(id)}</span><span class="n">${esc(nameOf(id))}</span><span class="small muted">${posOf(P(id))}</span></button>`}).join("")||'<span class="muted small">Yedek yok</span>';
-  const fp=k=>`<div class="form-pick" role="group" aria-label="${TEAM[k]} dizilişi">${Object.keys(FORMS).map(f=>`<button data-act="form" data-k="${k}" data-f="${f}" class="${t["f"+k.toLowerCase()]===f&&samePos(t["p"+k.toLowerCase()],f)?"on":""}" title="${FORMS[f].d}">${f}</button>`).join("")}</div>`;
+  const t=S.teams;const k=t.view||"A";const lk=k.toLowerCase();
+  const benchIds=t[k].filter(x=>!t["l"+lk].includes(x));
+  const benchBtns=benchIds.map(id=>{const s=t.sel&&t.sel.kind==="bench"&&t.sel.pid===id;return `<button class="tp${s?" sel":""}" data-act="bench" data-k="${k}" data-id="${esc(id)}"><span class="o num">${ovrOf(id)}</span><span class="n">${esc(nameOf(id))}</span><span class="small muted">${posOf(P(id))}</span></button>`}).join("")||'<span class="muted small">Yedek yok</span>';
+  const fp=`<div class="form-pick" role="group" aria-label="${TEAM[k]} dizilişi">${Object.keys(FORMS).map(f=>`<button data-act="form" data-k="${k}" data-f="${f}" class="${t["f"+lk]===f&&samePos(t["p"+lk],f)?"on":""}" title="${FORMS[f].d}">${f}</button>`).join("")}</div>`;
   const selName=t.sel?nameOf(t.sel.kind==="slot"?t["l"+t.sel.team.toLowerCase()][t.sel.idx]:t.sel.pid):"";
   const selHasPlayer=t.sel&&(t.sel.kind==="bench"||t["l"+t.sel.team.toLowerCase()][t.sel.idx]);
   const L=rsvpLists(S.matches.find(x=>x.id===t.mid)||{});const inT=id=>t.A.includes(id)||t.B.includes(id);
   const poolK=L.kadro.map(p=>p.id).filter(id=>!inT(id));
   const poolO=S.players.filter(p=>!inT(p.id)&&!poolK.includes(p.id)).sort((x,y)=>x.name.localeCompare(y.name,"tr")).map(p=>p.id);
-  const poolRow=id=>{const p=P(id);return `<div class="pl">${avatarO(p)}<div class="pi"><b>${esc(p.name)}</b><span>${esc(p.pos)}${stChip(p)}</span></div><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm" data-act="poolAdd" data-k="A" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleklilere"><span class="bibdot"></span>A</button><button class="btn sm" data-act="poolAdd" data-k="B" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleksizlere"><span class="nobib"></span>B</button></span></div>`};
-  const sideBox=k=>{const lk=k.toLowerCase();return `<div class="side"><h3>${k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${TEAM[k]} · ${t[k].length} kişi · ort. ${k==="A"?a:b}</h3>${fp(k)}<p class="muted small">${samePos(t["p"+lk],t["f"+lk])?FORMS[t["f"+lk]].d:"Özel diziliş. Hazır düzene dönmek için yukarıdan birini seç."}</p><div class="bench">${benchBtns(k)}</div></div>`};
-  return `${cmpBar(a,b)}
-   ${poolK.length||poolO.length?`<details class="pool-box"${t.poolOpen!==false?" open":""} data-act-toggle-team="poolOpen"><summary>Oyuncu havuzu · ${poolK.length} gelen oyuncunun takımı yok</summary><div class="list">
+  const poolRow=id=>{const p=P(id);return `<div class="pl">${avatarO(p)}<div class="pi"><b>${esc(p.name)}</b><span>${esc(p.pos)}${stChip(p)}</span></div><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm" data-act="poolAdd" data-k="A" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleklilere">${dot("A")}A</button><button class="btn sm" data-act="poolAdd" data-k="B" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleksizlere">${dot("B")}B</button></span></div>`};
+  return `${poolK.length||poolO.length?`<details class="pool-box"${t.poolOpen!==false?" open":""} data-act-toggle-team="poolOpen"><summary>Oyuncu havuzu · ${poolK.length} gelen oyuncunun takımı yok</summary><div class="list">
      ${poolK.length?`<div class="grp">Gelecek olanlar</div>${poolK.map(poolRow).join("")}`:""}
      ${poolO.length?`<details><summary class="small">Diğer oyuncular (${poolO.length})</summary>${poolO.map(poolRow).join("")}</details>`:""}</div></details>`:""}
-   <div class="note">Oyuncuyu <b>sürükleyip</b> sahada istediğin yere bırak; mevkisi bıraktığın yere göre değişir. İki oyuncuya art arda dokunursan yer değiştirirler. Yedekten almak için önce yedekteki oyuncuya, sonra sahadaki yere dokun.</div>
-   ${t.sel?`<div class="note"><b>${esc(selName||"Boş yer")}</b> seçili.<div class="row" style="margin-top:8px">${selHasPlayer?`<button class="btn sm" data-act="moveTeam">Diğer takıma gönder</button>`:""}${t.sel.kind==="slot"&&selHasPlayer?`<button class="btn sm" data-act="toBench">Yedeğe al</button>`:""}${selHasPlayer?`<button class="btn sm danger" data-act="toPool">Takımdan çıkar</button>`:""}<button class="btn ghost sm" data-act="unsel">Bırak</button></div></div>`:""}
-   <div class="lineup">${fieldHtml(formLabel(t.fa,t.pa),formLabel(t.fb,t.pb),t.pa,t.pb,t.la,t.lb,true,t.sel)}
-   <div style="display:grid;gap:16px;align-content:start;min-width:0">${sideBox("A")}${sideBox("B")}</div></div>
+   ${viewSeg(k,"tview",false)}
+   <div class="lineup">${fieldHtml(k,t.pa,t.pb,t.la,t.lb,true,t.sel)}
+   <div style="display:grid;gap:12px;align-content:start;min-width:0">
+     ${t.sel?`<div class="note"><b>${esc(selName||"Boş yer")}</b> seçili. Başka bir oyuncuya dokunursan yer değiştirirler.<div class="row" style="margin-top:8px">${selHasPlayer?`<button class="btn sm" data-act="moveTeam">Diğer takıma gönder</button>`:""}${t.sel.kind==="slot"&&selHasPlayer?`<button class="btn sm" data-act="toBench">Yedeğe al</button>`:""}${selHasPlayer?`<button class="btn sm danger" data-act="toPool">Takımdan çıkar</button>`:""}<button class="btn ghost sm" data-act="unsel">Bırak</button></div></div>`
+       :`<p class="muted small">Oyuncuyu <b style="color:var(--ink)">sürükleyip</b> istediğin yere bırak; mevkisi bıraktığın yere göre değişir. İki oyuncuya art arda dokunursan yer değiştirirler.</p>`}
+     <div class="side"><h3>${dot(k)}${TEAM[k]} · ${t[k].length} kişi · ${esc(formText(t["f"+lk],t["p"+lk]))}</h3>${fp}</div>
+     <div class="side"><span class="eyebrow">Yedekler</span><div class="bench">${benchBtns}</div></div>
+   </div></div>
+   ${strengthHtml(t.A,t.B,t.la,t.pa,t.lb,t.pb)}
    <button class="btn primary block" data-act="saveTeams">${ICON.check} Kadroları kaydet</button>
-   <div class="btns2"><button class="btn sm" data-act="autoPlace">Otomatik yerleştir</button>${m.state==="kayit"?`<button class="btn sm" data-act="balance" data-id="${esc(m.id)}">Dengeli dağıt</button>`:`<button class="btn sm ghost" data-act="cancelTeams">Vazgeç</button>`}</div>
-   ${m.state==="kayit"?`<button class="btn ghost sm" data-act="cancelTeams">Vazgeç</button>`:""}`;
+   <div class="btns2"><button class="btn sm" data-act="autoPlace">Otomatik yerleştir</button><button class="btn sm" data-act="swapBibs">Yelekleri değiştir</button></div>
+   <div class="btns2">${m.state==="kayit"?`<button class="btn sm" data-act="balance" data-id="${esc(m.id)}">Dengeli dağıt</button>`:`<span></span>`}<button class="btn ghost sm" data-act="cancelTeams">Vazgeç</button></div>`;
 }
 function draftPanel(m){
   const d=S.draft;const ids=rsvpLists(m).kadro.map(p=>p.id);
@@ -1019,9 +1078,13 @@ document.addEventListener("click",async e=>{
     case"manual":{const m=S.matches.find(x=>x.id===id);S.draft=null;if(m.team_a&&m.team_a.length)startEditor(id,m.team_a,m.team_b,m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);else startEditor(id,[],[],t?.fa,t?.fb);S.teams.poolOpen=true;render(true);break}
     case"backRsvp":await A("admin_set_state",{p_id:id,p_state:"kayit"},"Katılım yeniden açıldı");break;
     case"cancelTeams":S.teams=null;render(true);break;
+    case"fv":S.fv=el.dataset.v;render(true);break;
+    case"tview":t.view=el.dataset.v;t.sel=null;render(true);break;
+    case"shareImg":{const m=S.matches.find(x=>x.id===id);if(m)shareImg(m);break}
+    case"swapBibs":{[t.A,t.B]=[t.B,t.A];[t.fa,t.fb]=[t.fb,t.fa];[t.la,t.lb]=[t.lb,t.la];[t.pa,t.pb]=[t.pb,t.pa];t.sel=null;toast("Yelekler değişti");render(true);break}
     case"form":{const k=el.dataset.k.toLowerCase();t["f"+k]=el.dataset.f;t["p"+k]=slotsOf(el.dataset.f);t["l"+k]=autoLineup(t[el.dataset.k],el.dataset.f);t.sel=null;render(true);break}
     case"autoPlace":t.la=autoLineup(t.A,t.fa);t.lb=autoLineup(t.B,t.fb);t.pa=slotsOf(t.fa);t.pb=slotsOf(t.fb);t.sel=null;render(true);break;
-    case"poolAdd":{const k=el.dataset.k;if(t.A.includes(id)||t.B.includes(id))break;t[k].push(id);const L=t["l"+k.toLowerCase()];
+    case"poolAdd":{const k=el.dataset.k;if(t.A.includes(id)||t.B.includes(id))break;t[k].push(id);t.view=k;const L=t["l"+k.toLowerCase()];
       if(posOf(P(id))==="KL"&&!L[0])L[0]=id;else{let e2=L.findIndex((x,i)=>i>0&&!x);if(e2<0&&!L[0])e2=0;if(e2>=0)L[e2]=id}render(true);break}
     case"toPool":{const s2=t.sel;const k=s2.team;const L=t["l"+k.toLowerCase()];const pid=s2.kind==="slot"?L[s2.idx]:s2.pid;if(!pid)break;t[k]=t[k].filter(x=>x!==pid);const i=L.indexOf(pid);if(i>=0)L[i]=null;t.sel=null;render(true);break}
     case"slot":tapSlot(el.dataset.k,+el.dataset.i);render(true);break;
@@ -1029,7 +1092,7 @@ document.addEventListener("click",async e=>{
     case"unsel":t.sel=null;render(true);break;
     case"toBench":{const L=t["l"+t.sel.team.toLowerCase()];L[t.sel.idx]=null;t.sel=null;render(true);break}
     case"moveTeam":{const s2=t.sel;const k=s2.team,o=k==="A"?"B":"A";const L=t["l"+k.toLowerCase()];const pid=s2.kind==="slot"?L[s2.idx]:s2.pid;if(!pid)break;
-      t[k]=t[k].filter(x=>x!==pid);t[o].push(pid);const i=L.indexOf(pid);if(i>=0)L[i]=null;const LO=t["l"+o.toLowerCase()];const em=LO.indexOf(null);if(em>=0)LO[em]=pid;t.sel=null;render(true);break}
+      t[k]=t[k].filter(x=>x!==pid);t[o].push(pid);const i=L.indexOf(pid);if(i>=0)L[i]=null;const LO=t["l"+o.toLowerCase()];const em=LO.indexOf(null);if(em>=0)LO[em]=pid;t.sel=null;toast(nameOf(pid)+" "+TEAM[o]+" takımına geçti");render(true);break}
     case"saveTeams":{if(!t.A.length||!t.B.length){toast("İki takımda da oyuncu olmalı");break}if(!t.la[0]||!t.lb[0]){toast("İki takıma da kaleci yerleştir");break}
       const r=await A("admin_save_lineup",{p_id:t.mid,p_team_a:t.A,p_team_b:t.B,p_form_a:t.fa,p_form_b:t.fb,p_lineup_a:t.la,p_lineup_b:t.lb,p_pos_a:t.pa,p_pos_b:t.pb},"Kadrolar kaydedildi");if(r){S.teams=null;render(true)}break}
     case"draftStart":S.teams=null;S.draft={mid:id,selA:"",selB:""};render(true);break;
@@ -1101,17 +1164,59 @@ setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S
 /* Sahada sürükle-bırak */
 let DRAG=null,SUPPRESS=false;
 document.addEventListener("pointerdown",e=>{const tok=e.target.closest(".field.edit .tok");if(!tok||!S.teams)return;if(e.pointerType==="mouse")e.preventDefault();
-  DRAG={tok,k:tok.dataset.k,i:+tok.dataset.i,sx:e.clientX,sy:e.clientY,f:tok.closest(".field").getBoundingClientRect(),moved:false,id:e.pointerId}});
+  const fld=tok.closest(".field");DRAG={tok,k:tok.dataset.k,i:+tok.dataset.i,mode:fld.dataset.mode,sx:e.clientX,sy:e.clientY,f:fld.getBoundingClientRect(),moved:false,id:e.pointerId}});
 document.addEventListener("pointermove",e=>{if(!DRAG||e.pointerId!==DRAG.id)return;const d=DRAG;
   if(!d.moved&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<7)return;
   if(!d.moved){d.moved=true;d.tok.classList.add("dragging");try{d.tok.setPointerCapture(e.pointerId)}catch(_){}}
-  e.preventDefault();const l=clamp((e.clientX-d.f.left)/d.f.width*100,4,96);let tp=clamp((e.clientY-d.f.top)/d.f.height*100,3,97);
-  tp=d.k==="A"?clamp(tp,50,97):clamp(tp,3,50);d.tok.style.left=l+"%";d.tok.style.top=tp+"%";d.l=l;d.t=tp},{passive:false});
+  e.preventDefault();const l=clamp((e.clientX-d.f.left)/d.f.width*100,8,92);let tp=clamp((e.clientY-d.f.top)/d.f.height*100,5,95);
+  if(d.mode==="both")tp=d.k==="A"?clamp(tp,52,95):clamp(tp,5,48);d.tok.style.left=l+"%";d.tok.style.top=tp+"%";d.l=l;d.t=tp},{passive:false});
 function endDrag(e){if(!DRAG||(e&&e.pointerId!==DRAG.id))return;const d=DRAG;DRAG=null;if(!d.moved)return;SUPPRESS=true;setTimeout(()=>SUPPRESS=false,50);
-  const t=S.teams;if(!t||d.l==null){render(true);return}const u=unpos2(d.k,d.l,d.t);const x=Math.round(clamp(u.x,4,96)),y=Math.round(clamp(u.y,2,100));
+  const t=S.teams;if(!t||d.l==null){render(true);return}
+  const u=d.mode==="both"?unpos2(d.k,d.l,d.t):{x:d.l,y:(95-d.t)/.88};const x=Math.round(clamp(u.x,4,96)),y=Math.round(clamp(u.y,2,100));
   t["p"+d.k.toLowerCase()][d.i]=[x,y,roleFromY(d.i,y)];t.sel=null;render(true)}
 document.addEventListener("pointerup",endDrag);document.addEventListener("pointercancel",endDrag);
 document.addEventListener("click",e=>{if(SUPPRESS){e.stopImmediatePropagation();e.preventDefault()}},true);
+
+/* Dizilişi görsel olarak paylaş */
+function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()}
+async function shareImg(m){
+  try{await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,800))])}catch(_){}
+  const W=1080,H=1580,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const D='"Big Shoulders Display","Arial Narrow",sans-serif',F='Figtree,system-ui,sans-serif';
+  x.fillStyle="#0A1510";x.fillRect(0,0,W,H);
+  const g=x.createRadialGradient(W/2,-160,40,W/2,-160,1000);g.addColorStop(0,"rgba(46,157,91,.5)");g.addColorStop(1,"rgba(46,157,91,0)");x.fillStyle=g;x.fillRect(0,0,W,900);
+  x.textBaseline="alphabetic";x.textAlign="left";
+  x.fillStyle="#FF7A1A";x.font=`900 38px ${D}`;x.fillText("YELEK",60,78);
+  x.fillStyle="#EEF5EF";x.font=`900 74px ${D}`;x.fillText(up(S.settings.group_name),60,152);
+  x.fillStyle="#93AB9C";x.font=`600 30px ${F}`;x.fillText(`${fmtDate(m.date)} · ${m.time||""}${S.settings.field_name?" · "+S.settings.field_name:""}`,60,198);
+  const px=60,py=238,pw=960,ph=1130;
+  x.save();rr(x,px,py,pw,ph,36);x.clip();
+  for(let i=0;i<12;i++){x.fillStyle=i%2?"#1A6F3D":"#1F7E46";x.fillRect(px,py+i*ph/12,pw,ph/12+1)}
+  const sx=pw/68,sy=ph/100,L=(a,b)=>[px+a*sx,py+b*sy];
+  x.strokeStyle="rgba(255,255,255,.55)";x.lineWidth=4;
+  const rect=(a,b,w,h)=>{const[X,Y]=L(a,b);x.strokeRect(X,Y,w*sx,h*sy)};
+  rect(3,3,62,94);rect(17,3,34,13);rect(26,3,16,5);rect(17,84,34,13);rect(26,92,16,5);
+  x.beginPath();x.moveTo(...L(3,50));x.lineTo(...L(65,50));x.stroke();
+  x.beginPath();x.ellipse(px+34*sx,py+50*sy,7*sx,7*sx,0,0,Math.PI*2);x.stroke();
+  x.restore();
+  const A=m.team_a||[],B=m.team_b||[],pa=posArr(m,"A"),pb=posArr(m,"B"),la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
+  for(const T of layout("both",pa,pb,la,lb)){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-10;
+    x.beginPath();x.arc(cx,cy,33,0,Math.PI*2);x.fillStyle=T.k==="A"?"#FF7A1A":"#F3F6F2";x.shadowColor="rgba(0,0,0,.4)";x.shadowBlur=14;x.fill();x.shadowBlur=0;
+    if(T.i===0){x.lineWidth=7;x.strokeStyle="#FFE066";x.stroke()}
+    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(String(P(T.id)?.no||initials(nameOf(T.id))),cx,cy+2);
+    const ov=String(ovrOf(T.id));x.font=`900 24px ${D}`;const ow=x.measureText(ov).width+12;rr(x,cx+16,cy-42,ow,28,8);x.fillStyle="#0A1510";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(ov,cx+16+ow/2,cy-27);
+    const nm=shortName(nameOf(T.id));x.font=`700 26px ${F}`;const nw=Math.min(200,x.measureText(nm).width+20);rr(x,cx-nw/2,cy+40,nw,34,10);x.fillStyle="rgba(5,15,10,.8)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,cy+58,180)}
+  x.textBaseline="alphabetic";
+  const leg=(k,X,ids,fk,ps)=>{x.textAlign="left";x.fillStyle=k==="A"?"#FF7A1A":"#F3F6F2";rr(x,X,1410,26,26,6);x.fill();
+    x.fillStyle="#EEF5EF";x.font=`900 40px ${D}`;x.fillText(up(TEAM[k]),X+40,1434);
+    x.fillStyle="#93AB9C";x.font=`600 28px ${F}`;x.fillText(`${formText(fk,ps)} · ortalama ${sumAvg(ids)}`,X,1484)};
+  leg("A",60,A,formOf(m,"A"),pa);leg("B",560,B,formOf(m,"B"),pb);
+  x.fillStyle="#6B8676";x.font=`600 24px ${F}`;x.textAlign="right";x.fillText(location.host+location.pathname,W-60,H-36);
+  c.toBlob(async blob=>{if(!blob){toast("Görsel oluşturulamadı");return}
+    const file=new File([blob],"yelek-kadro.png",{type:"image/png"});
+    try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"Kadrolar"});return}}catch(err){if(err&&err.name==="AbortError")return}
+    const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="yelek-kadro.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);toast("Görsel indirildi")},"image/png");
+}
 
 /* Draft zamanlayıcı */
 function startTimer(){stopTimer();S.tick=setInterval(()=>{const d=S.draft;if(!d||!d.deadline)return stopTimer();const left=Math.ceil((d.deadline-Date.now())/1000);const el=$("#dtimer");if(el)el.textContent=Math.max(0,left);
