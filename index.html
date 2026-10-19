@@ -849,7 +849,7 @@ function matchBody(m){
       <div><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
   }else{
     h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2>${S.admin?`<button class="btn sm primary" data-act="editTeams" data-id="${esc(m.id)}">${ICON.hand} Kadroları değiştir</button>`:""}</div>${teamsView(m)}</section>`;
-    h+=predCard(m)+preview(m);
+    h+=predCard(m);
     if(S.admin)h+=finishCard(m);
     else h+=`<p class="muted small" style="text-align:center">Maç bitince yönetici skoru, golleri ve asistleri girer. Kartlar o zaman güncellenir.</p>`;
   }
