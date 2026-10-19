@@ -702,13 +702,12 @@ function baseOf(p){const set=attrSet(p.pos);const a=p.attrs||{};let ep=eposOf(p)
   let s=0,t=0;for(const[k]of set){const x=w[k]??0;s+=x*mainVal(a,k,p.pos);t+=x}return Math.round(t?s/t:set.reduce((q,[k])=>q+mainVal(a,k,p.pos),0)/set.length)}
 
 /* ===== Özellik motoru: maçta yapılan iş alt özellikleri değiştirir, GEN özelliklerden hesaplanır ===== */
-const ENG={step:2,cap:8,decay:.05,maxGen:1.5};
+const ENG={step:2,cap:8,decay:.05,maxGen:1.5,motmGen:.5};
 const SUBN={hiz_acc:"Hızlanma",hiz_spr:"Sprint hızı",hiz_cab:"Çabukluk",sut_bit:"Bitiricilik",sut_guc:"Şut gücü",sut_poz:"Pozisyon alma",pas_kis:"Kısa pas",pas_uzn:"Uzun pas",pas_viz:"Vizyon",
   dri_kon:"Top kontrolü",dri_sur:"Top sürme",dri_cev:"Çeviklik",def_kes:"Top kesme",def_bil:"Savunma bilinci",def_mud:"Ayakta müdahale",fiz_day:"Dayanıklılık",fiz_guc:"Güç",fiz_agr:"Agresiflik",
   dal_uza:"Uzanma",dal_kos:"Köşe kurtarışı",ref_ref:"Refleks",ref_yak:"Yakın mesafe",ell_tut:"Top tutma",ell_bas:"Elle oyun başlatma",ayk_pas:"Ayakla pas",ayk_deg:"Uzun degaj",poz_yer:"Yer tutma",poz_bir:"Bire birde çıkış"};
 const subKeys=pos=>attrSet(pos).flatMap(([k,,,subs])=>subs.map(([sk])=>k+"_"+sk));
 const MENTAL={FV:"sut_poz",OS:"pas_viz",DF:"def_bil",KL:"poz_yer"};
-const MOTM_KEY={KL:"ref_ref",STP:"def_bil","SĞB":"def_bil",SLB:"def_bil",DOS:"def_kes",MO:"pas_kis",MOO:"pas_viz","SĞO":"dri_sur",SLO:"dri_sur","SĞK":"dri_sur",SLK:"dri_sur",SNT:"sut_bit"};
 // kaleci ve defans için halı saha baremleri (takımın yediği gol)
 const CONC=[[3,"iyi+"],[6,"iyi"],[9,"orta"],[12,"kötü"],[999,"kötü+"]];
 const concBand=op=>CONC.find(([l])=>op<=l)[1];
@@ -721,7 +720,7 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
   if(a){add("pas_kis",ENG.step*Math.min(a,2),a+" asist");if(a>=2)add("pas_viz",ENG.step,"2+ asist");if(role==="KL")add("ayk_pas",ENG.step,"asist")}
   if(g&&a)add("dri_kon",ENG.step,"gol + asist");
   // defans kartında şut/pas ağırlığı düşük: gol katkısı savunmacının ana özelliklerine yazılır
-  const gk=g+a;if(posOf(p)==="DF"&&gk){const w=gk+" gol katkısı";add("def_kes",ENG.step,w);add(/^S[ĞL]B$/.test(eposOf(p))?"hiz_spr":"fiz_agr",ENG.step*Math.min(gk,2),w);if(gk>=3)add("def_bil",ENG.step,w)}
+  const gk=g+a;if((posOf(p)==="DF"||eposOf(p)==="DOS")&&gk){const w=gk+" gol katkısı";add("def_kes",ENG.step,w);add(/^S[ĞL]B$/.test(eposOf(p))?"hiz_spr":"fiz_agr",ENG.step*Math.min(gk,2),w);if(gk>=3)add("def_bil",ENG.step,w)}
   if(role==="OS"&&!g&&!a&&ctx.osDry>=2)add("pas_viz",-ENG.step,ctx.osDry+" maçtır katkı yok");
   const b=concBand(op);
   if(role==="DF"){if(b==="iyi+"){add("def_bil",ENG.step,op+" gol yedi");add("def_kes",ENG.step,op+" gol yedi")}else if(b==="iyi")add("def_bil",ENG.step,op+" gol yedi");
@@ -731,7 +730,10 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
   if(og)add(role==="KL"?"poz_yer":"def_bil",-ENG.step*og,"kendi kalesine");
   const my=r.side==="A"?+m.score_a||0:+m.score_b||0;
   if(r.res==="G")add(MENTAL[role],ENG.step,"galibiyet");else if(r.res==="M"&&op-my>=5)add(MENTAL[role],-ENG.step,(op-my)+" farklı yenilgi");
-  if(ctx.motm)add(MOTM_KEY[eposOf(p)],ENG.step,"Maçın Adamı");
+  // Maçın Adamı: pozisyondan bağımsız GEN'e sabit +motmGen, kartın en ağırlıklı ana özelliğine yazılır
+  if(ctx.motm){const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const w=W[ep];
+    const top=set.reduce((b,x)=>(w[x[0]]??0)>(w[b[0]]??0)?x:b,set[0]);const t=set.reduce((q,[k])=>q+(w[k]??0),0)||1;
+    for(const[sk]of top[3])add(top[0]+"_"+sk,ENG.motmGen*t/(w[top[0]]||1),"Maçın Adamı")}
   if(ctx.att>0&&ctx.att%4===0)add(p.pos==="Kaleci"?"hiz_cab":"fiz_day",ENG.step,ctx.att+" maç üst üste geldi");
   return ch}
 function compute(){
@@ -757,7 +759,7 @@ function compute(){
       for(const k of KS)DL[k]*=(1-ENG.decay);
       ch=ch.filter(x=>x[0] in DL);const before=gen;const DL0={...DL};
       const req={};for(const[k,v]of ch){req[k]=(req[k]||0)+v;DL[k]=clamp(DL[k]+v,-ENG.cap,ENG.cap)}
-      let ng=genF(p,curOf());if(Math.abs(ng-before)>ENG.maxGen){const f=ENG.maxGen/Math.abs(ng-before);for(const k of KS)DL[k]=DL0[k]+(DL[k]-DL0[k])*f;ng=genF(p,curOf())}
+      let ng=genF(p,curOf());const lim=ENG.maxGen+(r&&inf.motm===p.id?ENG.motmGen:0);if(Math.abs(ng-before)>lim){const f=lim/Math.abs(ng-before);for(const k of KS)DL[k]=DL0[k]+(DL[k]-DL0[k])*f;ng=genF(p,curOf())}
       ch=Object.keys(req).map(k=>{const v=Math.round((DL[k]-DL0[k])*10)/10;return v?[k,v]:[k,0,req[k]>0?"tavan":"taban"]});
       gen=clamp(ng,40,99);ovr=Math.round(gen);
       hist.push({m,d:Math.round((gen-before)*10)/10,ovr,ch,...line});series.push(ovr);
