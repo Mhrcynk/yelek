@@ -145,6 +145,14 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .av.bronze{background:linear-gradient(150deg,#E8BF96,#A46A3E);color:#2A1608}
 .av.star{background:linear-gradient(150deg,#2B9B58,#0B2F1B);color:#F6DE8F}
 .av.sm{width:30px;height:30px;font-size:.85rem}
+.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center 20%}
+.av.hasph{padding:2px}
+.tok .shirt img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center 20%}
+.tok .shirt.hasph{padding:2.5px}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.phrow{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:14px;padding:10px 12px}
+.phrow .av{width:52px;height:52px}
+.phrow .av svg{width:70%;color:rgba(0,0,0,.45)}
 .avw{position:relative;flex:none;display:block}
 .avw .ab{position:absolute;right:-5px;bottom:-4px;font-family:var(--display);font-weight:900;font-size:.72rem;background:var(--bg);border:1px solid var(--line2);border-radius:7px;padding:0 4px;line-height:1.35}
 .avbtn{border:0;background:none;padding:0;flex:none}
@@ -313,15 +321,20 @@ details[open]>summary::before{transform:rotate(45deg)}
 .fut.big .ovr{font-size:2.7rem}
 .fut .ps{font-family:var(--display);font-weight:800;font-size:.95rem;letter-spacing:.04em}
 .fut .trend{font-size:.72rem;font-weight:800;margin-top:3px}
-.fut .jer{position:absolute;top:10%;right:12%;width:52%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:2.4rem;background:rgba(255,255,255,.18);border:2px solid color-mix(in srgb,var(--tx) 25%,transparent)}
+.fut .pic{position:absolute;right:6%;top:6%;width:64%;height:48%;display:grid;place-items:end center;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,#000 72%,transparent 100%);mask-image:linear-gradient(to bottom,#000 72%,transparent 100%)}
+.fut .pic img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.fut .pic svg{width:86%;height:auto;color:color-mix(in srgb,var(--tx) 55%,transparent)}
+.fut .stripe{position:absolute;right:-8%;top:8%;width:46%;height:60%;background:repeating-linear-gradient(135deg,rgba(255,255,255,.22) 0 6px,transparent 6px 14px);transform:skewX(-8deg);pointer-events:none}
+.fut .ball{position:absolute;left:50%;bottom:4.5%;transform:translateX(-50%);width:9%;opacity:.55;color:var(--tx)}
 .fut .nm{margin-top:auto;font-family:var(--display);font-weight:900;font-size:1.22rem;text-align:center;text-transform:uppercase;letter-spacing:.03em;border-top:1px solid color-mix(in srgb,var(--tx) 30%,transparent);padding-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fut .at{display:grid;grid-template-columns:1fr 1fr;column-gap:10%;font-size:.7rem;font-weight:700;padding:4px 4% 18%;font-variant-numeric:tabular-nums}
-.fut .at span{display:flex;justify-content:space-between}
-.fut .at b{font-family:var(--display);font-size:.95rem}
+.fut .at{display:grid;grid-template-columns:1fr 1fr;column-gap:8%;row-gap:1px;font-size:.66rem;font-weight:800;letter-spacing:.03em;padding:4px 6% 19%;font-variant-numeric:tabular-nums;position:relative;z-index:1}
+.fut .at span{display:flex;gap:5px;align-items:baseline}
+.fut .at b{font-family:var(--display);font-size:1rem;font-weight:900;min-width:1.3em}
+.fut .nm{position:relative;z-index:1}
 .fut .flag{position:absolute;left:50%;transform:translateX(-50%) rotate(-6deg);top:44%;font-family:var(--display);font-weight:900;font-size:1.05rem;letter-spacing:.06em;padding:3px 10px;border-radius:5px;background:#D93A2F;color:#fff;white-space:nowrap;box-shadow:0 2px 0 rgba(0,0,0,.3)}
 .fut .flag.info{background:#2D68A6}.fut .flag.warn{background:#B9720F}.fut .flag.muted{background:#5a6670}
 .fut.out .face{filter:grayscale(.65) brightness(.85)}
-.fut.big{max-width:230px}
+.fut.big{max-width:230px;width:min(230px,66vw);flex:none}
 .up{color:#14803C}.down{color:#B42318}
 .fut.star .up{color:#7CE3A1}.fut.star .down{color:#FF9C92}
 @media (prefers-reduced-motion:no-preference){
@@ -480,7 +493,7 @@ const ICON={
 /* ================= Durum ================= */
 const LS={get(k){try{return localStorage.getItem(k)||""}catch(_){return""}},set(k,v){try{localStorage.setItem(k,v)}catch(_){}},del(k){try{localStorage.removeItem(k)}catch(_){}}};
 const S={all:[],players:[],matches:[],settings:{...DEF_SET},seasonVotes:[],me:LS.get("y_me"),pin:LS.get("y_pin"),admin:false,
-  tab:"mac",sheet:null,teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
+  tab:"mac",sheet:null,photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
 S.admin=!!S.pin;
 {const old={hafta:"mac",oyuncular:"kartlar"};let t=LS.get("y_tab");t=old[t]||t;if(TABS.some(x=>x[0]===t))S.tab=t;
  const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;}
@@ -587,6 +600,7 @@ async function load(){
     const[st,pl,ms,sv2]=await Promise.all([sbGet("settings?id=eq.1&select=*"),sbGet("players?select=*&order=created_at.asc"),
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr)]);
     S.settings={...DEF_SET,...(st[0]||{})};S.all=pl;S.players=pl.filter(p=>!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+    const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
   }catch(e){console.error(e);S.err="Verilere ulaşılamadı. İnternet bağlantını kontrol edip sayfayı yenile."}
   render();
 }
@@ -630,16 +644,19 @@ function renderSheet(){
 function sheetHtml(){const t=S.sheet.type;return t==="player"?sheetPlayer():t==="me"?sheetMe():t==="add"?sheetAdd():""}
 
 /* ================= Parçalar ================= */
-function avatar(p,size){return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}">${esc(p.no||initials(p.name))}</span>`}
+const SIL=`<svg viewBox="0 0 100 104" aria-hidden="true"><circle cx="50" cy="33" r="21" fill="currentColor"/><path d="M8 104c2-27 19-42 42-42s40 15 42 42z" fill="currentColor"/></svg>`;
+const BALL=`<svg class="ball" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.5l4 2.9-1.5 4.7h-5L8 10.4z" fill="currentColor"/></svg>`;
+const photoOf=id=>{const d=S.photos[id];return d&&/^data:image\//.test(d)?d:""};
+function avatar(p,size){const ph=photoOf(p.id);return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
 function avatarO(p){return `<span class="avw">${avatar(p)}<b class="ab num">${ovrOf(p.id)}</b></span>`}
 function card(p,big){
   const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{},lastD:0};const st=stOf(p);const o=s.ovr;
   const tr=s.lastD>0?`<span class="trend up">▲${s.lastD}</span>`:s.lastD<0?`<span class="trend down">▼${-s.lastD}</span>`:`<span class="trend">&nbsp;</span>`;
-  const at=attrSet(p.pos).map(([k,l])=>`<span>${l}<b>${s.attrs?.[k]??"–"}</b></span>`).join("");
+  const at=attrSet(p.pos).map(([k,l])=>`<span><b>${s.attrs?.[k]??"–"}</b>${l}</span>`).join("");const ph=photoOf(p.id);
   const x=STATUS[st];const flag=st!=="hazir"?`<span class="flag ${x.cls==="bad"?"":x.cls}">${x.cls==="bad"?"✚ ":""}${x.flag}</span>`:"";
   return `<button class="fut ${tierOf(o)}${UNAVAIL.includes(st)?" out":""}${big?" big":""}" ${big?'tabindex="-1"':`data-act="open" data-id="${esc(p.id)}"`} aria-label="${esc(p.name)} kartı, reyting ${o}">
     <span class="face"><span class="tl"><span class="ovr num">${o}</span><span class="ps">${posOf(p)}</span>${tr}</span>
-    <span class="jer">${esc(p.no||initials(p.name))}</span><span class="nm">${esc(up(shortName(p.name)))}</span><span class="at">${at}</span></span>${flag}</button>`;
+    <span class="stripe"></span><span class="pic">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><span class="nm">${esc(up(shortName(p.name)))}</span><span class="at">${at}</span>${BALL}</span>${flag}</button>`;
 }
 function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];const u=p.status?.until?" · "+fmtShort(p.status.until)+"'e kadar":"";return`<span class="chip ${x.cls}"><span class="dot"></span>${x.label}${u}</span>`}
 function ring(n,cap){const r=32,c=2*Math.PI*r,p=Math.min(1,n/cap);
@@ -787,7 +804,7 @@ function tokHtml(T,editable,sel){
   const attrs=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
   const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${ROLE_NAME[T.r]} yeri"><span class="shirt">${T.r}</span><span class="tn">Boş</span></button>`;
-  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[T.r]}, reyting ${ovrOf(id)}"><span class="shirt">${esc(P(id)?.no||initials(nameOf(id)))}<i class="ov">${ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
+  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[T.r]}, reyting ${ovrOf(id)}"><span class="shirt${photoOf(id)?" hasph":""}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ov">${ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
 }
 function fieldHtml(mode,pa,pb,la,lb,editable,sel){
   return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel)).join("")}</div>`;
@@ -963,8 +980,7 @@ function sheetAdd(){
   if(!S.admin)return"";const f=S.f.ap||(S.f.ap={name:"",pos:"Orta saha",no:"",attrs:{}});
   return `<div class="ch"><h2>Oyuncu ekle</h2><button class="btn sm" data-act="close">Kapat</button></div><form data-form="addPlayer" style="display:grid;gap:14px">
     <label class="f" for="apName">Ad soyad<input id="apName" type="text" data-bind="ap.name" value="${esc(f.name)}" required maxlength="40" autocomplete="off"></label>
-    <div class="grid2"><label class="f" for="apPos">Mevki<select id="apPos" data-bind="ap.pos">${POS_KEYS.map(k=>`<option${f.pos===k?" selected":""}>${k}</option>`).join("")}</select></label>
-    <label class="f" for="apNo">Forma no<input id="apNo" type="text" data-bind="ap.no" value="${esc(f.no)}" maxlength="2" inputmode="numeric"></label></div>
+    <label class="f" for="apPos">Mevki<select id="apPos" data-bind="ap.pos">${POS_KEYS.map(k=>`<option${f.pos===k?" selected":""}>${k}</option>`).join("")}</select></label>
     ${attrInputs("ap",f.pos,f.attrs)}
     <span class="muted small">Başlangıç reytingi: <b class="num" id="ap_ovr" style="color:var(--ink);font-size:1.1rem">${baseOf({pos:f.pos,attrs:f.attrs})}</b></span>
     <button class="btn primary block" type="submit">${ICON.plus} Kadroya ekle</button></form>`;
@@ -979,7 +995,7 @@ function sheetMe(){
 function sheetPlayer(){
   const p=P(S.sheet.id);if(!p)return"";const s=S.stats[p.id]||{};const st=stOf(p);const canSt=S.admin||p.id===S.me;
   const sf=S.f.st||(S.f.st={type:st,until:p.status?.until||"",note:p.status?.note||""});
-  let h=`<div class="ch"><div><div class="eyebrow">${esc(p.pos)}${p.no?" · #"+esc(p.no):""}</div><h2 style="font-size:1.9rem">${esc(p.name)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
+  let h=`<div class="ch"><div><div class="eyebrow">${esc(p.pos)}</div><h2 style="font-size:1.9rem">${esc(p.name)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
     <div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(s.series||[])}</div>
     <div style="display:grid;gap:12px;min-width:0">
       <div class="row">${st==="hazir"?'<span class="chip ok"><span class="dot"></span>Hazır</span>':stChip(p)}${p.status?.note?`<span class="muted small">${esc(p.status.note)}</span>`:""}</div>
@@ -996,11 +1012,13 @@ function sheetPlayer(){
     ${UNAVAIL.includes(sf.type)?'<p class="muted small">Açık maçta otomatik olarak gelemeyenlere yazılır. Gelemediği her maç kartından 1 puan düşürür.</p>':""}
     <button class="btn primary block" data-act="saveStatus">Durumu kaydet</button>
     ${(p.status_log||[]).length?`<details><summary class="small">Durum geçmişi</summary><div class="hist">${p.status_log.slice().reverse().map(e=>`<div style="grid-template-columns:4.4em 1fr"><span class="d">${fmtShort(e.at)}</span><span>${esc(STATUS[e.type]?.label||e.type)}${e.note?" · "+esc(e.note):""}</span></div>`).join("")}</div></details>`:""}</div>`;
-  if(S.admin){const a=S.f.ed||(S.f.ed={name:p.name,pos:p.pos,no:p.no||"",attrs:{...(p.attrs||{})}});
+  if(S.admin){const ph=photoOf(p.id);
+    h+=`<div class="phrow"><span class="av ${tierOf(ovrOf(p.id))}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":ph?"Kartta ve sahada görünüyor.":"Yüklenince kartına otomatik eklenir."}</p></div>
+      <label class="btn sm primary" for="phFile">${ph?"Değiştir":"Yükle"}</label><input class="vh" id="phFile" type="file" accept="image/*" data-photo="${esc(p.id)}">${ph?`<button class="btn sm ghost" data-act="delPhoto" data-id="${esc(p.id)}" aria-label="Fotoğrafı kaldır">${ICON.x}</button>`:""}</div>`}
+  if(S.admin){const a=S.f.ed||(S.f.ed={name:p.name,pos:p.pos,attrs:{...(p.attrs||{})}});
     h+=`<details${S.f.edOpen?" open":""} data-act-toggle="edOpen"><summary>Kartı düzenle (yönetici)</summary><div style="display:grid;gap:12px;margin-top:10px">
       <label class="f" for="edName">Ad<input id="edName" type="text" data-bind="ed.name" value="${esc(a.name)}" maxlength="40"></label>
-      <div class="grid2"><label class="f" for="edPos">Mevki<select id="edPos" data-bind="ed.pos">${POS_KEYS.map(k=>`<option${a.pos===k?" selected":""}>${k}</option>`).join("")}</select></label>
-      <label class="f" for="edNo">Forma no<input id="edNo" type="text" maxlength="2" inputmode="numeric" data-bind="ed.no" value="${esc(a.no)}"></label></div>
+      <label class="f" for="edPos">Mevki<select id="edPos" data-bind="ed.pos">${POS_KEYS.map(k=>`<option${a.pos===k?" selected":""}>${k}</option>`).join("")}</select></label>
       ${attrInputs("ed",a.pos,a.attrs)}
       <span class="muted small">Başlangıç reytingi: <b class="num" id="ed_ovr" style="color:var(--ink)">${baseOf({pos:a.pos,attrs:a.attrs})}</b></span>
       <button class="btn primary block" data-act="saveCard">Kaydet</button>
@@ -1147,9 +1165,10 @@ document.addEventListener("click",async e=>{
     case"stType":S.f.st.type=el.dataset.v;render(true);break;
     case"saveStatus":{const p=P(S.sheet.id);const sf=S.f.st;await act("set_status",{p_player:p.id,p_type:sf.type,p_until:sf.type==="hazir"?null:(sf.until||null),p_note:sf.type==="hazir"?"":(sf.note||"")},"Durum güncellendi");S.f.st=null;render(true);break}
     case"saveCard":{const p=P(S.sheet.id);const a2=S.f.ed;if(!String(a2.name||"").trim()){toast("Ad boş olamaz");break}
-      await A("admin_save_player",{p_id:p.id,p_name:a2.name.trim(),p_pos:a2.pos,p_no:String(a2.no||"").slice(0,2),p_attrs:cleanAttrs(a2.pos,a2.attrs)},"Kart güncellendi");S.f.ed=null;render(true);break}
+      await A("admin_save_player",{p_id:p.id,p_name:a2.name.trim(),p_pos:a2.pos,p_no:"",p_attrs:cleanAttrs(a2.pos,a2.attrs)},"Kart güncellendi");S.f.ed=null;render(true);break}
     case"delPlayer":{const p=P(S.sheet.id);if(S.f.delP!==p.id){S.f.delP=p.id;render(true);break}const r=await A("admin_archive_player",{p_id:p.id},"Oyuncu kadrodan çıkarıldı");if(r){S.sheet=null;render(true)}break}
     case"atVote":{const v=S.f.atVote||(S.seasonVotes.find(x=>x.voter===S.me)||{}).target;if(!v){toast("Bir oyuncu seç");break}await act("season_vote",{p_year:new Date().getFullYear(),p_voter:S.me,p_target:v},"Altın Top oyun kaydedildi");break}
+    case"delPhoto":{const r=await A("admin_set_photo",{p_id:id,p_data:""},"Fotoğraf kaldırıldı");if(r){delete S.photos[id];render(true)}break}
     case"logout":S.admin=false;S.pin="";LS.del("y_pin");S.teams=null;S.draft=null;render(true);toast("Yöneticilikten çıkıldı");break;
   }
 });
@@ -1161,11 +1180,27 @@ function tapSlot(k,i){const t=S.teams;const L=t["l"+k.toLowerCase()];const s=t.s
 function tapBench(k,pid){const t=S.teams;const s=t.sel;
   if(s&&s.kind==="slot"&&s.team===k){t["l"+k.toLowerCase()][s.idx]=pid;t.sel=null;return}
   t.sel=(s&&s.kind==="bench"&&s.pid===pid)?null:{kind:"bench",team:k,pid}}
+async function photoData(file){
+  const url=URL.createObjectURL(file);
+  try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error("img"));i.src=url});
+    const W=320,H=400,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+    const r=Math.max(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*r,h=img.naturalHeight*r;
+    x.fillStyle="#fff";x.fillRect(0,0,W,H);x.drawImage(img,(W-w)/2,Math.min(0,(H-h)*.3),w,h);
+    let q=.85,d=c.toDataURL("image/jpeg",q);while(d.length>150000&&q>.4){q-=.1;d=c.toDataURL("image/jpeg",q)}return d}
+  finally{URL.revokeObjectURL(url)}
+}
+async function uploadPhoto(id,file){
+  if(!/^image\//.test(file.type||"image/")){toast("Lütfen bir fotoğraf seç");return}
+  S.f.phBusy=true;render(true);
+  try{const d=await photoData(file);const r=await A("admin_set_photo",{p_id:id,p_data:d},"Fotoğraf yüklendi");if(r){S.photos[id]=d}}
+  catch(_){toast("Fotoğraf okunamadı, başka bir fotoğraf dene")}
+  S.f.phBusy=false;render(true);
+}
 function cleanAttrs(pos,a){const o={};for(const[k]of attrSet(pos))o[k]=clamp(Math.round(+a[k]||65),30,95);return o}
 document.addEventListener("submit",async e=>{
   const f=e.target.closest("[data-form]");if(!f)return;e.preventDefault();const kind=f.dataset.form;
   if(kind==="addPlayer"){const ap=S.f.ap;const name=String(ap.name||"").trim();if(!name){toast("Ad gir");return}
-    const r=await A("admin_save_player",{p_id:null,p_name:name,p_pos:ap.pos,p_no:String(ap.no||"").slice(0,2),p_attrs:cleanAttrs(ap.pos,ap.attrs)},name+" kadroya eklendi");
+    const r=await A("admin_save_player",{p_id:null,p_name:name,p_pos:ap.pos,p_no:"",p_attrs:cleanAttrs(ap.pos,ap.attrs)},name+" kadroya eklendi");
     if(r){S.f.ap={name:"",pos:ap.pos,no:"",attrs:{}};render(true);setTimeout(()=>$("#apName")?.focus(),0)}}
   if(kind==="login"){const pin=String(S.f.pin||"");if(!pin){toast("Şifreyi gir");return}
     try{const r=await rpc("admin_check",{p_pin:pin});if(r&&r.ok){S.pin=pin;S.admin=true;LS.set("y_pin",pin);S.f.pin="";toast("Yönetici olarak giriş yapıldı");render(true)}
@@ -1183,6 +1218,7 @@ document.addEventListener("input",e=>{const t=e.target;
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.bind){setPath(t.dataset.bind,t.value);if(["sort","wrapP","ap.pos","ed.pos","newDate","newTime"].includes(t.dataset.bind))render(true);return}
   if(t.dataset.vote){const k="v_"+t.dataset.m;(S.f[k]||(S.f[k]={}))[t.dataset.vote]=t.value;return}
+  if(t.dataset.photo&&t.files&&t.files[0]){uploadPhoto(t.dataset.photo,t.files[0]);t.value="";return}
   if(t.dataset.actChange==="cap"&&S.draft){S.draft["sel"+t.dataset.k]=t.value;render(true)}
   if(t.dataset.actChange==="motm"){const sd=S.f["sd_"+t.dataset.m];if(sd){sd.motm=t.value;S.f.confirmFinish=null;render(true)}}
 });
@@ -1234,7 +1270,7 @@ async function shareImg(m){
   for(const T of layout("both",pa,pb,la,lb)){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-10;
     x.beginPath();x.arc(cx,cy,33,0,Math.PI*2);x.fillStyle=T.k==="A"?"#FF7A1A":"#F3F6F2";x.shadowColor="rgba(0,0,0,.4)";x.shadowBlur=14;x.fill();x.shadowBlur=0;
     if(T.i===0){x.lineWidth=7;x.strokeStyle="#FFE066";x.stroke()}
-    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(String(P(T.id)?.no||initials(nameOf(T.id))),cx,cy+2);
+    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(T.id)),cx,cy+2);
     const ov=String(ovrOf(T.id));x.font=`900 24px ${D}`;const ow=x.measureText(ov).width+12;rr(x,cx+16,cy-42,ow,28,8);x.fillStyle="#0A1510";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(ov,cx+16+ow/2,cy-27);
     const nm=shortName(nameOf(T.id));x.font=`700 26px ${F}`;const nw=Math.min(200,x.measureText(nm).width+20);rr(x,cx-nw/2,cy+40,nw,34,10);x.fillStyle="rgba(5,15,10,.8)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,cy+58,180)}
   x.textBaseline="alphabetic";
