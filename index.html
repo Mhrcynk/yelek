@@ -189,6 +189,7 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .field.both .tok{max-width:21%;gap:2px}
 .tok .shirt{position:relative;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:1.2rem;box-shadow:0 4px 10px rgba(0,0,0,.35)}
 .field.both .tok .shirt{width:30px;height:30px;font-size:.95rem}
+.tok .shirt.p3{font-size:.95rem;letter-spacing:-.02em}.field.both .tok .shirt.p3{font-size:.74rem}
 .tok.a .shirt{background:#FF7A1A;color:#1A0E02}
 .tok.b .shirt{background:#F3F6F2;color:#13261B}
 .tok .ov{position:absolute;right:-9px;top:-7px;font-style:normal;font-family:var(--display);font-weight:900;font-size:.7rem;background:#0A1510;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:0 3px;line-height:1.35}
@@ -417,6 +418,14 @@ details[open]>summary::before{transform:rotate(45deg)}
 .who-grid button{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);background:var(--card);border-radius:14px;padding:8px 10px;text-align:left;font-weight:700;min-height:54px;min-width:0}
 .who-grid button span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .who-grid button.on{border-color:var(--bib);box-shadow:0 0 0 2px var(--bib)}
+.attrs-grp{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.ag{background:var(--card2);border-radius:14px;padding:10px 12px;display:grid;gap:8px;min-width:0}
+.agh{display:flex;align-items:baseline;gap:8px}.agh b:first-child{font-family:var(--display);font-weight:900;font-size:1rem}.agh span{font-size:.76rem;color:var(--muted);flex:1}
+.agv{font-family:var(--display);font-weight:900;font-size:1.3rem}
+.sr2{display:grid;grid-template-columns:minmax(0,1fr) 70px 2em;gap:8px;align-items:center;font-size:.82rem}
+.sr2 i{height:5px;border-radius:9px;background:var(--line2);position:relative;overflow:hidden}.sr2 i::after{content:"";position:absolute;inset:0;width:var(--w);background:currentColor;opacity:.7;border-radius:9px;color:var(--ok)}
+.sr2 b{font-family:var(--display);text-align:right}
+.ag .attrs-in{grid-template-columns:minmax(0,1fr)}
 .attrs-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px 16px}
 .attrs-in label{display:grid;gap:4px;font-size:.78rem;font-weight:800;color:var(--muted);min-width:0}
 .attrs-in .val{display:flex;gap:8px;align-items:center}
@@ -495,9 +504,20 @@ const EPOS_KEYS=Object.keys(EPOS);
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const ATTR_OUT=[["hiz","HIZ","Hız"],["sut","ŞUT","Şut"],["pas","PAS","Pas"],["dri","DRİ","Top sürme"],["def","DEF","Savunma"],["fiz","FİZ","Fizik"]];
-const ATTR_GK=[["dal","DAL","Plonjon"],["ell","ELL","Elle oyun"],["ayk","AYK","Ayakla oyun"],["ref","REF","Refleks"],["hiz","HIZ","Hız"],["poz","POZ","Pozisyon alma"]];
+const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
+  ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
+  ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
+const ATTR_GK=[["dal","PLO","Plonjon",[["uza","Uzanma"],["kos","Köşe kurtarışı"]]],["ref","REF","Refleks",[["ref","Refleks"],["yak","Yakın mesafe kurtarışı"]]],
+  ["ell","ELL","Elle oyun",[["tut","Top tutma"],["bas","Elle oyun başlatma"]]],["ayk","AYK","Ayakla oyun",[["pas","Ayakla pas"],["deg","Uzun degaj"]]],
+  ["poz","POZ","Pozisyon alma",[["yer","Yer tutma"],["bir","Bire birde çıkış"]]],["hiz","HIZ","Hız",[["acc","Hızlanma"],["cab","Çabukluk"]]]];
 const attrSet=pos=>pos==="Kaleci"?ATTR_GK:ATTR_OUT;
+const subVal=(a,k,sk)=>clamp(Math.round(+a[k+"_"+sk]||+a[k]||65),30,99);
+const mainVal=(a,k,pos)=>{const d=attrSet(pos).find(x=>x[0]===k);if(!d)return +a[k]||65;return Math.round(d[3].reduce((s,[sk])=>s+subVal(a,k,sk),0)/d[3].length)};
+const W={KL:{ref:.25,dal:.22,poz:.22,ell:.15,ayk:.08,hiz:.08},
+  SNT:{hiz:.2,sut:.35,pas:.1,dri:.2,def:0,fiz:.15},"SĞK":{hiz:.3,sut:.2,pas:.15,dri:.3,def:0,fiz:.05},
+  MOO:{hiz:.1,sut:.2,pas:.3,dri:.3,def:.02,fiz:.08},MO:{hiz:.08,sut:.1,pas:.32,dri:.25,def:.1,fiz:.15},DOS:{hiz:.05,sut:.03,pas:.25,dri:.12,def:.35,fiz:.2},
+  "SĞO":{hiz:.25,sut:.1,pas:.25,dri:.25,def:.05,fiz:.1},STP:{hiz:.1,sut:0,pas:.1,dri:.05,def:.5,fiz:.25},"SĞB":{hiz:.25,sut:0,pas:.15,dri:.1,def:.35,fiz:.15}};
+W.SLK=W["SĞK"];W.SLO=W["SĞO"];W.SLB=W["SĞB"];
 const TEAM={A:"Yelekliler",B:"Yeleksizler"};
 const TEAM_SIZE=7,CAP=14;
 const FORMS={
@@ -609,7 +629,8 @@ function matchPoints(m,pid,motmId){
   return{pts,parts,role,g,a,res:my>op?"G":my<op?"M":"B",side,op};
 }
 const ptsToDelta=p=>clamp(Math.round((p-RULES.ortalama)/2.5),-2,3)||0;
-function baseOf(p){const set=attrSet(p.pos);const a=p.attrs||{};return Math.round(set.reduce((s,[k])=>s+(+a[k]||65),0)/set.length)}
+function baseOf(p){const set=attrSet(p.pos);const a=p.attrs||{};let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const w=W[ep];
+  let s=0,t=0;for(const[k]of set){const x=w[k]??0;s+=x*mainVal(a,k,p.pos);t+=x}return Math.round(t?s/t:set.reduce((q,[k])=>q+mainVal(a,k,p.pos),0)/set.length)}
 function compute(){
   const F=fin();const mInfo={};const out={};
   for(const m of F){const motm=m.motm||null,fiy=topVote(m,"fiyasko"),gol=topVote(m,"gol");
@@ -632,7 +653,7 @@ function compute(){
     const last=hist[hist.length-1];const a=p.attrs||{};const last5=hist.slice(-5);
     const g5=last5.reduce((s,h)=>s+(h.r?h.r.g:0),0),a5=last5.reduce((s,h)=>s+(h.r?h.r.a:0),0),miss5=last5.filter(h=>!h.r).length;
     const cs5=last5.filter(h=>h.r&&(h.r.role==="KL"||h.r.role==="DF")&&h.r.op<=2).length;
-    const sh=Math.round((ovr-base)/3);const v=k=>clamp((+a[k]||65)+sh,30,99);
+    const sh=Math.round((ovr-base)/3);const v=k=>clamp(mainVal(a,k,p.pos)+sh,30,99);
     const attrs=p.pos==="Kaleci"?{dal:v("dal"),ell:v("ell"),ayk:v("ayk"),ref:clamp(v("ref")+Math.min(4,cs5*2),30,99),hiz:v("hiz"),poz:v("poz")}
       :{hiz:v("hiz"),sut:clamp(v("sut")+Math.min(4,g5),30,99),pas:clamp(v("pas")+Math.min(4,a5),30,99),dri:v("dri"),def:clamp(v("def")+Math.min(4,cs5*2),30,99),fiz:clamp(v("fiz")-miss5*2,30,99)};
     const badges=[];
@@ -831,7 +852,7 @@ function pos2(k,x,y){return k==="A"?{l:x,t:96-y*.44}:{l:100-x,t:4+y*.44}}
 function unpos2(k,l,t){return k==="A"?{x:l,y:(96-t)/.44}:{x:100-l,y:(t-4)/.44}}
 function layout(mode,pa,pb,la,lb){
   const toks=[];
-  const add=(k,PS,L)=>PS.forEach(([x,y,r],i)=>{let l,t;if(mode==="both"){({l,t}=pos2(k,x,y))}else{l=x;t=95-y*.88}toks.push({k,i,id:L[i],r,l,t})});
+  const add=(k,PS,L)=>PS.forEach(([x,y,r],i)=>{let l,t;if(mode==="both"){({l,t}=pos2(k,x,y))}else{l=x;t=95-y*.88}toks.push({k,i,id:L[i],r:i===0?"KL":r,ep:i===0?"KL":slotPos(x,y,r),l,t})});
   if(mode!=="B")add("A",pa,la);if(mode!=="A")add("B",pb,lb);
   const wx=mode==="both"?22:25,wy=mode==="both"?11.5:14;
   const lim=T=>{T.l=clamp(T.l,10,90);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,92):clamp(T.t,7,44);else T.t=clamp(T.t,7,92)};
@@ -844,12 +865,16 @@ function layout(mode,pa,pb,la,lb){
     toks.forEach(lim);if(!moved)break}
   return toks;
 }
+function slotPos(x,y,r){if(r==="KL")return"KL";const L=x<34,Rr=x>66;
+  if(r==="DF")return L?"SLB":Rr?"SĞB":"STP";
+  if(r==="FV")return L?"SLK":Rr?"SĞK":"SNT";
+  if(y<42)return"DOS";if(x<26)return"SLO";if(x>74)return"SĞO";if(y>64)return"MOO";return"MO"}
 function tokHtml(T,editable,sel){
   const id=T.id,kc=T.k.toLowerCase(),s=sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;
   const attrs=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
   const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
-  if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${ROLE_NAME[T.r]} yeri"><span class="shirt">${T.r}</span><span class="tn">Boş</span></button>`;
-  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[T.r]}, reyting ${ovrOf(id)}"><span class="shirt${photoOf(id)?" hasph":""}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
+  if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="shirt${T.ep.length>2?" p3":""}">${T.ep}</span><span class="tn">Boş</span></button>`;
+  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ovrOf(id)}"><span class="shirt${T.ep.length>2?" p3":""}">${T.ep}<i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
 }
 function fieldHtml(mode,pa,pb,la,lb,editable,sel){
   return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel)).join("")}</div>`;
@@ -1052,8 +1077,12 @@ function listRow(p,rk){
 }
 function posSelect(id,bind,val,none,skip){
   return `<select id="${id}" data-bind="${bind}">${none?`<option value=""${!val?" selected":""}>Yok</option>`:""}${Object.entries(GROUP_POS).map(([r,l])=>{const ks=EPOS_KEYS.filter(k=>EPOS[k][0]===r&&k!==skip);return ks.length?`<optgroup label="${l}">${ks.map(k=>`<option value="${k}"${val===k?" selected":""}>${k} · ${EPOS[k][1]}</option>`).join("")}</optgroup>`:""}).join("")}</select>`}
+function attrDetail(p){const a=p.attrs||{};
+  return `<div><h3>Özellik detayları</h3><div class="attrs-grp ro" style="margin-top:8px">${attrSet(p.pos).map(([k,l,full,subs])=>`<div class="ag"><div class="agh"><b>${l}</b><span>${full}</span><b class="num agv ${vcls(mainVal(a,k,p.pos))}">${mainVal(a,k,p.pos)}</b></div>${subs.map(([sk,sl])=>{const v=subVal(a,k,sk);return `<div class="sr2"><span>${sl}</span><i style="--w:${v}%"></i><b class="num ${vcls(v)}">${v}</b></div>`}).join("")}</div>`).join("")}</div>
+    <p class="muted small" style="margin-top:6px">Yöneticinin girdiği değerler. Karttaki sayılar son maçlardaki performansa göre biraz oynar.</p></div>`}
 function attrInputs(prefix,pos,attrs){
-  return `<div class="attrs-in">${attrSet(pos).map(([k,l,full])=>{const v=+attrs[k]||65;return `<label for="${prefix}_${k}">${l} · ${full}<span class="val"><input type="range" min="30" max="95" id="${prefix}_${k}" data-attr="${prefix}" data-k="${k}" value="${v}"><input type="number" min="30" max="95" inputmode="numeric" data-attr="${prefix}" data-k="${k}" value="${v}" aria-label="${full} değeri"></span></label>`}).join("")}</div>`;
+  return `<div class="attrs-grp">${attrSet(pos).map(([k,l,full,subs])=>`<div class="ag"><div class="agh"><b>${l}</b><span>${full}</span><b class="num agv" id="${prefix}_m_${k}">${mainVal(attrs,k,pos)}</b></div><div class="attrs-in">${subs.map(([sk,sl])=>{const v=subVal(attrs,k,sk);const kk=k+"_"+sk;
+    return `<label for="${prefix}_${kk}">${sl}<span class="val"><input type="range" min="30" max="95" id="${prefix}_${kk}" data-attr="${prefix}" data-k="${kk}" value="${v}"><input type="number" min="30" max="95" inputmode="numeric" data-attr="${prefix}" data-k="${kk}" value="${v}" aria-label="${sl} değeri"></span></label>`}).join("")}</div></div>`).join("")}</div>`;
 }
 function sheetAdd(){
   if(!S.admin)return"";const f=S.f.ap||(S.f.ap={name:"",pos:"Orta saha",epos:"MO",alt:"",attrs:{}});
@@ -1061,7 +1090,7 @@ function sheetAdd(){
     <label class="f" for="apName">Ad soyad<input id="apName" type="text" data-bind="ap.name" value="${esc(f.name)}" required maxlength="40" autocomplete="off"></label>
     <div class="grid2"><label class="f" for="apPos">Mevki${posSelect("apPos","ap.epos",f.epos)}</label><label class="f" for="apAlt">Alternatif mevki${posSelect("apAlt","ap.alt",f.alt,true,f.epos)}</label></div>
     ${attrInputs("ap",f.pos,f.attrs)}
-    <span class="muted small">Başlangıç reytingi: <b class="num" id="ap_ovr" style="color:var(--ink);font-size:1.1rem">${baseOf({pos:f.pos,attrs:f.attrs})}</b></span>
+    <span class="muted small">Başlangıç reytingi: <b class="num" id="ap_ovr" style="color:var(--ink);font-size:1.1rem">${baseOf({pos:f.pos,epos:f.epos,attrs:f.attrs})}</b></span>
     <button class="btn primary block" type="submit">${ICON.plus} Kadroya ekle</button></form>`;
 }
 function sheetMe(){
@@ -1080,6 +1109,7 @@ function sheetPlayer(){
       <div class="row">${st==="hazir"?'<span class="chip ok"><span class="dot"></span>Hazır</span>':stChip(p)}${p.status?.note?`<span class="muted small">${esc(p.status.note)}</span>`:""}</div>
       <div class="kv"><div><span>Reyting</span><b>${s.ovr}</b></div><div><span>Başlangıç</span><b>${s.base}</b></div><div><span>Maç</span><b>${s.games||0}</b></div><div><span>Gol</span><b>${s.goals||0}</b></div><div><span>Asist</span><b>${s.ast||0}</b></div><div><span>Ort. puan</span><b>${s.avgPts!=null?s.avgPts.toFixed(1):"–"}</b></div><div><span>Devam</span><b>${s.att!=null?"%"+Math.round(s.att*100):"–"}</b></div><div><span>Galibiyet</span><b class="v8">${s.W||0}</b></div><div><span>Beraberlik</span><b>${s.D||0}</b></div><div><span>Mağlubiyet</span><b style="color:var(--bad)">${s.L||0}</b></div><div><span>Kazanma</span><b>${s.games?"%"+Math.round((s.W||0)/s.games*100):"–"}</b></div><div><span>Maçın Adamı</span><b>${s.motm||0}</b></div></div>
     </div></div>
+    ${attrDetail(p)}
     <div><h3>Son maçlar</h3><div class="hist">${(s.hist||[]).slice(-8).reverse().map(x=>{
       const desc=x.kind==="oynadi"?`${x.r.res==="G"?"Galibiyet":x.r.res==="B"?"Beraberlik":"Mağlubiyet"} · ${ROLE_NAME[x.r.role]}${x.r.g?" · "+x.r.g+" gol":""}${x.r.a?" · "+x.r.a+" asist":""}`:x.kind==="iptal"?"Son dakika iptal":"Maça gelmedi";
       return `<div><span class="d">${fmtShort(x.m.date)}</span><span>${desc}</span><span class="p num">${x.r?x.r.pts:"–"}</span><span class="delta ${x.d>0?"pos":x.d<0?"neg":"zero"}">${x.d>0?"+"+x.d:x.d}</span></div>`}).join("")||'<p class="muted small" style="padding:8px 0">Henüz maç kaydı yok.</p>'}</div>
@@ -1099,7 +1129,7 @@ function sheetPlayer(){
       <label class="f" for="edName">Ad<input id="edName" type="text" data-bind="ed.name" value="${esc(a.name)}" maxlength="40"></label>
       <div class="grid2"><label class="f" for="edPos">Mevki${posSelect("edPos","ed.epos",a.epos)}</label><label class="f" for="edAlt">Alternatif mevki${posSelect("edAlt","ed.alt",a.alt,true,a.epos)}</label></div>
       ${attrInputs("ed",a.pos,a.attrs)}
-      <span class="muted small">Başlangıç reytingi: <b class="num" id="ed_ovr" style="color:var(--ink)">${baseOf({pos:a.pos,attrs:a.attrs})}</b></span>
+      <span class="muted small">Başlangıç reytingi: <b class="num" id="ed_ovr" style="color:var(--ink)">${baseOf({pos:a.pos,epos:a.epos,attrs:a.attrs})}</b></span>
       <button class="btn primary block" data-act="saveCard">Kaydet</button>
       <button class="btn danger sm" data-act="delPlayer">${S.f.delP===p.id?"Kadrodan çıkarmak için tekrar bas":"Kadrodan çıkar"}</button>
       <p class="muted small">Kadrodan çıkarılan oyuncunun geçmiş maçları silinmez.</p></div></details>`}
@@ -1291,7 +1321,7 @@ async function uploadPhoto(id,file){
   catch(_){toast("Fotoğraf okunamadı, başka bir fotoğraf dene")}
   S.f.phBusy=false;render(true);
 }
-function cleanAttrs(pos,a){const o={};for(const[k]of attrSet(pos))o[k]=clamp(Math.round(+a[k]||65),30,95);return o}
+function cleanAttrs(pos,a){const o={};for(const[k,,,subs]of attrSet(pos)){for(const[sk]of subs)o[k+"_"+sk]=clamp(subVal(a,k,sk),30,95);o[k]=mainVal(o,k,pos)}return o}
 document.addEventListener("submit",async e=>{
   const f=e.target.closest("[data-form]");if(!f)return;e.preventDefault();const kind=f.dataset.form;
   if(kind==="addPlayer"){const ap=S.f.ap;const name=String(ap.name||"").trim();if(!name){toast("Ad gir");return}
@@ -1311,7 +1341,7 @@ function setPath(path,v){const ks=path.split(".");let o=S.f;for(let i=0;i<ks.len
 document.addEventListener("input",e=>{const t=e.target;
   if(t.dataset.bind)setPath(t.dataset.bind,t.value);
   if(t.dataset.attr){const pre=t.dataset.attr,k=t.dataset.k;const obj=S.f[pre];if(!obj)return;const v=clamp(+t.value||30,30,95);obj.attrs[k]=v;
-    document.querySelectorAll(`[data-attr="${pre}"][data-k="${k}"]`).forEach(x=>{if(x!==t)x.value=v});const o=$("#"+pre+"_ovr");if(o)o.textContent=baseOf({pos:obj.pos,attrs:obj.attrs})}
+    document.querySelectorAll(`[data-attr="${pre}"][data-k="${k}"]`).forEach(x=>{if(x!==t)x.value=v});const mk=k.split("_")[0];const me=$("#"+pre+"_m_"+mk);if(me)me.textContent=mainVal(obj.attrs,mk,obj.pos);const o=$("#"+pre+"_ovr");if(o)o.textContent=baseOf({pos:obj.pos,epos:obj.epos,attrs:obj.attrs})}
 });
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.bind){setPath(t.dataset.bind,t.value);const bd=t.dataset.bind;
@@ -1370,7 +1400,7 @@ async function shareImg(m){
   for(const T of layout("both",pa,pb,la,lb)){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-10;
     x.beginPath();x.arc(cx,cy,33,0,Math.PI*2);x.fillStyle=T.k==="A"?"#FF7A1A":"#F3F6F2";x.shadowColor="rgba(0,0,0,.4)";x.shadowBlur=14;x.fill();x.shadowBlur=0;
     if(T.i===0){x.lineWidth=7;x.strokeStyle="#FFE066";x.stroke()}
-    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(T.id)),cx,cy+2);
+    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.font=`900 ${T.ep.length>2?26:32}px ${D}`;x.fillText(T.ep,cx,cy+2);
     const ov=String(ovrOf(T.id));x.font=`900 24px ${D}`;const ow=x.measureText(ov).width+12;rr(x,cx+16,cy-42,ow,28,8);x.fillStyle="#0A1510";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(ov,cx+16+ow/2,cy-27);
     const nm=shortName(nameOf(T.id));x.font=`700 26px ${F}`;const nw=Math.min(200,x.measureText(nm).width+20);rr(x,cx-nw/2,cy+40,nw,34,10);x.fillStyle="rgba(5,15,10,.8)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,cy+58,180)}
   x.textBaseline="alphabetic";
