@@ -720,6 +720,8 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
   else if(role==="FV"){add("sut_bit",-ENG.step,"gol yok");if(ctx.fvDry>=3)add("sut_poz",-ENG.step,ctx.fvDry+" maçtır gol yok")}
   if(a){add("pas_kis",ENG.step*Math.min(a,2),a+" asist");if(a>=2)add("pas_viz",ENG.step,"2+ asist");if(role==="KL")add("ayk_pas",ENG.step,"asist")}
   if(g&&a)add("dri_kon",ENG.step,"gol + asist");
+  // defans kartında şut/pas ağırlığı düşük: gol katkısı savunmacının ana özelliklerine yazılır
+  const gk=g+a;if(posOf(p)==="DF"&&gk){const w=gk+" gol katkısı";add("def_kes",ENG.step,w);add(/^S[ĞL]B$/.test(eposOf(p))?"hiz_spr":"fiz_agr",ENG.step*Math.min(gk,2),w);if(gk>=3)add("def_bil",ENG.step,w)}
   if(role==="OS"&&!g&&!a&&ctx.osDry>=2)add("pas_viz",-ENG.step,ctx.osDry+" maçtır katkı yok");
   const b=concBand(op);
   if(role==="DF"){if(b==="iyi+"){add("def_bil",ENG.step,op+" gol yedi");add("def_kes",ENG.step,op+" gol yedi")}else if(b==="iyi")add("def_bil",ENG.step,op+" gol yedi");
