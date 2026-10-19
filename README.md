@@ -4,7 +4,7 @@ Halı saha ekibi için FIFA tarzı oyuncu kartları ve maç takibi.
 
 - Oyuncu kartları: hız, şut, pas, top sürme, savunma, fizik (kaleciler için plonjon, elle oyun, ayakla oyun, refleks, hız, pozisyon alma)
 - Her maç sonunda girilen gol, asist ve skora göre kart reytingi artar ya da düşer
-- Sakatlık, hastalık, izin gibi durumlar kartta görünür; maça gelinmeyen her hafta reyting 1 düşer
+- Sakatlık, hastalık, izin gibi durumlar kartta görünür; maça gelinmeyen her hafta reyting yarım puan düşer
 - 7'li takımlar için dizilişler (2-3-1, 3-2-1, 2-1-2-1, 2-2-2, 3-1-2, 1-3-2, 3-3) ve saha üzerinde kadro yerleştirme
 - Dengeli takım kurma ve kaptan draftı
 - EA tarzı mevkiler (SNT, SĞK, MOO, STP…) ve her oyuncuya bir alternatif mevki
