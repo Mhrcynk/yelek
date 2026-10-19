@@ -529,6 +529,7 @@ const W={KL:{ref:.25,dal:.22,poz:.22,ell:.15,ayk:.08,hiz:.08},
   "SĞO":{hiz:.25,sut:.1,pas:.25,dri:.25,def:.05,fiz:.1},STP:{hiz:.1,sut:0,pas:.1,dri:.05,def:.5,fiz:.25},"SĞB":{hiz:.25,sut:0,pas:.15,dri:.1,def:.35,fiz:.15}};
 W.SLK=W["SĞK"];W.SLO=W["SĞO"];W.SLB=W["SĞB"];
 const TEAM={A:"Yelekliler",B:"Yeleksizler"};
+const cleanName=v=>String(v||"").replace(/[<>&"'`]/g,"").trim().slice(0,20);
 const TEAM_SIZE=7,CAP=14;
 const FORMS={
   "2-3-1":{slots:[[50,7,"KL"],[30,27,"DF"],[70,27,"DF"],[17,55,"OS"],[50,51,"OS"],[83,55,"OS"],[50,83,"FV"]],d:"Dengeli, en çok oynanan düzen"},
@@ -684,7 +685,7 @@ async function load(){
   try{const yr=new Date().getFullYear();
     const[st,pl,ms,sv2]=await Promise.all([sbGet("settings?id=eq.1&select=*"),sbGet("players?select=*&order=created_at.asc"),
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr)]);
-    S.settings={...DEF_SET,...(st[0]||{})};S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+    S.settings={...DEF_SET,...(st[0]||{})};TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
     const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
   }catch(e){console.error(e);S.err="Verilere ulaşılamadı. İnternet bağlantını kontrol edip sayfayı yenile."}
   render();
@@ -949,7 +950,7 @@ function editorPanel(m){
      ${poolO.length?`<details><summary class="small">Sakat, hasta ya da izinde (${poolO.length})</summary>${poolO.map(poolRow).join("")}</details>`:""}
      ${poolG.length?`<div class="grp">Önceki misafirler</div>${poolG.map(poolRow).join("")}`:""}
      <div class="grp">Misafir ekle</div>
-     <form data-form="addGuest" class="guestf"><input id="guestName" type="text" maxlength="40" placeholder="Misafirin adı" autocomplete="off" data-bind="guestName" value="${esc(S.f.guestName||"")}"><button class="btn sm" type="submit">${dot(k)}${TEAM[k]}'e ekle</button></form>
+     <form data-form="addGuest" class="guestf"><input id="guestName" type="text" maxlength="40" placeholder="Misafirin adı" autocomplete="off" data-bind="guestName" value="${esc(S.f.guestName||"")}"><button class="btn sm" type="submit">${dot(k)}${esc(TEAM[k])} · ekle</button></form>
      <p class="muted small" style="padding:4px 0 8px">Misafirin kartı olmaz, reytingi değişmez; sadece o maçın kadrosunda görünür.</p></div></details>
    ${viewSeg(k,"tview",false)}
    <div class="lineup">${fieldHtml(k,t.pa,t.pb,t.la,t.lb,true,t.sel,capsOf(t))}
@@ -1052,9 +1053,9 @@ function spiker(m,inf){
   else if(!W)head=pick([`DOSTLAR ALIŞVERİŞTE GÖRSÜN: ${sa}-${sb}`,`KAZANAN YOK, KONUŞAN ÇOK`,`NEFES KESEN BERABERLİK`]);
   else if(diff>=5)head=pick([`${up(TEAM[W])} SAHAYI DÜMDÜZ ETTİ`,`${up(TEAM[Lz])} İÇİN KARA GECE`,`FARK ${diff}: ${up(TEAM[W])} ACIMADI`]);
   else if(diff===1)head=pick([`TEK FARK, BÜYÜK SEVİNÇ`,`${up(TEAM[W])} SON SÖZÜ SÖYLEDİ`,`NEFESLER TUTULDU, ${up(TEAM[W])} GÜLDÜ`]);
-  else head=pick([`${up(TEAM[W])} GÜLEN TARAF OLDU`,`${up(TEAM[W])} İŞİNİ BİLDİ`,`ZAFER ${up(TEAM[W])}'İN`]);
+  else head=pick([`${up(TEAM[W])} GÜLEN TARAF OLDU`,`${up(TEAM[W])} İŞİNİ BİLDİ`,`ZAFER: ${up(TEAM[W])}`]);
   const fld=S.settings.field_name?S.settings.field_name+" sahasında":"sahada";
-  let body=`${fmtDate(m.date)} akşamı ${fld} oynanan karşılaşma ${W?`${TEAM[W]}'in ${Math.max(sa,sb)}-${Math.min(sa,sb)}'lik galibiyetiyle`:`${sa}-${sb} beraberlikle`} sona erdi. `;
+  let body=`${fmtDate(m.date)} akşamı ${fld} oynanan karşılaşma ${W?`${TEAM[W]} takımının ${Math.max(sa,sb)}-${Math.min(sa,sb)} galibiyetiyle`:`${sa}-${sb} beraberlikle`} sona erdi. `;
   if(top)body+=tg>=3?`Gecenin yıldızı ${tg} golle ${N(top)} oldu; rakip savunma bu ismi uzun süre unutmayacak. `:`Gol yollarında en etkili isim ${tg} golle ${N(top)} oldu. `;
   if(ast)body+=`${N(ast)} ${+stt[ast].a} asistle oyunun beyni görevini üstlendi. `;
   for(const k of["A","B"]){const gk=lineupOf(m,k)[0];const conc=k==="A"?sb:sa;if(gk){if(conc===0)body+=`${N(gk)} kalesini gole kapattı, tribünler ayakta. `;else if(conc>=8)body+=`${N(gk)} için zor bir geceydi: kalesinde ${conc} gol gördü. `}}
@@ -1218,6 +1219,8 @@ function viewAyarlar(){
   else{const s=S.f.set||(S.f.set={...S.settings});
     h+=`<section class="card"><div class="ch"><h2>Grup ayarları</h2><span class="chip warn">Yönetici</span></div><form data-form="settings" style="display:grid;gap:12px">
       <label class="f" for="sGroup">Ekip adı<input id="sGroup" type="text" maxlength="40" data-bind="set.group_name" value="${esc(s.group_name)}"></label>
+      <div class="grid2"><label class="f" for="sTA">1. takım (yelekli)<input id="sTA" type="text" maxlength="20" data-bind="set.team_a_name" value="${esc(s.team_a_name||TEAM.A)}" placeholder="Yelekliler"></label>
+      <label class="f" for="sTB">2. takım (yeleksiz)<input id="sTB" type="text" maxlength="20" data-bind="set.team_b_name" value="${esc(s.team_b_name||TEAM.B)}" placeholder="Yeleksizler"></label></div>
       <label class="f" for="sField">Halı saha adı<input id="sField" type="text" maxlength="60" data-bind="set.field_name" value="${esc(s.field_name)}" placeholder="Örn. Yıldız Halı Saha"></label>
       <div class="grid2"><label class="f" for="sDay">Maç günü<select id="sDay" data-bind="set.day">${GUNLER.map((g,i)=>`<option value="${i}"${+s.day===i?" selected":""}>${g}</option>`).join("")}</select></label>
       <label class="f" for="sTime">Maç saati<input id="sTime" type="time" data-bind="set.time" value="${esc(s.time)}"></label></div>
@@ -1346,7 +1349,7 @@ document.addEventListener("submit",async e=>{
   if(kind==="login"){const pin=String(S.f.pin||"");if(!pin){toast("Şifreyi gir");return}
     try{const r=await rpc("admin_check",{p_pin:pin});if(r&&r.ok){S.pin=pin;S.admin=true;LS.set("y_pin",pin);S.f.pin="";toast("Yönetici olarak giriş yapıldı");render(true)}
       else toast(r&&r.error==="locked"?"Çok fazla hatalı deneme. 15 dakika sonra tekrar dene.":"Şifre hatalı")}catch(_){toast("Bağlantı hatası")}}
-  if(kind==="settings"){const s=S.f.set;await A("admin_save_settings",{p_group:s.group_name,p_field:s.field_name,p_day:+s.day,p_time:s.time||"21:00"},"Ayarlar kaydedildi");S.f.set=null;render(true)}
+  if(kind==="settings"){const s=S.f.set;await A("admin_save_settings_v2",{p_group:s.group_name,p_field:s.field_name,p_day:+s.day,p_time:s.time||"21:00",p_team_a:cleanName(s.team_a_name)||"Yelekliler",p_team_b:cleanName(s.team_b_name)||"Yeleksizler"},"Ayarlar kaydedildi");S.f.set=null;render(true)}
   if(kind==="pinChange"){const np=String(S.f.newPin||"");if(np.length<6){toast("Yeni şifre en az 6 karakter olmalı");return}
     const r=await A("admin_change_pin",{p_new:np},"Şifre değiştirildi");if(r){S.pin=np;LS.set("y_pin",np);S.f.newPin=""}}
 });
