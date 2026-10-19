@@ -715,12 +715,14 @@ function genF(p,cur){const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==
   const mv=k=>{const d=set.find(x=>x[0]===k);return d[3].reduce((q,[sk])=>q+cur[k+"_"+sk],0)/d[3].length};
   let s2=0,t=0;for(const[k]of set){const x=w[k]??0;s2+=x*mv(k);t+=x}return t?s2/t:set.reduce((q,[k])=>q+mv(k),0)/set.length}
 function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.push([k,v,why])};const g=r.g,a=r.a,og=+st.og||0,role=r.role,op=r.op;
-  if(g){add("sut_bit",ENG.step*Math.min(g,3),g+" gol");if(role==="FV")add("sut_poz",ENG.step,"gol attı");if(g>=3)add("sut_guc",ENG.step,"hat-trick")}
+  // alternatif pozisyonu forvet olan (kartı forvet değil) oyuncuda gol/asist etkisi yarıya iner
+  const gaF=posOf(p)!=="FV"&&altOf(p)&&EPOS[altOf(p)][0]==="FV"?.5:1;const ga=(k,v,why)=>add(k,v*gaF,why);
+  if(g){ga("sut_bit",ENG.step*Math.min(g,3),g+" gol");if(role==="FV")ga("sut_poz",ENG.step,"gol attı");if(g>=3)ga("sut_guc",ENG.step,"hat-trick")}
   else if(role==="FV"){add("sut_bit",-ENG.step,"gol yok");if(ctx.fvDry>=3)add("sut_poz",-ENG.step,ctx.fvDry+" maçtır gol yok")}
-  if(a){add("pas_kis",ENG.step*Math.min(a,2),a+" asist");if(a>=2)add("pas_viz",ENG.step,"2+ asist");if(role==="KL")add("ayk_pas",ENG.step,"asist")}
-  if(g&&a)add("dri_kon",ENG.step,"gol + asist");
+  if(a){ga("pas_kis",ENG.step*Math.min(a,2),a+" asist");if(a>=2)ga("pas_viz",ENG.step,"2+ asist");if(role==="KL")ga("ayk_pas",ENG.step,"asist")}
+  if(g&&a)ga("dri_kon",ENG.step,"gol + asist");
   // defans kartında şut/pas ağırlığı düşük: gol katkısı savunmacının ana özelliklerine yazılır
-  const gk=g+a;if((posOf(p)==="DF"||eposOf(p)==="DOS")&&gk){const w=gk+" gol katkısı";add("def_kes",ENG.step,w);add(/^S[ĞL]B$/.test(eposOf(p))?"hiz_spr":"fiz_agr",ENG.step*Math.min(gk,2),w);if(gk>=3)add("def_bil",ENG.step,w)}
+  const gk=g+a;if((posOf(p)==="DF"||eposOf(p)==="DOS")&&gk){const w=gk+" gol katkısı";ga("def_kes",ENG.step,w);ga(/^S[ĞL]B$/.test(eposOf(p))?"hiz_spr":"fiz_agr",ENG.step*Math.min(gk,2),w);if(gk>=3)ga("def_bil",ENG.step,w)}
   if(role==="OS"&&!g&&!a&&ctx.osDry>=2)add("pas_viz",-ENG.step,ctx.osDry+" maçtır katkı yok");
   const b=concBand(op);
   if(role==="DF"){if(b==="iyi+"){add("def_bil",ENG.step,op+" gol yedi");add("def_kes",ENG.step,op+" gol yedi")}else if(b==="iyi")add("def_bil",ENG.step,op+" gol yedi");
