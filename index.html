@@ -115,8 +115,9 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .hero-main{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .vs{display:grid;gap:2px}
 .vt{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0}
-.vn{font-family:var(--display);font-weight:900;font-size:clamp(1.6rem,7.6vw,2.8rem);line-height:1;text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.vn{font-family:var(--display);font-weight:900;font-size:clamp(1.6rem,7.6vw,2.8rem);line-height:1.2;padding-top:.08em;text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .vt.a .vn{color:var(--bib2)}
+.vn.l2{font-size:clamp(1.25rem,6vw,2.3rem)}
 .va{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;flex:none}.va b{font-family:var(--display);font-size:1.5rem;color:#fff;margin-left:4px}
 .vx{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:900;font-size:.9rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em}
 .vx::before,.vx::after{content:"";height:1px;flex:1;background:rgba(255,255,255,.18)}
@@ -124,7 +125,7 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .vmeta span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .vmeta svg{width:16px;height:16px;flex:none}.vmeta b{color:#fff}
 .when{display:grid;line-height:.9;min-width:0;flex:1}
-.when .wd{font-family:var(--display);font-weight:900;font-size:clamp(2rem,9vw,3.4rem);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.when .wd{font-family:var(--display);font-weight:900;font-size:clamp(2rem,9vw,3.4rem);line-height:1.1;padding-top:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:clip}
 .when .dt{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,7vw,1.9rem);color:var(--bib2);text-transform:uppercase}
 .when .tm{margin-top:10px;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3;display:flex;gap:6px;align-items:center}
 .when .tm svg{width:16px;height:16px;flex:none}
@@ -761,7 +762,7 @@ function viewMac(){
 }
 function dayWord(date){const d=parseYmd(date),t=new Date();t.setHours(0,0,0,0);const df=Math.round((d-t)/864e5);return df===0?"Bugün":df===1?"Yarın":""}
 function heroVs(om){const fld=S.settings.field_name;const d=parseYmd(om.date);const dw=dayWord(om.date);const A=om.team_a||[],B=om.team_b||[];const has=A.length&&B.length;
-  return `<div class="vs"><div class="vt a"><span class="vn">${TEAM.A}</span>${has?`<span class="va">Ort. <b class="num">${sumAvg(A)}</b></span>`:""}</div><span class="vx">vs</span><div class="vt b"><span class="vn">${TEAM.B}</span>${has?`<span class="va">Ort. <b class="num">${sumAvg(B)}</b></span>`:""}</div></div>
+  return `<div class="vs"><div class="vt a"><span class="vn${TEAM.A.length>11?" l2":""}">${TEAM.A}</span>${has?`<span class="va">Ort. <b class="num">${sumAvg(A)}</b></span>`:""}</div><span class="vx">vs</span><div class="vt b"><span class="vn${TEAM.B.length>11?" l2":""}">${TEAM.B}</span>${has?`<span class="va">Ort. <b class="num">${sumAvg(B)}</b></span>`:""}</div></div>
   <div class="vmeta">${ICON.pin}<span>${dw?`<b>${dw}</b> · `:""}${d.getDate()} ${AYLAR[d.getMonth()]}${dw?"":" "+GUNLER[d.getDay()]} · <b>${esc(om.time||"")}</b>${fld?" · "+esc(fld):""}</span></div>`}
 function heroWhen(date,time){const d=parseYmd(date);const fld=S.settings.field_name;
   return `<div class="when"><span class="wd">${GUNLER[d.getDay()]}</span><span class="dt">${d.getDate()} ${AYLAR[d.getMonth()]}</span><span class="tm">${ICON.pin}${esc(time)}${fld?" · "+esc(fld):""}</span></div>`}
