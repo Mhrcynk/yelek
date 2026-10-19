@@ -113,8 +113,8 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .hero-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .cd{font-size:.74rem;font-weight:800;background:rgba(0,0,0,.28);padding:5px 10px;border-radius:99px;letter-spacing:.02em}
 .hero-main{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.when{display:grid;line-height:.9;min-width:0}
-.when .wd{font-family:var(--display);font-weight:900;font-size:clamp(2.6rem,13vw,3.6rem);text-transform:uppercase}
+.when{display:grid;line-height:.9;min-width:0;flex:1}
+.when .wd{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,10.5vw,3.6rem);text-transform:uppercase;overflow-wrap:anywhere}
 .when .dt{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,7vw,1.9rem);color:var(--bib2);text-transform:uppercase}
 .when .tm{margin-top:10px;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3;display:flex;gap:6px;align-items:center}
 .when .tm svg{width:16px;height:16px;flex:none}
@@ -821,7 +821,7 @@ function roleGroups(L,PS){const g={ATT:[],MID:[],DEF:[]};L.forEach((id,i)=>{if(!
 function strengthHtml(A,B,la,pa,lb,pb){
   const a=roleGroups(la,pa),b=roleGroups(lb,pb);
   const row=(l,x,y)=>{const w=v=>v?Math.max(6,(v-40)/59*100):0;return `<div class="sr"><b class="num${x>y?" hi":""}">${x||"–"}</b><span class="bar l"><i style="width:${w(x)}%"></i></span><span class="lbl">${l}</span><span class="bar r"><i style="width:${w(y)}%"></i></span><b class="num${y>x?" hi":""}">${y||"–"}</b></div>`};
-  return `<div class="str"><div class="eyebrow">${dot("A")}${TEAM.A} · güç karşılaştırması · ${TEAM.B}${dot("B").replace('margin-right:6px','')}</div>${row("Genel",sumAvg(A),sumAvg(B))}${row("Hücum",sumAvg(a.ATT),sumAvg(b.ATT))}${row("Orta saha",sumAvg(a.MID),sumAvg(b.MID))}${row("Savunma",sumAvg(a.DEF),sumAvg(b.DEF))}</div>`;
+  return `<div class="str"><div class="eyebrow">Güç karşılaştırması</div>${row("Genel",sumAvg(A),sumAvg(B))}${row("Hücum",sumAvg(a.ATT),sumAvg(b.ATT))}${row("Orta saha",sumAvg(a.MID),sumAvg(b.MID))}${row("Savunma",sumAvg(a.DEF),sumAvg(b.DEF))}</div>`;
 }
 function legendHtml(k,fk,ps,ids,L){const bench=ids.filter(x=>!L.includes(x));
   return `<div class="lg"><div class="lgh">${dot(k)}<b>${TEAM[k]}</b><span class="chip muted">${esc(formLabel(fk,ps))}</span><span class="avg num">${sumAvg(ids)}</span></div><p class="small muted">${samePos(ps,fk)?FORMS[fk].d:"Yöneticinin kendi yerleştirdiği düzen"}</p>${bench.length?`<p class="small">Yedek: ${bench.map(x=>esc(nameOf(x))).join(", ")}</p>`:""}</div>`}
