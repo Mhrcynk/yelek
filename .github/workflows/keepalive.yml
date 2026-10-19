@@ -1,0 +1,43 @@
+name: Veritabanını uyanık tut
+
+# Supabase ücretsiz projeleri 7 gün hiç kullanılmazsa duraklar.
+# Bu iş haftada iki kez veritabanına küçük bir okuma isteği atar.
+on:
+  schedule:
+    - cron: "17 6 * * 1,4"   # Pazartesi ve Perşembe 09:17 (Türkiye saati)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Supabase'e istek at
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://tnjpxwxfqbhfxsphbqhq.supabase.co/rest/v1/settings?select=id" \
+            -H "apikey: sb_publishable_ATJ8lPaPBzZEj-4k7Z5Ztw_YGevQCS3")
+          echo "Yanıt kodu: $code"
+          test "$code" = "200"
+
+      # GitHub, 60 gün hiç değişiklik olmayan depolarda zamanlanmış işleri kapatır.
+      # Depo 45 günden uzun süredir sessizse küçük bir işaret dosyası güncellenir.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Depoyu canlı tut
+        run: |
+          last=$(git log -1 --format=%ct)
+          now=$(date +%s)
+          if [ $(( (now - last) / 86400 )) -ge 45 ]; then
+            date -u +"%Y-%m-%dT%H:%M:%SZ" > .github/keepalive
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .github/keepalive
+            git commit -m "Zamanlanmış işi açık tutmak için işaret"
+            git push
+          else
+            echo "Depo yakın zamanda güncellenmiş, işaret gerekmez."
+          fi
