@@ -716,8 +716,8 @@ function matchBody(m){
       ${few?'<p class="muted small">Dengeli kurma ve draft için en az 4 kişinin gelmesi gerekiyor.</p>':""}
       <div><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`}
   }else{
-    h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2></div>${teamsView(m)}</section>`;
-    if(S.admin)h+=statEntry(m)+`<section class="card"><div class="row"><button class="btn sm" data-act="editTeams" data-id="${esc(m.id)}">Kadroları değiştir</button><button class="btn sm ghost" data-act="backRsvp" data-id="${esc(m.id)}">Katılıma geri dön</button><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
+    h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2>${S.admin?`<button class="btn sm primary" data-act="editTeams" data-id="${esc(m.id)}">${ICON.hand} Kadroları değiştir</button>`:""}</div>${teamsView(m)}</section>`;
+    if(S.admin)h+=statEntry(m)+`<section class="card"><div class="row"><button class="btn sm ghost" data-act="backRsvp" data-id="${esc(m.id)}">Katılıma geri dön</button><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
     else h+=`<p class="muted small" style="text-align:center">Maç bitince yönetici skoru, golleri ve asistleri girer. Kartlar o zaman güncellenir.</p>`;
   }
   return h;
