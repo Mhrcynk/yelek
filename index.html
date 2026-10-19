@@ -596,7 +596,7 @@ const FORMS={
   "1-3-2":{slots:[[50,7,"KL"],[50,25,"DF"],[17,52,"OS"],[50,49,"OS"],[83,52,"OS"],[33,80,"FV"],[67,80,"FV"]],d:"Tek libero, hücum ağırlıklı"},
   "3-3":{slots:[[50,7,"KL"],[20,29,"DF"],[50,25,"DF"],[80,29,"DF"],[20,72,"FV"],[50,78,"FV"],[80,72,"FV"]],d:"İki sıra, basit ve net"}
 };
-const RULES={katilim:1,asist:3,galibiyet:1,beraberlik:0,kk:-2,motm:3,gol:{KL:6,DF:6,OS:5,FV:4},
+const RULES={katilim:1,asist:3,galibiyet:1,beraberlik:0,kk:-2,motm:3,hatrick:3,gol5:3,asist3:2,sirt:2,yenilgi:2,haftaGol:2,gol:{KL:6,DF:6,OS:5,FV:4},
   savunma:[[3,{KL:8,DF:5,OS:1,FV:0}],[6,{KL:6,DF:4,OS:1,FV:0}],[9,{KL:3,DF:2,OS:0,FV:0}],[12,{KL:0,DF:0,OS:0,FV:0}],[999,{KL:-2,DF:-1,OS:0,FV:0}]],
   ortalama:7,gelmedi:-0.5,sonDakika:-1,aralik:12};
 const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
@@ -681,7 +681,7 @@ setInterval(tickCd,1000);
 /* ================= Puanlama ================= */
 function topVote(m,key){const t={};for(const v of Object.values(m.votes||{})){const id=v&&v[key];if(id)t[id]=(t[id]||0)+1}
   const e=Object.entries(t).sort((a,b)=>b[1]-a[1]);if(!e.length)return null;if(e[1]&&e[1][1]===e[0][1])return null;return e[0][0]}
-function matchPoints(m,pid,motmId){
+function matchPoints(m,pid,motmId,golId){
   const side=sideOf(m,pid);if(!side)return null;const role=roleIn(m,pid,side);const st=(m.stats||{})[pid]||{};
   const my=side==="A"?+m.score_a||0:+m.score_b||0,op=side==="A"?+m.score_b||0:+m.score_a||0;
   const parts=[];let pts=0;const add=(l,v)=>{if(v){parts.push([l,v]);pts+=v}};
@@ -690,6 +690,9 @@ function matchPoints(m,pid,motmId){
   add(my>op?"Galibiyet":"Beraberlik",my>op?RULES.galibiyet:my===op?RULES.beraberlik:0);
   for(const[lim,v]of RULES.savunma){if(op<=lim){add(op===0?"Gol yemedi":op+" gol yedi",v[role]);break}}
   add("Kendi kalesine",og*RULES.kk);add("Maçın Adamı",motmId===pid?RULES.motm:0);
+  if(g>=3)add("Hat-trick",RULES.hatrick);if(g>=5)add("5+ gol",RULES.gol5);if(a>=3)add("3+ asist",RULES.asist3);
+  if(my>=3&&(g+a)*2>my)add("Takımı sırtladı",RULES.sirt);if(my<op&&g+a>=2)add("Yenilgide fark yarattı",RULES.yenilgi);
+  add("Haftanın Golü",golId&&golId===pid?RULES.haftaGol:0);
   return{pts,parts,role,g,a,res:my>op?"G":my<op?"M":"B",side,op};
 }
 const ptsToDelta=p=>(clamp(Math.round((p-RULES.ortalama)/2.5),-2,3)||0)/2;
@@ -732,7 +735,7 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
 function compute(){
   const F=fin();const mInfo={};const out={};
   for(const m of F){const motm=m.motm||null,fiy=m.fiy_id||topVote(m,"fiyasko"),gol=m.gol_id||topVote(m,"gol");
-    const pl=[...(m.team_a||[]),...(m.team_b||[])];const pts={};for(const id of pl)pts[id]=matchPoints(m,id,motm);
+    const pl=[...(m.team_a||[]),...(m.team_b||[])];const pts={};for(const id of pl)pts[id]=matchPoints(m,id,motm,gol);
     const totw=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts).slice(0,5);mInfo[m.id]={motm,fiy,gol,pts,totw}}
   for(const p of S.all){
     const base=baseOf(p);const joined=p.created_at?new Date(new Date(p.created_at).toDateString()).getTime():0;
@@ -1186,7 +1189,7 @@ function statEntry(m){
         :e.t==="og"?`<span class="gw">⚽ <b>${esc(shortName(nameOf(e.p)))}</b> <span class="muted">kendi kalesine</span></span><span></span>`:`<span class="gw"><b>${esc(shortName(nameOf(e.p)))}</b> <span class="muted">asist (gol belirsiz)</span></span><span></span>`;
       return `<div class="evr">${dot(k)}${body}<button class="xb" data-act="evDel" data-m="${M}" data-i="${i}" aria-label="Bu kaydı sil">${ICON.x}</button></div>`}).join("")}</div>`:"";
   const motmOpts=`<option value="">Seçilmedi</option>`+[["A",m.team_a],["B",m.team_b]].map(([kk,T])=>`<optgroup label="${TEAM[kk]}">${T.map(id=>`<option value="${esc(id)}"${sd.motm===id?" selected":""}>${esc(nameOf(id))}</option>`).join("")}</optgroup>`).join("");
-  const all=[...m.team_a,...m.team_b].map(id=>[id,matchPoints(tmp,id,sd.motm||null)]).sort((x,y)=>y[1].pts-x[1].pts);
+  const all=[...m.team_a,...m.team_b].map(id=>[id,matchPoints(tmp,id,sd.motm||null,sd.gol||null)]).sort((x,y)=>y[1].pts-x[1].pts);
   return `<div class="ch"><div><div class="eyebrow">Maç sonu · ${fmtShort(m.date)}</div><h2>Skor ve goller</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
     <div class="scoreEdit">${scoreSide(m,"a",TEAM.A,sd.a,true)}<span class="dash">–</span>${scoreSide(m,"b",TEAM.B,sd.b,false)}</div>
     <div class="ubar"><button class="btn sm" data-act="undo" data-m="${M}" ${sd.undo.length?"":"disabled"}>↶ Geri al${last?`<span class="muted small"> · ${esc(last)}</span>`:""}</button><button class="btn sm ghost danger" data-act="draftDel" data-id="${M}" ${hasDraft(m)?"":"disabled"}>${S.f.delDraft===m.id?"Emin misin? Tekrar bas":"Taslağı sil"}</button></div>
@@ -1220,7 +1223,7 @@ function resultPanel(m){
   h+=`<div class="report">${spiker(m,inf)}</div>`;
   const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>inf.pts[b].pts-inf.pts[a].pts);
   h+=`<details><summary>Oyuncu puanları ve kart değişimleri</summary><div class="hist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const d=hh?hh.d:0;const chs=hh?chText(hh.ch):"";
-    return `<div><span class="d">${r.side==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${r.role}</span><span>${esc(nameOf(id))}${chs?`<br><span class="muted small">${chs}</span>`:""}</span><span class="p num">${r.pts}</span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div></details>`;
+    return `<div><span class="d">${r.side==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${r.role}</span><span>${esc(nameOf(id))}<br><span class="muted small">${r.parts.filter(([l])=>l!=="Katılım").map(([l,v])=>`${esc(l)} ${v>0?"+":""}${v}`).join(" · ")||"Katılım +1"}</span>${chs?`<br><span class="muted small">Kart: ${chs}</span>`:""}</span><span class="p num">${r.pts}</span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div></details>`;
   if(Object.keys(m.preds||{}).length){const pr=m.preds;const hits=Object.keys(pr).filter(id=>P(id)&&predPts(pr[id],m)===3);
     h+=`<details><summary>Skor tahminleri${hits.length?" · tam bilen: "+hits.map(id=>esc(shortName(nameOf(id)))).join(", "):""}</summary>${predCard(m).replace(/^<section class="card">|<\/section>$/g,"")}</details>`}
   h+=`<details><summary>Kadrolar ve diziliş</summary><div style="margin-top:10px;display:grid;gap:12px">${teamsView(m)}</div></details>`;
