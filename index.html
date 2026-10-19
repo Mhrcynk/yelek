@@ -214,6 +214,9 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .sr .bar i{display:block;height:100%;border-radius:99px}
 .sr .bar.l i{background:var(--bib)}.sr .bar.r i{background:#E8EFE9}
 .side{display:grid;gap:6px}
+.subp{display:grid;gap:12px;color:var(--ink);border:1px solid var(--bib)}
+.subg{display:grid;gap:6px}
+.subg .tp{min-height:38px;padding:5px 9px}
 .form-pick{display:flex;flex-wrap:wrap;gap:6px}
 .form-pick button{border:1px solid var(--line2);background:var(--card2);border-radius:10px;padding:6px 10px;font-family:var(--display);font-weight:900;font-size:1rem;min-height:36px}
 .form-pick button.on{background:var(--turf);border-color:var(--turf);color:#fff}
@@ -747,6 +750,11 @@ function autoLineup(ids,fk){
 }
 const sumAvg=ids=>ids.length?Math.round(ids.reduce((s,x)=>s+ovrOf(x),0)/ids.length):0;
 const slotsOf=fk=>FORMS[fk].slots.map(s=>[...s]);
+/* Dizilişe hizala: kaleci yerinde kalır, diğerleri en yakın ve aynı mevkideki yere oturur */
+function alignTo(L,PS,fk){const T=slotsOf(fk);let best=[1,2,3,4,5,6],bc=Infinity;const a=[1,2,3,4,5,6];
+  const go=k=>{if(k===6){let c=0;for(let j=0;j<6;j++){const f=PS[a[j]]||T[j+1],to=T[j+1];const dx=f[0]-to[0],dy=f[1]-to[1];c+=dx*dx+dy*dy+(L[a[j]]&&f[2]!==to[2]?2500:0)}if(c<bc){bc=c;best=a.slice()}return}
+    for(let i=k;i<6;i++){[a[k],a[i]]=[a[i],a[k]];go(k+1);[a[k],a[i]]=[a[i],a[k]]}};
+  go(0);return{L:[L[0],...best.map(i=>L[i]??null)],P:T}}
 const roleFromY=(i,y)=>i===0?"KL":y<36?"DF":y<66?"OS":"FV";
 const samePos=(p,fk)=>JSON.stringify(p)===JSON.stringify(FORMS[fk].slots);
 function startEditor(mid,A,B,fa,fb,la,lb,pa,pb){fa=FORMS[fa]?fa:"2-3-1";fb=FORMS[fb]?fb:"2-3-1";
@@ -809,6 +817,23 @@ function teamsView(m,noShare){
     ${noShare?"":`<button class="btn block" data-act="shareImg" data-id="${esc(m.id)}">${ICON.share} Dizilişi görsel olarak paylaş</button>`}
     <p class="muted small" style="text-align:center">Oyuncuya dokununca kartı açılır. Sarı halkalı oyuncu kalede.</p>`;
 }
+function subPanel(t,selName,selHasPlayer){
+  const s=t.sel,k=s.team,o=k==="A"?"B":"A",lk=k.toLowerCase(),L=t["l"+lk];const cur=s.kind==="slot"?L[s.idx]:s.pid;
+  const btn=(id,extra)=>`<button class="tp" data-act="subWith" data-id="${esc(id)}"><span class="o num">${ovrOf(id)}</span><span class="n">${esc(shortName(nameOf(id)))}</span><span class="small muted">${extra||posOf(P(id))}</span></button>`;
+  const mates=L.map((id,i)=>[id,i]).filter(([id,i])=>id&&id!==cur);
+  const bench=t[k].filter(id=>!L.includes(id)&&id!==cur);
+  const other=t[o];
+  const inT=id=>t.A.includes(id)||t.B.includes(id);
+  const pool=S.players.filter(p=>!inT(p.id)&&!UNAVAIL.includes(stOf(p))).sort((x,y)=>ovrOf(y.id)-ovrOf(x.id)).map(p=>p.id);
+  const grpH=(title,html)=>html?`<div class="subg"><span class="eyebrow">${title}</span><div class="bench">${html}</div></div>`:"";
+  if(s.kind!=="slot")return `<div class="note"><b>${esc(selName)}</b> seçili. Sahada bir yere dokun, oraya girsin.<div class="row" style="margin-top:8px"><button class="btn sm" data-act="moveTeam">Diğer takıma gönder</button><button class="btn sm danger" data-act="toPool">Takımdan çıkar</button><button class="btn ghost sm" data-act="unsel">Bırak</button></div></div>`;
+  return `<div class="note subp"><div><b>${esc(selName||"Boş yer")}</b>${cur?" ile kimi değiştirmek istiyorsun?":" yerine kimi koyalım?"}</div>
+    ${grpH("Takım arkadaşıyla yer değiştir",mates.map(([id,i])=>btn(id,(t["p"+lk][i]||[])[2]||"")).join(""))}
+    ${grpH("Yedekten al",bench.map(id=>btn(id)).join(""))}
+    ${grpH(`${TEAM[o]} ile takas`,other.map(id=>btn(id)).join(""))}
+    ${pool.length?`<details class="subg"><summary class="small">Takımı olmayan oyuncular (${pool.length})</summary><div class="bench">${pool.map(id=>btn(id)).join("")}</div></details>`:""}
+    <div class="row">${selHasPlayer?`<button class="btn sm" data-act="toBench">Yedeğe al</button><button class="btn sm danger" data-act="toPool">Takımdan çıkar</button>`:""}<button class="btn ghost sm" data-act="unsel">Vazgeç</button></div></div>`;
+}
 function editorPanel(m){
   const t=S.teams;const k=t.view||"A";const lk=k.toLowerCase();
   const benchIds=t[k].filter(x=>!t["l"+lk].includes(x));
@@ -826,8 +851,8 @@ function editorPanel(m){
    ${viewSeg(k,"tview",false)}
    <div class="lineup">${fieldHtml(k,t.pa,t.pb,t.la,t.lb,true,t.sel)}
    <div style="display:grid;gap:12px;align-content:start;min-width:0">
-     ${t.sel?`<div class="note"><b>${esc(selName||"Boş yer")}</b> seçili. Başka bir oyuncuya dokunursan yer değiştirirler.<div class="row" style="margin-top:8px">${selHasPlayer?`<button class="btn sm" data-act="moveTeam">Diğer takıma gönder</button>`:""}${t.sel.kind==="slot"&&selHasPlayer?`<button class="btn sm" data-act="toBench">Yedeğe al</button>`:""}${selHasPlayer?`<button class="btn sm danger" data-act="toPool">Takımdan çıkar</button>`:""}<button class="btn ghost sm" data-act="unsel">Bırak</button></div></div>`
-       :`<p class="muted small">Oyuncuyu <b style="color:var(--ink)">sürükleyip</b> istediğin yere bırak; mevkisi bıraktığın yere göre değişir. İki oyuncuya art arda dokunursan yer değiştirirler.</p>`}
+     ${t.sel?subPanel(t,selName,selHasPlayer)
+       :`<p class="muted small">Oyuncuyu <b style="color:var(--ink)">sürükleyip</b> istediğin yere bırak; mevkisi bıraktığın yere göre değişir. Bir oyuncuya dokununca onu kiminle değiştireceğini seçebilirsin; sahadaki başka bir oyuncuya dokunursan ikisi yer değiştirir.</p>`}
      <div class="side"><h3>${dot(k)}${TEAM[k]} · ${t[k].length} kişi · ${esc(formText(t["f"+lk],t["p"+lk]))}</h3>${fp}</div>
      <div class="side"><span class="eyebrow">Yedekler</span><div class="bench">${benchBtns}</div></div>
    </div></div>
@@ -1082,7 +1107,7 @@ document.addEventListener("click",async e=>{
     case"tview":t.view=el.dataset.v;t.sel=null;render(true);break;
     case"shareImg":{const m=S.matches.find(x=>x.id===id);if(m)shareImg(m);break}
     case"swapBibs":{[t.A,t.B]=[t.B,t.A];[t.fa,t.fb]=[t.fb,t.fa];[t.la,t.lb]=[t.lb,t.la];[t.pa,t.pb]=[t.pb,t.pa];t.sel=null;toast("Yelekler değişti");render(true);break}
-    case"form":{const k=el.dataset.k.toLowerCase();t["f"+k]=el.dataset.f;t["p"+k]=slotsOf(el.dataset.f);t["l"+k]=autoLineup(t[el.dataset.k],el.dataset.f);t.sel=null;render(true);break}
+    case"form":{const k=el.dataset.k.toLowerCase();const r=alignTo(t["l"+k],t["p"+k],el.dataset.f);t["f"+k]=el.dataset.f;t["p"+k]=r.P;t["l"+k]=r.L;t.sel=null;render(true);break}
     case"autoPlace":t.la=autoLineup(t.A,t.fa);t.lb=autoLineup(t.B,t.fb);t.pa=slotsOf(t.fa);t.pb=slotsOf(t.fb);t.sel=null;render(true);break;
     case"poolAdd":{const k=el.dataset.k;if(t.A.includes(id)||t.B.includes(id))break;t[k].push(id);t.view=k;const L=t["l"+k.toLowerCase()];
       if(posOf(P(id))==="KL"&&!L[0])L[0]=id;else{let e2=L.findIndex((x,i)=>i>0&&!x);if(e2<0&&!L[0])e2=0;if(e2>=0)L[e2]=id}render(true);break}
@@ -1090,6 +1115,12 @@ document.addEventListener("click",async e=>{
     case"slot":tapSlot(el.dataset.k,+el.dataset.i);render(true);break;
     case"bench":tapBench(el.dataset.k,id);render(true);break;
     case"unsel":t.sel=null;render(true);break;
+    case"subWith":{const s2=t.sel;if(!s2||s2.kind!=="slot")break;const k=s2.team,o=k==="A"?"B":"A",L=t["l"+k.toLowerCase()],LO=t["l"+o.toLowerCase()];const cur=L[s2.idx];
+      if(t[k].includes(id)){const j=L.indexOf(id);if(j>=0){L[j]=cur;L[s2.idx]=id}else L[s2.idx]=id}
+      else if(t[o].includes(id)){const j=LO.indexOf(id);t[o]=t[o].filter(x=>x!==id);t[k].push(id);L[s2.idx]=id;
+        if(cur){t[k]=t[k].filter(x=>x!==cur);t[o].push(cur);if(j>=0)LO[j]=cur}else if(j>=0)LO[j]=null}
+      else{t[k].push(id);L[s2.idx]=id}
+      t.sel=null;toast(cur?`${shortName(nameOf(cur))} ⇄ ${shortName(nameOf(id))}`:`${shortName(nameOf(id))} sahaya girdi`);render(true);break}
     case"toBench":{const L=t["l"+t.sel.team.toLowerCase()];L[t.sel.idx]=null;t.sel=null;render(true);break}
     case"moveTeam":{const s2=t.sel;const k=s2.team,o=k==="A"?"B":"A";const L=t["l"+k.toLowerCase()];const pid=s2.kind==="slot"?L[s2.idx]:s2.pid;if(!pid)break;
       t[k]=t[k].filter(x=>x!==pid);t[o].push(pid);const i=L.indexOf(pid);if(i>=0)L[i]=null;const LO=t["l"+o.toLowerCase()];const em=LO.indexOf(null);if(em>=0)LO[em]=pid;t.sel=null;toast(nameOf(pid)+" "+TEAM[o]+" takımına geçti");render(true);break}
@@ -1125,7 +1156,7 @@ document.addEventListener("click",async e=>{
 function tapSlot(k,i){const t=S.teams;const L=t["l"+k.toLowerCase()];const s=t.sel;
   if(!s){t.sel={kind:"slot",team:k,idx:i};return}
   if(s.team!==k){t.sel={kind:"slot",team:k,idx:i};return}
-  if(s.kind==="slot"){if(s.idx!==i)[L[s.idx],L[i]]=[L[i],L[s.idx]];t.sel=null;return}
+  if(s.kind==="slot"){if(s.idx!==i){const a1=L[s.idx],b1=L[i];[L[s.idx],L[i]]=[L[i],L[s.idx]];if(a1&&b1)toast(`${shortName(nameOf(a1))} ⇄ ${shortName(nameOf(b1))}`)}t.sel=null;return}
   L[i]=s.pid;t.sel=null}
 function tapBench(k,pid){const t=S.teams;const s=t.sel;
   if(s&&s.kind==="slot"&&s.team===k){t["l"+k.toLowerCase()][s.idx]=pid;t.sel=null;return}
