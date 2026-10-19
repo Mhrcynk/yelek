@@ -151,15 +151,17 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .pl .pi{flex:1;min-width:0;display:grid;gap:2px}
 .pl .pi b{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pl .pi>span{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
-.av{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;font-family:var(--display);font-weight:900;font-size:1.05rem;flex:none;color:#241900;background:linear-gradient(150deg,#ECEFF1,#A4ADB3)}
+.av{position:relative;overflow:hidden;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;font-family:var(--display);font-weight:900;font-size:1.05rem;flex:none;color:#241900;background:linear-gradient(150deg,#ECEFF1,#A4ADB3)}
 .av.gold{background:linear-gradient(150deg,#F6DE8F,#C8962C)}
 .av.bronze{background:linear-gradient(150deg,#E8BF96,#A46A3E);color:#2A1608}
 .av.star{background:linear-gradient(150deg,#2B9B58,#0B2F1B);color:#F6DE8F}
 .av.sm{width:30px;height:30px;font-size:.85rem}
-.av img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center 20%}
-.av.hasph{padding:2px}
-.tok .shirt img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center 20%}
-.tok .shirt.hasph{padding:2.5px}
+.av img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center 20%}
+.av.hasph img{inset:2px;width:calc(100% - 4px);height:calc(100% - 4px)}
+.tok .shirt img{position:absolute;inset:2.5px;width:calc(100% - 5px);height:calc(100% - 5px);border-radius:50%;object-fit:cover;object-position:center 20%}
+.tok .shirt.hasph,.tok .shirt.ini{font-size:.9rem}.field.both .tok .shirt.hasph,.field.both .tok .shirt.ini{font-size:.72rem}
+.tok .ps{position:absolute;left:-11px;top:-7px;font-style:normal;font-family:var(--display);font-weight:900;font-size:.66rem;background:#0A1510;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:0 3px;line-height:1.35;letter-spacing:0}
+.field.both .tok .ps{font-size:.58rem;left:-10px;top:-6px}
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .phrow{display:flex;align-items:center;gap:12px;background:var(--card2);border-radius:14px;padding:10px 12px}
 .phrow .av{width:52px;height:52px}
@@ -1042,7 +1044,7 @@ function tokHtml(T,editable,sel,caps){
   const attrs=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
   const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="shirt${T.ep.length>2?" p3":""}">${T.ep}</span><span class="tn">Boş</span></button>`;
-  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ovrOf(id)}"><span class="shirt${T.ep.length>2?" p3":""}">${T.ep}<i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i>${caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':""}</span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
+  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ovrOf(id)}"><span class="shirt ${photoOf(id)?"hasph":"ini"}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ps">${T.ep}</i><i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i>${caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':""}</span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
 }
 function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps){
   return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel,caps)).join("")}</div>`;
@@ -1729,10 +1731,15 @@ async function shareImg(m){
   x.beginPath();x.ellipse(px+34*sx,py+50*sy,7*sx,7*sx,0,0,Math.PI*2);x.stroke();
   x.restore();
   const A=m.team_a||[],B=m.team_b||[],pa=posArr(m,"A"),pb=posArr(m,"B"),la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
-  for(const T of layout("both",pa,pb,la,lb)){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-10;
+  const TT=layout("both",pa,pb,la,lb),IM={};
+  await Promise.all(TT.filter(T=>T.id&&photoOf(T.id)).map(T=>new Promise(r=>{const im=new Image();im.onload=()=>{IM[T.id]=im;r()};im.onerror=()=>r();im.src=photoOf(T.id)})));
+  for(const T of TT){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-10;
     x.beginPath();x.arc(cx,cy,33,0,Math.PI*2);x.fillStyle=T.k==="A"?"#FF7A1A":"#F3F6F2";x.shadowColor="rgba(0,0,0,.4)";x.shadowBlur=14;x.fill();x.shadowBlur=0;
     if(T.i===0){x.lineWidth=7;x.strokeStyle="#FFE066";x.stroke()}
-    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.font=`900 ${T.ep.length>2?26:32}px ${D}`;x.fillText(T.ep,cx,cy+2);
+    x.fillStyle=T.k==="A"?"#1A0E02":"#13261B";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";const im=IM[T.id];
+    if(im){const r=29;x.save();x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.clip();const sc=Math.max(2*r/im.width,2*r/im.height),iw=im.width*sc,ih=im.height*sc;x.drawImage(im,cx-iw/2,cy-r-(ih-2*r)*.2,iw,ih);x.restore()}
+    else{x.font=`900 28px ${D}`;x.fillText(initials(nameOf(T.id)),cx,cy+2)}
+    {x.font=`900 22px ${D}`;const pw2=x.measureText(T.ep).width+12;rr(x,cx-16-pw2,cy-42,pw2,28,8);x.fillStyle="#0A1510";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(T.ep,cx-16-pw2/2,cy-27)}
     if((T.k==="A"?m.cap_a:m.cap_b)===T.id){x.beginPath();x.arc(cx-26,cy+24,15,0,Math.PI*2);x.fillStyle="#FFE066";x.fill();x.lineWidth=2;x.strokeStyle="rgba(0,0,0,.35)";x.stroke();x.fillStyle="#1A1300";x.font=`900 18px ${D}`;x.fillText("C",cx-26,cy+25)}
     const ov=String(ovrOf(T.id));x.font=`900 24px ${D}`;const ow=x.measureText(ov).width+12;rr(x,cx+16,cy-42,ow,28,8);x.fillStyle="#0A1510";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(ov,cx+16+ow/2,cy-27);
     const nm=shortName(nameOf(T.id));x.font=`700 26px ${F}`;const nw=Math.min(200,x.measureText(nm).width+20);rr(x,cx-nw/2,cy+40,nw,34,10);x.fillStyle="rgba(5,15,10,.8)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,cy+58,180)}
