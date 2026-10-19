@@ -1071,11 +1071,6 @@ function viewSezon(){
       <div class="slide"><span class="lb">Kartın şimdi</span><span class="big num">${s.ovr||"–"}</span><span>Başlangıçtan ${diff>0?"+"+diff:diff} puan.${y.motm?" "+y.motm+" kez Maçın Adamı seçildin.":""}</span></div>
       <div class="slide"><span class="lb">Rozetler</span><span class="big num">${(s.badges||[]).filter(b=>!b.shame).length}</span><span>${(s.badges||[]).map(b=>esc(b.t)).join(", ")||"Daha rozet yok."}</span></div></div>`}
   h+=`</section>`;
-  const tally={};S.seasonVotes.forEach(v=>tally[v.target]=(tally[v.target]||0)+1);const ranked=Object.entries(tally).sort((a,b)=>b[1]-a[1]);
-  const mine=(S.seasonVotes.find(v=>v.voter===S.me)||{}).target||"";
-  h+=`<section class="card board"><div class="ch"><div><div class="eyebrow">Yıl sonu ödülü</div><h2>Altın Top ${yr}</h2></div><span class="muted small">${S.seasonVotes.length} oy</span></div>
-    ${S.me?`<div class="grid2"><select id="atVote" data-bind="atVote" aria-label="Altın Top oyu"><option value="">Oyunu seç</option>${S.players.filter(p=>p.id!==S.me).map(p=>`<option value="${esc(p.id)}"${(S.f.atVote||mine)===p.id?" selected":""}>${esc(p.name)}</option>`).join("")}</select><button class="btn primary" data-act="atVote">${mine?"Oyumu değiştir":"Oy ver"}</button></div>`:'<button class="btn block" data-act="meSheet">Oy vermek için kim olduğunu seç</button>'}
-    ${ranked.length?`<ol>${ranked.slice(0,5).map(([id,n],i)=>`<li><span><span class="rk">${i+1}</span>${esc(nameOf(id))}</span><b>${n}</b></li>`).join("")}</ol>`:'<p class="muted small">Henüz oy yok. Herkes kendi dışında bir oyuncuya oy verir.</p>'}</section>`;
   return h;
 }
 
