@@ -536,7 +536,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 <main class="wrap" id="view">
   <section class="card"><div class="empty"><h3>Saha hazırlanıyor</h3><p>Kadro ve maçlar yükleniyor.</p></div></section>
 </main>
-<div class="wrap foot">Yelek · halı saha kart ligi</div>
+
 <nav class="nav" aria-label="Ana menü"><div class="in" id="navIn"></div></nav>
 <div id="modal"></div>
 <div id="toast" class="toast" hidden></div>
@@ -890,14 +890,14 @@ function heroVs(om){const fld=S.settings.field_name;const d=parseYmd(om.date);co
   <div class="vmeta">${ICON.pin}<span>${dw?`<b>${dw}</b> · `:""}${d.getDate()} ${AYLAR[d.getMonth()]}${dw?"":" "+GUNLER[d.getDay()]} · <b>${esc(om.time||"")}</b>${fld?" · "+esc(fld):""}</span></div>`}
 function heroWhen(date,time){const d=parseYmd(date);const fld=S.settings.field_name;
   return `<div class="when"><span class="wd">${GUNLER[d.getDay()]}</span><span class="dt">${d.getDate()} ${AYLAR[d.getMonth()]}</span><span class="tm">${ICON.pin}${esc(time)}${fld?" · "+esc(fld):""}</span></div>`}
-function noMatchHero(){return `<section class="hero"><div class="hero-top"><span class="eyebrow">Sıradaki maç</span></div><div class="when"><span class="wd">Yakında</span><span class="dt">Maç henüz açılmadı</span></div><p class="hero-note">Yönetici bu haftanın maçını açınca katılımını buradan tek dokunuşla bildirebilirsin.</p></section>`}
+function noMatchHero(){return `<section class="hero"><div class="hero-top"><span class="eyebrow">Sıradaki maç</span></div><div class="when"><span class="wd">Yakında</span><span class="dt">Maç henüz açılmadı</span></div></section>`}
 function createHero(){const d=S.f.newDate||nextDay(+S.settings.day);
   return `<section class="hero"><div class="hero-top"><span class="eyebrow">Yönetici · yeni maç</span></div>${heroWhen(d,S.f.newTime||S.settings.time)}
     <div class="grid2"><label class="f" for="nmDate" style="color:rgba(255,255,255,.8)">Tarih<input type="date" id="nmDate" data-bind="newDate" value="${esc(d)}"></label>
     <label class="f" for="nmTime" style="color:rgba(255,255,255,.8)">Saat<input type="time" id="nmTime" data-bind="newTime" value="${esc(S.f.newTime||S.settings.time)}"></label></div>
     <button class="btn primary block" data-act="createMatch">${ICON.plus} Maçı aç</button></section>`}
 function hero(om){
-  const actH=om.state==="kayit"?`<div class="hero-note">Kadrolar henüz açıklanmadı. Yönetici kurunca burada göreceksin.</div>`:"";
+  const actH=om.state==="kayit"?`<div class="hero-note">Kadrolar henüz açıklanmadı.</div>`:"";
   return `<section class="hero"><div class="hero-top"><span class="eyebrow">Sıradaki maç</span></div>
     ${heroVs(om)}${cdClock(om)}${actH}</section>`;
 }
@@ -913,14 +913,14 @@ function matchBody(m){
   if(m.state==="kayit"){
     h+=predCard(m);
     if(S.admin)h+=`<section class="card"><div class="ch"><h2>Kadroları kur</h2><span class="chip warn">Yönetici</span></div>
-      <p class="muted small">WhatsApp anketine göre oyuncuları seç, iki takıma ayır ve sahaya diz. Grupta olmayan biri gelecekse misafir olarak ekleyebilirsin.</p>
+      
       <button class="btn primary block" data-act="manual" data-id="${esc(m.id)}">${ICON.hand} Kadroyu kur</button>
       <div><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
   }else{
     h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2>${S.admin?`<button class="btn sm primary" data-act="editTeams" data-id="${esc(m.id)}">${ICON.hand} Kadroları değiştir</button>`:""}</div>${teamsView(m)}</section>`;
     h+=preview(m)+predCard(m);
     if(S.admin)h+=finishCard(m);
-    else h+=`<p class="muted small" style="text-align:center">Maç bitince yönetici skoru, golleri ve asistleri girer. Kartlar o zaman güncellenir.</p>`;
+    else h+=``;
   }
   return h;
 }
@@ -1040,7 +1040,7 @@ function teamsView(m,noShare){
     <div class="legend">${legendHtml("A",fa,pa,A,la,m.cap_a)}${legendHtml("B",fb,pb,B,lb,m.cap_b)}</div>
     ${strengthHtml(A,B,la,pa,lb,pb)}
     ${noShare?"":`<button class="btn block" data-act="shareImg" data-id="${esc(m.id)}">${ICON.share} Dizilişi görsel olarak paylaş</button>`}
-    <p class="muted small" style="text-align:center">Oyuncuya dokununca kartı açılır. Sarı halkalı oyuncu kalede, C kaptan.</p>`;
+    `;
 }
 function subPanel(t,selName,selHasPlayer){
   const s=t.sel,k=s.team,o=k==="A"?"B":"A",lk=k.toLowerCase(),L=t["l"+lk];const cur=s.kind==="slot"?L[s.idx]:s.pid;
@@ -1079,12 +1079,12 @@ function editorPanel(m){
      ${poolG.length?`<div class="grp">Önceki misafirler</div>${poolG.map(poolRow).join("")}`:""}
      <div class="grp">Misafir ekle</div>
      <form data-form="addGuest" class="guestf"><input id="guestName" type="text" maxlength="40" placeholder="Misafirin adı" autocomplete="off" data-bind="guestName" value="${esc(S.f.guestName||"")}"><button class="btn sm" type="submit">${dot(k)}${esc(TEAM[k])} · ekle</button></form>
-     <p class="muted small" style="padding:4px 0 8px">Misafirin kartı olmaz, reytingi değişmez; sadece o maçın kadrosunda görünür.</p></div></details>
+     </div></details>
    ${viewSeg(k,"tview",false)}
    <div class="lineup">${fieldHtml(k,t.pa,t.pb,t.la,t.lb,true,t.sel,capsOf(t))}
    <div style="display:grid;gap:12px;align-content:start;min-width:0">
      ${t.sel?subPanel(t,selName,selHasPlayer)
-       :`<p class="muted small">Oyuncuyu <b style="color:var(--ink)">sürükleyip</b> istediğin yere bırak; mevkisi bıraktığın yere göre değişir. Bir oyuncuya dokununca onu kiminle değiştireceğini seçebilirsin; sahadaki başka bir oyuncuya dokunursan ikisi yer değiştirir.</p>`}
+       :``}
      <div class="side"><h3>${dot(k)}${TEAM[k]} · ${t[k].length} kişi · ${esc(formText(t["f"+lk],t["p"+lk]))}</h3>${fp}</div>
      <div class="side"><span class="eyebrow">Yedekler</span><div class="bench">${benchBtns}</div></div>
    </div></div>
@@ -1129,7 +1129,7 @@ const evLabel=e=>e.t==="g"?shortName(nameOf(e.g))+" golü":e.t==="og"?shortName(
 function finishCard(m){
   const draft=hasDraft(m);const sd=draft?sdOf(m):null;
   return `<section class="card"><div class="ch"><div><div class="eyebrow">Yönetici · maç sonu</div><h2>Maç bitti mi?</h2></div></div>
-    <p class="muted small">Golleri tek tek ekle; skor kendiliğinden yazılır. Kaydedince kartlar güncellenir.</p>
+    
     ${draft?`<div class="note">Kaydedilmemiş taslak: <b>${TEAM.A} ${sd.a} – ${sd.b} ${TEAM.B}</b> · ${sd.events.length} kayıt</div>`:""}
     <button class="btn primary block" data-act="statSheet" data-id="${esc(m.id)}">${ICON.check} ${draft?"Girişe devam et":"Skoru ve golleri gir"}</button>
     <div class="row">${draft?`<button class="btn sm danger" data-act="draftDel" data-id="${esc(m.id)}">${S.f.delDraft===m.id?"Taslağı silmek için tekrar bas":"Taslağı sil"}</button>`:""}<button class="btn sm ghost" data-act="backRsvp" data-id="${esc(m.id)}">Kadro aşamasına dön</button><button class="btn danger sm ghost" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
@@ -1158,7 +1158,7 @@ function statEntry(m){
   return `<div class="ch"><div><div class="eyebrow">Maç sonu · ${fmtShort(m.date)}</div><h2>Skor ve goller</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
     <div class="scoreEdit">${scoreSide(m,"a",TEAM.A,sd.a,true)}<span class="dash">–</span>${scoreSide(m,"b",TEAM.B,sd.b,false)}</div>
     <div class="ubar"><button class="btn sm" data-act="undo" data-m="${M}" ${sd.undo.length?"":"disabled"}>↶ Geri al${last?`<span class="muted small"> · ${esc(last)}</span>`:""}</button><button class="btn sm ghost danger" data-act="draftDel" data-id="${M}" ${hasDraft(m)?"":"disabled"}>${S.f.delDraft===m.id?"Emin misin? Tekrar bas":"Taslağı sil"}</button></div>
-    ${sd.touched||sd.events.length?"":`<div class="note">Gol ekledikçe skor kendiliğinden yazılır. Maç 0–0 bittiyse <button class="btn sm" data-act="zeroScore" data-id="${M}" style="margin-left:6px">0–0 bitti</button></div>`}
+    ${sd.touched||sd.events.length?"":`<div class="note">Maç 0–0 bittiyse <button class="btn sm" data-act="zeroScore" data-id="${M}" style="margin-left:6px">0–0 bitti</button></div>`}
     ${mism?`<div class="note warn">Girilen goller (${gA}–${gB}) skorla aynı değil. <button class="btn sm" data-act="fillScore" data-id="${M}" style="margin-left:6px">Skoru gollerden al</button></div>`:""}
     ${stepH}
     ${evH}
@@ -1168,7 +1168,7 @@ function statEntry(m){
     <label class="f" for="motmSel">★ Maçın Adamı (+${RULES.motm} puan)<select id="motmSel" data-act-change="motm" data-m="${M}">${motmOpts}</select></label>
     ${sd.touched?`<details><summary>Puan önizlemesi (${all.length} oyuncu)</summary><div class="hist">${all.map(([id,r])=>`<div style="grid-template-columns:2.4em minmax(0,1fr) auto"><span class="d">${dot(r.side)}${r.role}</span><span>${esc(nameOf(id))}</span><span class="p num">${r.pts}</span></div>`).join("")}</div></details>`:""}
     <button class="btn ${conf?"primary":"turf"} block" data-act="finish" data-id="${M}" ${sd.touched?"":"disabled"}>${ICON.check} ${conf?`Onayla: ${TEAM.A} ${sd.a} – ${sd.b} ${TEAM.B}`:"Maçı bitir, kartları güncelle"}</button>
-    <p class="muted small" style="text-align:center">Taslak bu telefonda saklanır; sayfa kapansa da kaybolmaz.</p>`;
+    `;
 }
 function scoreSide(m,side,name,val,bib){return `<div class="se"><span class="tn">${bib?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${name}</span><span class="big num">${val}</span><span class="pm"><button class="rnd" data-act="sc" data-m="${esc(m.id)}" data-side="${side}" data-d="-1" aria-label="${name} skorunu azalt">−</button><button class="rnd" data-act="sc" data-m="${esc(m.id)}" data-side="${side}" data-d="1" aria-label="${name} skorunu artır">+</button></span></div>`}
 function stp(mid,pid,k,lbl,v){v=+v||0;return `<span class="stp${v?" on":""}"><label>${lbl}</label><button data-act="st" data-m="${esc(mid)}" data-p="${esc(pid)}" data-k="${k}" data-d="-1" aria-label="${lbl} azalt">−</button><b>${v}</b><button data-act="st" data-m="${esc(mid)}" data-p="${esc(pid)}" data-k="${k}" data-d="1" aria-label="${lbl} artır">+</button></span>`}
@@ -1179,16 +1179,16 @@ function resultPanel(m){
   const scorers=pl.filter(id=>(+stt[id]?.g||0)>0);const sa=+m.score_a||0,sb=+m.score_b||0;
   const LK=m.links||[];const line=k=>(k==="A"?m.team_a:m.team_b).filter(id=>(+stt[id]?.g||0)>0).map(id=>{const as=LK.filter(x=>x.g===id&&x.a).map(x=>firstName(nameOf(x.a)));return `${esc(shortName(nameOf(id)))}${+stt[id].g>1?" ×"+stt[id].g:""}${as.length?` <span class="muted">(${esc(as.join(", "))})</span>`:""}`}).join("<br>");
   let h=`<section class="card"><div class="ch"><div><div class="eyebrow">Maç sonucu${S.settings.field_name?" · "+esc(S.settings.field_name):""}</div><h2>${fmtDate(m.date)}</h2></div>${S.admin?`<div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn ghost sm" data-act="reopen" data-id="${esc(m.id)}">Düzelt</button><button class="btn ghost sm danger" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Emin misin?":"Sil"}</button></div>`:""}</div>
-    ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Bu maçı silersen skoru, golleri, puanları, reyting değişimleri, tahminleri ve listelerdeki etkisi tamamen geri alınır. Silmek için “Emin misin?” düğmesine tekrar bas.</div>`:""}
+    ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Maç ve kartlara etkisi tamamen silinir.</div>`:""}
     <div class="sb"><div class="t${sa>sb?" win":""}"><span class="tn"><span class="bibdot"></span>${TEAM.A}</span><span class="sc num">${sa}</span><span class="gs">${line("A")}</span></div><span class="dash">–</span><div class="t${sb>sa?" win":""}"><span class="tn"><span class="nobib"></span>${TEAM.B}</span><span class="sc num">${sb}</span><span class="gs">${line("B")}</span></div></div>
     <div class="awards"><div class="aw motm"><span>Maçın Adamı</span><b>${inf.motm?esc(shortName(nameOf(inf.motm))):"—"}</b></div><div class="aw"><span>Haftanın Golü</span><b>${inf.gol?esc(shortName(nameOf(inf.gol))):"—"}</b></div><div class="aw"><span>Fiyasko</span><b>${inf.fiy?esc(shortName(nameOf(inf.fiy))):"—"}</b></div></div>`;
-  if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı · en çok puan alan beş oyuncu</div><div class="hscroll" style="margin-top:10px">${inf.totw.map(id=>P(id)?card(P(id)):"").join("")}</div></div>`;
+  if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı</div><div class="hscroll" style="margin-top:10px">${inf.totw.map(id=>P(id)?card(P(id)):"").join("")}</div></div>`;
   if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
-    h+=`<details><summary class="small">Ödülleri değiştir <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="grid2" style="margin-top:10px"><label class="f">⚽ Haftanın Golü<select data-act-change="awR" data-k="gol" data-m="${esc(m.id)}">${o(scorers,m.gol_id||"")}</select></label><label class="f">🙈 Haftanın Fiyaskosu<select data-act-change="awR" data-k="fiy" data-m="${esc(m.id)}">${o(pl,m.fiy_id||"")}</select></label></div><p class="muted small">Maçın Adamı'nı değiştirmek için “Düzelt”i kullan.</p></details>`}
+    h+=`<details><summary class="small">Ödülleri değiştir <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="grid2" style="margin-top:10px"><label class="f">⚽ Haftanın Golü<select data-act-change="awR" data-k="gol" data-m="${esc(m.id)}">${o(scorers,m.gol_id||"")}</select></label><label class="f">🙈 Haftanın Fiyaskosu<select data-act-change="awR" data-k="fiy" data-m="${esc(m.id)}">${o(pl,m.fiy_id||"")}</select></label></div></details>`}
   h+=`<div class="report">${spiker(m,inf)}</div>`;
   const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>inf.pts[b].pts-inf.pts[a].pts);
   h+=`<details><summary>Oyuncu puanları ve kart değişimleri</summary><div class="hist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const d=hh?hh.d:0;const chs=hh?chText(hh.ch):"";
-    return `<div><span class="d">${r.side==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${r.role}</span><span>${esc(nameOf(id))}${chs?`<br><span class="muted small">${chs}</span>`:""}</span><span class="p num">${r.pts}</span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div><p class="muted small">Puan: o maçın maç puanı. Sağdaki: GEN değişimi. Alt satır: değişen özellikler.</p></details>`;
+    return `<div><span class="d">${r.side==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${r.role}</span><span>${esc(nameOf(id))}${chs?`<br><span class="muted small">${chs}</span>`:""}</span><span class="p num">${r.pts}</span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div></details>`;
   if(Object.keys(m.preds||{}).length){const pr=m.preds;const hits=Object.keys(pr).filter(id=>P(id)&&predPts(pr[id],m)===3);
     h+=`<details><summary>Skor tahminleri${hits.length?" · tam bilen: "+hits.map(id=>esc(shortName(nameOf(id)))).join(", "):""}</summary>${predCard(m).replace(/^<section class="card">|<\/section>$/g,"")}</details>`}
   h+=`<details><summary>Kadrolar ve diziliş</summary><div style="margin-top:10px;display:grid;gap:12px">${teamsView(m)}</div></details>`;
@@ -1225,7 +1225,7 @@ function chemHtml(p){const others=S.players.filter(q=>q.id!==p.id);
   const duoH=(fed.length||gave.length)?`<div class="chg"><span class="eyebrow">Gol–asist ortakları</span>${gave.map(x=>`<button class="chr" data-act="cmpPair" data-a="${esc(p.id)}" data-b="${esc(x.b)}"><span>Pas verdiği: ${esc(nameOf(x.b))}</span><b class="num">${x.n}</b><i class="muted small">gol</i></button>`).join("")}${fed.map(x=>`<button class="chr" data-act="cmpPair" data-a="${esc(p.id)}" data-b="${esc(x.a)}"><span>Pas aldığı: ${esc(nameOf(x.a))}</span><b class="num">${x.n}</b><i class="muted small">gol</i></button>`).join("")}</div>`:"";
   if(!mates.length&&!rivals.length&&!duoH)return"";
   return `<div><h3>Kimya ve rekabet</h3><div class="chem">${mates.length?`<div class="chg"><span class="eyebrow">En iyi ortakları</span>${mates.map(x=>`<button class="chr" data-act="cmpPair" data-a="${esc(p.id)}" data-b="${esc(x.q.id)}"><span>${esc(x.q.name)}</span><b class="num">${x.o.W}/${x.o.n} G</b><i class="muted small">%${Math.round(x.o.W/x.o.n*100)}</i></button>`).join("")}</div>`:""}
-    ${rivals.length?`<div class="chg"><span class="eyebrow">Ezeli rakipleri</span>${rivals.map(x=>`<button class="chr" data-act="cmpPair" data-a="${esc(p.id)}" data-b="${esc(x.q.id)}"><span>${esc(x.q.name)}</span><b class="num">${x.o.a}-${x.o.d}-${x.o.b}</b><i class="muted small">${x.o.n} maç</i></button>`).join("")}<p class="muted small">Karşı takımlarda: ${esc(firstName(p.name))} kazandı – berabere – rakip kazandı</p></div>`:""}${duoH}</div></div>`}
+    ${rivals.length?`<div class="chg"><span class="eyebrow">Ezeli rakipleri</span>${rivals.map(x=>`<button class="chr" data-act="cmpPair" data-a="${esc(p.id)}" data-b="${esc(x.q.id)}"><span>${esc(x.q.name)}</span><b class="num">${x.o.a}-${x.o.d}-${x.o.b}</b><i class="muted small">${x.o.n} maç</i></button>`).join("")}</div>`:""}${duoH}</div></div>`}
 function radar(pa,pb){const set=attrSet(pa.pos);const N=set.length,C=110,Rr=78;const sa=S.stats[pa.id]?.attrs||{},sb=pb?S.stats[pb.id]?.attrs||{}:{};
   const pt=(i,v)=>{const ang=-Math.PI/2+i*2*Math.PI/N;const r=Rr*clamp((v-30)/69,0,1);return[C+r*Math.cos(ang),C+r*Math.sin(ang)]};
   const poly=a=>set.map(([k],i)=>pt(i,+a[k]||30).map(x=>x.toFixed(1)).join(",")).join(" ");
@@ -1235,7 +1235,7 @@ function radar(pa,pb){const set=attrSet(pa.pos);const N=set.length,C=110,Rr=78;c
 function sheetCmp(){const c=S.sheet;const pa=P(c.a),pb=P(c.b);
   const sel=(k,v)=>`<select data-cmp="${k}" aria-label="${k==="a"?"Birinci":"İkinci"} oyuncu"><option value="">Oyuncu seç</option>${S.players.map(q=>`<option value="${esc(q.id)}"${v===q.id?" selected":""}>${esc(q.name)}</option>`).join("")}</select>`;
   let h=`<div class="ch"><h2>Karşılaştır</h2><button class="btn sm" data-act="close">Kapat</button></div><div class="grid2 cmpsel"><div><span class="bibdot"></span>${sel("a",c.a)}</div><div><span class="nobib"></span>${sel("b",c.b)}</div></div>`;
-  if(!pa||!pb)return h+`<p class="muted small">İki oyuncu seç; kartları, özellikleri, sezon istatistikleri ve birbirlerine karşı maçları yan yana gelsin.</p>`;
+  if(!pa||!pb)return h+``;
   const A=S.stats[pa.id]||{},B=S.stats[pb.id]||{};const same=(pa.pos==="Kaleci")===(pb.pos==="Kaleci");
   h+=`<div class="cmpc">${card(pa)}${card(pb)}</div>`;
   h+=same?`<div style="display:grid;justify-items:center">${radar(pa,pb)}<div class="row small"><span><span class="bibdot"></span>${esc(firstName(pa.name))}</span><span><span class="nobib"></span>${esc(firstName(pb.name))}</span></div></div>`:`<p class="muted small">Biri kaleci olduğu için özellikler aynı grafikte karşılaştırılamıyor.</p>`;
@@ -1251,13 +1251,13 @@ function sheetCmp(){const c=S.sheet;const pa=P(c.a),pb=P(c.b);
 /* ================= Tahmin ve maç önü ================= */
 const predPts=(pr,m)=>{if(!pr||m.score_a==null)return 0;const a=+m.score_a,b=+m.score_b;if(+pr.a===a&&+pr.b===b)return 3;return Math.sign(+pr.a-+pr.b)===Math.sign(a-b)?1:0};
 function predCard(m){const open=Date.now()<matchTs(m)&&m.state!=="bitti";const pr=m.preds||{};const ids=Object.keys(pr).filter(id=>P(id));const me=S.me&&P(S.me)&&!P(S.me).guest?S.me:null;
-  let h=`<section class="card"><div class="ch"><div><h2>Skor tahmini</h2><p class="muted small" style="margin-top:4px">Tam skoru bilen 3, sonucu bilen 1 puan alır. Sezon sonunda tahmin kralı çıkar.</p></div><span class="chip muted">${ids.length} tahmin</span></div>`;
+  let h=`<section class="card"><div class="ch"><div><h2>Skor tahmini</h2></div><span class="chip muted">${ids.length} tahmin</span></div>`;
   if(open){if(!me)h+=`<button class="btn block" data-act="meSheet">Tahmin için kim olduğunu seç</button>`;
     else{const k="pr_"+m.id;const d=S.f[k]||(S.f[k]={a:pr[me]?.a??0,b:pr[me]?.b??0});const st=(side)=>`<div class="pst"><span>${side==="a"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${esc(TEAM[side.toUpperCase()])}</span><div class="pnum"><button class="rnd" data-act="prS" data-m="${esc(m.id)}" data-side="${side}" data-d="-1" aria-label="Azalt">−</button><b class="num">${d[side]}</b><button class="rnd" data-act="prS" data-m="${esc(m.id)}" data-side="${side}" data-d="1" aria-label="Artır">+</button></div></div>`;
       h+=`<div class="pred">${st("a")}${st("b")}</div><button class="btn primary block" data-act="predict" data-id="${esc(m.id)}">${pr[me]?"Tahminimi güncelle":"Tahminimi gönder"}</button>${pr[me]?`<span class="chip ok" style="justify-self:center"><span class="dot"></span>Tahminin: ${pr[me].a}-${pr[me].b}</span>`:""}`}
     const c={A:0,D:0,B:0};ids.forEach(id=>{const x=pr[id];c[x.a>x.b?"A":x.a<x.b?"B":"D"]++});
     if(ids.length&&S.admin)h+=adminPreds(m,ids);
-    if(ids.length)h+=`<p class="muted small">${TEAM.A} kazanır: <b style="color:var(--ink)">${c.A}</b> · Berabere: <b style="color:var(--ink)">${c.D}</b> · ${TEAM.B} kazanır: <b style="color:var(--ink)">${c.B}</b>. Kim ne dedi maç başlayınca açılır.</p>`;
+    if(ids.length)h+=`<p class="muted small">${TEAM.A} kazanır: <b style="color:var(--ink)">${c.A}</b> · Berabere: <b style="color:var(--ink)">${c.D}</b> · ${TEAM.B} kazanır: <b style="color:var(--ink)">${c.B}</b>.</p>`;
   }else if(S.admin&&ids.length){h+=adminPreds(m,ids,true)}else{h+=ids.length?`<div class="hist">${ids.sort((a,b)=>predPts(pr[b],m)-predPts(pr[a],m)).map(id=>{const pts=m.state==="bitti"?predPts(pr[id],m):null;return `<div style="grid-template-columns:minmax(0,1fr) auto auto"><span>${esc(nameOf(id))}</span><span class="num"><b>${pr[id].a}-${pr[id].b}</b></span><span class="delta ${pts===3?"pos":pts===1?"pos":"zero"}">${pts==null?"":pts?"+"+pts:"0"}</span></div>`}).join("")}</div>`:`<p class="muted small">Bu maç için tahmin yapılmadı.</p>`}
   return h+`</section>`}
 function adminPreds(m,ids,open){const pr=m.preds||{};
@@ -1273,10 +1273,10 @@ function preview(m){const A=(m.team_a||[]),B=(m.team_b||[]);if(!A.length||!B.len
   const streaks=[...real(A),...real(B)].filter(id=>S.stats[id]?.streak);
   const cap=k=>k==="A"?m.cap_a:m.cap_b;
   const col=(k,T)=>{const kp=key(T);return `<div class="pv"><div class="pvh">${k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}<b>${esc(TEAM[k])}</b><span class="num">${k==="A"?avA:avB}</span></div>
-    ${recent(T)?(()=>{const r=recent(T);return `<div><span class="eyebrow">Oyuncuların son maçları</span><div class="rec"><span class="g">${r.G}G</span><span class="b">${r.B}B</span><span class="m">${r.M}M</span></div><span class="muted pvs">kadrodakilerin son 5'er maçı · %${Math.round(r.G/r.n*100)} galibiyet</span></div>`})():""}
-    ${chem(T)?`<div><span class="eyebrow">Takım kimyası</span><b class="num pvn">%${chem(T).p}</b><span class="muted pvs">bu kadrodaki ikililerin birlikte kazanma oranı</span></div>`:""}
+    ${recent(T)?(()=>{const r=recent(T);return `<div><span class="eyebrow">Oyuncuların son maçları</span><div class="rec"><span class="g">${r.G}G</span><span class="b">${r.B}B</span><span class="m">${r.M}M</span></div><span class="muted pvs">%${Math.round(r.G/r.n*100)} galibiyet</span></div>`})():""}
+    ${chem(T)?`<div><span class="eyebrow">Takım kimyası</span><b class="num pvn">%${chem(T).p}</b></div>`:""}
     ${kp?`<div class="pvk"><span class="eyebrow">Kilit oyuncu</span><button data-act="open" data-id="${esc(kp)}">${esc(nameOf(kp))} <span class="pchip">${eposOf(P(kp))}</span></button></div>`:""}
-    ${inForm(T).length?`<div><span class="eyebrow">Formda</span>${inForm(T).map(id=>`<div class="small fm"><span>${esc(shortName(nameOf(id)))}</span><b class="num">${formOf2(id).toFixed(1)}</b></div>`).join("")}<span class="muted pvs">son 3 maçın puan ortalaması</span></div>`:""}
+    ${inForm(T).length?`<div><span class="eyebrow">Formda</span>${inForm(T).map(id=>`<div class="small fm"><span>${esc(shortName(nameOf(id)))}</span><b class="num">${formOf2(id).toFixed(1)}</b></div>`).join("")}</div>`:""}
     ${cap(k)&&T.includes(cap(k))?`<div class="small"><span class="capi">C</span>${esc(nameOf(cap(k)))}</div>`:""}</div>`};
   return `<section class="card"><div class="ch"><div><div class="eyebrow">Maç önü raporu</div><h2>Kim kazanır?</h2></div></div>
     <div class="pvbar"><span class="num">%${pA}</span><span class="bar2"><i style="width:${pA}%"></i></span><span class="num">%${100-pA}</span></div>
@@ -1320,7 +1320,7 @@ function attrDetail(p){const a=p.attrs||{};const s=S.stats[p.id]||{};const cur=s
   return `<div><h3>Özellik detayları</h3><div class="attrs-grp ro" style="margin-top:8px">${attrSet(p.pos).map(([k,l,full,subs])=>{const mv=s.attrs?.[k]??mainVal(a,k,p.pos);const md=s.attrD?.[k]||0;
     return `<div class="ag"><div class="agh"><b>${l}</b><span>${full}</span><b class="num agv ${vcls(mv)}">${mv}</b>${md?`<span class="adt ${md>0?"up":"dn"}">${md>0?"+":""}${md}</span>`:""}</div>${subs.map(([sk,sl])=>{const b=subVal(a,k,sk);const c=cur[k+"_"+sk]??b;const v=Math.round(c);const dd=Math.round((c-b)*10)/10;
       return `<div class="sr2"><span>${sl}</span><i style="--w:${v}%"></i><b class="num ${vcls(v)}">${v}${Math.abs(dd)>=.5?`<small class="adt ${dd>0?"up":"dn"}">${fD(dd)}</small>`:""}</b></div>`}).join("")}</div>`}).join("")}</div>
-    <p class="muted small" style="margin-top:6px">Küçük sayı, yöneticinin girdiği başlangıç değerinden maçlarla gelen farktır. GEN bu özelliklerden mevkiye göre hesaplanır.</p></div>`}
+    </div>`}
 function attrInputs(prefix,pos,attrs){
   return `<div class="attrs-grp">${attrSet(pos).map(([k,l,full,subs])=>`<div class="ag"><div class="agh"><b>${l}</b><span>${full}</span><b class="num agv" id="${prefix}_m_${k}">${mainVal(attrs,k,pos)}</b></div><div class="attrs-in">${subs.map(([sk,sl])=>{const v=subVal(attrs,k,sk);const kk=k+"_"+sk;
     return `<label for="${prefix}_${kk}">${sl}<span class="val"><input type="range" min="30" max="95" id="${prefix}_${kk}" data-attr="${prefix}" data-k="${kk}" value="${v}"><input type="number" min="30" max="95" inputmode="numeric" data-attr="${prefix}" data-k="${kk}" value="${v}" aria-label="${sl} değeri"></span></label>`}).join("")}</div></div>`).join("")}</div>`;
@@ -1336,10 +1336,10 @@ function sheetAdd(){
 }
 function sheetMe(){
   const ps=[...S.players].sort((a,b)=>a.name.localeCompare(b.name,"tr"));
-  return `<div class="ch"><div><h2>Sen kimsin?</h2><p class="muted small" style="margin-top:6px">Bu telefonda seçtiğin kişi olarak skor tahmini yapar ve durumunu güncellersin.</p></div></div>
+  return `<div class="ch"><div><h2>Sen kimsin?</h2></div></div>
     ${ps.length?`<div class="who-grid">${ps.map(p=>`<button data-act="pickMe" data-id="${esc(p.id)}" class="${p.id===S.me?"on":""}">${avatar(p)}<span>${esc(p.name)}</span></button>`).join("")}</div>`:`<p class="muted">Henüz oyuncu eklenmemiş.</p>`}
     <div class="row">${S.me?`<button class="btn sm ghost" data-act="pickMe" data-id="">Seçimi kaldır</button>`:""}<button class="btn sm" data-act="close">Kapat</button></div>
-    <p class="muted small">Listede yoksan yöneticiden seni eklemesini iste.</p>`;
+    `;
 }
 function sheetPlayer(){
   const p=P(S.sheet.id);if(!p)return"";const s=S.stats[p.id]||{};const st=stOf(p);const canSt=S.admin||p.id===S.me;
@@ -1354,17 +1354,17 @@ function sheetPlayer(){
     <div><h3>Son maçlar</h3><div class="hist">${(s.hist||[]).slice(-8).reverse().map(x=>{
       const desc=x.kind==="oynadi"?`${x.r.res==="G"?"Galibiyet":x.r.res==="B"?"Beraberlik":"Mağlubiyet"} · ${ROLE_NAME[x.r.role]}${x.r.g?" · "+x.r.g+" gol":""}${x.r.a?" · "+x.r.a+" asist":""}`:x.kind==="iptal"?"Son dakika iptal":"Maça gelmedi";
       const chs=chText(x.ch);return `<div><span class="d">${fmtShort(x.m.date)}</span><span>${desc}${chs?`<br><span class="muted small">${chs}</span>`:""}</span><span class="p num">${x.r?x.r.pts:"–"}</span><span class="delta ${x.d>0?"pos":x.d<0?"neg":"zero"}">${fD(x.d)}</span></div>`}).join("")||'<p class="muted small" style="padding:8px 0">Henüz maç kaydı yok.</p>'}</div>
-    <p class="muted small" style="margin-top:6px">Sağdaki sayı karttaki reyting değişimi.</p></div>
+    </div>
     ${chemHtml(p)}
     <div><h3>Rozetler</h3><div class="badges" style="margin-top:8px">${(s.badges||[]).map(b=>`<span class="badge${b.shame?" shame":""}"><i>${esc(b.i)}</i><span><b>${esc(b.t)}</b><span class="muted">${esc(b.d)}</span></span></span>`).join("")||'<span class="muted small">Henüz rozet yok.</span>'}</div></div>`;
   if(canSt)h+=`<div style="display:grid;gap:10px"><h3>Durumu güncelle</h3>
     <div class="statuses">${Object.entries(STATUS).map(([k,v])=>`<button data-act="stType" data-v="${k}" class="${sf.type===k?"on":""}">${v.label}</button>`).join("")}</div>
     ${sf.type!=="hazir"?`<div class="grid2"><label class="f" for="stUntil">Tahmini dönüş<input id="stUntil" type="date" data-bind="st.until" value="${esc(sf.until)}"></label><label class="f" for="stNote">Not<input id="stNote" type="text" maxlength="60" data-bind="st.note" value="${esc(sf.note)}" placeholder="Örn. ayak bileği burkuldu"></label></div>`:""}
-    ${UNAVAIL.includes(sf.type)?'<p class="muted small">Açık maçta otomatik olarak gelemeyenlere yazılır. Gelemediği her maç dayanıklılığı 2 puan düşer.</p>':""}
+    ${UNAVAIL.includes(sf.type)?'':""}
     <button class="btn primary block" data-act="saveStatus">Durumu kaydet</button>
     ${(p.status_log||[]).length?`<details><summary class="small">Durum geçmişi</summary><div class="hist">${p.status_log.slice().reverse().map(e=>`<div style="grid-template-columns:4.4em 1fr"><span class="d">${fmtShort(e.at)}</span><span>${esc(STATUS[e.type]?.label||e.type)}${e.note?" · "+esc(e.note):""}</span></div>`).join("")}</div></details>`:""}</div>`;
   if(S.admin){const ph=photoOf(p.id);
-    h+=`<div class="phrow"><span class="av ${tierOf(ovrOf(p.id))}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":ph?"Kartta ve sahada görünüyor.":"Yüklenince kartına otomatik eklenir."}</p></div>
+    h+=`<div class="phrow"><span class="av ${tierOf(ovrOf(p.id))}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":""}</p></div>
       <label class="btn sm primary" for="phFile">${ph?"Değiştir":"Yükle"}</label><input class="vh" id="phFile" type="file" accept="image/*" data-photo="${esc(p.id)}">${ph?`<button class="btn sm ghost" data-act="delPhoto" data-id="${esc(p.id)}" aria-label="Fotoğrafı kaldır">${ICON.x}</button>`:""}</div>`}
   if(S.admin){const a=S.f.ed||(S.f.ed={name:p.name,pos:p.pos,epos:eposOf(p),alt:altOf(p),attrs:{...(p.attrs||{})}});
     h+=`<details${S.f.edOpen?" open":""} data-act-toggle="edOpen"><summary>Kartı düzenle (yönetici)</summary><div style="display:grid;gap:12px;margin-top:10px">
@@ -1374,7 +1374,7 @@ function sheetPlayer(){
       <span class="muted small">Başlangıç reytingi: <b class="num" id="ed_ovr" style="color:var(--ink)">${baseOf({pos:a.pos,epos:a.epos,attrs:a.attrs})}</b></span>
       <button class="btn primary block" data-act="saveCard">Kaydet</button>
       <button class="btn danger sm" data-act="delPlayer">${S.f.delP===p.id?"Kadrodan çıkarmak için tekrar bas":"Kadrodan çıkar"}</button>
-      <p class="muted small">Kadrodan çıkarılan oyuncunun geçmiş maçları silinmez.</p></div></details>`}
+      </div></details>`}
   return h;
 }
 function spark(arr){if(arr.length<2)return"";const W=220,H=46,mn=Math.min(...arr)-1,mx=Math.max(...arr)+1;
@@ -1399,7 +1399,7 @@ function viewSezon(){
   const prk=[...S.players].sort((a,b)=>prevO(b.id)-prevO(a.id)||a.name.localeCompare(b.name,"tr")).map(p=>p.id);
   const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastD||0;
     return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):"–"}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2em;text-align:right">${fD(d)}</span></span></li>`}).join("");
-  const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3><p class="muted small" style="margin-top:4px">Her maçtan sonra güncellenir. Ok, geçen haftaya göre sıra değişimi; sağdaki sayı son maçtaki reyting değişimi.</p></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
+  const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
   let h=`<div class="ph"><div><h1>Sezon ${yr}</h1><span class="muted">${F.length} maç oynandı</span></div></div>`;
   if(!F.length)h+=`<section class="card"><div class="empty"><h3>Sezon yeni başlıyor</h3><p>İlk maç bitip istatistikler girilince krallık tabloları burada dolacak.</p></div></section>`;
   if(S.players.length)h+=rkCard;
@@ -1408,7 +1408,7 @@ function viewSezon(){
    const ga=pairs.filter(x=>x.o.ga>0).sort((x,y)=>y.o.ga-x.o.ga||y.o.n-x.o.n).slice(0,5);
    const rv=Object.entries(S.vs||{}).map(([k,o])=>({a:k.split("|")[0],b:k.split("|")[1],o})).filter(x=>ids.has(x.a)&&ids.has(x.b)&&x.o.n>=3).sort((x,y)=>y.o.n-x.o.n||Math.abs((x.o.w[x.a]||0)-(x.o.w[x.b]||0))-Math.abs((y.o.w[y.a]||0)-(y.o.w[y.b]||0))).slice(0,5);
    const li=(x,val)=>`<li data-act="cmpPair" data-a="${esc(x.a)}" data-b="${esc(x.b)}"><span>${esc(shortName(nameOf(x.a)))} & ${esc(shortName(nameOf(x.b)))}</span><b>${val}</b></li>`;
-   const cardB=(t,sub,list)=>list.length?`<section class="card board"><h3>${t}</h3><p class="muted small" style="margin-top:-8px">${sub}</p><ol>${list}</ol></section>`:"";
+   const cardB=(t,sub,list)=>list.length?`<section class="card board"><h3>${t}</h3><ol>${list}</ol></section>`:"";
    const k1=cardB("İkili kimya","Aynı takımdayken en çok kazanan ikililer (en az 3 maç)",best.map(x=>li(x,`%${Math.round(x.o.W/x.o.n*100)} <span class="muted small">${x.o.W}/${x.o.n}</span>`)).join(""));
    const dl=Object.entries(S.duo||{}).map(([k,n])=>({a:k.split(">")[0],b:k.split(">")[1],n})).filter(x=>ids.has(x.a)&&ids.has(x.b)).sort((x,y)=>y.n-x.n).slice(0,5);
    const k2=dl.length?cardB("Gol–asist ikilileri","Pası veren → golü atan",dl.map(x=>`<li data-act="cmpPair" data-a="${esc(x.a)}" data-b="${esc(x.b)}"><span>${esc(shortName(nameOf(x.a)))} → ${esc(shortName(nameOf(x.b)))}</span><b>${x.n} gol</b></li>`).join(""))
@@ -1459,15 +1459,15 @@ function viewKurallar(inSheet){
 function viewAyarlar(){
   const url=location.origin+location.pathname;
   let h=`<div class="ph"><div><h1>Ayarlar</h1></div></div>
-  <section class="card"><div class="ch"><div><h2>Puanlama kuralları</h2><p class="muted small" style="margin-top:6px">Kartlar her maçtan sonra gol, asist, skor ve Maçın Adamı'na göre değişir.</p></div></div><button class="btn block" data-act="rulesSheet">${ICON.kural} Kuralları gör</button></section>`;
+  <section class="card"><div class="ch"><div><h2>Puanlama kuralları</h2></div></div><button class="btn block" data-act="rulesSheet">${ICON.kural} Kuralları gör</button></section>`;
   h+=`<section class="card"><h2>Telefona uygulama gibi ekle</h2><ol class="steps-list">
     <li><b>iPhone:</b> Safari'de bu sayfayı aç, alttaki Paylaş düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</li>
     <li><b>Android:</b> Chrome'da sağ üstteki üç noktaya bas, <b>Ana ekrana ekle</b>'yi seç.</li></ol>
-    <p class="muted small">Ana ekrandan açınca tarayıcı çubukları olmadan, uygulama gibi açılır.</p></section>
-  <section class="card"><h2>Arkadaşlarınla paylaş</h2><p class="muted small">Linki WhatsApp grubuna at. Herkes kendini seçip skor tahmini yapabilir ve durumunu güncelleyebilir.</p>
+    </section>
+  <section class="card"><h2>Arkadaşlarınla paylaş</h2>
     <input type="text" readonly value="${esc(url)}" id="shareUrl" aria-label="Uygulama linki">
     <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent("⚽ "+S.settings.group_name+" artık Yelek'te. Kartına bak, katılımını buradan bildir: "+url)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(url)}">${ICON.copy} Kopyala</button></div></section>`;
-  if(!S.admin)h+=`<section class="card"><h2>Yönetici girişi</h2><p class="muted small">Maç açmak, kadro kurmak ve istatistik girmek için yönetici şifresini gir. Şifre bu cihazda hatırlanır.</p>
+  if(!S.admin)h+=`<section class="card"><h2>Yönetici girişi</h2>
     <form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`;
   else{const s=S.f.set||(S.f.set={...S.settings});
     h+=`<section class="card"><div class="ch"><h2>Grup ayarları</h2><span class="chip warn">Yönetici</span></div><form data-form="settings" style="display:grid;gap:12px">
@@ -1477,7 +1477,7 @@ function viewAyarlar(){
       <label class="f" for="sField">Halı saha adı<input id="sField" type="text" maxlength="60" data-bind="set.field_name" value="${esc(s.field_name)}" placeholder="Örn. Yıldız Halı Saha"></label>
       <div class="grid2"><label class="f" for="sDay">Maç günü<select id="sDay" data-bind="set.day">${GUNLER.map((g,i)=>`<option value="${i}"${+s.day===i?" selected":""}>${g}</option>`).join("")}</select></label>
       <label class="f" for="sTime">Maç saati<input id="sTime" type="time" data-bind="set.time" value="${esc(s.time)}"></label></div>
-      <button class="btn primary block" type="submit">Kaydet</button><p class="muted small">Takımlar ${TEAM_SIZE}'şer kişi, kadro ${CAP} kişi.</p></form></section>
+      <button class="btn primary block" type="submit">Kaydet</button></form></section>
     <section class="card"><h2>Yönetici şifresi</h2><form data-form="pinChange" style="display:grid;gap:10px"><label class="f" for="newPin">Yeni şifre (en az 6 karakter)<input id="newPin" type="password" autocomplete="new-password" data-bind="newPin" value="${esc(S.f.newPin||"")}"></label><button class="btn block" type="submit">Şifreyi değiştir</button></form>
       <button class="btn ghost sm" data-act="logout">Bu cihazda yöneticilikten çık</button></section>`}
   return h;
