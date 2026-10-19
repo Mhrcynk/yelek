@@ -7,8 +7,9 @@ Halı saha ekibi için FIFA tarzı oyuncu kartları ve maç takibi.
 - Sakatlık, hastalık, izin gibi durumlar kartta görünür; maça gelinmeyen her hafta reyting 1 düşer
 - 7'li takımlar için dizilişler (2-3-1, 3-2-1, 2-1-2-1, 2-2-2, 3-1-2, 1-3-2, 3-3) ve saha üzerinde kadro yerleştirme
 - Dengeli takım kurma ve kaptan draftı
-- Maçın Adamı, Haftanın Fiyaskosu, Haftanın Golü ve yıl sonu Altın Top oylaması
-- Sezon krallık tabloları ve oyuncuya özel yıl özeti
+- EA tarzı mevkiler (SNT, SĞK, MOO, STP…) ve her oyuncuya bir alternatif mevki
+- Maçın Adamı (yönetici seçer), reyting sıralaması ve sezon listeleri
+- Sezon krallık tabloları, haftalık reyting sıralaması ve oyuncuya özel yıl özeti
 
 ## Nasıl çalışır
 
