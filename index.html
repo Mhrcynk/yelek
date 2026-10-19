@@ -114,7 +114,7 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .cd{font-size:.74rem;font-weight:800;background:rgba(0,0,0,.28);padding:5px 10px;border-radius:99px;letter-spacing:.02em}
 .hero-main{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .when{display:grid;line-height:.9;min-width:0;flex:1}
-.when .wd{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,10.5vw,3.6rem);text-transform:uppercase;overflow-wrap:anywhere}
+.when .wd{font-family:var(--display);font-weight:900;font-size:clamp(2rem,9vw,3.4rem);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:clip}
 .when .dt{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,7vw,1.9rem);color:var(--bib2);text-transform:uppercase}
 .when .tm{margin-top:10px;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.85);line-height:1.3;display:flex;gap:6px;align-items:center}
 .when .tm svg{width:16px;height:16px;flex:none}
@@ -245,6 +245,9 @@ details>summary::-webkit-details-marker{display:none}
 details>summary::before{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;flex:none}
 details[open]>summary::before{transform:rotate(45deg)}
 .pool-box{background:var(--card2);border-radius:14px;padding:4px 12px}
+.guestf{display:flex;gap:8px;align-items:center}
+.guestf input{flex:1;min-height:40px}
+.guestf .btn{white-space:nowrap}
 
 /* Skor ve istatistik */
 .scoreEdit{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;text-align:center}
@@ -500,7 +503,7 @@ const ICON={
 /* ================= Durum ================= */
 const LS={get(k){try{return localStorage.getItem(k)||""}catch(_){return""}},set(k,v){try{localStorage.setItem(k,v)}catch(_){}},del(k){try{localStorage.removeItem(k)}catch(_){}}};
 const S={all:[],players:[],matches:[],settings:{...DEF_SET},seasonVotes:[],me:LS.get("y_me"),pin:LS.get("y_pin"),admin:false,
-  tab:"mac",sheet:null,photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
+  tab:"mac",sheet:null,guests:[],photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
 S.admin=!!S.pin;
 {const old={hafta:"mac",oyuncular:"kartlar",kurallar:"ayarlar"};let t=LS.get("y_tab");t=old[t]||t;if(TABS.some(x=>x[0]===t))S.tab=t;
  const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;}
@@ -561,7 +564,7 @@ function compute(){
   const F=fin();const mInfo={};const out={};
   for(const m of F){const motm=m.motm||null,fiy=topVote(m,"fiyasko"),gol=topVote(m,"gol");
     const pl=[...(m.team_a||[]),...(m.team_b||[])];const pts={};for(const id of pl)pts[id]=matchPoints(m,id,motm);
-    const totw=pl.filter(id=>pts[id]&&P(id)).sort((a,b)=>pts[b].pts-pts[a].pts).slice(0,5);mInfo[m.id]={motm,fiy,gol,pts,totw}}
+    const totw=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts).slice(0,5);mInfo[m.id]={motm,fiy,gol,pts,totw}}
   for(const p of S.all){
     const base=baseOf(p);let ovr=base;const joined=p.created_at?new Date(new Date(p.created_at).toDateString()).getTime():0;
     const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
@@ -606,7 +609,7 @@ async function load(){
   try{const yr=new Date().getFullYear();
     const[st,pl,ms,sv2]=await Promise.all([sbGet("settings?id=eq.1&select=*"),sbGet("players?select=*&order=created_at.asc"),
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr)]);
-    S.settings={...DEF_SET,...(st[0]||{})};S.all=pl;S.players=pl.filter(p=>!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+    S.settings={...DEF_SET,...(st[0]||{})};S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
     const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
   }catch(e){console.error(e);S.err="Verilere ulaşılamadı. İnternet bağlantını kontrol edip sayfayı yenile."}
   render();
@@ -691,17 +694,12 @@ function createHero(){const d=S.f.newDate||nextDay(+S.settings.day);
     <label class="f" for="nmTime" style="color:rgba(255,255,255,.8)">Saat<input type="time" id="nmTime" data-bind="newTime" value="${esc(S.f.newTime||S.settings.time)}"></label></div>
     <button class="btn primary block" data-act="createMatch">${ICON.plus} Maçı aç</button></section>`}
 function hero(om){
-  const L=rsvpLists(om);const me=P(S.me);let actH="";
-  if(om.state==="kayit"){
-    if(!me||me.archived)actH=`<button class="btn light block" data-act="meSheet">Kim olduğunu seç, katılımını bildir</button>`;
-    else if(UNAVAIL.includes(stOf(me)))actH=`<div class="hero-note">${stChip(me)}<span>Bu hafta gelemiyor görünüyorsun.</span><button class="btn sm light" data-act="open" data-id="${esc(me.id)}">Durumunu değiştir</button></div>`;
-    else{const v=(om.rsvp||{})[me.id];
-      actH=`<div class="rsvpBig" role="group" aria-label="Bu hafta geliyor musun?">${[["g","Geliyorum","check"],["y","Yedeğim","clock"],["n","Gelemem","x"]].map(([k,l,ic])=>`<button class="rb ${k}${v===k?" on":""}" data-act="rsvp" data-m="${esc(om.id)}" data-p="${esc(me.id)}" data-v="${k}" aria-pressed="${v===k}">${ICON[ic]}<span>${l}</span></button>`).join("")}</div>`;
-      if(v==="g"&&!L.kadro.some(p=>p.id===me.id))actH+=`<div class="hero-note">Kadro dolu. Sıradasın, yer açılırsa gireceksin.</div>`;
-      if((om.late||{})[me.id])actH+=`<div class="hero-note">Son dakika iptali olarak işlendi.</div>`;}
-  }else actH=`<div class="hero-note">Kadrolar belli. Dizilişe aşağıdan bakabilirsin.</div>`;
+  const me=P(S.me);let actH="";
+  const inTeams=(om.team_a||[]).length+(om.team_b||[]).length;const mine=me&&sideOf(om,me.id);
+  if(om.state==="kayit"){actH=`<div class="hero-note">Kadrolar henüz açıklanmadı. Yönetici kurunca burada göreceksin.</div>`;
+  }else actH=`<div class="hero-note">${mine?`Kadrodasın: <b>${TEAM[mine]}</b>. Dizilişe aşağıdan bakabilirsin.`:"Kadrolar belli. Dizilişe aşağıdan bakabilirsin."}</div>`;
   return `<section class="hero"><div class="hero-top"><span class="eyebrow">Sıradaki maç</span><span class="cd">${countdown(om)}</span></div>
-    <div class="hero-main">${heroWhen(om.date,om.time)}${ring(L.kadro.length,CAP)}</div>${actH}</section>`;
+    <div class="hero-main">${heroWhen(om.date,om.time)}${ring(inTeams,CAP)}</div>${actH}</section>`;
 }
 function rsvpLists(m){
   const rs=m.rsvp||{},at=m.rsvp_at||{};const ps=S.players;const ok=p=>!UNAVAIL.includes(stOf(p));
@@ -711,19 +709,12 @@ function rsvpLists(m){
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
   if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip warn">Yönetici</span></div>${editorPanel(m)}</section>`;
-  const L=rsvpLists(m);let h="";
+  let h="";
   if(m.state==="kayit"){
-    const txt=waText(m,L);
-    h+=`<section class="card"><div class="ch"><h2>Kadro</h2><span class="muted small">${L.kadro.length>=CAP?"Kadro tamam":(CAP-L.kadro.length)+" kişi eksik"}</span></div>
-      <div class="list">${grp("Geliyor",L.kadro,m)+grp("Sırada (yer açılırsa girer)",L.sira,m)+grp("Yedek",L.yedek,m)+grp("Yanıt vermedi",L.bos,m)+grp("Gelemiyor",L.yok,m)}</div>
-      <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(txt)}">${ICON.copy} Kopyala</button></div></section>`;
-    if(S.admin){const few=L.kadro.length<4;
-      h+=`<section class="card"><div class="ch"><h2>Takımları kur</h2><span class="chip warn">Yönetici</span></div>
-      <div class="acts"><button class="act" data-act="balance" data-id="${esc(m.id)}" ${few?"disabled":""}>${ICON.scale}<b>Dengeli kur</b><span>Reytinglere göre iki denk takım</span></button>
-      <button class="act" data-act="draftStart" data-id="${esc(m.id)}" ${few?"disabled":""}>${ICON.flip}<b>Kaptan draftı</b><span>Kaptanlar sırayla oyuncu seçer</span></button>
-      <button class="act" data-act="manual" data-id="${esc(m.id)}">${ICON.hand}<b>Kendim kurayım</b><span>Takımları ve yerleri sen belirle</span></button></div>
-      ${few?'<p class="muted small">Dengeli kurma ve draft için en az 4 kişinin gelmesi gerekiyor.</p>':""}
-      <div><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`}
+    if(S.admin)h+=`<section class="card"><div class="ch"><h2>Kadroları kur</h2><span class="chip warn">Yönetici</span></div>
+      <p class="muted small">WhatsApp anketine göre oyuncuları seç, iki takıma ayır ve sahaya diz. Grupta olmayan biri gelecekse misafir olarak ekleyebilirsin.</p>
+      <button class="btn primary block" data-act="manual" data-id="${esc(m.id)}">${ICON.hand} Kadroyu kur</button>
+      <div><button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
   }else{
     h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2>${S.admin?`<button class="btn sm primary" data-act="editTeams" data-id="${esc(m.id)}">${ICON.hand} Kadroları değiştir</button>`:""}</div>${teamsView(m)}</section>`;
     if(S.admin)h+=finishCard(m);
@@ -813,7 +804,7 @@ function tokHtml(T,editable,sel){
   const attrs=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
   const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${ROLE_NAME[T.r]} yeri"><span class="shirt">${T.r}</span><span class="tn">Boş</span></button>`;
-  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[T.r]}, reyting ${ovrOf(id)}"><span class="shirt${photoOf(id)?" hasph":""}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ov">${ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
+  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${ROLE_NAME[T.r]}, reyting ${ovrOf(id)}"><span class="shirt${photoOf(id)?" hasph":""}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i></span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
 }
 function fieldHtml(mode,pa,pb,la,lb,editable,sel){
   return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel)).join("")}</div>`;
@@ -868,12 +859,17 @@ function editorPanel(m){
   const selName=t.sel?nameOf(t.sel.kind==="slot"?t["l"+t.sel.team.toLowerCase()][t.sel.idx]:t.sel.pid):"";
   const selHasPlayer=t.sel&&(t.sel.kind==="bench"||t["l"+t.sel.team.toLowerCase()][t.sel.idx]);
   const L=rsvpLists(S.matches.find(x=>x.id===t.mid)||{});const inT=id=>t.A.includes(id)||t.B.includes(id);
-  const poolK=L.kadro.map(p=>p.id).filter(id=>!inT(id));
-  const poolO=S.players.filter(p=>!inT(p.id)&&!poolK.includes(p.id)).sort((x,y)=>x.name.localeCompare(y.name,"tr")).map(p=>p.id);
+  const free=S.players.filter(p=>!inT(p.id)).sort((x,y)=>x.name.localeCompare(y.name,"tr"));
+  const poolK=free.filter(p=>!UNAVAIL.includes(stOf(p))).map(p=>p.id),poolO=free.filter(p=>UNAVAIL.includes(stOf(p))).map(p=>p.id);
+  const poolG=S.guests.filter(p=>!inT(p.id)).map(p=>p.id);
   const poolRow=id=>{const p=P(id);return `<div class="pl">${avatarO(p)}<div class="pi"><b>${esc(p.name)}</b><span>${esc(p.pos)}${stChip(p)}</span></div><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm" data-act="poolAdd" data-k="A" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleklilere">${dot("A")}A</button><button class="btn sm" data-act="poolAdd" data-k="B" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleksizlere">${dot("B")}B</button></span></div>`};
-  return `${poolK.length||poolO.length?`<details class="pool-box"${t.poolOpen!==false?" open":""} data-act-toggle-team="poolOpen"><summary>Oyuncu havuzu · ${poolK.length} gelen oyuncunun takımı yok</summary><div class="list">
-     ${poolK.length?`<div class="grp">Gelecek olanlar</div>${poolK.map(poolRow).join("")}`:""}
-     ${poolO.length?`<details><summary class="small">Diğer oyuncular (${poolO.length})</summary>${poolO.map(poolRow).join("")}</details>`:""}</div></details>`:""}
+  return `<details class="pool-box"${t.poolOpen!==false?" open":""} data-act-toggle-team="poolOpen"><summary>Oyuncu seç · ${t.A.length+t.B.length}/${CAP} kişi seçildi</summary><div class="list">
+     ${poolK.length?`<div class="grp">Oyuncular</div>${poolK.map(poolRow).join("")}`:`<p class="muted small" style="padding:8px 0">Bütün oyuncular takımlara dağıtıldı.</p>`}
+     ${poolO.length?`<details><summary class="small">Sakat, hasta ya da izinde (${poolO.length})</summary>${poolO.map(poolRow).join("")}</details>`:""}
+     ${poolG.length?`<div class="grp">Önceki misafirler</div>${poolG.map(poolRow).join("")}`:""}
+     <div class="grp">Misafir ekle</div>
+     <form data-form="addGuest" class="guestf"><input id="guestName" type="text" maxlength="40" placeholder="Misafirin adı" autocomplete="off" data-bind="guestName" value="${esc(S.f.guestName||"")}"><button class="btn sm" type="submit">${dot(k)}${TEAM[k]}'e ekle</button></form>
+     <p class="muted small" style="padding:4px 0 8px">Misafirin kartı olmaz, reytingi değişmez; sadece o maçın kadrosunda görünür.</p></div></details>
    ${viewSeg(k,"tview",false)}
    <div class="lineup">${fieldHtml(k,t.pa,t.pb,t.la,t.lb,true,t.sel)}
    <div style="display:grid;gap:12px;align-content:start;min-width:0">
@@ -885,7 +881,7 @@ function editorPanel(m){
    ${strengthHtml(t.A,t.B,t.la,t.pa,t.lb,t.pb)}
    <button class="btn primary block" data-act="saveTeams">${ICON.check} Kadroları kaydet</button>
    <div class="btns2"><button class="btn sm" data-act="autoPlace">Otomatik yerleştir</button><button class="btn sm" data-act="swapBibs">Yelekleri değiştir</button></div>
-   <div class="btns2">${m.state==="kayit"?`<button class="btn sm" data-act="balance" data-id="${esc(m.id)}">Dengeli dağıt</button>`:`<span></span>`}<button class="btn ghost sm" data-act="cancelTeams">Vazgeç</button></div>`;
+   <div class="btns2"><button class="btn sm" data-act="balance" data-id="${esc(m.id)}" ${t.A.length+t.B.length<4?"disabled":""}>Dengeli dağıt</button><button class="btn ghost sm" data-act="cancelTeams">Vazgeç</button></div>`;
 }
 function draftPanel(m){
   const d=S.draft;const ids=rsvpLists(m).kadro.map(p=>p.id);
@@ -1093,7 +1089,7 @@ function viewKurallar(inSheet){
   <section class="card"><h2>Yenilen gole göre savunma puanı</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Takım kaç gol yedi</th><th>Kaleci</th><th>Defans</th><th>Orta saha</th><th>Forvet</th></tr></thead><tbody>
    ${[["Hiç",0],["1–2",1],["3–4",2],["5–7",3],["8 ve üstü",4]].map(([l,i])=>{const v=r.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.OS)}</td><td>${f(v.FV)}</td></tr>`}).join("")}</tbody></table></div></section>
   <section class="card"><h2>Puandan reytinge</h2><div class="rules">${row("3 ve altı","−2")}${row("4–5","−1")}${row("6–8","0")}${row("9–10","+1")}${row("11–13","+2")}${row("14 ve üstü","+3")}</div></section>
-  <section class="card"><h2>Maça gelmeyince</h2><div class="rules">${row("Gelmedi (sakatlık, hastalık, izin fark etmez)",r.gelmedi)}${row("Maça 24 saatten az kala iptal",r.sonDakika)}</div>
+  <section class="card"><h2>Maça gelmeyince</h2><div class="rules">${row("Maçın kadrosunda yok (sebebi fark etmez)",r.gelmedi)}</div>
   <p class="muted small">Oyuncu o maç dizilişte hangi mevkide oynadıysa o mevkiden puan alır; kaleye geçen kaleci gibi puanlanır. Reyting başlangıcın en fazla ${r.aralik} puan altına ya da üstüne gidebilir ve 40–99 arasında kalır. Karttaki ŞUT, PAS, DEF ve FİZ son beş maçtaki gol, asist, az gol yeme ve devamlılığa göre oynar; kalecide REF az gol yedikçe artar.</p></section>`;
 }
 
@@ -1137,11 +1133,11 @@ document.addEventListener("click",async e=>{
     case"filter":S.filter=el.dataset.v;render(true);break;
     case"back":S.view=null;render(true);break;
     case"viewm":S.view=id;render(true);window.scrollTo(0,0);break;
-    case"createMatch":await A("admin_create_match",{p_date:S.f.newDate||nextDay(+S.settings.day),p_time:S.f.newTime||S.settings.time},"Maç açıldı");break;
+    case"createMatch":{const r=await A("admin_create_match",{p_date:S.f.newDate||nextDay(+S.settings.day),p_time:S.f.newTime||S.settings.time},"Maç açıldı, şimdi kadroyu kur");if(r&&r.id){startEditor(r.id,[],[]);S.teams.poolOpen=true;render(true)}break}
     case"delMatch":if(S.f.delMatch!==id){S.f.delMatch=id;render(true);break}S.f.delMatch=null;S.teams=null;await A("admin_archive_match",{p_id:id},"Maç silindi");break;
     case"rsvp":{if(el.disabled)break;const r=await act("rsvp",{p_match:el.dataset.m,p_player:el.dataset.p,p_value:el.dataset.v});if(r&&r.late)toast("Son dakika iptali kaydedildi");else if(r)toast(el.dataset.v==="g"?"Görüşürüz sahada!":el.dataset.v==="y"?"Yedek olarak yazıldı":"Gelemiyor olarak işlendi");break}
     case"copy":{const tx=el.dataset.txt;try{await navigator.clipboard.writeText(tx);toast("Kopyalandı")}catch(_){toast("Kopyalanamadı, metni elle seç")}break}
-    case"balance":{const m=S.matches.find(x=>x.id===id);const ids=rsvpLists(m).kadro.map(p=>p.id);if(ids.length<2){toast("Önce katılım bekleniyor");break}const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
+    case"balance":{const ids=t?[...t.A,...t.B]:[];if(ids.length<4){toast("Önce en az 4 oyuncu seç");break}const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
     case"editTeams":{const m=S.matches.find(x=>x.id===id);startEditor(id,m.team_a||[],m.team_b||[],m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);render(true);break}
     case"manual":{const m=S.matches.find(x=>x.id===id);S.draft=null;if(m.team_a&&m.team_a.length)startEditor(id,m.team_a,m.team_b,m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);else startEditor(id,[],[],t?.fa,t?.fb);S.teams.poolOpen=true;render(true);break}
     case"backRsvp":await A("admin_set_state",{p_id:id,p_state:"kayit"},"Katılım yeniden açıldı");break;
@@ -1232,6 +1228,9 @@ document.addEventListener("submit",async e=>{
   if(kind==="addPlayer"){const ap=S.f.ap;const name=String(ap.name||"").trim();if(!name){toast("Ad gir");return}
     const r=await A("admin_save_player",{p_id:null,p_name:name,p_pos:ap.pos,p_no:"",p_attrs:cleanAttrs(ap.pos,ap.attrs)},name+" kadroya eklendi");
     if(r){S.f.ap={name:"",pos:ap.pos,no:"",attrs:{}};render(true);setTimeout(()=>$("#apName")?.focus(),0)}}
+  if(kind==="addGuest"){const t=S.teams;const name=String(S.f.guestName||"").trim();if(!t||!name){toast("Misafirin adını yaz");return}
+    const k=t.view||"A";const r=await A("admin_add_guest",{p_name:name},name+" "+TEAM[k]+" takımına eklendi");
+    if(r&&r.id){t[k].push(r.id);const L=t["l"+k.toLowerCase()];const e2=L.findIndex((x,i)=>i>0&&!x);if(e2>=0)L[e2]=r.id;S.f.guestName="";render(true)}}
   if(kind==="login"){const pin=String(S.f.pin||"");if(!pin){toast("Şifreyi gir");return}
     try{const r=await rpc("admin_check",{p_pin:pin});if(r&&r.ok){S.pin=pin;S.admin=true;LS.set("y_pin",pin);S.f.pin="";toast("Yönetici olarak giriş yapıldı");render(true)}
       else toast(r&&r.error==="locked"?"Çok fazla hatalı deneme. 15 dakika sonra tekrar dene.":"Şifre hatalı")}catch(_){toast("Bağlantı hatası")}}
