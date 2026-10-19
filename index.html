@@ -334,6 +334,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .chips select{width:auto;min-height:38px;padding:6px 10px;border-radius:99px;flex:none}
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:14px}
 .plist{display:grid;gap:8px;min-width:0}
+.clk b.day{font-size:clamp(1.8rem,9vw,2.3rem)}
 .glist{display:grid;gap:8px}.gm{font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:8px 2px 0}
 .grow{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:10px 12px;text-align:left;width:100%}
 .gd{display:grid;justify-items:center;line-height:1}.gd b{font-family:var(--display);font-size:1.6rem}.gd small{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase}
@@ -664,12 +665,12 @@ function roleIn(m,pid,side){
   const p=posOf(P(pid));return p==="KL"?"DF":p;
 }
 const hash=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)};
-function cdText(ts){const ms=ts-Date.now();if(ms>864e5||ms<=-2*36e5)return null;if(ms<=0)return{live:1,t:"Maç oynanıyor"};
+function cdText(ts){const ms=ts-Date.now();if(ms<=-2*36e5)return null;if(ms<=0)return{live:1,t:"Maç oynanıyor"};if(ms>864e5){const a=new Date(ts);a.setHours(0,0,0,0);const n=new Date();n.setHours(0,0,0,0);return{day:1,t:Math.max(1,Math.round((a-n)/864e5))+" gün"}}
   const sec=Math.floor(ms/1e3);return{t:pad(Math.floor(sec/3600))+":"+pad(Math.floor(sec%3600/60))+":"+pad(sec%60)}}
 function cdClock(m){const ts=matchTs(m),i=cdText(ts);
-  return `<div class="clk" id="cdClk" data-ts="${ts}"${i?"":" hidden"} role="timer" aria-label="Maça kalan süre"><span class="eyebrow">${i&&i.live?"Canlı":"Maça kalan"}</span><b class="num">${i?i.t:""}</b></div>`}
+  return `<div class="clk" id="cdClk" data-ts="${ts}"${i?"":" hidden"} role="timer" aria-label="Maça kalan süre"><span class="eyebrow">${i&&i.live?"Canlı":"Maça kalan süre"}</span><b class="num${i&&i.day?" day":""}">${i?i.t:""}</b></div>`}
 function tickCd(){const el=document.getElementById("cdClk");if(!el)return;const i=cdText(+el.dataset.ts);el.hidden=!i;if(!i)return;
-  const b=el.querySelector("b");if(b.textContent!==i.t)b.textContent=i.t;el.classList.toggle("live",!!i.live);el.querySelector(".eyebrow").textContent=i.live?"Canlı":"Maça kalan"}
+  const b=el.querySelector("b");if(b.textContent!==i.t)b.textContent=i.t;el.classList.toggle("live",!!i.live);b.classList.toggle("day",!!i.day);el.querySelector(".eyebrow").textContent=i.live?"Canlı":"Maça kalan süre"}
 setInterval(tickCd,1000);
 
 /* ================= Puanlama ================= */
