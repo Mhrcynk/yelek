@@ -334,6 +334,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .evp{display:grid;gap:3px;min-width:0}.evn{font-weight:800;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.evs{display:flex;flex-wrap:wrap;gap:4px}
 .evi{display:inline-flex;align-items:center;gap:1px;font-style:normal;font-size:.9rem;line-height:1;background:rgba(255,255,255,.07);border-radius:8px;padding:3px 6px}.evi small{font-size:.72rem;font-weight:900;margin-left:2px}
 .evi.p{background:#D9423F;color:#fff;font-family:var(--display);font-weight:900;font-size:.78rem}.evi.og{background:rgba(217,66,63,.35)}.evi.c{background:rgba(45,104,166,.4)}
+.pkb{position:relative;display:inline-block;line-height:1}.pkb b{position:absolute;right:-5px;bottom:-4px;background:#D9423F;color:#fff;font-family:var(--display);font-weight:900;font-size:.52rem;line-height:1;border-radius:4px;padding:1px 2px;border:1px solid rgba(0,0,0,.3)}
 .evleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.7rem;color:var(--muted)}.evleg .evi{font-size:.66rem;padding:1px 4px}
 .degs{display:grid;gap:10px}.degc{display:grid;gap:4px;background:var(--card2);border-radius:14px;padding:10px}.degh{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}.degh .pfc{font-size:.8rem;padding:2px 8px;margin:0}
 .degr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:0;background:none;color:inherit;text-align:left;padding:5px 0;border-top:1px solid var(--line)}.degr:first-of-type{border-top:0}.degn{display:grid;min-width:0}.degn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -394,7 +395,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .pk.none{border-style:dashed}
 .ubar{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.ubar .btn:disabled{opacity:.45}
 .evr{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,8.5em) auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
-.evr .gw{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.evr select{min-height:36px;padding:4px 8px}
+.evr .gw{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pkt{border:1px solid var(--line2);background:none;color:var(--muted);border-radius:7px;font-family:var(--display);font-weight:900;font-size:.72rem;min-width:26px;min-height:26px;margin-right:6px;padding:0}.pkt.on{background:#D9423F;border-color:#D9423F;color:#fff}.pk.pkp{border-color:#D9423F}.evr select{min-height:36px;padding:4px 8px}
 .xb{width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);background:var(--card2);display:grid;place-items:center;padding:0;color:var(--muted)}.xb svg{width:16px;height:16px}
 .glr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,9.5em);gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}
 .glr span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.glr select{min-height:38px;padding:6px 8px}
@@ -644,7 +645,7 @@ const FORMS={
 };
 const NOTE={base:6,esik:6.5,kat:.4,min:1,max:10,motm:1,fiy:-1,kk:-1,
   // yöneticinin maç değerlendirmesi (14 kişide 3-4-4-3) ve özel olaylar (forvetin o maçtaki gol değerine göre)
-  perf:[null,[.8,"Çok iyi"],[.3,"İyi"],[0,"Orta"],[-.8,"Kötü"]],perfQ:[3,4,4,3],cizgi:1,penalti:-.5,
+  penGol:.5,perf:[null,[.8,"Çok iyi"],[.3,"İyi"],[0,"Orta"],[-.8,"Kötü"]],perfQ:[3,4,4,3],cizgi:1,penalti:-.5,
   // skor farkına göre sonuç ve gol/asist değeri: [en fazla fark, kazanan, kaybeden, gol çarpanı (kazanan), gol çarpanı (kaybeden), ad]
   fark:[[0,0,0,1.2,1.2,"Beraberlik"],[2,.4,-.2,1.2,1.2,"Çekişmeli maç"],[5,.7,-.6,1,1,"Net maç"],[999,1,-1,.8,1,"Farklı maç"]],
   gol:{KL:2,DF:1,DOS:1,OS:.8,FV:.6},asist:{KL:1.2,DF:.7,DOS:.6,OS:.5,FV:.4},tamGol:3,
@@ -755,7 +756,7 @@ function matchPoints(m,pid,motmId,golId,fiyId,lvIn){
   add("Kart seviyesi",lvBase(lv)-NOTE.base);
   const df=Math.abs(my-op),fk=NOTE.fark.find(x=>df<=x[0]),won=my>op;const tf=won||!df?fk[3]:fk[4];
   add(!df?"Beraberlik":(won?"Galibiyet":"Yenilgi")+` (${df} fark)`,!df?0:won?fk[1]:fk[2]);
-  add(g+" gol",(Math.min(g,NOTE.tamGol)+Math.max(0,g-NOTE.tamGol)/2)*NOTE.gol[nr]*gaF*gf*tf,1);add(a+" asist",a*NOTE.asist[nr]*gaF*gf*tf,1);
+  const pg=Math.min(+st.pg||0,g),gE=g-pg*(1-NOTE.penGol);add(g+" gol"+(pg?` (${pg} penaltı)`:""),(Math.min(gE,NOTE.tamGol)+Math.max(0,gE-NOTE.tamGol)/2)*NOTE.gol[nr]*gaF*gf*tf,1);add(a+" asist",a*NOTE.asist[nr]*gaF*gf*tf,1);
   if(!g&&!a)add("Gol/asist yok",NOTE.bos[nr]||0);
   const fvG=NOTE.gol.FV*gAll*tf,cl=+st.cl||0,pen=+st.pen||0,pk=+st.k||0;
   if(cl)add(cl>1?cl+" kez çizgiden çıkardı":"Çizgiden çıkardı",cl*fvG*NOTE.cizgi,1);
@@ -1257,12 +1258,12 @@ function draftPanel(m){
 
 /* ================= Maç sonu girişi ================= */
 function eventsFrom(m){const st=m.stats||{};const ev=[];const gU={},aU={};
-  for(const x of(m.links||[])){if(!x||!x.g)continue;ev.push({t:"g",g:x.g,a:x.a||null});gU[x.g]=(gU[x.g]||0)+1;if(x.a)aU[x.a]=(aU[x.a]||0)+1}
+  for(const x of(m.links||[])){if(!x||!x.g)continue;ev.push({t:"g",g:x.g,a:x.pk?null:(x.a||null),pk:!!x.pk});gU[x.g]=(gU[x.g]||0)+1;if(x.a)aU[x.a]=(aU[x.a]||0)+1}
   for(const[id,o]of Object.entries(st)){for(let i=gU[id]||0;i<(+o.g||0);i++)ev.push({t:"g",g:id,a:null});for(let i=0;i<(+o.og||0);i++)ev.push({t:"og",p:id})}
   for(const[id,o]of Object.entries(st)){for(let i=aU[id]||0;i<(+o.a||0);i++){const f=ev.find(e=>e.t==="g"&&!e.a&&e.g!==id&&sideOf(m,e.g)===sideOf(m,id));if(f)f.a=id;else ev.push({t:"a",p:id})}}
   return ev}
-function statsOf(sd){const o={};const add=(id,k)=>{if(id)(o[id]||(o[id]={g:0,a:0,og:0}))[k]++};
-  for(const e of sd.events){if(e.t==="g"){add(e.g,"g");add(e.a,"a")}else if(e.t==="og")add(e.p,"og");else if(e.t==="a")add(e.p,"a")}
+function statsOf(sd){const o={};const add=(id,k)=>{if(id){const x=o[id]||(o[id]={g:0,a:0,og:0});x[k]=(x[k]||0)+1}};
+  for(const e of sd.events){if(e.t==="g"){add(e.g,"g");if(e.pk)add(e.g,"pg");else add(e.a,"a")}else if(e.t==="og")add(e.p,"og");else if(e.t==="a")add(e.p,"a")}
   const ens=id=>o[id]||(o[id]={g:0,a:0,og:0});for(const[id,v]of Object.entries(sd.perf||{}))if(v)ens(id).k=v;
   for(const[id,v]of Object.entries(sd.pen||{}))if(v)ens(id).pen=v;for(const[id,v]of Object.entries(sd.cl||{}))if(v)ens(id).cl=v;return o}
 function goalSums(m,sd){let a=0,b=0;for(const e of sd.events){if(e.t==="g")sideOf(m,e.g)==="A"?a++:b++;else if(e.t==="og")sideOf(m,e.p)==="A"?b++:a++}return[a,b]}
@@ -1298,11 +1299,11 @@ function statEntry(m){
       <details class="small"><summary>Rakip kendi kalesine attı</summary><div class="chipsP" style="margin-top:8px">${team(o).map(id=>chip(id,"gOwn")).join("")}</div></details></div>`}
   else if(step.ph==="assist"){const e=sd.events[step.i];const mates=team(sideOf(m,e.g)).filter(id=>id!==e.g);
     stepH=`<div class="note subp gstep"><div class="gsh"><b>⚽ ${esc(shortName(nameOf(e.g)))} · asisti kim yaptı?</b></div>
-      <div class="chipsP">${mates.map(id=>chip(id,"gAssist")).join("")}<button class="pk none" data-act="gAssist" data-m="${M}" data-p=""><span>Asist yok</span></button></div></div>`}
+      <div class="chipsP">${mates.map(id=>chip(id,"gAssist")).join("")}<button class="pk none" data-act="gAssist" data-m="${M}" data-p=""><span>Asist yok</span></button><button class="pk none pkp" data-act="gAssist" data-m="${M}" data-p="" data-pk="1"><span>⚽ Penaltı golü</span></button></div></div>`}
   const last=sd.undo.length?JSON.parse(sd.undo[sd.undo.length-1]).l:"";
   const evH=sd.events.length?`<div class="tblock"><div class="ch"><span class="eyebrow">Goller · ${sd.events.length}</span></div>${sd.events.map((e,i)=>{
       const k=e.t==="g"?sideOf(m,e.g):e.t==="og"?(sideOf(m,e.p)==="A"?"B":"A"):sideOf(m,e.p);
-      const body=e.t==="g"?`<span class="gw">⚽ <b>${esc(shortName(nameOf(e.g)))}</b></span><select data-act-change="evA" data-m="${M}" data-i="${i}" aria-label="Asist"><option value="">Asist yok</option>${team(sideOf(m,e.g)).filter(id=>id!==e.g).map(id=>`<option value="${esc(id)}"${e.a===id?" selected":""}>${esc(shortName(nameOf(id)))}</option>`).join("")}</select>`
+      const body=e.t==="g"?`<span class="gw"><button class="pkt${e.pk?" on":""}" data-act="evPk" data-m="${M}" data-i="${i}" aria-pressed="${!!e.pk}" aria-label="Penaltı golü">P</button>⚽ <b>${esc(shortName(nameOf(e.g)))}</b></span>${e.pk?`<span class="muted small">Penaltı golü</span>`:`<select data-act-change="evA" data-m="${M}" data-i="${i}" aria-label="Asist"><option value="">Asist yok</option>${team(sideOf(m,e.g)).filter(id=>id!==e.g).map(id=>`<option value="${esc(id)}"${e.a===id?" selected":""}>${esc(shortName(nameOf(id)))}</option>`).join("")}</select>`}`
         :e.t==="og"?`<span class="gw">⚽ <b>${esc(shortName(nameOf(e.p)))}</b> <span class="muted">kendi kalesine</span></span><span></span>`:`<span class="gw"><b>${esc(shortName(nameOf(e.p)))}</b> <span class="muted">asist (gol belirsiz)</span></span><span></span>`;
       return `<div class="evr">${dot(k)}${body}<button class="xb" data-act="evDel" data-m="${M}" data-i="${i}" aria-label="Bu kaydı sil">${ICON.x}</button></div>`}).join("")}</div>`:"";
   const motmOpts=`<option value="">Seçilmedi</option>`+[["A",m.team_a],["B",m.team_b]].map(([kk,T])=>`<optgroup label="${TEAM[kk]}">${T.map(id=>`<option value="${esc(id)}"${sd.motm===id?" selected":""}>${esc(nameOf(id))}</option>`).join("")}</optgroup>`).join("");
@@ -1360,11 +1361,11 @@ function resultPanel(m){
     h+=`<div class="awards two"><div class="aw"><span>Haftanın Golü</span><b>${inf.gol?esc(shortName(nameOf(inf.gol))):"—"}</b></div><div class="aw"><span>Fiyasko</span><b>${inf.fiy?esc(shortName(nameOf(inf.fiy))):"—"}</b></div></div>`;
     // olaylar: her oyuncu bir kez, yaptığı işler ikon ve sayıyla
     const evs=k=>T(k).map(id=>{const o=stt[id]||{};const it=[];const add=(n,ic,cls,t)=>{if(n>0)it.push(`<span class="evi ${cls}" title="${t}">${ic}${n>1?`<small>×${n}</small>`:""}</span>`)};
-        add(+o.g||0,"⚽","g","Gol");add(+o.a||0,"👟","a","Asist");add(+o.cl||0,"🛡️","c","Çizgiden çıkardı");add(+o.pen||0,"P","p","Penaltı yaptırdı");add(+o.og||0,"⚽","og","Kendi kalesine");
+        add((+o.g||0)-Math.min(+o.pg||0,+o.g||0),"⚽","g","Gol");add(Math.min(+o.pg||0,+o.g||0),'<span class="pkb">⚽<b>P</b></span>',"g","Penaltı golü");add(+o.a||0,"👟","a","Asist");add(+o.cl||0,"🛡️","c","Çizgiden çıkardı");add(+o.pen||0,"P","p","Penaltı yaptırdı");add(+o.og||0,"⚽","og","Kendi kalesine");
         return it.length?{id,w:(+o.g||0)*10+(+o.a||0)*3+(+o.cl||0),h:`<div class="evp"><span class="evn">${esc(shortName(nameOf(id)))}</span><span class="evs">${it.join("")}</span></div>`}:null}).filter(Boolean).sort((a,b)=>b.w-a.w).map(x=>x.h).join("");
     const eA=evs("A"),eB=evs("B");
     if(eA||eB)h+=`<div class="evg"><div class="evc"><div class="evt">${dot2("A")}${esc(TEAM.A)}</div>${eA||'<span class="muted small">—</span>'}</div><div class="evc"><div class="evt">${dot2("B")}${esc(TEAM.B)}</div>${eB||'<span class="muted small">—</span>'}</div></div>
-      <div class="evleg"><span>⚽ gol</span><span>👟 asist</span><span>🛡️ çizgiden çıkarma</span><span><b class="evi p">P</b> penaltı yaptırdı</span><span><b class="evi og">⚽</b> kendi kalesine</span></div>`;
+      <div class="evleg"><span>⚽ gol</span><span><span class="pkb">⚽<b>P</b></span> penaltı golü</span><span>👟 asist</span><span>🛡️ çizgiden çıkarma</span><span><b class="evi p">P</b> penaltı yaptırdı</span><span><b class="evi og">⚽</b> kendi kalesine</span></div>`;
     if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı</div><div class="hscroll" style="margin-top:10px">${inf.totw.map(id=>P(id)?card(P(id)):"").join("")}</div></div>`;
     h+=`<div class="report">${spiker(m,inf)}</div>`;
     if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
@@ -1651,7 +1652,7 @@ function viewKurallar(inSheet){
   <section class="card"><h2>Gol ve asist</h2><p class="muted small">Oyuncu o maç sahada hangi mevkide oynadıysa ona göre sayılır. Bölgesinden uzak katkı daha değerli.</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th>Mevki</th><th>Gol</th><th>Asist</th><th>Katkı yok</th></tr></thead><tbody>
    ${RL.map(([k,l])=>`<tr><td>${l}</td><td>${f(n.gol[k])}</td><td>${f(n.asist[k])}</td><td>${n.bos[k]?f(n.bos[k]):"–"}</td></tr>`).join("")}</tbody></table></div>
-   <p class="muted small">İlk 3 gol tam sayılır, 4. golden sonrası yarı değerdedir. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 10 gol varsa ×1, 15 gol ×0,67 (en az ×0,6), 5 gol ×1,2 (en fazla). Kartı forvet olmayıp alternatif mevkisi forvet olan oyuncuda gol ve asistin etkisi yarıdır; böyle bir defansif orta saha, orta saha olarak sayılır.</p></section>
+   <p class="muted small">İlk 3 gol tam sayılır, 4. golden sonrası yarı değerdedir. Penaltı golü normal golün yarısı kadar sayılır. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 10 gol varsa ×1, 15 gol ×0,67 (en az ×0,6), 5 gol ×1,2 (en fazla). Kartı forvet olmayıp alternatif mevkisi forvet olan oyuncuda gol ve asistin etkisi yarıdır; böyle bir defansif orta saha, orta saha olarak sayılır.</p></section>
   <section class="card"><h2>Yenilen gol</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Takım kaç gol yedi</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
    ${[["0–5",0],["6–10",1],["11–15",2],["16 ve üstü",3]].map(([l,i])=>{const v=n.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`}).join("")}</tbody></table></div></section>
   <section class="card"><h2>Sonuç ve skor farkı</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Gol farkı</th><th>Kazanan</th><th>Kaybeden</th><th>Gol/asist değeri</th></tr></thead><tbody>
@@ -1786,8 +1787,10 @@ document.addEventListener("click",async e=>{
       if(a==="gScorer"){snap(sd,shortName(nameOf(pid))+" golü");sd.events.push({t:"g",g:pid,a:null});sd.step={ph:"assist",i:sd.events.length-1}}
       else{snap(sd,shortName(nameOf(pid))+" kendi kalesine");sd.events.push({t:"og",p:pid});sd.step=null;toast(shortName(nameOf(pid))+" kendi kalesine")}
       syncScore(m,sd);S.f.confirmFinish=null;sdSave(m,sd);render(true);break}
-    case"gAssist":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd||!sd.step)break;const e=sd.events[sd.step.i];if(e)e.a=el.dataset.p||null;sd.step=null;
-      toast(e?("⚽ "+shortName(nameOf(e.g))+(e.a?" · asist "+shortName(nameOf(e.a)):"")):"");sdSave(m,sd);render(true);break}
+    case"gAssist":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd||!sd.step)break;const e=sd.events[sd.step.i];if(e){e.pk=!!el.dataset.pk;e.a=e.pk?null:(el.dataset.p||null)}sd.step=null;
+      toast(e?("⚽ "+shortName(nameOf(e.g))+(e.pk?" · penaltı golü":e.a?" · asist "+shortName(nameOf(e.a)):"")):"");sdSave(m,sd);render(true);break}
+    case"evPk":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd||!m)break;const e=sd.events[+el.dataset.i];if(!e||e.t!=="g")break;
+      snap(sd,"penaltı işareti");e.pk=!e.pk;if(e.pk)e.a=null;S.f.confirmFinish=null;sdSave(m,sd);render(true);break}
     case"evDel":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd)break;const i=+el.dataset.i;const e=sd.events[i];if(!e)break;
       snap(sd,evLabel(e)+" silindi");sd.events.splice(i,1);sd.step=null;syncScore(m,sd);S.f.confirmFinish=null;sdSave(m,sd);render(true);break}
     case"delPred":{const k=el.dataset.m+el.dataset.p;S.f.admPr=el.dataset.m;if(S.f.delPr!==k){S.f.delPr=k;render(true);break}S.f.delPr=null;
@@ -1801,11 +1804,11 @@ document.addEventListener("click",async e=>{
     case"sc":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd)break;snap(sd,"skor değişikliği");sd.touched=true;sd.manual=true;sd[el.dataset.side]=clamp(sd[el.dataset.side]+(+el.dataset.d),0,60);S.f.confirmFinish=null;sdSave(m,sd);render(true);break}
     case"fillScore":{const m=S.matches.find(x=>x.id===id);const sd=S.f["sd_"+id];if(!sd)break;snap(sd,"skor düzeltme");sd.manual=false;sd.touched=true;syncScore(m,sd);sdSave(m,sd);render(true);break}
     case"finish":{if(S.f.confirmFinish!==id){S.f.confirmFinish=id;render(true);break}S.f.confirmFinish=null;
-      const sd=S.f["sd_"+id];const m=S.matches.find(x=>x.id===id);const so=statsOf(sd);const stats={};for(const pid of[...m.team_a,...m.team_b]){const o=so[pid]||{};stats[pid]={g:+o.g||0,a:+o.a||0,og:+o.og||0};if(+o.k)stats[pid].k=+o.k;if(+o.pen)stats[pid].pen=+o.pen;if(+o.cl)stats[pid].cl=+o.cl}
+      const sd=S.f["sd_"+id];const m=S.matches.find(x=>x.id===id);const so=statsOf(sd);const stats={};for(const pid of[...m.team_a,...m.team_b]){const o=so[pid]||{};stats[pid]={g:+o.g||0,a:+o.a||0,og:+o.og||0};if(+o.pg)stats[pid].pg=+o.pg;if(+o.k)stats[pid].k=+o.k;if(+o.pen)stats[pid].pen=+o.pen;if(+o.cl)stats[pid].cl=+o.cl}
       if(!sd.touched){toast("Önce skoru gir");break}
       {const pl0=[...m.team_a,...m.team_b];const q=perfQuota(pl0.length),c=[0,0,0,0];for(const pid of pl0){const v=+(sd.perf||{})[pid];if(v)c[v-1]++}
        if(c.some(x=>x)&&c.some((x,i)=>x!==q[i])){toast("Değerlendirme eksik: "+c.map((x,i)=>NOTE.perf[i+1][1]+" "+x+"/"+q[i]).join(", "));break}}
-      const pl=new Set([...m.team_a,...m.team_b]);const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>({g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null}));
+      const pl=new Set([...m.team_a,...m.team_b]);const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>x.pk?{g:x.g,a:null,pk:true}:{g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null});
       const r=await A("admin_finish_match_v3",{p_id:id,p_score_a:sd.a,p_score_b:sd.b,p_stats:stats,p_motm:sd.motm||null,p_links:links});
       const sc=new Set(links.map(x=>x.g));if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;render(true);window.scrollTo(0,0)}break}
     case"reopen":{const om=openMatch();if(om&&om.id!==id){toast("Önce açık maçı bitir ya da sil");break}const m=S.matches.find(x=>x.id===id);delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.view=null;
