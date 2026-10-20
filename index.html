@@ -415,6 +415,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .pfr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0;border-top:1px solid var(--line)}.pfn{font-weight:700;font-size:.86rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pfs{display:flex;gap:3px;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:2px}.pfs button{border:0;background:none;border-radius:8px;padding:5px 7px;font-weight:700;font-size:.72rem;color:var(--muted);min-height:32px;white-space:nowrap}
 .pfs button.p1.on{background:#0E8F4E;color:#fff}.pfs button.p2.on{background:#5DB443;color:#fff}.pfs button.p3.on{background:#E3C33C;color:#1A1300}.pfs button.p4.on{background:#D9423F;color:#fff}
+.pfc{display:inline-block;font-size:.68rem;font-weight:800;padding:0 6px;border-radius:6px;line-height:1.5;vertical-align:1px;margin-left:4px}.pfc.p1{background:#0E8F4E;color:#fff}.pfc.p2{background:#5DB443;color:#fff}.pfc.p3{background:#E3C33C;color:#1A1300}.pfc.p4{background:#D9423F;color:#fff}
 .exr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.exl{display:flex;justify-content:space-between;align-items:center;font-size:.86rem;padding:2px 0}
 .sqrow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.sqrow:first-child{border-top:0}.sqn{display:grid;min-width:0}.sqrow .vtog button.on{background:var(--turf);color:#fff}.sqn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vtog{display:flex;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:3px;gap:3px}
@@ -1474,7 +1475,7 @@ function sheetPlayer(){
     </div></div>
     ${attrDetail(p)}
     <div><h3>Son maçlar</h3><div class="hist">${(s.hist||[]).slice(-8).reverse().map(x=>{
-      const desc=x.kind==="oynadi"?`${x.r.res==="G"?"Galibiyet":x.r.res==="B"?"Beraberlik":"Mağlubiyet"} · ${ROLE_NAME[x.r.role]}${x.r.g?" · "+x.r.g+" gol":""}${x.r.a?" · "+x.r.a+" asist":""}`:x.kind==="iptal"?"Son dakika iptal":"Maça gelmedi";
+      const desc=x.kind==="oynadi"?`${x.r.res==="G"?"Galibiyet":x.r.res==="B"?"Beraberlik":"Mağlubiyet"} · ${ROLE_NAME[x.r.role]}${x.r.g?" · "+x.r.g+" gol":""}${x.r.a?" · "+x.r.a+" asist":""}${NOTE.perf[x.r.pk]?` <span class="pfc p${x.r.pk}">${NOTE.perf[x.r.pk][1]}</span>`:""}`:x.kind==="iptal"?"Son dakika iptal":"Maça gelmedi";
       const chs=chText(x.ch);return `<div><span class="d">${fmtShort(x.m.date)}</span><span>${desc}${chs?`<br><span class="muted small">${chs}</span>`:""}</span><span class="p num">${x.r?fN(x.r.pts):"–"}</span><span class="delta ${x.d>0?"pos":x.d<0?"neg":"zero"}">${fD(x.d)}</span></div>`}).join("")||'<p class="muted small" style="padding:8px 0">Henüz maç kaydı yok.</p>'}</div>
     </div>
     ${(()=>{const E=extFin().filter(m=>(m.team_a||[]).includes(p.id));if(!E.length)return"";const o={G:0,B:0,M:0};let g=0,a=0;E.forEach(m=>{o[extRes(m)]++;g+=+(m.stats||{})[p.id]?.g||0;a+=+(m.stats||{})[p.id]?.a||0});
