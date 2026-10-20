@@ -207,6 +207,10 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .tok.b .shirt{background:#F3F6F2;color:#13261B}
 .tok .ov{position:absolute;right:-9px;top:-7px;font-style:normal;font-family:var(--display);font-weight:900;font-size:.7rem;background:#0A1510;color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:0 3px;line-height:1.35}
 .field.both .tok .ov{font-size:.62rem;right:-8px;top:-6px}
+.tok .nt{position:absolute;left:calc(100% - 6px);top:42%;font-style:normal;font-family:var(--display);font-weight:900;font-size:.68rem;border-radius:6px;padding:0 4px;line-height:1.4;color:#fff;border:1px solid rgba(0,0,0,.35);box-shadow:0 2px 4px rgba(0,0,0,.3);white-space:nowrap}
+.field.both .tok .nt{font-size:.6rem;padding:0 3px}
+.tok .nt.n8{background:#0E8F4E}.tok .nt.n7{background:#5DB443}.tok .nt.n65{background:#E3C33C;color:#1A1300}.tok .nt.n6{background:#EE8A2A;color:#1A0E02}.tok .nt.n5{background:#D9423F}
+.tok .nt.motm{box-shadow:0 0 0 2px #FFE066,0 2px 4px rgba(0,0,0,.3)}
 .tok .tn{font-size:.7rem;font-weight:700;background:rgba(5,15,10,.74);padding:1px 7px;border-radius:6px;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.45}
 .field.both .tok .tn{font-size:.6rem;padding:0 5px;line-height:1.35}
 .tok.empty .shirt{background:rgba(0,0,0,.15);border:2px dashed rgba(255,255,255,.7);color:#fff;font-size:.75rem;box-shadow:none}
@@ -1060,15 +1064,16 @@ function slotPos(x,y,r){if(r==="KL")return"KL";const L=x<34,Rr=x>66;
   if(r==="DF")return L?"SLB":Rr?"SĞB":"STP";
   if(r==="FV")return L?"SLK":Rr?"SĞK":"SNT";
   if(y<42)return"DOS";if(x<26)return"SLO";if(x>74)return"SĞO";if(y>64)return"MOO";return"MO"}
-function tokHtml(T,editable,sel,caps){
+function tokHtml(T,editable,sel,caps,notes){
   const id=T.id,kc=T.k.toLowerCase(),s=sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;
   const attrs=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:(id?`data-act="open" data-id="${esc(id)}"`:`tabindex="-1"`);
   const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   if(!id)return `<button class="tok empty ${kc}${s?" sel":""}" style="${st}" ${attrs} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="shirt${T.ep.length>2?" p3":""}">${T.ep}</span><span class="tn">Boş</span></button>`;
-  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ovrOf(id)}"><span class="shirt ${photoOf(id)?"hasph":"ini"}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ps">${T.ep}</i><i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i>${caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':""}</span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
+  return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ovrOf(id)}"><span class="shirt ${photoOf(id)?"hasph":"ini"}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ps">${T.ep}</i><i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i>${caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':""}${notes&&notes.pts[id]?`<i class="nt ${noteCls(notes.pts[id].pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(notes.pts[id].pts)}">${notes.motm===id?"★":""}${fN(notes.pts[id].pts)}</i>`:""}</span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
 }
-function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps){
-  return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel,caps)).join("")}</div>`;
+const noteCls=v=>v>=8?"n8":v>=7?"n7":v>=6.5?"n65":v>=6?"n6":"n5";
+function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
+  return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel,caps,notes)).join("")}</div>`;
 }
 const posArr=(m,k)=>{const p=k==="A"?m.pos_a:m.pos_b;return p&&p.length===TEAM_SIZE?p:FORMS[formOf(m,k)].slots};
 const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
@@ -1089,7 +1094,7 @@ function legendHtml(k,fk,ps,ids,L,cap){const bench=ids.filter(x=>!L.includes(x))
 function teamsView(m,noShare){
   const fa=formOf(m,"A"),fb=formOf(m,"B");const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");
   const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||"both";
-  return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b})}
+  return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b},m.state==="bitti"&&!isExt(m)?S.mInfo?.[m.id]:null)}
     <div class="legend">${legendHtml("A",fa,pa,A,la,m.cap_a)}${legendHtml("B",fb,pb,B,lb,m.cap_b)}</div>
     ${strengthHtml(A,B,la,pa,lb,pb)}
     ${noShare?"":`<button class="btn block" data-act="shareImg" data-id="${esc(m.id)}">${ICON.share} Dizilişi görsel olarak paylaş</button>`}
