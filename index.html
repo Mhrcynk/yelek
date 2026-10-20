@@ -610,7 +610,7 @@ const FORMS={
 };
 const NOTE={base:6,esik:6.5,kat:.4,min:1,max:10,motm:1,fiy:-1,kk:-1,
   // yöneticinin maç değerlendirmesi (14 kişide 3-4-4-3) ve özel olaylar (forvetin o maçtaki gol değerine göre)
-  perf:[null,[.8,"Çok iyi"],[.3,"İyi"],[-.3,"Orta"],[-.8,"Kötü"]],perfQ:[3,4,4,3],cizgi:1,penalti:-.5,
+  perf:[null,[.8,"Çok iyi"],[.3,"İyi"],[0,"Orta"],[-.8,"Kötü"]],perfQ:[3,4,4,3],cizgi:1,penalti:-.5,
   // skor farkına göre sonuç ve gol/asist değeri: [en fazla fark, kazanan, kaybeden, gol çarpanı (kazanan), gol çarpanı (kaybeden), ad]
   fark:[[0,0,0,1.2,1.2,"Beraberlik"],[2,.4,-.2,1.2,1.2,"Çekişmeli maç"],[5,.7,-.6,1,1,"Net maç"],[999,1,-1,.8,1,"Farklı maç"]],
   gol:{KL:2,DF:1,DOS:1,OS:.8,FV:.6},asist:{KL:1.2,DF:.7,DOS:.6,OS:.5,FV:.4},tamGol:3,
@@ -1283,7 +1283,7 @@ function perfBlock(m,sd,skey){skey=skey||"sd_"+m.id;const SK=esc(skey);const M=e
   const ex=(k,l)=>`<div class="exr"><select data-bind="exSel.${k}" aria-label="${l}"><option value="">${l}…</option>${pl.map(id=>`<option value="${esc(id)}"${(S.f.exSel||{})[k]===id?" selected":""}>${esc(nameOf(id))}</option>`).join("")}</select><button class="btn sm" data-act="exAdd" data-s="${SK}" data-m="${M}" data-k="${k}">Ekle</button></div>
     ${Object.entries(sd[k]||{}).filter(([,v])=>v).map(([id,v])=>`<div class="exl"><span>${esc(nameOf(id))}${v>1?" ×"+v:""}</span><button class="xb" data-act="exDel" data-s="${SK}" data-m="${M}" data-k="${k}" data-p="${esc(id)}" aria-label="Bir azalt">${ICON.x}</button></div>`).join("")}`;
   return `<div class="tblock"><div class="ch"><span class="eyebrow">Maç değerlendirmesi</span><span class="chip ${done?"ok":c.some(x=>x)?"warn":""}">${c.map((x,i)=>x+"/"+q[i]).join(" · ")}</span></div>
-    <p class="muted small">${q.map((x,i)=>x+" "+NOTE.perf[i+1][1].toLowerCase()).join(", ")} seç. Not etkisi: çok iyi +0,8 · iyi +0,3 · orta −0,3 · kötü −0,8.</p>
+    <p class="muted small">${q.map((x,i)=>x+" "+NOTE.perf[i+1][1].toLowerCase()).join(", ")} seç. Not etkisi: çok iyi +0,8 · iyi +0,3 · orta 0 · kötü −0,8.</p>
     ${[["A",m.team_a],["B",m.team_b]].map(([k,T])=>`<div class="grp">${dot(k)} ${esc(TEAM[k])}</div>${T.map(row).join("")}`).join("")}
     <details${Object.keys(sd.pen||{}).length||Object.keys(sd.cl||{}).length?" open":""}><summary>Penaltı ve çizgiden çıkarma</summary><div style="display:grid;gap:8px;margin-top:8px">
       <span class="muted small">Penaltı yaptıran: forvetin o maçtaki gol değerinin yarısı kadar düşer. Çizgiden çıkaran: forvetin gol değeri kadar artar.</span>
@@ -1575,7 +1575,7 @@ function viewKurallar(inSheet){
    ${[["0–5",0],["6–10",1],["11–15",2],["16 ve üstü",3]].map(([l,i])=>{const v=n.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`}).join("")}</tbody></table></div></section>
   <section class="card"><h2>Sonuç ve skor farkı</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Gol farkı</th><th>Kazanan</th><th>Kaybeden</th><th>Gol/asist değeri</th></tr></thead><tbody>
    <tr><td>0 · beraberlik</td><td>0</td><td>0</td><td>×1,2</td></tr><tr><td>1–2 · çekişmeli</td><td>+0,4</td><td>−0,2</td><td>×1,2</td></tr><tr><td>3–5 · net</td><td>+0,7</td><td>−0,6</td><td>×1,0</td></tr><tr><td>6+ · farklı</td><td>+1,0</td><td>−1,0</td><td>kazanan ×0,8 · kaybeden ×1,0</td></tr></tbody></table></div></section>
-  <section class="card"><h2>Maç değerlendirmesi</h2><p class="muted small">Maç sonunda yönetici oyuncuları dağıtır (14 kişide 3 çok iyi, 4 iyi, 4 orta, 3 kötü).</p><div class="rules">${row("Çok iyi","+0,8")}${row("İyi","+0,3")}${row("Orta","−0,3")}${row("Kötü","−0,8")}${row("Çizgiden çıkarma","+ forvetin o maçtaki gol değeri")}${row("Penaltı yaptırma","− forvet gol değerinin yarısı")}</div></section>
+  <section class="card"><h2>Maç değerlendirmesi</h2><p class="muted small">Maç sonunda yönetici oyuncuları dağıtır (14 kişide 3 çok iyi, 4 iyi, 4 orta, 3 kötü).</p><div class="rules">${row("Çok iyi","+0,8")}${row("İyi","+0,3")}${row("Orta","0")}${row("Kötü","−0,8")}${row("Çizgiden çıkarma","+ forvetin o maçtaki gol değeri")}${row("Penaltı yaptırma","− forvet gol değerinin yarısı")}</div></section>
   <section class="card"><h2>Herkes için</h2><div class="rules">${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy))}${row("Kendi kalesine gol",f(n.kk))}</div></section>
   <section class="card"><h2>Karttaki özellikler</h2><p>Kart değişimi, maçta yapılan işe göre özelliklere dağıtılır: gol bitiriciliğe, asist pasa, az gol yemek savunmaya ya da reflekse yazılır. Özel bir iş yoksa kartın en önemli özelliği değişir.</p>
    <div class="rules">${row("Maça gelmemek","Dayanıklılık −2")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
