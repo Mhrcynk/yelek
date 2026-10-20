@@ -335,6 +335,8 @@ details[open]>summary::before{transform:rotate(45deg)}
 .evi{display:inline-flex;align-items:center;gap:1px;font-style:normal;font-size:.9rem;line-height:1;background:rgba(255,255,255,.07);border-radius:8px;padding:3px 6px}.evi small{font-size:.72rem;font-weight:900;margin-left:2px}
 .evi.p{background:#D9423F;color:#fff;font-family:var(--display);font-weight:900;font-size:.78rem}.evi.og{background:rgba(217,66,63,.35)}.evi.c{background:rgba(45,104,166,.4)}
 .evleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.7rem;color:var(--muted)}.evleg .evi{font-size:.66rem;padding:1px 4px}
+.degs{display:grid;gap:10px}.degc{display:grid;gap:4px;background:var(--card2);border-radius:14px;padding:10px}.degh{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}.degh .pfc{font-size:.8rem;padding:2px 8px;margin:0}
+.degr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:0;background:none;color:inherit;text-align:left;padding:5px 0;border-top:1px solid var(--line)}.degr:first-of-type{border-top:0}.degn{display:grid;min-width:0}.degn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mstat{display:grid;gap:12px}.msth{display:flex;justify-content:space-between;font-weight:800;font-size:.8rem}.msr{display:grid;gap:5px}
 .msl{display:grid;grid-template-columns:3em 1fr 3em;align-items:center;text-align:center}.msl span{font-size:.78rem;color:var(--muted);font-weight:700}.msl b{font-family:var(--display);font-weight:900;font-size:1.05rem;color:var(--muted)}.msl b:first-child{text-align:left}.msl b:last-child{text-align:right}.msl b.hi{color:var(--ink)}
 .msb{display:grid;grid-template-columns:1fr 1fr;gap:4px}.msb span{height:7px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;display:flex}.msb .l{justify-content:flex-end}.msb i{display:block;height:100%;border-radius:99px}.msb .l i{background:var(--bib)}.msb .r i{background:#E8EFE9}
@@ -1348,7 +1350,7 @@ function resultPanel(m){
       <div class="msc"><span class="mst">MS</span><b class="num">${sa} - ${sb}</b><small>${esc(mt)}</small></div>
       <div class="mtm${sb>sa?" win":""}">${dot2("B")}<b>${esc(TEAM.B)}</b><small>Ort. not ${fN(avgN("B"))} · Kart ${sumAvg(T("B"))}</small></div></div></div>
     ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Maç ve kartlara etkisi tamamen silinir.</div>`:""}
-    <div class="mtabs" role="tablist">${[["ozet","Özet"],["kadro","Kadro"],["notlar","Notlar"],["ist","İstatistik"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
+    <div class="mtabs" role="tablist">${[["ozet","Özet"],["kadro","Kadro"],["deg","Değerlendirme"],["notlar","Notlar"],["ist","İstatistik"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(tab==="ozet"){
     const mo=inf.motm;const r=mo&&inf.pts[mo];
     if(mo){const ph=photoOf(mo);const kl=r&&r.role==="KL";
@@ -1368,6 +1370,12 @@ function resultPanel(m){
     if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
       h+=`<details><summary class="small">Ödülleri değiştir <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="grid2" style="margin-top:10px"><label class="f">⚽ Haftanın Golü<select data-act-change="awR" data-k="gol" data-m="${M}">${o(scorers,m.gol_id||"")}</select></label><label class="f">🙈 Haftanın Fiyaskosu<select data-act-change="awR" data-k="fiy" data-m="${M}">${o(pl,m.fiy_id||"")}</select></label></div></details>`}
   }else if(tab==="kadro"){h+=`<div style="display:grid;gap:12px">${teamsView(m)}</div>`}
+  else if(tab==="deg"){const any=pl.some(id=>NOTE.perf[+stt[id]?.k]);
+    if(!any)h+=`<div class="empty"><h3>Henüz değerlendirme yok</h3><p>Yönetici maçtan sonra oyuncuları çok iyi, iyi, orta ve kötü olarak ayırınca burada görünür.</p>${S.admin?`<button class="btn primary" data-act="evalOpen" data-id="${M}">Değerlendir</button>`:""}</div>`;
+    else h+=`<div class="degs">${[1,2,3,4].map(v=>{const ids=pl.filter(id=>+stt[id]?.k===v).sort((a,b)=>(inf.pts[b]?.pts||0)-(inf.pts[a]?.pts||0));
+      return `<div class="degc"><div class="degh"><span class="pfc p${v}">${NOTE.perf[v][1]}</span><span class="muted small">${ids.length} kişi · ${NOTE.perf[v][0]?"not "+(NOTE.perf[v][0]>0?"+":"−")+fN(Math.abs(NOTE.perf[v][0])):"notu etkilemez"}</span></div>
+        ${ids.map(id=>{const r=inf.pts[id];return `<button class="degr" data-act="open" data-id="${esc(id)}">${P(id)?avatar(P(id),"sm"):""}<span class="degn"><b>${esc(nameOf(id))}</b><span class="muted small">${r?dot2(r.side)+esc(TEAM[r.side])+" · "+ROLE_NAME[r.role]:""}</span></span>${r?`<span class="nt ${noteCls(r.pts)}">${fN(r.pts)}</span>`:""}</button>`}).join("")||'<span class="muted small">—</span>'}</div>`}).join("")}</div>
+      ${S.admin?`<button class="btn ghost sm" data-act="evalOpen" data-id="${M}">Değerlendirmeyi düzenle</button>`:""}`}
   else if(tab==="notlar"){
     const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>inf.pts[b].pts-inf.pts[a].pts);
     h+=`<div class="hist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const d=hh?hh.d:0;const chs=hh?chText(hh.ch):"";
