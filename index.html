@@ -604,8 +604,10 @@ const NOTE={base:6,esik:6.5,kat:.4,min:1,max:10,gal:.5,yen:-.5,farkli:-.5,motm:1
   gol:{KL:2,DF:1.3,DOS:1.2,OS:.8,FV:.6},asist:{KL:1.2,DF:.9,DOS:.8,OS:.5,FV:.4},tamGol:3,
   savunma:[[5,{KL:1.5,DF:1.2,DOS:.7}],[10,{KL:.7,DF:.5,DOS:.3}],[15,{KL:-.5,DF:-.4,DOS:-.2}],[999,{KL:-1.2,DF:-1,DOS:-.5}]],bos:{OS:-.3,FV:-.7},
   // kart seviyesi: iyi oyuncu iyi oynamış sayılır (başlangıç notu), zayıf oyuncunun artıları çarpanla daha çok sayılır
-  ref:74,seviye:{adim:.05,min:5.8,max:6.5},carpan:{alt:.04,ust:.03,min:.7,max:1.4}};
+  ref:74,seviye:{adim:.15,min:5,max:7.5,esikKay:.75},carpan:{alt:.04,ust:.03,min:.7,max:1.4}};
 const lvBase=lv=>clamp(Math.round((NOTE.base+(lv-NOTE.ref)*NOTE.seviye.adim)*100)/100,NOTE.seviye.min,NOTE.seviye.max);
+// kartın yükselmesi için gereken not: başlangıç notuyla birlikte kayar (iyi oyuncu sessiz maçta şişmez, zayıf oyuncu çok düşmez)
+const lvEsik=lv=>Math.round((NOTE.esik+(lvBase(lv)-NOTE.base)*NOTE.seviye.esikKay)*100)/100;
 const lvMul=lv=>Math.round(clamp(lv<NOTE.ref?1+(NOTE.ref-lv)*NOTE.carpan.alt:1-(lv-NOTE.ref)*NOTE.carpan.ust,NOTE.carpan.min,NOTE.carpan.max)*100)/100;
 const fN=x=>x==null?"–":(Math.round(x*10)/10).toFixed(1).replace(".",",");
 const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
@@ -782,7 +784,7 @@ function computeCore(LV){
         ch=matchChanges(p,r,m,(m.stats||{})[p.id]||{},{fvDry,osDry,att,motm:inf.motm===p.id});line={kind:"oynadi",r};
       }else{streak=0;att=0;const lc=!!(m.late||{})[p.id];if(lc)late++;ch=[[p.pos==="Kaleci"?"hiz_cab":"fiz_day",-ENG.step,lc?"son dakika iptal":"maça gelmedi"]];if(lc)ch.push([p.pos==="Kaleci"?"hiz_acc":"fiz_agr",-ENG.step,"son dakika iptal"]);line={kind:lc?"iptal":"gelmedi"}}
       for(const k of KS)DL[k]*=(1-ENG.decay);
-      ch=ch.filter(x=>x[0] in DL);const before=gen;const g0=genF(p,curOf());const nD=r?(r.pts-NOTE.esik)*NOTE.kat:0;if(r)ch=noteSpread(p,curOf(),ch,nD);const DL0={...DL};
+      ch=ch.filter(x=>x[0] in DL);const before=gen;const g0=genF(p,curOf());const nD=r?(r.pts-lvEsik(r.lv??NOTE.ref))*NOTE.kat:0;if(r)ch=noteSpread(p,curOf(),ch,nD);const DL0={...DL};
       const req={};for(const[k,v]of ch){req[k]=(req[k]||0)+v;DL[k]=clamp(DL[k]+v,-ENG.cap,ENG.cap)}
       let ng=genF(p,curOf());
       if(r){const rest=g0+nD-ng;if(Math.abs(rest)>.01){for(const k of KS)DL[k]=clamp(DL[k]+rest,-ENG.cap,ENG.cap);ng=genF(p,curOf())}}
@@ -1506,10 +1508,10 @@ function viewKurallar(inSheet){
   const RL=[["KL","Kaleci"],["DF","Defans"],["DOS","Defansif orta saha"],["OS","Orta saha"],["FV","Forvet"]];
   return `${inSheet?"":`<div class="ph"><div><h1>Puanlama</h1><span class="muted">Maç notu ve kartlar</span></div></div>`}
   <section class="card"><h2>Maç notu</h2><p>Her oyuncu maça <b>${fN(n.base)}</b> notla başlar. Sahada yaptıkları notu artırır ya da düşürür; not 1 ile 10 arasındadır.</p>
-   <p>Not <b>${fN(n.esik)}</b>'in üstündeyse kart yükselir, altındaysa düşer: <b>kart değişimi = (not − ${fN(n.esik)}) × ${fN(n.kat)}</b>. Örneğin 9,0 → +1,0 · 7,5 → +0,4 · 5,5 → −0,4.</p></section>
-  <section class="card"><h2>Kart seviyesi</h2><p>İyi oyuncu iyi oynamış sayılır; zayıf oyuncu ekstra yaptıklarıyla daha çok yükselir. Maç öncesi kart reytingine göre:</p>
-   <div class="scroll-x"><table class="tbl"><thead><tr><th>Kart</th><th>Başlangıç notu</th><th>Artıların çarpanı</th></tr></thead><tbody>
-   ${[84,80,74,70,64].map(v=>`<tr><td>${v===84?"84 ve üstü":v===64?"64 ve altı":v}</td><td>${fN(lvBase(v))}</td><td>×${String(lvMul(v)).replace(".",",")}</td></tr>`).join("")}</tbody></table></div>
+   <p>Not, kartın <b>eşik notunun</b> üstündeyse kart yükselir, altındaysa düşer: <b>kart değişimi = (not − eşik) × ${fN(n.kat)}</b>. Eşik ortalama bir kart için ${fN(n.esik)}'tir ve karta göre değişir (aşağıdaki tablo).</p></section>
+  <section class="card"><h2>Kart seviyesi</h2><p>İyi oyuncu iyi oynamış sayılır, maça daha yüksek notla başlar. Zayıf oyuncu ekstra yaptıklarıyla daha çok yükselir. Maç öncesi kart reytingine göre:</p>
+   <div class="scroll-x"><table class="tbl"><thead><tr><th>Kart</th><th>Başlangıç notu</th><th>Eşik not</th><th>Artıların çarpanı</th></tr></thead><tbody>
+   ${[84,80,77,74,71,67,64].map(v=>`<tr><td>${v===84?"84 ve üstü":v===64?"64 ve altı":v}</td><td>${fN(lvBase(v))}</td><td>${fN(lvEsik(v))}</td><td>×${String(lvMul(v)).replace(".",",")}</td></tr>`).join("")}</tbody></table></div>
    <p class="muted small">Çarpan gol, asist, az gol yeme ve Maçın Adamı artılarına uygulanır. Eksiler herkes için aynıdır.</p></section>
   <section class="card"><h2>Gol ve asist</h2><p class="muted small">Oyuncu o maç sahada hangi mevkide oynadıysa ona göre sayılır. Bölgesinden uzak katkı daha değerli.</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th>Mevki</th><th>Gol</th><th>Asist</th><th>Katkı yok</th></tr></thead><tbody>
