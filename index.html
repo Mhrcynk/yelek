@@ -784,6 +784,9 @@ function noteSpread(p,cur,ch,D){if(Math.abs(D)<.005)return[];
   if(!L.length||I*D<=1e-6){const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const w=W[ep];
     const top=set.reduce((b,x)=>(w[x[0]]??0)>(w[b[0]]??0)?x:b,set[0]);L=top[3].map(([sk])=>[top[0]+"_"+sk,Math.sign(D),"maç notu"]);I=imp(L)}
   return I?L.map(([k,v,why])=>[k,v*D/I,why]):[]}
+// Haftanın Takımı: en yüksek notlu kaleci + en yüksek notlu 6 oyuncu (misafirler hariç), nota göre sıralı
+function totwOf(pl,pts){const ok=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts);
+  const gk=ok.find(id=>pts[id].role==="KL");const rest=ok.filter(id=>id!==gk).slice(0,gk?6:7);return (gk?[gk,...rest]:rest).sort((a,b)=>pts[b].pts-pts[a].pts)}
 function compute(){computeCore(null);const lv={};
   for(const[pid,st]of Object.entries(S.stats)){let prev=st.base;for(const h of st.hist){(lv[h.m.id]??={})[pid]=prev;prev=h.ovr}}
   computeCore(lv)}
@@ -791,7 +794,7 @@ function computeCore(LV){
   const F=fin();const mInfo={};const out={};const lvOf=(mid,id)=>LV?.[mid]?.[id]??(P(id)?baseOf(P(id)):NOTE.ref);
   for(const m of F){const motm=m.motm||null,fiy=m.fiy_id||topVote(m,"fiyasko"),gol=m.gol_id||topVote(m,"gol");
     const pl=[...(m.team_a||[]),...(m.team_b||[])];const pts={};for(const id of pl)pts[id]=matchPoints(m,id,motm,gol,fiy,lvOf(m.id,id));
-    const totw=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts).slice(0,5);mInfo[m.id]={motm,fiy,gol,pts,totw}}
+    const totw=totwOf(pl,pts);mInfo[m.id]={motm,fiy,gol,pts,totw}}
   for(const p of S.all){
     const base=baseOf(p);const joined=p.created_at?new Date(new Date(p.created_at).toDateString()).getTime():0;
     const KS=subKeys(p.pos);const pa=p.attrs||{};const B0={},DL={};for(const k of KS){const[mk,sk]=k.split("_");B0[k]=subVal(pa,mk,sk);DL[k]=0}
@@ -822,7 +825,7 @@ function computeCore(LV){
     const badges=[];
     if(hat)badges.push({i:"3",t:"Hat-trick",d:hat+" kez tek maçta 3+ gol"});
     if(motm)badges.push({i:"★",t:"Maçın Adamı",d:motm+" kez seçildi"});
-    if(totw)badges.push({i:"XI",t:"Haftanın Takımı",d:totw+" kez ilk beşte"});
+    if(totw)badges.push({i:"XI",t:"Haftanın Takımı",d:totw+" kez seçildi"});
     if(goals>=10)badges.push({i:"10",t:"Golcü",d:goals+" gol attı"});
     if(ast>=10)badges.push({i:"A",t:"Pasör",d:ast+" asist yaptı"});
     if(best>=8)badges.push({i:"8",t:"Demir Adam",d:best+" maç üst üste geldi"});
