@@ -412,6 +412,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .lst .gen{border-right:1px solid var(--line2)}
 .lst .gen b{font-size:1.22rem}
 .v8{color:#3DD07A!important}.v7{color:#A9DE5C!important}.v6{color:#F2C14E!important}.v5{color:#FF9A4A!important}
+.sqrow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}.sqrow:first-child{border-top:0}.sqn{display:grid;min-width:0}.sqrow .vtog button.on{background:var(--turf);color:#fff}.sqn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vtog{display:flex;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:3px;gap:3px}
 .vtog button{border:0;background:none;border-radius:9px;padding:6px 12px;font-weight:700;font-size:.82rem;color:var(--muted);min-height:36px}
 .vtog button.on{background:var(--card3);color:var(--ink)}
@@ -1379,6 +1380,8 @@ function viewKartlar(){
   let h=`<div class="ph"><div><h1>Kartlar</h1><span class="muted">${S.players.length} oyuncu</span></div><div class="row" style="gap:8px;flex-wrap:nowrap"><button class="btn sm" data-act="cmpOpen" aria-label="Oyuncu karşılaştır">${ICON.scale}</button><div class="vtog" role="group" aria-label="Görünüm"><button data-act="kview" data-v="list" class="${kv==="list"?"on":""}">Liste</button><button data-act="kview" data-v="grid" class="${kv==="grid"?"on":""}">Kart</button></div>${S.admin?`<button class="btn primary sm" data-act="addSheet" aria-label="Oyuncu ekle">${ICON.plus}</button>`:""}</div></div>
     <div class="chips" role="group" aria-label="Mevkiye göre">${[["all","Tümü"],...POS_KEYS.map(k=>[k,k]),["as","As"],["yedek","Yedek"]].map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${flt===k?"on":""}">${l}</button>`).join("")}
     <select id="sortSel" data-bind="sort" aria-label="Sırala">${[["ovr","Reytinge göre"],["form","Formdakiler"],["isim","İsme göre"]].map(([k,l])=>`<option value="${k}"${sort===k?" selected":""}>${l}</option>`).join("")}</select></div>`;
+  if(S.admin)h+=`<div class="row" style="justify-content:space-between;gap:8px"><span class="muted small">${S.players.filter(p=>!p.yedek).length} as · ${S.players.filter(p=>p.yedek).length} yedek</span><button class="btn sm${S.f.sqMode?" primary":""}" data-act="sqMode">${S.f.sqMode?"Bitti":"As / yedek seç"}</button></div>`;
+  if(S.admin&&S.f.sqMode)return h+(ps.length?`<section class="card" style="gap:0">${ps.map(p=>`<div class="sqrow">${avatar(p)}<span class="sqn"><b>${esc(p.name)}</b><span class="muted small">${eposOf(p)} · ${ovrOf(p.id)}</span></span><div class="vtog" role="group" aria-label="${esc(p.name)} kadro"><button data-act="setSq" data-id="${esc(p.id)}" data-v="" class="${p.yedek?"":"on"}" aria-pressed="${!p.yedek}">As</button><button data-act="setSq" data-id="${esc(p.id)}" data-v="1" class="${p.yedek?"on":""}" aria-pressed="${!!p.yedek}">Yedek</button></div></div>`).join("")}</section>`:"");
   h+=ps.length?(kv==="grid"?`<div class="cards">${ps.map(p=>card(p)).join("")}</div>`:`<div class="plist">${ps.map((p,i)=>listRow(p,i+1)).join("")}</div>`):`<section class="card"><div class="empty"><h3>${S.players.length?"Bu mevkide oyuncu yok":"Kadro boş"}</h3><p>${S.admin?"Sağ üstteki düğmeyle oyuncu ekle.":"Yönetici oyuncuları ekleyince kartlar burada görünür."}</p></div></section>`;
   return h;
 }
@@ -1593,6 +1596,8 @@ document.addEventListener("click",async e=>{
       const stats={};for(const id of f.team){const o=f.stats[id]||{};stats[id]={g:+o.g||0,a:+o.a||0,og:0}}
       const r=await A("admin_save_ext_match",{p_id:f.id,p_date:f.date,p_opponent:f.opp.trim(),p_us:f.us,p_them:f.them,p_team:f.team,p_stats:stats,p_motm:f.motm||null},"Dış maç kaydedildi");
       if(r&&r.ok!==false){S.sheet=null;S.f.ext=null;S.tab="gecmis";if(r.id)S.view=r.id;render(true)}break}
+    case"sqMode":S.f.sqMode=!S.f.sqMode;render(true);break;
+    case"setSq":{const p=P(id);if(!p)break;const v=!!el.dataset.v;if(!!p.yedek===v)break;p.yedek=v;render(true);await A("admin_set_yedek",{p_id:id,p_yedek:v},p.name+(v?" yedek kadroda":" as kadroda"));break}
     case"kview":S.f.kv=el.dataset.v;LS.set("y_kv",S.f.kv);render(true);break;
     case"rkAll":S.f.rkAll=!S.f.rkAll;render(true);break;
     case"back":S.view=null;render(true);window.scrollTo(0,0);break;
