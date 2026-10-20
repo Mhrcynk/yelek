@@ -604,7 +604,9 @@ const FORMS={
   "1-3-2":{slots:[[50,7,"KL"],[50,25,"DF"],[17,52,"OS"],[50,49,"OS"],[83,52,"OS"],[33,80,"FV"],[67,80,"FV"]],d:"Tek libero, hücum ağırlıklı"},
   "3-3":{slots:[[50,7,"KL"],[20,29,"DF"],[50,25,"DF"],[80,29,"DF"],[20,72,"FV"],[50,78,"FV"],[80,72,"FV"]],d:"İki sıra, basit ve net"}
 };
-const NOTE={base:6,esik:6.5,kat:.4,min:1,max:10,gal:.5,yen:-.5,farkli:-.5,motm:1,fiy:-1,kk:-1,
+const NOTE={base:6,esik:6.5,kat:.4,min:1,max:10,motm:1,fiy:-1,kk:-1,
+  // skor farkına göre sonuç ve gol/asist değeri: [en fazla fark, kazanan, kaybeden, gol çarpanı (kazanan), gol çarpanı (kaybeden), ad]
+  fark:[[0,0,0,1.2,1.2,"Beraberlik"],[2,.4,-.2,1.2,1.2,"Çekişmeli maç"],[5,.7,-.6,1,1,"Net maç"],[999,1,-1,.8,1,"Farklı maç"]],
   gol:{KL:2,DF:1.3,DOS:1.2,OS:.8,FV:.6},asist:{KL:1.2,DF:.9,DOS:.8,OS:.5,FV:.4},tamGol:3,
   savunma:[[5,{KL:1.5,DF:1.2,DOS:.7}],[10,{KL:.7,DF:.5,DOS:.3}],[15,{KL:-.5,DF:-.4,DOS:-.2}],[999,{KL:-1.2,DF:-1,DOS:-.5}]],bos:{OS:-.3,FV:-.7},
   // kart seviyesi: iyi oyuncu iyi oynamış sayılır (başlangıç notu), zayıf oyuncunun artıları çarpanla daha çok sayılır
@@ -710,14 +712,14 @@ function matchPoints(m,pid,motmId,golId,fiyId,lvIn){
   const parts=[];let sum=0;const add=(l,v,x)=>{if(x&&v>0)v*=mul;v=Math.round(v*100)/100;if(v){parts.push([l,v]);sum+=v}};
   const g=+st.g||0,a=+st.a||0,og=+st.og||0;
   add("Kart seviyesi",lvBase(lv)-NOTE.base);
-  add(my>op?"Galibiyet":my<op?"Yenilgi":"Beraberlik",my>op?NOTE.gal:my<op?NOTE.yen:0);
-  if(op-my>=5)add((op-my)+" farklı yenilgi",NOTE.farkli);
-  add(g+" gol",(Math.min(g,NOTE.tamGol)+Math.max(0,g-NOTE.tamGol)/2)*NOTE.gol[nr]*gaF*gf,1);add(a+" asist",a*NOTE.asist[nr]*gaF*gf,1);
+  const df=Math.abs(my-op),fk=NOTE.fark.find(x=>df<=x[0]),won=my>op;const tf=won||!df?fk[3]:fk[4];
+  add(!df?"Beraberlik":(won?"Galibiyet":"Yenilgi")+` (${df} fark)`,!df?0:won?fk[1]:fk[2]);
+  add(g+" gol",(Math.min(g,NOTE.tamGol)+Math.max(0,g-NOTE.tamGol)/2)*NOTE.gol[nr]*gaF*gf*tf,1);add(a+" asist",a*NOTE.asist[nr]*gaF*gf*tf,1);
   if(!g&&!a)add("Gol/asist yok",NOTE.bos[nr]||0);
   if(NOTE.savunma[0][1][nr]!=null)for(const[lim,v]of NOTE.savunma){if(op<=lim){add(op===0?"Gol yemedi":op+" gol yediler",v[nr],1);break}}
   add("Kendi kalesine",og*NOTE.kk);add("Maçın Adamı",motmId===pid?NOTE.motm:0,1);add("Fiyasko",fiyId&&fiyId===pid?NOTE.fiy:0);
   const pts=clamp(Math.round((NOTE.base+sum)*10)/10,NOTE.min,NOTE.max);
-  return{pts,parts,lv,mul,gf,role,nr,g,a,res:my>op?"G":my<op?"M":"B",side,op};
+  return{pts,parts,lv,mul,gf:Math.round(gf*tf*100)/100,mt:fk[5],role,nr,g,a,res:my>op?"G":my<op?"M":"B",side,op};
 }
 const fD=d=>{const v=Math.round(d*10)/10;return (v>0?"+":"")+String(v).replace(".",",")};
 const fA=d=>String(Math.round(Math.abs(d)*10)/10).replace(".",",");
@@ -1270,7 +1272,7 @@ function resultPanel(m){
   h+=`<div class="report">${spiker(m,inf)}</div>`;
   const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>inf.pts[b].pts-inf.pts[a].pts);
   h+=`<details><summary>Maç notları ve kart değişimleri</summary><div class="hist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const d=hh?hh.d:0;const chs=hh?chText(hh.ch):"";
-    return `<div><span class="d">${r.side==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${r.role}</span><span>${esc(nameOf(id))}<br><span class="muted small">${r.parts.map(([l,v])=>`${esc(l)} ${v>0?"+"+fN(v):"−"+fN(-v)}`).join(" · ")||"Ortalama maç"}${(r.g||r.a)&&r.gf&&r.gf!==1?` · ${(m.score_a||0)+(m.score_b||0)} gollü maç, gol/asist ×${String(r.gf).replace(".",",")}`:""}${r.mul&&r.mul!==1?` · artılar ×${String(r.mul).replace(".",",")}`:""}</span>${chs?`<br><span class="muted small">Kart: ${chs}</span>`:""}</span><span class="p num">${fN(r.pts)}</span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div></details>`;
+    return `<div><span class="d">${r.side==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${r.role}</span><span>${esc(nameOf(id))}<br><span class="muted small">${r.parts.map(([l,v])=>`${esc(l)} ${v>0?"+"+fN(v):"−"+fN(-v)}`).join(" · ")||"Ortalama maç"}${(r.g||r.a)&&r.gf&&r.gf!==1?` · ${esc(r.mt||"")}, ${(m.score_a||0)+(m.score_b||0)} gol: gol/asist ×${String(r.gf).replace(".",",")}`:""}${r.mul&&r.mul!==1?` · artılar ×${String(r.mul).replace(".",",")}`:""}</span>${chs?`<br><span class="muted small">Kart: ${chs}</span>`:""}</span><span class="p num">${fN(r.pts)}</span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div></details>`;
   if(Object.keys(m.preds||{}).length){const pr=m.preds;const hits=Object.keys(pr).filter(id=>P(id)&&predPts(pr[id],m)===3);
     h+=`<details><summary>Skor tahminleri${hits.length?" · tam bilen: "+hits.map(id=>esc(shortName(nameOf(id)))).join(", "):""}</summary>${predCard(m).replace(/^<section class="card">|<\/section>$/g,"")}</details>`}
   h+=`<details><summary>Kadrolar ve diziliş</summary><div style="margin-top:10px;display:grid;gap:12px">${teamsView(m)}</div></details>`;
@@ -1537,7 +1539,9 @@ function viewKurallar(inSheet){
    <p class="muted small">İlk 3 gol tam sayılır, 4. golden sonrası yarı değerdedir. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 10 gol varsa ×1, 15 gol ×0,67 (en az ×0,6), 5 gol ×1,2 (en fazla). Kartı forvet olmayıp alternatif mevkisi forvet olan oyuncuda gol ve asistin etkisi yarıdır; böyle bir defansif orta saha, orta saha olarak sayılır.</p></section>
   <section class="card"><h2>Yenilen gol</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Takım kaç gol yedi</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
    ${[["0–5",0],["6–10",1],["11–15",2],["16 ve üstü",3]].map(([l,i])=>{const v=n.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`}).join("")}</tbody></table></div></section>
-  <section class="card"><h2>Herkes için</h2><div class="rules">${row("Galibiyet",f(n.gal))}${row("Beraberlik","0")}${row("Yenilgi",f(n.yen))}${row("5 ve üstü farkla yenilgi","ek "+f(n.farkli))}${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy))}${row("Kendi kalesine gol",f(n.kk))}</div></section>
+  <section class="card"><h2>Sonuç ve skor farkı</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Gol farkı</th><th>Kazanan</th><th>Kaybeden</th><th>Gol/asist değeri</th></tr></thead><tbody>
+   <tr><td>0 · beraberlik</td><td>0</td><td>0</td><td>×1,2</td></tr><tr><td>1–2 · çekişmeli</td><td>+0,4</td><td>−0,2</td><td>×1,2</td></tr><tr><td>3–5 · net</td><td>+0,7</td><td>−0,6</td><td>×1,0</td></tr><tr><td>6+ · farklı</td><td>+1,0</td><td>−1,0</td><td>kazanan ×0,8 · kaybeden ×1,0</td></tr></tbody></table></div></section>
+  <section class="card"><h2>Herkes için</h2><div class="rules">${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy))}${row("Kendi kalesine gol",f(n.kk))}</div></section>
   <section class="card"><h2>Karttaki özellikler</h2><p>Kart değişimi, maçta yapılan işe göre özelliklere dağıtılır: gol bitiriciliğe, asist pasa, az gol yemek savunmaya ya da reflekse yazılır. Özel bir iş yoksa kartın en önemli özelliği değişir.</p>
    <div class="rules">${row("Maça gelmemek","Dayanıklılık −2")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
    <p class="muted small">Haftanın Takımı, form ve ortalamalar da maç notuna göre hesaplanır.</p></section>`;
