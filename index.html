@@ -329,6 +329,12 @@ details[open]>summary::before{transform:rotate(45deg)}
 .tlc{display:flex;align-items:center;gap:6px;min-width:0}.tlr.l .tlc:first-child{justify-content:flex-end;text-align:right}.tlr.l .tlc:first-child i{order:2}
 .tlc span{display:grid;min-width:0}.tlc b{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tlc small{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tlc i{font-style:normal}
 .tls{justify-self:center;background:#2D68A6;color:#fff;font-family:var(--display);font-weight:900;font-size:.85rem;border-radius:9px;padding:3px 8px;white-space:nowrap}.tls.x{background:var(--card3);color:var(--ink)}
+.evg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.evc{display:grid;gap:6px;align-content:start;background:var(--card2);border-radius:14px;padding:10px;min-width:0}
+.evt{font-family:var(--display);font-weight:800;font-size:.8rem;text-transform:uppercase;color:var(--muted);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.evp{display:grid;gap:3px;min-width:0}.evn{font-weight:800;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.evs{display:flex;flex-wrap:wrap;gap:4px}
+.evi{display:inline-flex;align-items:center;gap:1px;font-style:normal;font-size:.9rem;line-height:1;background:rgba(255,255,255,.07);border-radius:8px;padding:3px 6px}.evi small{font-size:.72rem;font-weight:900;margin-left:2px}
+.evi.p{background:#D9423F;color:#fff;font-family:var(--display);font-weight:900;font-size:.78rem}.evi.og{background:rgba(217,66,63,.35)}.evi.c{background:rgba(45,104,166,.4)}
+.evleg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.7rem;color:var(--muted)}.evleg .evi{font-size:.66rem;padding:1px 4px}
 .mstat{display:grid;gap:12px}.msth{display:flex;justify-content:space-between;font-weight:800;font-size:.8rem}.msr{display:grid;gap:5px}
 .msl{display:grid;grid-template-columns:3em 1fr 3em;align-items:center;text-align:center}.msl span{font-size:.78rem;color:var(--muted);font-weight:700}.msl b{font-family:var(--display);font-weight:900;font-size:1.05rem;color:var(--muted)}.msl b:first-child{text-align:left}.msl b:last-child{text-align:right}.msl b.hi{color:var(--ink)}
 .msb{display:grid;grid-template-columns:1fr 1fr;gap:4px}.msb span{height:7px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;display:flex}.msb .l{justify-content:flex-end}.msb i{display:block;height:100%;border-radius:99px}.msb .l i{background:var(--bib)}.msb .r i{background:#E8EFE9}
@@ -1350,15 +1356,13 @@ function resultPanel(m){
         <span class="mmi"><span class="eyebrow">Maçın Adamı</span>${r?`<span class="nt ${noteCls(r.pts)}">★ ${fN(r.pts)}</span>`:""}<b>${esc(nameOf(mo))}</b><span class="muted small">${dot2(r?r.side:"A")}${esc(TEAM[r?r.side:"A"])}${r?" · "+ROLE_NAME[r.role]:""}</span></span>
         <span class="mms">${kl?`<span><small>Yenilen</small><b>${r.op}</b></span>`:`<span><small>Gol</small><b>${+stt[mo]?.g||0}</b></span>`}<span><small>Asist</small><b>${+stt[mo]?.a||0}</b></span></span></button>`}
     h+=`<div class="awards two"><div class="aw"><span>Haftanın Golü</span><b>${inf.gol?esc(shortName(nameOf(inf.gol))):"—"}</b></div><div class="aw"><span>Fiyasko</span><b>${inf.fiy?esc(shortName(nameOf(inf.fiy))):"—"}</b></div></div>`;
-    // gol akışı: sırayla, ara skorla
-    const LK=(m.links||[]).filter(x=>x&&x.g);let a=0,b=0;const ev=[];
-    for(const x of LK){const sd=sideOf(m,x.g);if(sd==="A")a++;else b++;ev.push({k:sd,sc:a+"-"+b,h:`<b>${esc(shortName(nameOf(x.g)))}</b>${x.a?`<small>${esc(shortName(nameOf(x.a)))}</small>`:""}`,ic:"⚽"})}
-    for(const id of pl){const o=stt[id]||{};const sd=sideOf(m,id);
-      for(let i=0;i<(+o.og||0);i++){const k=sd==="A"?"B":"A";if(k==="A")a++;else b++;ev.push({k,sc:a+"-"+b,h:`<b>${esc(shortName(nameOf(id)))}</b><small>kendi kalesine</small>`,ic:"⚽"})}}
-    const lk=LK.length;const extra=[];
-    for(const id of pl){const o=stt[id]||{};const sd=sideOf(m,id);if(+o.cl)extra.push({k:sd,sc:"Ç",h:`<b>${esc(shortName(nameOf(id)))}</b><small>çizgiden çıkardı${+o.cl>1?" ×"+o.cl:""}</small>`});if(+o.pen)extra.push({k:sd,sc:"P",h:`<b>${esc(shortName(nameOf(id)))}</b><small>penaltı yaptırdı${+o.pen>1?" ×"+o.pen:""}</small>`})}
-    if(ev.length||extra.length){h+=`<div class="tline"><div class="tlh">Başlama</div>${[...ev,...extra].map(e=>`<div class="tlr ${e.k==="A"?"l":"r"}"><span class="tlc">${e.k==="A"?`${e.ic?`<i>${e.ic}</i>`:""}<span>${e.h}</span>`:""}</span><span class="tls${e.ic?"":" x"}">${e.sc}</span><span class="tlc">${e.k==="B"?`${e.ic?`<i>${e.ic}</i>`:""}<span>${e.h}</span>`:""}</span></div>`).join("")}<div class="tlh">MS ${sa} - ${sb}</div></div>`;
-      if(!lk&&(sa||sb))h+=`<p class="muted small">Gollerin sırası kayıtlı değil.</p>`}
+    // olaylar: her oyuncu bir kez, yaptığı işler ikon ve sayıyla
+    const evs=k=>T(k).map(id=>{const o=stt[id]||{};const it=[];const add=(n,ic,cls,t)=>{if(n>0)it.push(`<span class="evi ${cls}" title="${t}">${ic}${n>1?`<small>×${n}</small>`:""}</span>`)};
+        add(+o.g||0,"⚽","g","Gol");add(+o.a||0,"👟","a","Asist");add(+o.cl||0,"🛡️","c","Çizgiden çıkardı");add(+o.pen||0,"P","p","Penaltı yaptırdı");add(+o.og||0,"⚽","og","Kendi kalesine");
+        return it.length?{id,w:(+o.g||0)*10+(+o.a||0)*3+(+o.cl||0),h:`<div class="evp"><span class="evn">${esc(shortName(nameOf(id)))}</span><span class="evs">${it.join("")}</span></div>`}:null}).filter(Boolean).sort((a,b)=>b.w-a.w).map(x=>x.h).join("");
+    const eA=evs("A"),eB=evs("B");
+    if(eA||eB)h+=`<div class="evg"><div class="evc"><div class="evt">${dot2("A")}${esc(TEAM.A)}</div>${eA||'<span class="muted small">—</span>'}</div><div class="evc"><div class="evt">${dot2("B")}${esc(TEAM.B)}</div>${eB||'<span class="muted small">—</span>'}</div></div>
+      <div class="evleg"><span>⚽ gol</span><span>👟 asist</span><span>🛡️ çizgiden çıkarma</span><span><b class="evi p">P</b> penaltı yaptırdı</span><span><b class="evi og">⚽</b> kendi kalesine</span></div>`;
     if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı</div><div class="hscroll" style="margin-top:10px">${inf.totw.map(id=>P(id)?card(P(id)):"").join("")}</div></div>`;
     h+=`<div class="report">${spiker(m,inf)}</div>`;
     if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
