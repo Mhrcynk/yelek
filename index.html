@@ -788,7 +788,7 @@ function computeCore(LV){
         if(r.op<=5&&(r.role==="KL"||r.role==="DF"))cs++;ptsSum+=r.pts;if(!bestM||r.pts>bestM.pts)bestM={pts:r.pts,date:m.date};
         att++;fvDry=r.role==="FV"&&!r.g?fvDry+1:0;osDry=!r.g&&!r.a?osDry+1:0;
         ch=matchChanges(p,r,m,(m.stats||{})[p.id]||{},{fvDry,osDry,att,motm:inf.motm===p.id});line={kind:"oynadi",r};
-      }else{streak=0;att=0;const lc=!!(m.late||{})[p.id];if(lc)late++;ch=[[p.pos==="Kaleci"?"hiz_cab":"fiz_day",-ENG.step,lc?"son dakika iptal":"maça gelmedi"]];if(lc)ch.push([p.pos==="Kaleci"?"hiz_acc":"fiz_agr",-ENG.step,"son dakika iptal"]);line={kind:lc?"iptal":"gelmedi"}}
+      }else{streak=0;att=0;ch=[[p.pos==="Kaleci"?"hiz_cab":"fiz_day",-ENG.step,"maça gelmedi"]];line={kind:"gelmedi"}}
       for(const k of KS)DL[k]*=(1-ENG.decay);
       ch=ch.filter(x=>x[0] in DL);const before=gen;const g0=genF(p,curOf());const nD=r?(r.pts-lvEsik(r.lv??NOTE.ref))*NOTE.kat:0;if(r)ch=noteSpread(p,curOf(),ch,nD);const DL0={...DL};
       const req={};for(const[k,v]of ch){req[k]=(req[k]||0)+v;DL[k]=clamp(DL[k]+v,-ENG.cap,ENG.cap)}
@@ -812,7 +812,6 @@ function computeCore(LV){
     if(elig>=5&&games/elig>=.9)badges.push({i:"%",t:"Sadık",d:"Maçların %"+Math.round(games/elig*100)+"'ine geldi"});
     if(golu)badges.push({i:"G",t:"Haftanın Golü",d:golu+" kez"});
     if(fiy>=2)badges.push({i:"?!",t:"Fiyasko Ustası",d:fiy+" kez seçildi",shame:true});
-    if(late>=2)badges.push({i:"!",t:"Son Dakikacı",d:late+" kez son gün iptal",shame:true});
     const hp=hist.filter(h=>h.r);const run=f=>{let n=0;for(let i=hp.length-1;i>=0&&f(hp[i].r);i--)n++;return n};
     const sW=run(r=>r.res==="G"),sU=run(r=>r.res!=="M"),sL=run(r=>r.res==="M"),sNW=run(r=>r.res!=="G"),sG=run(r=>r.g>0),sNG=run(r=>r.g===0);const grp=posOf(p);
     const stkO=sW>=3?{hot:1,t:sW+" maçtır kazanıyor"}:sU>=4?{hot:1,t:sU+" maçtır yenilmiyor"}:sG>=2&&grp!=="KL"?{hot:1,t:sG+" maçtır gol atıyor"}
@@ -1008,7 +1007,7 @@ function ms(m,pid,v){const dis=(!S.admin&&pid!==S.me)?"disabled":"";
   return `<span class="ms">${[["g","check","Geliyor"],["y","clock","Yedek"],["n","x","Gelemiyor"]].map(([k,ic,l])=>`<button class="${k}${v===k?" on":""}" data-act="rsvp" data-m="${esc(m.id)}" data-p="${esc(pid)}" data-v="${k}" aria-label="${l}" aria-pressed="${v===k}" ${dis}>${ICON[ic]}</button>`).join("")}</span>`}
 function grp(title,list,m){if(!list.length)return"";
   return `<div class="grp">${title} · ${list.length}</div>`+list.map(p=>{const st=stOf(p);const v=(m.rsvp||{})[p.id];const can=S.admin||p.id===S.me;
-    return `<div class="pl"><button class="avbtn" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)} kartını aç">${avatarO(p)}</button><div class="pi"><b>${esc(p.name)}${p.id===S.me?' <span class="chip ok" style="vertical-align:1px">Sen</span>':""}</b><span>${esc(posLabel(p))}${stChip(p)}${p.yedek?'<span class="chip">Yedek oyuncu</span>':""}${(m.late||{})[p.id]&&!p.yedek?'<span class="chip warn">Son dakika iptal</span>':""}</span></div>${UNAVAIL.includes(st)||!can?"":ms(m,p.id,v)}</div>`}).join("")}
+    return `<div class="pl"><button class="avbtn" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)} kartını aç">${avatarO(p)}</button><div class="pi"><b>${esc(p.name)}${p.id===S.me?' <span class="chip ok" style="vertical-align:1px">Sen</span>':""}</b><span>${esc(posLabel(p))}${stChip(p)}${p.yedek?'<span class="chip">Yedek oyuncu</span>':""}</span></div>${UNAVAIL.includes(st)||!can?"":ms(m,p.id,v)}</div>`}).join("")}
 function waText(m,L){
   const s=S.settings;let t=`⚽ ${s.group_name} · ${fmtDate(m.date)} ${m.time||""}${s.field_name?"\n📍 "+s.field_name:""}\nKadro (${L.kadro.length}/${CAP}):\n`;
   t+=L.kadro.map((p,i)=>`${i+1}. ${p.name}`).join("\n")||"-";
@@ -1536,7 +1535,7 @@ function viewKurallar(inSheet){
    ${[["0–5",0],["6–10",1],["11–15",2],["16 ve üstü",3]].map(([l,i])=>{const v=n.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`}).join("")}</tbody></table></div></section>
   <section class="card"><h2>Herkes için</h2><div class="rules">${row("Galibiyet",f(n.gal))}${row("Beraberlik","0")}${row("Yenilgi",f(n.yen))}${row("5 ve üstü farkla yenilgi","ek "+f(n.farkli))}${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy))}${row("Kendi kalesine gol",f(n.kk))}</div></section>
   <section class="card"><h2>Karttaki özellikler</h2><p>Kart değişimi, maçta yapılan işe göre özelliklere dağıtılır: gol bitiriciliğe, asist pasa, az gol yemek savunmaya ya da reflekse yazılır. Özel bir iş yoksa kartın en önemli özelliği değişir.</p>
-   <div class="rules">${row("Maça gelmemek","Dayanıklılık −2")}${row("Son dakika iptal","Dayanıklılık −2 · Agresiflik −2")}${row("Yedek kadrodaki oyuncu","Gelmemek ve iptal kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
+   <div class="rules">${row("Maça gelmemek","Dayanıklılık −2")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
    <p class="muted small">Haftanın Takımı, form ve ortalamalar da maç notuna göre hesaplanır.</p></section>`;
 }
 
@@ -1603,7 +1602,7 @@ document.addEventListener("click",async e=>{
       if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(t)){toast("Tarih ve saati kontrol et");break}
       const r=await A("admin_set_when",{p_id:id,p_date:d,p_time:t},"Tarih ve saat güncellendi");if(r)delete S.f["when_"+id];break}
     case"delMatch":if(S.f.delMatch!==id){S.f.delMatch=id;render(true);break}S.f.delMatch=null;S.teams=null;S.view=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);await A("admin_archive_match",{p_id:id},"Maç silindi, tüm etkileri geri alındı");break;
-    case"rsvp":{if(el.disabled)break;const r=await act("rsvp",{p_match:el.dataset.m,p_player:el.dataset.p,p_value:el.dataset.v});if(r&&r.late)toast("Son dakika iptali kaydedildi");else if(r)toast(el.dataset.v==="g"?"Görüşürüz sahada!":el.dataset.v==="y"?"Yedek olarak yazıldı":"Gelemiyor olarak işlendi");break}
+    case"rsvp":{if(el.disabled)break;const r=await act("rsvp",{p_match:el.dataset.m,p_player:el.dataset.p,p_value:el.dataset.v});if(r)toast(el.dataset.v==="g"?"Görüşürüz sahada!":el.dataset.v==="y"?"Yedek olarak yazıldı":"Gelemiyor olarak işlendi");break}
     case"copy":{const tx=el.dataset.txt;try{await navigator.clipboard.writeText(tx);toast("Kopyalandı")}catch(_){toast("Kopyalanamadı, metni elle seç")}break}
     case"balance":{const ids=t?[...t.A,...t.B]:[];if(ids.length<4){toast("Önce en az 4 oyuncu seç");break}const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
     case"editTeams":{const m=S.matches.find(x=>x.id===id);startEditor(id,m.team_a||[],m.team_b||[],m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);render(true);break}
