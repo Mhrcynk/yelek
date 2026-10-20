@@ -601,8 +601,8 @@ const FORMS={
   "3-3":{slots:[[50,7,"KL"],[20,29,"DF"],[50,25,"DF"],[80,29,"DF"],[20,72,"FV"],[50,78,"FV"],[80,72,"FV"]],d:"İki sıra, basit ve net"}
 };
 const NOTE={base:6,esik:6.5,kat:.4,min:1,max:10,gal:.5,yen:-.5,farkli:-.5,motm:1,fiy:-1,kk:-1,
-  gol:{KL:2,DF:1.3,DOS:1.2,OS:1,FV:.8},asist:{KL:1.2,DF:.9,DOS:.8,OS:.7,FV:.6},
-  savunma:[[5,{KL:1,DF:.8,DOS:.5}],[10,{KL:0,DF:0,DOS:0}],[999,{KL:-1,DF:-.8,DOS:-.4}]],bos:{OS:-.3,FV:-.5}};
+  gol:{KL:2,DF:1.3,DOS:1.2,OS:.8,FV:.6},asist:{KL:1.2,DF:.9,DOS:.8,OS:.5,FV:.4},tamGol:3,
+  savunma:[[5,{KL:1.5,DF:1.2,DOS:.7}],[10,{KL:.7,DF:.5,DOS:.3}],[15,{KL:-.5,DF:-.4,DOS:-.2}],[999,{KL:-1.2,DF:-1,DOS:-.5}]],bos:{OS:-.3,FV:-.7}};
 const fN=x=>x==null?"–":(Math.round(x*10)/10).toFixed(1).replace(".",",");
 const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 const GUNLER=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
@@ -696,7 +696,7 @@ function matchPoints(m,pid,motmId,golId,fiyId){
   const g=+st.g||0,a=+st.a||0,og=+st.og||0;
   add(my>op?"Galibiyet":my<op?"Yenilgi":"Beraberlik",my>op?NOTE.gal:my<op?NOTE.yen:0);
   if(op-my>=5)add((op-my)+" farklı yenilgi",NOTE.farkli);
-  add(g+" gol",g*NOTE.gol[nr]*gaF);add(a+" asist",a*NOTE.asist[nr]*gaF);
+  add(g+" gol",(Math.min(g,NOTE.tamGol)+Math.max(0,g-NOTE.tamGol)/2)*NOTE.gol[nr]*gaF);add(a+" asist",a*NOTE.asist[nr]*gaF);
   if(!g&&!a)add("Gol/asist yok",NOTE.bos[nr]||0);
   if(NOTE.savunma[0][1][nr]!=null)for(const[lim,v]of NOTE.savunma){if(op<=lim){add(op===0?"Gol yemedi":op+" gol yediler",v[nr]);break}}
   add("Kendi kalesine",og*NOTE.kk);add("Maçın Adamı",motmId===pid?NOTE.motm:0);add("Fiyasko",fiyId&&fiyId===pid?NOTE.fiy:0);
@@ -1501,9 +1501,9 @@ function viewKurallar(inSheet){
   <section class="card"><h2>Gol ve asist</h2><p class="muted small">Oyuncu o maç sahada hangi mevkide oynadıysa ona göre sayılır. Bölgesinden uzak katkı daha değerli.</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th>Mevki</th><th>Gol</th><th>Asist</th><th>Katkı yok</th></tr></thead><tbody>
    ${RL.map(([k,l])=>`<tr><td>${l}</td><td>${f(n.gol[k])}</td><td>${f(n.asist[k])}</td><td>${n.bos[k]?f(n.bos[k]):"–"}</td></tr>`).join("")}</tbody></table></div>
-   <p class="muted small">Kartı forvet olmayıp alternatif mevkisi forvet olan oyuncuda gol ve asistin etkisi yarıdır.</p></section>
+   <p class="muted small">İlk 3 gol tam sayılır, 4. golden sonrası yarı değerdedir. Kartı forvet olmayıp alternatif mevkisi forvet olan oyuncuda gol ve asistin etkisi yarıdır.</p></section>
   <section class="card"><h2>Yenilen gol</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Takım kaç gol yedi</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
-   ${[["0–5",0],["6–10",1],["11 ve üstü",2]].map(([l,i])=>{const v=n.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`}).join("")}</tbody></table></div></section>
+   ${[["0–5",0],["6–10",1],["11–15",2],["16 ve üstü",3]].map(([l,i])=>{const v=n.savunma[i][1];return `<tr><td>${l}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`}).join("")}</tbody></table></div></section>
   <section class="card"><h2>Herkes için</h2><div class="rules">${row("Galibiyet",f(n.gal))}${row("Beraberlik","0")}${row("Yenilgi",f(n.yen))}${row("5 ve üstü farkla yenilgi","ek "+f(n.farkli))}${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy))}${row("Kendi kalesine gol",f(n.kk))}</div></section>
   <section class="card"><h2>Karttaki özellikler</h2><p>Kart değişimi, maçta yapılan işe göre özelliklere dağıtılır: gol bitiriciliğe, asist pasa, az gol yemek savunmaya ya da reflekse yazılır. Özel bir iş yoksa kartın en önemli özelliği değişir.</p>
    <div class="rules">${row("Maça gelmemek","Dayanıklılık −2")}${row("Son dakika iptal","Dayanıklılık −2 · Agresiflik −2")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
