@@ -742,6 +742,31 @@ button.card.pvc{display:flex}
 /* sezon */
 .boards{gap:10px}
 .board h3{margin-bottom:2px}
+
+/* sahada kartlar */
+.field.cards.both{aspect-ratio:68/116}.field.cards.single{aspect-ratio:68/108}
+.tc{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:2px;width:64px;border:0;background:none;padding:0;color:#fff;transition:left .25s,top .25s}
+.tcb{position:relative;display:flex;align-items:center;border-radius:10px;padding:2px 3px 2px 2px;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.tcb.gold,.tcard.gold{background:linear-gradient(160deg,#F6DE8F,#C8962C);color:#2A1D04}.tcb.silver,.tcard.silver{background:linear-gradient(160deg,#ECEFF1,#A4ADB3);color:#1A2227}
+.tcb.bronze,.tcard.bronze{background:linear-gradient(160deg,#E8BF96,#A46A3E);color:#2A1608}.tcb.star,.tcard.star{background:linear-gradient(160deg,#1F7A43,#0B2F1B);color:#F6DE8F}
+.tc.a .tcb{outline:2px solid var(--tA);outline-offset:1px}.tc.b .tcb{outline:2px solid var(--tB);outline-offset:1px}
+.tph{width:26px;height:26px;border-radius:8px;overflow:hidden;background:rgba(0,0,0,.2);display:grid;place-items:center;font:900 .58rem var(--display)}
+.tph img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.tcb b{font-family:var(--display);font-weight:900;font-size:.9rem;padding:0 3px 0 4px;line-height:1}
+.tc .cap,.tcard .cap{position:absolute;left:-7px;bottom:-6px;width:15px;height:15px;border-radius:50%;background:var(--acc);color:var(--accInk);font-style:normal;font:900 .58rem var(--display);display:grid;place-items:center;border:1px solid rgba(0,0,0,.35)}
+.tcn{font-size:.6rem;font-weight:700;background:rgba(6,10,18,.8);padding:1px 6px;border-radius:5px;white-space:nowrap;max-width:74px;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.tcr{display:flex;gap:3px;align-items:center}.tcr i{font-style:normal;font:800 .5rem var(--display);background:var(--bg);border:1px solid rgba(255,255,255,.35);border-radius:4px;padding:0 3px;line-height:1.5}
+.tcr .nt,.tcard .nt{font-style:normal;font:900 .6rem var(--display);color:#fff;border-radius:5px;padding:0 4px;line-height:1.5}
+.tc .nt.n8,.tcard .nt.n8{background:#0E8F4E}.tc .nt.n7,.tcard .nt.n7{background:#5DB443}.tc .nt.n65,.tcard .nt.n65{background:#E3C33C;color:#1A1300}.tc .nt.n6,.tcard .nt.n6{background:#EE8A2A;color:#1A0E02}.tc .nt.n5,.tcard .nt.n5{background:#D9423F}
+.tc .nt.motm,.tcard .nt.motm{box-shadow:0 0 0 2px var(--acc)}
+.tcard{position:absolute;transform:translate(-50%,-50%);width:70px;height:96px;border:0;border-radius:12px;padding:5px;display:flex;flex-direction:column;align-items:center;box-shadow:0 6px 14px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.35);overflow:visible;transition:left .25s,top .25s}
+.tcard::before{content:"";position:absolute;inset:0;border-radius:12px;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.3) 50%,transparent 60%);pointer-events:none}
+.tcard::after{content:"";position:absolute;left:12px;right:12px;bottom:-3px;height:3px;border-radius:2px}.tcard.a::after{background:var(--tA)}.tcard.b::after{background:var(--tB)}
+.tcard .o{position:absolute;left:6px;top:4px;font-family:var(--display);font-weight:900;font-size:1.25rem;line-height:1}
+.tcard .p{position:absolute;left:7px;top:25px;font-style:normal;font:800 .55rem var(--display)}
+.tcard .tph{width:40px;height:40px;border-radius:50%;margin:10px 0 0 16px;font-size:.8rem}
+.tcard .nm{margin-top:auto;font-size:.62rem;font-weight:800;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis;border-top:1px solid color-mix(in srgb,currentColor 25%,transparent);width:100%;text-align:center;padding-top:2px}
+.tcard .nt{position:absolute;right:-10px;top:-8px;font-size:.72rem;padding:1px 5px;box-shadow:0 2px 4px rgba(0,0,0,.35)}
 </style>
 </head>
 <body>
@@ -1352,12 +1377,13 @@ function fieldSvg(){return `<svg class="lines" viewBox="0 0 68 100" preserveAspe
   <rect x="29" y="1" width="10" height="2"/><rect x="29" y="97" width="10" height="2"/></g></svg>`}
 function pos2(k,x,y){return k==="A"?{l:x,t:96-y*.44}:{l:100-x,t:4+y*.44}}
 function unpos2(k,l,t){return k==="A"?{x:l,y:(96-t)/.44}:{x:100-l,y:(t-4)/.44}}
-function layout(mode,pa,pb,la,lb){
+function layout(mode,pa,pb,la,lb,cards){
   const toks=[];
-  const add=(k,PS,L)=>PS.forEach(([x,y,r],i)=>{let l,t;if(mode==="both"){({l,t}=pos2(k,x,y))}else{l=x;t=95-y*.88}toks.push({k,i,id:L[i],r:i===0?"KL":r,ep:i===0?"KL":slotPos(x,y,r),l,t})});
+  const ROW={KL:87,DF:63.5,OS:40,FV:16.5};
+  const add=(k,PS,L)=>PS.forEach(([x,y,r],i)=>{let l,t;if(mode==="both"){({l,t}=pos2(k,x,y))}else if(cards){l=x;t=ROW[i===0?"KL":r]??95-y*.88}else{l=x;t=95-y*.88}toks.push({k,i,id:L[i],r:i===0?"KL":r,ep:i===0?"KL":slotPos(x,y,r),l,t})});
   if(mode!=="B")add("A",pa,la);if(mode!=="A")add("B",pb,lb);
-  const wx=mode==="both"?22:25,wy=mode==="both"?11.5:14;
-  const lim=T=>{T.l=clamp(T.l,10,90);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,92):clamp(T.t,7,44);else T.t=clamp(T.t,7,92)};
+  const wx=cards?(mode==="both"?21:25):mode==="both"?22:25,wy=cards?(mode==="both"?13:20):mode==="both"?11.5:14;
+  const lim=cards?T=>{T.l=clamp(T.l,11,89);if(mode==="both")T.t=T.k==="A"?clamp(T.t,58,93):clamp(T.t,7,42);else T.t=clamp(T.t,11,89)}:T=>{T.l=clamp(T.l,10,90);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,92):clamp(T.t,7,44);else T.t=clamp(T.t,7,92)};
   toks.forEach(lim);
   for(let it=0;it<200;it++){let moved=false;
     for(let a=0;a<toks.length;a++)for(let b=a+1;b<toks.length;b++){const A=toks[a],B=toks[b];
@@ -1379,8 +1405,16 @@ function tokHtml(T,editable,sel,caps,notes){
   return `<button class="tok ${kc}${T.i===0?" gk":""}${s?" sel":""}" style="${st}" ${attrs} aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ovrOf(id)}"><span class="shirt ${photoOf(id)?"hasph":"ini"}">${photoOf(id)?`<img src="${esc(photoOf(id))}" alt="">`:esc(initials(nameOf(id)))}<i class="ps">${T.ep}</i><i class="ov">${P(id)?.guest?"MİS":ovrOf(id)}</i>${caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':""}${notes&&notes.pts[id]?`<i class="nt ${noteCls(notes.pts[id].pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(notes.pts[id].pts)}">${notes.motm===id?"★":""}${fN(notes.pts[id].pts)}</i>`:""}</span><span class="tn">${esc(shortName(nameOf(id)))}</span></button>`;
 }
 const noteCls=v=>v>=8?"n8":v>=7?"n7":v>=6.5?"n65":v>=6?"n6":"n5";
-function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
-  return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb).map(T=>tokHtml(T,editable,sel,caps,notes)).join("")}</div>`;
+// saha üstünde kart: iki takımda kompakt kart, tek takımda büyük FUT kartı
+function cardTok(T,mode,caps,notes){const id=T.id,p=P(id),o=ovrOf(id),ph=photoOf(id),kc=T.k.toLowerCase();const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
+  const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
+  const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;const tr=p?.guest?"silver":tierOf(o);
+  const img=ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`;
+  const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
+  if(mode==="both")return `<button class="tc ${kc}" style="${st}" data-act="open" data-id="${esc(id)}" ${lab}><span class="tcb ${tr}"><span class="tph">${img}</span><b class="num">${ov}</b>${cap}</span><span class="tcn">${esc(shortName(nameOf(id)))}</span><span class="tcr"><i>${T.ep}</i>${nt}</span></button>`;
+  return `<button class="tcard ${tr} ${kc}" style="${st}" data-act="open" data-id="${esc(id)}" ${lab}><b class="o num">${ov}</b><i class="p">${T.ep}</i><span class="tph">${img}</span><span class="nm">${esc(shortName(nameOf(id)))}</span>${nt}${cap}</button>`}
+function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){const cards=!editable;
+  return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":" cards"}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,cards).map(T=>cards&&T.id?cardTok(T,mode,caps,notes):tokHtml(T,editable,sel,caps,notes)).join("")}</div>`;
 }
 const posArr=(m,k)=>{const p=k==="A"?m.pos_a:m.pos_b;return p&&p.length===TEAM_SIZE?p:FORMS[formOf(m,k)].slots};
 const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
