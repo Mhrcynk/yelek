@@ -785,7 +785,7 @@ const POS_KEYS=Object.keys(POS);
 const EPOS={KL:["KL","Kaleci"],STP:["DF","Stoper"],"SĞB":["DF","Sağ bek"],SLB:["DF","Sol bek"],DOS:["OS","Defansif orta saha"],MO:["OS","Merkez orta saha"],MOO:["OS","Ofansif orta saha"],"SĞO":["OS","Sağ orta saha"],SLO:["OS","Sol orta saha"],"SĞK":["FV","Sağ kanat"],SLK:["FV","Sol kanat"],SNT:["FV","Santrafor"]};
 const EPOS_KEYS=Object.keys(EPOS);
 const POS_ORDER={KL:0,STP:1,"SĞB":2,SLB:3,DOS:4,MO:5,"SĞO":6,SLO:7,MOO:8,"SĞK":9,SLK:10,SNT:11};
-const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(POS_ORDER[eposOf(pb)]??99)||ovrOf(b)-ovrOf(a)};
+const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(POS_ORDER[eposOf(pb)]??99)||genOf(b)-genOf(a)};
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
@@ -1306,7 +1306,7 @@ function waText(m,L){
 
 /* ================= Takım kurma ================= */
 function gkCounts(){const c={};for(const m of S.matches){const a=(m.lineup_a||[])[0],b=(m.lineup_b||[])[0];if(a)c[a]=(c[a]||0)+1;if(b)c[b]=(c[b]||0)+1}return c}
-function pickGk(ids){const kl=ids.filter(id=>posOf(P(id))==="KL");if(kl.length)return kl.sort((a,b)=>ovrOf(b)-ovrOf(a))[0];const c=gkCounts();
+function pickGk(ids){const kl=ids.filter(id=>posOf(P(id))==="KL");if(kl.length)return kl.sort((a,b)=>genOf(b)-genOf(a))[0];const c=gkCounts();
   return [...ids].sort((a,b)=>(c[a]||0)-(c[b]||0)||ovrOf(a)-ovrOf(b))[0]||null}
 function balanceIds(ids){
   const n=ids.length,half=Math.floor(n/2);if(half<1)return{A:ids,B:[]};
@@ -1324,7 +1324,7 @@ function balanceIds(ids){
 function autoLineup(ids,fk){
   const slots=FORMS[fk].slots;const out=new Array(slots.length).fill(null);let pool=[...ids];
   const gk=pickGk(pool);if(gk){out[0]=gk;pool=pool.filter(x=>x!==gk)}
-  const byO=arr=>arr.sort((a,b)=>ovrOf(b)-ovrOf(a));
+  const byO=arr=>arr.sort((a,b)=>genOf(b)-genOf(a));
   for(let i=1;i<slots.length;i++){const c=byO(pool.filter(id=>posOf(P(id))===slots[i][2]))[0];if(c){out[i]=c;pool=pool.filter(x=>x!==c)}}
   const near={DF:["OS","FV","KL"],OS:["DF","FV","KL"],FV:["OS","DF","KL"]};
   for(let i=1;i<slots.length;i++){if(out[i])continue;let c=null;for(const r of near[slots[i][2]]){c=byO(pool.filter(id=>posOf(P(id))===r))[0];if(c)break}
@@ -1469,7 +1469,7 @@ function draftPanel(m){
   const cols=`<div class="split">${col("A",d.A)}${col("B",d.B)}</div>`;
   if(!pool.length)return `<div class="ch"><h2>Draft bitti</h2></div>`+cols+`<button class="btn primary block" data-act="draftDone">Sahaya diz</button><button class="btn ghost sm" data-act="draftCancel">Baştan al</button>`;
   return `<div class="ch"><div><div class="eyebrow">Sıra · ${TEAM[d.turn]}</div><h2>${esc(nameOf(d.turn==="A"?d.capA:d.capB))} seçiyor</h2></div><span class="timer num" id="dtimer">${Math.max(0,Math.ceil((d.deadline-Date.now())/1000))}</span></div>
-    <div class="pool">${pool.sort((a,b)=>ovrOf(b)-ovrOf(a)).map(id=>`<button data-act="dpick" data-id="${esc(id)}"><b class="num">${ovrOf(id)}</b>${esc(nameOf(id))} <span class="muted small">${eposOf(P(id))}</span></button>`).join("")}</div>`+cols;
+    <div class="pool">${pool.sort((a,b)=>genOf(b)-genOf(a)).map(id=>`<button data-act="dpick" data-id="${esc(id)}"><b class="num">${ovrOf(id)}</b>${esc(nameOf(id))} <span class="muted small">${eposOf(P(id))}</span></button>`).join("")}</div>`+cols;
 }
 
 /* ================= Maç sonu girişi ================= */
@@ -1716,7 +1716,7 @@ function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
   const kv=S.f.kv||LS.get("y_kv")||"list";
   let ps=S.players.filter(p=>flt==="all"||(flt==="yedek"?p.yedek:flt==="as"?!p.yedek:false)||p.pos===flt||(altOf(p)&&GROUP_POS[EPOS[altOf(p)][0]]===flt));
-  ps=[...ps].sort((a,b)=>sort==="isim"?a.name.localeCompare(b.name,"tr"):sort==="form"?(S.stats[b.id]?.lastD||0)-(S.stats[a.id]?.lastD||0)||ovrOf(b.id)-ovrOf(a.id):ovrOf(b.id)-ovrOf(a.id));
+  ps=[...ps].sort((a,b)=>sort==="isim"?a.name.localeCompare(b.name,"tr"):sort==="form"?(S.stats[b.id]?.lastD||0)-(S.stats[a.id]?.lastD||0)||genOf(b.id)-genOf(a.id):genOf(b.id)-genOf(a.id));
   let h=`<div class="ph"><div><h1>Kartlar</h1><span class="muted">${S.players.length} oyuncu</span></div><div class="row" style="gap:8px;flex-wrap:nowrap"><button class="btn sm" data-act="cmpOpen" aria-label="Oyuncu karşılaştır">${ICON.scale}</button><div class="vtog" role="group" aria-label="Görünüm"><button data-act="kview" data-v="list" class="${kv==="list"?"on":""}">Liste</button><button data-act="kview" data-v="grid" class="${kv==="grid"?"on":""}">Kart</button></div>${S.admin?`<button class="btn primary sm" data-act="addSheet" aria-label="Oyuncu ekle">${ICON.plus}</button>`:""}</div></div>
     <div class="chips" role="group" aria-label="Mevkiye göre">${[["all","Tümü"],...POS_KEYS.map(k=>[k,k]),["as","As"],["yedek","Yedek"]].map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${flt===k?"on":""}">${l}</button>`).join("")}
     <select id="sortSel" data-bind="sort" aria-label="Sırala">${[["ovr","Reytinge göre"],["form","Formdakiler"],["isim","İsme göre"]].map(([k,l])=>`<option value="${k}"${sort===k?" selected":""}>${l}</option>`).join("")}</select></div>`;
@@ -1847,8 +1847,8 @@ function viewSezon(){
   const minG=Math.min(5,Math.max(1,Math.ceil(F.length/2)));
   const board=(t,val,fmt,filt,asc)=>{const l=S.players.filter(p=>filt?filt(ys[p.id]):val(ys[p.id])>0).sort((a,b)=>asc?val(ys[a.id])-val(ys[b.id]):val(ys[b.id])-val(ys[a.id])).slice(0,5);
     if(!l.length)return"";return `<section class="card board"><h3>${t}</h3>${l.length?`<ol>${l.map((p,i)=>`<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)}</span><b>${fmt(ys[p.id])}</b></li>`).join("")}</ol>`:'<p class="muted small">Henüz veri yok.</p>'}</section>`};
-  const prevO=id=>{const se=S.stats[id]?.series||[];return se.length>1?se[se.length-2]:ovrOf(id)};
-  const rk=[...S.players].sort((a,b)=>ovrOf(b.id)-ovrOf(a.id)||a.name.localeCompare(b.name,"tr"));
+  const prevO=id=>{const st=S.stats[id];const h=st?.hist||[];return h.length>1?(h[h.length-2].gx??h[h.length-2].ovr):h.length===1?(st.baseX??st.base):genOf(id)};
+  const rk=[...S.players].sort((a,b)=>genOf(b.id)-genOf(a.id)||a.name.localeCompare(b.name,"tr"));
   const prk=[...S.players].sort((a,b)=>prevO(b.id)-prevO(a.id)||a.name.localeCompare(b.name,"tr")).map(p=>p.id);
   const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastD||0;
     return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):"–"}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2em;text-align:right">${fD(d)}</span></span></li>`}).join("");
@@ -2351,7 +2351,7 @@ async function storyTotw(m){
 
 /* Draft zamanlayıcı */
 function startTimer(){stopTimer();S.tick=setInterval(()=>{const d=S.draft;if(!d||!d.deadline)return stopTimer();const left=Math.ceil((d.deadline-Date.now())/1000);const el=$("#dtimer");if(el)el.textContent=Math.max(0,left);
-  if(left<=0){const m=S.matches.find(x=>x.id===d.mid);const pool=rsvpLists(m).kadro.map(p=>p.id).filter(id=>!d.A.includes(id)&&!d.B.includes(id)).sort((a,b)=>ovrOf(b)-ovrOf(a));if(pool[0]){toast("Süre doldu, en yüksek reytingli seçildi");dpick(pool[0])}}},250)}
+  if(left<=0){const m=S.matches.find(x=>x.id===d.mid);const pool=rsvpLists(m).kadro.map(p=>p.id).filter(id=>!d.A.includes(id)&&!d.B.includes(id)).sort((a,b)=>genOf(b)-genOf(a));if(pool[0]){toast("Süre doldu, en yüksek reytingli seçildi");dpick(pool[0])}}},250)}
 function stopTimer(){clearInterval(S.tick);S.tick=null}
 function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);d.turn=d.turn==="A"?"B":"A";d.deadline=Date.now()+20000;
   const m=S.matches.find(x=>x.id===d.mid);if(!rsvpLists(m).kadro.some(p=>!d.A.includes(p.id)&&!d.B.includes(p.id)))stopTimer();render(true)}
