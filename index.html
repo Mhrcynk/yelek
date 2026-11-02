@@ -1122,8 +1122,6 @@ const openMatch=()=>S.matches.filter(m=>m.state!=="bitti"&&!isExt(m)).sort((a,b)
 function viewMac(){
   if(!S.players.length)return `<section class="card"><div class="empty"><h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
   const om=openMatch();let h=om?hero(om)+matchBody(om):(S.admin?createHero():noMatchHero());
-  const F=fin();const last=F[F.length-1];if(last){h+=lastCard(last);if(!LS.get("cf_"+last.id)){LS.set("cf_"+last.id,"1");if(last.finished_at&&Date.now()-new Date(last.finished_at).getTime()<4*864e5)setTimeout(()=>confetti(110),450)}}
-  if(F.length>1)h+=`<button class="btn block" data-act="tab" data-tab="gecmis">${ICON.gecmis} Fikstür · tüm maçlar (${F.length})</button>`;
   return h;
 }
 function lastCard(m,...r){return inM(m,()=>_lastCard(m,...r))}
@@ -1150,7 +1148,6 @@ function viewGecmis(){
   if(S.view){const vm=F.find(m=>m.id===S.view);if(vm){const i=F.indexOf(vm);
     return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="back">${ICON.back} Fikstür</button><span class="row" style="gap:6px">${F[i+1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i+1].id)}" aria-label="Önceki maç">‹ Önceki</button>`:""}${F[i-1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i-1].id)}" aria-label="Sonraki maç">Sonraki ›</button>`:""}</span></div>`+(isExt(vm)?extPanel(vm):resultPanel(vm))}}
   let h=`<div class="ph"><div><h1>Fikstür</h1><span class="muted">${F.length} maç oynandı</span></div>${S.admin?`<button class="btn sm primary" data-act="extNew">${ICON.plus} Dış maç</button>`:""}</div>`;
-  {const FI=fin();const lst=FI[FI.length-1];if(lst)h+=`<div class="eyebrow" style="margin:2px 2px -6px">Son maç</div>`+resultPanel(lst)}
   h+=rivalCard(E);
   if(!F.length&&!openMatch())return h+`<section class="card"><div class="empty"><h3>İlk düdük bekleniyor</h3><p>İlk maçı gir, kartlar uyansın. Oynanan her maç burada birikir.</p></div></section>`;
   const om=openMatch();let cur="";h+=`<div class="glist">`;
