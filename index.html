@@ -644,8 +644,9 @@ h1{font-size:1.95rem;font-weight:800}h2{font-size:1.25rem;font-weight:800}h3{fon
 .hero::before{background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 30px,transparent 30px 60px)}
 .hero::after{border-color:rgba(255,255,255,.08)}
 .when .dt{color:var(--acc)}
-.clk{display:grid;justify-items:center;gap:4px;padding:14px 16px;background:rgba(6,10,18,.45);border-color:rgba(198,244,50,.22)}
-.clk b{font-size:clamp(2.4rem,12vw,3.4rem);color:var(--acc);letter-spacing:-.02em;text-shadow:0 0 24px rgba(198,244,50,.35)}
+.clk{display:grid;grid-template-columns:minmax(0,1fr);justify-content:stretch;justify-items:center;text-align:center;gap:4px;padding:14px 16px;background:rgba(6,10,18,.45);border-color:rgba(198,244,50,.22)}
+.clk .eyebrow{display:block;width:100%;text-align:center}
+.clk b{display:block;width:100%;text-align:center;white-space:nowrap;font-size:clamp(2.4rem,12vw,3.4rem);color:var(--acc);letter-spacing:-.02em;text-shadow:0 0 24px rgba(198,244,50,.35)}
 .clk b.day{font-size:clamp(2rem,10vw,2.8rem)}
 .clk.live b{color:var(--ok);text-shadow:0 0 24px rgba(0,230,118,.4)}
 .vn{font-size:clamp(1.3rem,6.2vw,2.2rem);letter-spacing:-.01em}.vn.l2{font-size:clamp(1.05rem,5vw,1.8rem)}
