@@ -1563,7 +1563,7 @@ function _resultPanel(m){
   const avgN=k=>{const v=T(k).map(id=>inf.pts[id]?.pts).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
   const mt=Object.values(inf.pts).find(Boolean)?.mt||"";const dot2=k=>k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>';
   let h=`<section class="card mdet"><div class="mhd">
-    <div class="mhm"><span>${fmtDate(m.date)}${S.settings.field_name?" · "+esc(S.settings.field_name):""}</span>${S.admin?`<span class="row" style="gap:4px;flex-wrap:nowrap"><button class="btn ghost sm" data-act="evalOpen" data-id="${M}">Değerlendir</button><button class="btn ghost sm" data-act="reopen" data-id="${M}">Düzelt</button><button class="btn ghost sm danger" data-act="delMatch" data-id="${M}">${S.f.delMatch===m.id?"Emin misin?":"Sil"}</button></span>`:""}</div>
+    <div class="mhm"><span>${fmtDate(m.date)}${S.settings.field_name?" · "+esc(S.settings.field_name):""}</span>${S.admin?`<span class="row" style="gap:4px;flex-wrap:nowrap"><button class="btn ghost sm" data-act="evalOpen" data-id="${M}">Değerlendir</button><button class="btn ghost sm${S.f.confReopen===m.id?" danger":""}" data-act="reopen" data-id="${M}">${S.f.confReopen===m.id?"Maç yeniden açılsın mı? Tekrar bas":"Düzelt"}</button><button class="btn ghost sm danger" data-act="delMatch" data-id="${M}">${S.f.delMatch===m.id?"Emin misin?":"Sil"}</button></span>`:""}</div>
     <div class="mhs"><div class="mtm${sa>sb?" win":""}">${dot2("A")}<b>${esc(TEAM.A)}</b><small>Ort. not ${fN(avgN("A"))} · Kart ${sumAvg(T("A"))}</small></div>
       <div class="msc"><span class="mst">MS</span><b class="num">${sa} - ${sb}</b><small>${esc(mt)}</small></div>
       <div class="mtm${sb>sa?" win":""}">${dot2("B")}<b>${esc(TEAM.B)}</b><small>Ort. not ${fN(avgN("B"))} · Kart ${sumAvg(T("B"))}</small></div></div></div>
@@ -2062,7 +2062,7 @@ document.addEventListener("click",async e=>{
       const pl=new Set([...m.team_a,...m.team_b]);const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>x.pk?{g:x.g,a:null,pk:true}:{g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null});
       const r=await A("admin_finish_match_v3",{p_id:id,p_score_a:sd.a,p_score_b:sd.b,p_stats:stats,p_motm:sd.motm||null,p_links:links});
       const sc=new Set(links.map(x=>x.g));if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;render(true);window.scrollTo(0,0);confetti()}break}
-    case"reopen":{const om=openMatch();if(om&&om.id!==id){toast("Önce açık maçı bitir ya da sil");break}const m=S.matches.find(x=>x.id===id);delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.view=null;
+    case"reopen":{if(S.f.confReopen!==id){S.f.confReopen=id;render(true);toast("Düzelt maçı yeniden açar, sonuçlar geçici olarak sayılmaz. Sadece değerlendirme için Değerlendir’i kullan.");break}S.f.confReopen=null;const om=openMatch();if(om&&om.id!==id){toast("Önce açık maçı bitir ya da sil");break}const m=S.matches.find(x=>x.id===id);delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.view=null;
       const r=await A("admin_set_state",{p_id:id,p_state:"takim"});if(r){S.sheet={type:"stats",mid:id};render(true)}break}
     case"vote":{const vd=S.f["v_"+id]||{};if(!vd.fiyasko&&!vd.gol){toast("En az bir seçim yap");break}
       await act("vote",{p_match:id,p_voter:S.me,p_motm:null,p_fiyasko:vd.fiyasko||null,p_gol:vd.gol||null},"Oyun kaydedildi");break}
