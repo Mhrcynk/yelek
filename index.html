@@ -2288,7 +2288,7 @@ async function shareImg(m){
    x.textAlign="left";x.fillText(`${formText(formOf(m,"B"),posArr(m,"B"))} · ortalama ${sumAvg(B0)}`,cx0+gap,yN+44);
    x.textAlign="center";x.fillStyle="#64748B";x.font=`600 26px ${F}`;x.fillText(`${fmtDate(m.date)} · ${m.time||""}${S.settings.field_name?" · "+S.settings.field_name:""}`,cx0,yN+92)}
   x.textAlign="left";
-  const px=60,py=360,pw=960,ph=1412;
+  const px=60,py=330,pw=960,ph=1500;
   x.save();rr(x,px,py,pw,ph,36);x.clip();
   for(let i=0;i<12;i++){x.fillStyle=i%2?"#145A36":"#17663D";x.fillRect(px,py+i*ph/12,pw,ph/12+1)}
   const sx=pw/68,sy=ph/100,L=(a,b)=>[px+a*sx,py+b*sy];
@@ -2299,18 +2299,22 @@ async function shareImg(m){
   x.beginPath();x.ellipse(px+34*sx,py+50*sy,7*sx,7*sx,0,0,Math.PI*2);x.stroke();
   x.restore();
   const A=m.team_a||[],B=m.team_b||[],pa=posArr(m,"A"),pb=posArr(m,"B"),la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
-  const TT=layout("both",pa,pb,la,lb),IM={};
+  const TT=layout("both",pa,pb,la,lb,true),IM={};const NI=m.state==="bitti"?S.mInfo[m.id]:null;
   await Promise.all(TT.filter(T=>T.id&&photoOf(T.id)).map(T=>new Promise(r=>{const im=new Image();im.onload=()=>{IM[T.id]=im;r()};im.onerror=()=>r();im.src=photoOf(T.id)})));
-  for(const T of TT){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-10;
-    x.beginPath();x.arc(cx,cy,33,0,Math.PI*2);x.fillStyle=T.k==="A"?"#FF8A3D":"#4DA3FF";x.shadowColor="rgba(0,0,0,.4)";x.shadowBlur=14;x.fill();x.shadowBlur=0;
-    if(T.i===0){x.lineWidth=7;x.strokeStyle="#C6F432";x.stroke()}
-    x.fillStyle=T.k==="A"?"#1A0B00":"#04121F";x.font=`900 34px ${D}`;x.textAlign="center";x.textBaseline="middle";const im=IM[T.id];
-    if(im){const r=29;x.save();x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.clip();const sc=Math.max(2*r/im.width,2*r/im.height),iw=im.width*sc,ih=im.height*sc;x.drawImage(im,cx-iw/2,cy-r-(ih-2*r)*.2,iw,ih);x.restore()}
-    else{x.font=`900 28px ${D}`;x.fillText(initials(nameOf(T.id)),cx,cy+2)}
-    {x.font=`900 22px ${D}`;const pw2=x.measureText(T.ep).width+12;rr(x,cx-16-pw2,cy-42,pw2,28,8);x.fillStyle="#0A0E17";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(T.ep,cx-16-pw2/2,cy-27)}
-    if((T.k==="A"?m.cap_a:m.cap_b)===T.id){x.beginPath();x.arc(cx-26,cy+24,15,0,Math.PI*2);x.fillStyle="#C6F432";x.fill();x.lineWidth=2;x.strokeStyle="rgba(0,0,0,.35)";x.stroke();x.fillStyle="#121A00";x.font=`900 18px ${D}`;x.fillText("C",cx-26,cy+25)}
-    const ov=String(ovrOf(T.id));x.font=`900 24px ${D}`;const ow=x.measureText(ov).width+12;rr(x,cx+16,cy-42,ow,28,8);x.fillStyle="#0A0E17";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.5)";x.stroke();x.fillStyle="#fff";x.fillText(ov,cx+16+ow/2,cy-27);
-    const nm=shortName(nameOf(T.id));x.font=`700 26px ${F}`;const nw=Math.min(200,x.measureText(nm).width+20);rr(x,cx-nw/2,cy+40,nw,34,10);x.fillStyle="rgba(6,10,18,.82)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,cy+58,180)}
+  // kompakt oyuncu kartı: seviye renginde kart (foto + reyting), takım renginde çerçeve, altında isim, mevki ve not
+  for(const T of TT){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-30;const p=P(T.id);const o=ovrOf(T.id);const tr=p?.guest?"silver":tierOf(o);const[c1,c2,tx]=TIER_COL[tr];
+    const cw=150,chh=70,X=cx-cw/2,Y=cy-chh/2;const tc=T.k==="A"?"#FF8A3D":"#4DA3FF";
+    x.shadowColor="rgba(0,0,0,.45)";x.shadowBlur=16;x.shadowOffsetY=5;const gr=x.createLinearGradient(X,Y,X+cw,Y+chh);gr.addColorStop(0,c1);gr.addColorStop(1,c2);rr(x,X,Y,cw,chh,18);x.fillStyle=gr;x.fill();x.shadowBlur=0;x.shadowOffsetY=0;
+    rr(x,X-5,Y-5,cw+10,chh+10,22);x.lineWidth=5;x.strokeStyle=tc;x.stroke();
+    const im=IM[T.id];const pX=X+6,pY=Y+6,pS=chh-12;x.save();rr(x,pX,pY,pS,pS,13);x.clip();x.fillStyle="rgba(0,0,0,.2)";x.fillRect(pX,pY,pS,pS);
+    if(im){const sc=Math.max(pS/im.width,pS/im.height);x.drawImage(im,pX+(pS-im.width*sc)/2,pY-(im.height*sc-pS)*.2,im.width*sc,im.height*sc)}else{x.fillStyle=tx;x.font=`900 22px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(T.id)),pX+pS/2,pY+pS/2+1)}
+    x.restore();x.fillStyle=tx;x.font=`900 44px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(p?.guest?"MİS":String(o),X+pS+12+(cw-pS-12)/2,Y+chh/2+2);
+    if((T.k==="A"?m.cap_a:m.cap_b)===T.id){x.beginPath();x.arc(X-2,Y+chh-2,17,0,Math.PI*2);x.fillStyle="#C6F432";x.fill();x.lineWidth=2;x.strokeStyle="rgba(0,0,0,.4)";x.stroke();x.fillStyle="#121A00";x.font=`900 20px ${D}`;x.fillText("C",X-2,Y+chh-1)}
+    const nm=shortName(nameOf(T.id));x.font=`700 28px ${F}`;const nw=Math.min(210,x.measureText(nm).width+24);rr(x,cx-nw/2,Y+chh+10,nw,40,11);x.fillStyle="rgba(6,10,18,.85)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,Y+chh+31,190);
+    const r=NI&&NI.pts[T.id];x.font=`800 22px ${D}`;const ew=x.measureText(T.ep).width+16;let nwd=0,nt="";if(r){nt=(NI.motm===T.id?"★":"")+fN(r.pts);x.font=`900 24px ${D}`;nwd=x.measureText(nt).width+18}
+    const tot=ew+(r?nwd+8:0),sx0=cx-tot/2,yy=Y+chh+58;
+    rr(x,sx0,yy,ew,32,8);x.fillStyle="#0A0E17";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.4)";x.stroke();x.fillStyle="#fff";x.font=`800 22px ${D}`;x.fillText(T.ep,sx0+ew/2,yy+17);
+    if(r){rr(x,sx0+ew+8,yy,nwd,32,8);x.fillStyle=NOTE_COL(r.pts);x.fill();if(NI.motm===T.id){x.lineWidth=3;x.strokeStyle="#C6F432";x.stroke()}x.fillStyle="#fff";x.font=`900 24px ${D}`;x.fillText(nt,sx0+ew+8+nwd/2,yy+17)}}
   x.textBaseline="alphabetic";
   x.fillStyle="#64748B";x.font=`600 24px ${F}`;x.textAlign="center";x.fillText(location.host+location.pathname,W/2,H-60);
   c.toBlob(async blob=>{if(!blob){toast("Görsel oluşturulamadı");return}
