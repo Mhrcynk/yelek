@@ -49,7 +49,7 @@ p{margin:0}
 .eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 
 /* Üst şerit */
-.top{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:rgba(10,21,16,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.top{position:sticky;top:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:rgba(10,14,23,.82);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
 .top .in{display:flex;align-items:center;gap:10px;height:58px}
 .brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
 .logo{width:34px;height:34px;flex:none}
@@ -135,12 +135,12 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .clk[hidden]{display:none}
 .clk .eyebrow{color:rgba(255,255,255,.8)}
 .clk b{font-family:var(--display);font-weight:900;font-size:clamp(2rem,10vw,2.6rem);line-height:1;letter-spacing:.02em;color:#fff}
-.clk.live b{font-size:1.3rem;color:#3DD07A}
+.clk.live b{font-size:1.3rem;color:var(--ok)}
 .rsvpBig{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .rb{border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.22);color:#fff;border-radius:16px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:800;font-size:.82rem;transition:transform .12s,background .2s}
 .rb svg{width:22px;height:22px}
 .rb:active{transform:scale(.96)}
-.rb.g.on{background:#3DD07A;border-color:#3DD07A;color:#062512}
+.rb.g.on{background:var(--ok);border-color:var(--ok);color:#062512}
 .rb.y.on{background:#FFB23F;border-color:#FFB23F;color:#2B1A00}
 .rb.n.on{background:#FF5D52;border-color:#FF5D52;color:#2B0503}
 .hero-note{font-size:.86rem;background:rgba(0,0,0,.22);border-radius:14px;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -203,7 +203,7 @@ label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700
 .field.both .tok .shirt{width:30px;height:30px;font-size:.95rem}
 .tok .cap{position:absolute;left:-7px;bottom:-5px;width:16px;height:16px;border-radius:50%;background:#FFE066;color:#1A1300;font-style:normal;font-family:var(--display);font-size:.66rem;font-weight:900;display:grid;place-items:center;border:1px solid rgba(0,0,0,.35);line-height:1;letter-spacing:0}
 .field.both .tok .cap{width:14px;height:14px;font-size:.58rem;left:-6px;bottom:-4px}
-.capi{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#FFE066;color:#1A1300;font-family:var(--display);font-weight:900;font-size:.62rem;vertical-align:-2px;margin-right:4px}
+.capi{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--acc);color:var(--accInk);font-family:var(--display);font-weight:900;font-size:.62rem;vertical-align:-2px;margin-right:4px}
 .tok .shirt.p3{font-size:.95rem;letter-spacing:-.02em}.field.both .tok .shirt.p3{font-size:.74rem}
 .tok.a .shirt{background:#FF7A1A;color:#1A0E02}
 .tok.b .shirt{background:#F3F6F2;color:#13261B}
@@ -321,7 +321,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .mhm{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);font-weight:700;min-height:30px}
 .mhs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px;margin-top:6px;text-align:center}
 .mtm{display:grid;justify-items:center;gap:3px;min-width:0}.mtm b{font-family:var(--display);font-weight:900;font-size:1.02rem;text-transform:uppercase;line-height:1.1;overflow-wrap:anywhere}.mtm small{font-size:.66rem;color:var(--muted)}.mtm.win b{color:var(--bib)}
-.msc{display:grid;justify-items:center;gap:2px}.mst{font-size:.66rem;font-weight:900;background:#0A1510;border-radius:99px;padding:1px 9px;letter-spacing:.06em}.msc b{font-family:var(--display);font-weight:900;font-size:2.7rem;line-height:1;white-space:nowrap}.msc small{font-size:.66rem;color:var(--muted)}
+.msc{display:grid;justify-items:center;gap:2px}.mst{font-size:.66rem;font-weight:900;background:var(--bg);border-radius:99px;padding:1px 9px;letter-spacing:.06em}.msc b{font-family:var(--display);font-weight:900;font-size:2.7rem;line-height:1;white-space:nowrap}.msc small{font-size:.66rem;color:var(--muted)}
 .mtabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;overflow:hidden;background:var(--bg2);border:1px solid var(--line2);border-radius:13px;padding:3px;scrollbar-width:none}.mtabs::-webkit-scrollbar{display:none}
 .mtabs button{min-width:0;border:0;background:none;border-radius:10px;min-height:38px;padding:0 2px;font-weight:800;font-size:clamp(.6rem,3.1vw,.84rem);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mtabs button.on{background:var(--bib);color:#1A0E02}
 .motmc{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:12px;align-items:center;text-align:left;width:100%;border:1px solid rgba(242,193,78,.35);background:linear-gradient(150deg,rgba(242,193,78,.18),rgba(242,193,78,.04));border-radius:16px;padding:10px;color:inherit}
@@ -450,7 +450,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .lst b{font-family:var(--display);font-size:1.08rem;font-weight:900;color:var(--ink)}
 .lst .gen{border-right:1px solid var(--line2)}
 .lst .gen b{font-size:1.22rem}
-.v8{color:#3DD07A!important}.v7{color:#A9DE5C!important}.v6{color:#F2C14E!important}.v5{color:#FF9A4A!important}
+.v8{color:#00E676!important}.v7{color:#A9DE5C!important}.v6{color:#FFC107!important}.v5{color:#FF8A3D!important}
 .pfr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0;border-top:1px solid var(--line)}.pfn{font-weight:700;font-size:.86rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pfs{display:flex;gap:3px;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:2px}.pfs button{border:0;background:none;border-radius:8px;padding:5px 7px;font-weight:700;font-size:.72rem;color:var(--muted);min-height:32px;white-space:nowrap}
 .pfs button.p1.on{background:#0E8F4E;color:#fff}.pfs button.p2.on{background:#5DB443;color:#fff}.pfs button.p3.on{background:#E3C33C;color:#1A1300}.pfs button.p4.on{background:#D9423F;color:#fff}
@@ -767,6 +767,15 @@ button.card.pvc{display:flex}
 .tcard .tph{width:40px;height:40px;border-radius:50%;margin:10px 0 0 16px;font-size:.8rem}
 .tcard .nm{margin-top:auto;font-size:.62rem;font-weight:800;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis;border-top:1px solid color-mix(in srgb,currentColor 25%,transparent);width:100%;text-align:center;padding-top:2px}
 .tcard .nt{position:absolute;right:-10px;top:-8px;font-size:.72rem;padding:1px 5px;box-shadow:0 2px 4px rgba(0,0,0,.35)}
+
+/* kadro kurarken kartlar */
+.field.edit .tc,.field.edit .tcard{touch-action:none;cursor:grab}
+.field .tc.sel .tcb,.field .tcard.sel{box-shadow:0 0 0 3px var(--acc),0 0 18px rgba(198,244,50,.6)}
+.field .tc.dragging,.field .tcard.dragging{transition:none;z-index:5;opacity:.9}
+.tc.empty .tcb{background:rgba(10,14,23,.55);border:1.5px dashed rgba(255,255,255,.45);color:#fff;box-shadow:none}.tc.empty .tph{background:none;font-size:1rem}
+.tcard.empty{background:rgba(10,14,23,.55);border:1.5px dashed rgba(255,255,255,.45);color:#fff;box-shadow:none}.tcard.empty::before,.tcard.empty::after{display:none}.tcard.empty .tph{background:rgba(255,255,255,.08)}
+
+.chip.adm{background:rgba(198,244,50,.14);color:var(--acc);border:1px solid rgba(198,244,50,.35)}
 </style>
 </head>
 <body>
@@ -1118,6 +1127,7 @@ async function load(force){
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr)]);
     const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&sig===S.sig;S.sig=sig;
     S.settings={...DEF_SET,...(st[0]||{})};TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+    {const om=openMatch();if(om){if(cleanName(om.name_a||""))TEAM.A=cleanName(om.name_a);if(cleanName(om.name_b||""))TEAM.B=cleanName(om.name_b)}}
     const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
     // arka plan yenilemesinde veri değişmediyse ekranı yeniden çizme (açık bölümler kapanmasın)
     if(same&&!force)return;
@@ -1280,6 +1290,8 @@ function createHero(){const d=S.f.newDate||nextDay(+S.settings.day);
   return `<section class="hero"><div class="hero-top"><span class="eyebrow">Yönetici · yeni maç</span></div>${heroWhen(d,S.f.newTime||S.settings.time)}
     <div class="grid2"><label class="f" for="nmDate" style="color:rgba(255,255,255,.8)">Tarih<input type="date" id="nmDate" data-bind="newDate" value="${esc(d)}"></label>
     <label class="f" for="nmTime" style="color:rgba(255,255,255,.8)">Saat<input type="time" id="nmTime" data-bind="newTime" value="${esc(S.f.newTime||S.settings.time)}"></label></div>
+    <div class="grid2"><label class="f" for="nmA" style="color:rgba(255,255,255,.8)"><span><i class="bibdot"></i> 1. takımın adı</span><input type="text" id="nmA" maxlength="20" data-bind="newNameA" value="${esc(S.f.newNameA||"")}" placeholder="Örn. Eriş Gücü"></label>
+    <label class="f" for="nmB" style="color:rgba(255,255,255,.8)"><span><i class="nobib"></i> 2. takımın adı</span><input type="text" id="nmB" maxlength="20" data-bind="newNameB" value="${esc(S.f.newNameB||"")}" placeholder="Örn. Emiş Gücü"></label></div>
     <button class="btn primary block" data-act="createMatch">${ICON.plus} Maçı aç</button></section>`}
 function hero(om){
   const actH=om.state==="kayit"?`<div class="hero-note">Kadrolar henüz açıklanmadı.</div>`:"";
@@ -1292,7 +1304,11 @@ function rsvpLists(m){
   return{kadro:gel.slice(0,CAP),sira:gel.slice(CAP),yedek:ps.filter(p=>rs[p.id]==="y"&&ok(p)),yok:ps.filter(p=>rs[p.id]==="n"||!ok(p)),bos:ps.filter(p=>!rs[p.id]&&ok(p))};
 }
 function adminMore(m,extra){const k="am_"+m.id;const w=S.f["when_"+m.id]||{};const ch=(w.d&&w.d!==m.date)||(w.t&&w.t!==m.time);const open=S.f[k]||ch;
-  return `<button class="morebtn${open?" on":""}" data-act="tog" data-k="${k}">Diğer işlemler <span>${open?"▴":"▾"}</span></button>${open?`<div class="morep">${whenForm(m)}<div class="row">${extra}</div></div>`:""}`}
+  return `<button class="morebtn${open?" on":""}" data-act="tog" data-k="${k}">Diğer işlemler <span>${open?"▴":"▾"}</span></button>${open?`<div class="morep">${whenForm(m)}${namesForm(m)}<div class="row">${extra}</div></div>`:""}`}
+function namesForm(m){const k="nm_"+m.id;const w=S.f[k]||{};const a=w.a??(m.name_a||""),b=w.b??(m.name_b||"");const ch=a!==(m.name_a||"")||b!==(m.name_b||"");
+  return `<div class="whenf"><span class="eyebrow">Takım isimleri</span><div class="grid2"><label class="f" for="na_${esc(m.id)}"><span><i class="bibdot"></i> 1. takım</span><input type="text" maxlength="20" id="na_${esc(m.id)}" data-bind="${k}.a" value="${esc(a)}" placeholder="${esc(TEAM.A)}"></label>
+    <label class="f" for="nb_${esc(m.id)}"><span><i class="nobib"></i> 2. takım</span><input type="text" maxlength="20" id="nb_${esc(m.id)}" data-bind="${k}.b" value="${esc(b)}" placeholder="${esc(TEAM.B)}"></label></div>
+    ${ch?`<button class="btn primary block" data-act="setNames" data-id="${esc(m.id)}">İsimleri kaydet</button>`:""}</div>`}
 function whenForm(m){const k="when_"+m.id;const w=S.f[k]||{};const d=w.d||m.date,t=w.t||m.time||"21:00";const ch=d!==m.date||t!==m.time;
   return `<div class="whenf"><span class="eyebrow">Tarih ve saat</span><div class="grid2"><label class="f" for="wd_${esc(m.id)}">Tarih<input type="date" id="wd_${esc(m.id)}" data-bind="${k}.d" value="${esc(d)}"></label>
     <label class="f" for="wt_${esc(m.id)}">Saat<input type="time" id="wt_${esc(m.id)}" data-bind="${k}.t" value="${esc(t)}"></label></div>
@@ -1304,7 +1320,7 @@ function whenCard(m){const k="when_"+m.id;const w=S.f[k]||{};const d=w.d||m.date
     <button class="btn primary block" style="margin-top:10px" data-act="setWhen" data-id="${esc(m.id)}"${ch?"":" disabled"}>Kaydet</button></details></section>`}
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
-  if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip warn">Yönetici</span></div>${editorPanel(m)}</section>`;
+  if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip adm">Yönetici</span></div>${editorPanel(m)}</section>`;
   let h="";
   if(m.state==="kayit"){
     if(S.admin)h+=`<section class="card admc"><div class="ch"><div><div class="eyebrow">Yönetici</div><h2>Kadroları kur</h2></div></div>
@@ -1410,15 +1426,19 @@ function tokHtml(T,editable,sel,caps,notes){
 }
 const noteCls=v=>v>=8?"n8":v>=7?"n7":v>=6.5?"n65":v>=6?"n6":"n5";
 // saha üstünde kart: iki takımda kompakt kart, tek takımda büyük FUT kartı
-function cardTok(T,mode,caps,notes){const id=T.id,p=P(id),o=ovrOf(id),ph=photoOf(id),kc=T.k.toLowerCase();const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
+function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCase();const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
+  const isSel=editable&&sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;const act=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:`data-act="open" data-id="${esc(id)}"`;const xc=isSel?" sel":"";
+  if(!id){if(mode==="both")return `<button class="tc ${kc} empty${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="tcb"><span class="tph">+</span><b>–</b></span><span class="tcn">Boş</span><span class="tcr"><i>${T.ep}</i></span></button>`;
+    return `<button class="tcard empty ${kc}${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><b class="o">+</b><i class="p">${T.ep}</i><span class="tph"></span><span class="nm">Boş</span></button>`}
+  const p=P(id),o=ovrOf(id),ph=photoOf(id);
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
   const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;const tr=p?.guest?"silver":tierOf(o);
   const img=ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`;
   const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
-  if(mode==="both")return `<button class="tc ${kc}" style="${st}" data-act="open" data-id="${esc(id)}" ${lab}><span class="tcb ${tr}"><span class="tph">${img}</span><b class="num">${ov}</b>${cap}</span><span class="tcn">${esc(shortName(nameOf(id)))}</span><span class="tcr"><i>${T.ep}</i>${nt}</span></button>`;
-  return `<button class="tcard ${tr} ${kc}" style="${st}" data-act="open" data-id="${esc(id)}" ${lab}><b class="o num">${ov}</b><i class="p">${T.ep}</i><span class="tph">${img}</span><span class="nm">${esc(shortName(nameOf(id)))}</span>${nt}${cap}</button>`}
-function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){const cards=!editable;
-  return `<div class="field ${mode==="both"?"both":"single"}${editable?" edit":" cards"}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,cards).map(T=>cards&&T.id?cardTok(T,mode,caps,notes):tokHtml(T,editable,sel,caps,notes)).join("")}</div>`;
+  if(mode==="both")return `<button class="tc ${kc}${xc}" style="${st}" ${act} ${lab}><span class="tcb ${tr}"><span class="tph">${img}</span><b class="num">${ov}</b>${cap}</span><span class="tcn">${esc(shortName(nameOf(id)))}</span><span class="tcr"><i>${T.ep}</i>${nt}</span></button>`;
+  return `<button class="tcard ${tr} ${kc}${xc}" style="${st}" ${act} ${lab}><b class="o num">${ov}</b><i class="p">${T.ep}</i><span class="tph">${img}</span><span class="nm">${esc(shortName(nameOf(id)))}</span>${nt}${cap}</button>`}
+function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
+  return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
 }
 const posArr=(m,k)=>{const p=k==="A"?m.pos_a:m.pos_b;return p&&p.length===TEAM_SIZE?p:FORMS[formOf(m,k)].slots};
 const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
@@ -1571,7 +1591,7 @@ function statEntry(m){
     ${(()=>{const scorers=[...new Set(sd.events.filter(e=>e.t==="g").map(e=>e.g))];const plAll2=plAll(m);
       const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
       return `<div class="grid2"><label class="f" for="golSel">⚽ Haftanın Golü<select id="golSel" data-act-change="aw" data-k="gol" data-m="${M}" ${scorers.length?"":"disabled"}>${o(scorers,sd.gol)}</select></label><label class="f" for="fiySel">🙈 Haftanın Fiyaskosu<select id="fiySel" data-act-change="aw" data-k="fiy" data-m="${M}">${o(plAll2,sd.fiy)}</select></label></div>`})()}
-    <label class="f" for="motmSel">★ Maçın Adamı (+1 not)<select id="motmSel" data-act-change="motm" data-m="${M}">${motmOpts}</select></label>
+    <label class="f" for="motmSel">★ Maçın Adamı (+${fN(NOTE.motm)} not)<select id="motmSel" data-act-change="motm" data-m="${M}">${motmOpts}</select></label>
     ${perfBlock(m,sd)}
     ${sd.touched?`<details><summary>Maç notu önizlemesi (${all.length} oyuncu)</summary><div class="hist">${all.map(([id,r])=>`<div style="grid-template-columns:2.4em minmax(0,1fr) auto"><span class="d">${dot(r.side)}${r.role}</span><span>${esc(nameOf(id))}</span><span class="p num">${fN(r.pts)}</span></div>`).join("")}</div></details>`:""}
     <button class="btn ${conf?"primary":"turf"} block" data-act="finish" data-id="${M}" ${sd.touched?"":"disabled"}>${ICON.check} ${conf?`Onayla: ${TEAM.A} ${sd.a} – ${sd.b} ${TEAM.B}`:"Maçı bitir, kartları güncelle"}</button>
@@ -1803,7 +1823,7 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   const s=S.stats[p.id]||{};const hp=(s.hist||[]).filter(x=>x.r);const om=openMatch();
   const cnt=[0,0,0,0,0];hp.forEach(x=>{if(x.r.pk)cnt[x.r.pk]++});const last5=hp.slice(-5);
   let h=`<div class="ph"><div><h1>Merhaba ${esc(firstName(p.name))}</h1><span class="muted">${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div><button class="btn sm" data-act="meSheet">Değiştir</button></div>
-  <section class="card benp"><div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(s.series||[])}</div>
+  <section class="card benp"><div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(sparkData(s))}</div>
     <div style="display:grid;gap:12px;min-width:0">
       <div class="kv"><div><span>Reyting</span><b>${s.genX!=null?s.genX.toFixed(2).replace(".",","):s.ovr||"–"}</b></div><div><span>Maç</span><b>${s.games||0}</b></div><div><span>Gol</span><b>${s.goals||0}</b></div><div><span>Asist</span><b>${s.ast||0}</b></div>
         <div><span>Ort. not</span><b>${fN(s.avgPts)}</b></div><div><span>Form</span><b>${fN(s.form)}</b></div><div><span>Maçın Adamı</span><b>${s.motm||0}</b></div><div><span>Devam</span><b>${s.att!=null?"%"+Math.round(s.att*100):"–"}</b></div></div>
@@ -1832,7 +1852,7 @@ function sheetPlayer(){
   const p=P(S.sheet.id);if(!p)return"";const s=S.stats[p.id]||{};const st=stOf(p);const canSt=S.admin||p.id===S.me;
   const sf=S.f.st||(S.f.st={type:st,until:p.status?.until||"",note:p.status?.note||""});
   let h=`<div class="ch"><div><div class="eyebrow">${eposOf(p)} · ${EPOS[eposOf(p)][1]}${altOf(p)?" · Alternatif: "+altOf(p):""}</div><h2 style="font-size:1.9rem">${esc(p.name)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
-    <div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(s.series||[])}</div>
+    <div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(sparkData(s))}</div>
     <div style="display:grid;gap:12px;min-width:0">
       <div class="row">${st==="hazir"?'<span class="chip ok"><span class="dot"></span>Hazır</span>':stChip(p)}${s.streak?`<span class="chip ${s.streak.hot?"warn":"info"}">${s.streak.hot?"🔥":"❄️"} ${esc(s.streak.t)}</span>`:""}${p.status?.note?`<span class="muted small">${esc(p.status.note)}</span>`:""}<button class="btn sm" data-act="cmpOpen" data-id="${esc(p.id)}">${ICON.scale} Karşılaştır</button></div>
       <div class="kv"><div><span>Reyting</span><b>${s.genX!=null?s.genX.toFixed(2).replace(".",","):s.ovr}</b></div><div><span>Başlangıç</span><b>${s.baseX!=null?s.baseX.toFixed(2).replace(".",","):s.base}</b></div><div><span>Maç</span><b>${s.games||0}</b></div><div><span>Gol</span><b>${s.goals||0}</b></div><div><span>Asist</span><b>${s.ast||0}</b></div><div><span>Ort. not</span><b>${fN(s.avgPts)}</b></div><div><span>Devam</span><b>${s.att!=null?"%"+Math.round(s.att*100):"–"}</b></div><div><span>Galibiyet</span><b class="v8">${s.W||0}</b></div><div><span>Beraberlik</span><b>${s.D||0}</b></div><div><span>Mağlubiyet</span><b style="color:var(--bad)">${s.L||0}</b></div><div><span>Kazanma</span><b>${s.games?"%"+Math.round((s.W||0)/s.games*100):"–"}</b></div><div><span>Maçın Adamı</span><b>${s.motm||0}</b></div><div><span>Kaptanlık</span><b>${fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id).length}</b></div></div>
@@ -1867,9 +1887,10 @@ function sheetPlayer(){
       </div></details>`}
   return h;
 }
-function spark(arr){if(arr.length<2)return"";const W=220,H=46,mn=Math.min(...arr)-1,mx=Math.max(...arr)+1;
-  const pts=arr.map((v,i)=>[i/(arr.length-1)*(W-8)+4,H-4-(v-mn)/(mx-mn)*(H-8)]);const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");const l=pts[pts.length-1];
-  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Reyting değişimi"><path d="${d} L${l[0]} ${H} L4 ${H}Z" fill="#00E676" opacity=".1"/><path d="${d}" fill="none" stroke="#00E676" stroke-width="2"/><circle cx="${l[0]}" cy="${l[1]}" r="3.5" fill="#C6F432"/></svg>`}
+const sparkData=s=>{const h=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.gx!=null);return h.length?[s.baseX??s.base,...h.map(x=>x.gx)]:[]};
+function spark(arr){if(arr.length<3)return"";const W=240,H=52,mn=Math.min(...arr)-.3,mx=Math.max(...arr)+.3;
+  const pts=arr.map((v,i)=>[i/(arr.length-1)*(W-12)+6,H-6-(v-mn)/(mx-mn)*(H-14)]);const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");const l=pts[pts.length-1];const up=arr[arr.length-1]>=arr[0];const c=up?"#00E676":"#FF4D6D";
+  return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Reyting değişimi: ${fA(arr[0])} → ${fA(arr[arr.length-1])}"><defs><linearGradient id="spg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".28"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><path d="${d} L${l[0]} ${H} L${pts[0][0]} ${H}Z" fill="url(#spg)"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>${pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===pts.length-1?4:2.4}" fill="${i===pts.length-1?"#C6F432":c}"/>`).join("")}</svg>`}
 
 /* ================= Sezon ================= */
 function viewSezon(){
@@ -1889,7 +1910,7 @@ function viewSezon(){
   const rk=[...S.players].sort((a,b)=>genOf(b.id)-genOf(a.id)||a.name.localeCompare(b.name,"tr"));
   const prk=[...S.players].sort((a,b)=>prevO(b.id)-prevO(a.id)||a.name.localeCompare(b.name,"tr")).map(p=>p.id);
   const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastD||0;
-    return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):"–"}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2em;text-align:right">${fD(d)}</span></span></li>`}).join("");
+    return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):""}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2.4em;text-align:right">${Math.abs(d)>=.05?fD(d):""}</span></span></li>`}).join("");
   const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
   let h=`<div class="ph"><div><h1>Sezon ${yr}</h1><span class="muted">${F.length} maç oynandı</span></div></div>`;
   if(!F.length)h+=`<section class="card"><div class="empty"><h3>Sezon yeni başlıyor</h3><p>Krallık yarışı boş, ilk golü atan zirveye yerleşir.</p></div></section>`;
@@ -1965,10 +1986,9 @@ function viewAyarlar(){
   if(!S.admin)h+=`<section class="card"><h2>Yönetici girişi</h2>
     <form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`;
   else{const s=S.f.set||(S.f.set={...S.settings});
-    h+=`<section class="card"><div class="ch"><h2>Grup ayarları</h2><span class="chip warn">Yönetici</span></div><form data-form="settings" style="display:grid;gap:12px">
+    h+=`<section class="card"><div class="ch"><h2>Grup ayarları</h2><span class="chip adm">Yönetici</span></div><form data-form="settings" style="display:grid;gap:12px">
       <label class="f" for="sGroup">Ekip adı<input id="sGroup" type="text" maxlength="40" data-bind="set.group_name" value="${esc(s.group_name)}"></label>
-      <div class="grid2"><label class="f" for="sTA">1. takım (yelekli)<input id="sTA" type="text" maxlength="20" data-bind="set.team_a_name" value="${esc(s.team_a_name||TEAM.A)}" placeholder="Yelekliler"></label>
-      <label class="f" for="sTB">2. takım (yeleksiz)<input id="sTB" type="text" maxlength="20" data-bind="set.team_b_name" value="${esc(s.team_b_name||TEAM.B)}" placeholder="Yeleksizler"></label></div>
+
       <label class="f" for="sField">Halı saha adı<input id="sField" type="text" maxlength="60" data-bind="set.field_name" value="${esc(s.field_name)}" placeholder="Örn. Yıldız Halı Saha"></label>
       <div class="grid2"><label class="f" for="sDay">Maç günü<select id="sDay" data-bind="set.day">${GUNLER.map((g,i)=>`<option value="${i}"${+s.day===i?" selected":""}>${g}</option>`).join("")}</select></label>
       <label class="f" for="sTime">Maç saati<input id="sTime" type="time" data-bind="set.time" value="${esc(s.time)}"></label></div>
@@ -1987,6 +2007,8 @@ document.addEventListener("click",async e=>{
     case"open":S.sheet={type:"player",id};S.f.st=null;S.f.ed=null;S.f.delP=null;render(true);break;
     case"meSheet":if(S.me&&P(S.me)&&S.tab!=="ben"&&el.id==="meBtn"){S.tab="ben";S.view=null;render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":S.f[el.dataset.k]=!S.f[el.dataset.k];render(true);break;
+    case"setNames":{const m=S.matches.find(x=>x.id===id);const w=S.f["nm_"+id]||{};const a=cleanName(w.a??m.name_a??""),b=cleanName(w.b??m.name_b??"");if(!a||!b){toast("İki takımın adını da yaz");break}
+      const r=await A("admin_set_names",{p_id:id,p_a:a,p_b:b},"Takım isimleri kaydedildi");if(r){delete S.f["nm_"+id];await load(true)}break}
     case"shareMenu":S.sheet={type:"share",mid:id};render(true);break;
     case"storyCard":{const p=P(id);if(p)storyCard(p);break}
     case"storyTotw":{const m=S.matches.find(x=>x.id===id);if(S.sheet&&S.sheet.type==="share"){S.sheet=null;render(true)}if(m)storyTotw(m);break}
@@ -2016,7 +2038,8 @@ document.addEventListener("click",async e=>{
     case"back":S.view=null;render(true);window.scrollTo(0,0);break;
     case"mtab":S.f.mtab=el.dataset.v;render(true);break;
     case"viewm":S.view=id;S.tab="gecmis";render(true);window.scrollTo(0,0);break;
-    case"createMatch":{const r=await A("admin_create_match",{p_date:S.f.newDate||nextDay(+S.settings.day),p_time:S.f.newTime||S.settings.time},"Maç açıldı, şimdi kadroyu kur");if(r&&r.id){startEditor(r.id,[],[]);S.teams.poolOpen=true;render(true)}break}
+    case"createMatch":{const na=cleanName(S.f.newNameA||""),nb=cleanName(S.f.newNameB||"");if(!na||!nb){toast("İki takımın adını da yaz");break}
+      const r=await A("admin_create_match",{p_date:S.f.newDate||nextDay(+S.settings.day),p_time:S.f.newTime||S.settings.time},"Maç açıldı, şimdi kadroyu kur");if(r&&r.id){await A("admin_set_names",{p_id:r.id,p_a:na,p_b:nb});S.f.newNameA=S.f.newNameB="";TEAM.A=na;TEAM.B=nb;startEditor(r.id,[],[]);S.teams.poolOpen=true;render(true)}break}
     case"perf":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f[el.dataset.s||"sd_"+el.dataset.m];if(!m||!sd)break;sd.perf=sd.perf||{};const pid=el.dataset.p,v=+el.dataset.v;
       if(sd.perf[pid]===v){delete sd.perf[pid]}else{sd.perf[pid]=v}
       S.f.confirmFinish=null;if(sd.events)sdSave(m,sd);render(true);break}
@@ -2184,7 +2207,7 @@ setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S
 
 /* Sahada sürükle-bırak */
 let DRAG=null,SUPPRESS=false;
-document.addEventListener("pointerdown",e=>{const tok=e.target.closest(".field.edit .tok");if(!tok||!S.teams)return;if(e.pointerType==="mouse")e.preventDefault();
+document.addEventListener("pointerdown",e=>{const tok=e.target.closest(".field.edit .tok,.field.edit .tc,.field.edit .tcard");if(!tok||!S.teams)return;if(e.pointerType==="mouse")e.preventDefault();
   const fld=tok.closest(".field");DRAG={tok,k:tok.dataset.k,i:+tok.dataset.i,mode:fld.dataset.mode,sx:e.clientX,sy:e.clientY,f:fld.getBoundingClientRect(),moved:false,id:e.pointerId}});
 document.addEventListener("pointermove",e=>{if(!DRAG||e.pointerId!==DRAG.id)return;const d=DRAG;
   if(!d.moved&&Math.hypot(e.clientX-d.sx,e.clientY-d.sy)<7)return;
