@@ -1063,8 +1063,8 @@ function computeCore(LV){
         if(r.op<=5&&(r.role==="KL"||r.role==="DF"))cs++;ptsSum+=r.pts;if(!bestM||r.pts>bestM.pts)bestM={pts:r.pts,date:m.date};
         att++;fvDry=r.role==="FV"&&!r.g?fvDry+1:0;osDry=!r.g&&!r.a?osDry+1:0;
         ch=matchChanges(p,r,m,(m.stats||{})[p.id]||{},{fvDry,osDry,att,motm:inf.motm===p.id});line={kind:"oynadi",r};
-      }else{streak=0;att=0;ch=[[p.pos==="Kaleci"?"hiz_cab":"fiz_day",-ENG.step,"maça gelmedi"]];line={kind:"gelmedi"}}
-      for(const k of KS)DL[k]*=(1-ENG.decay);
+      }else{streak=0;att=0;ch=[];line={kind:"gelmedi"}} // maça gelmeyenin kartı değişmez
+      if(r)for(const k of KS)DL[k]*=(1-ENG.decay);
       ch=ch.filter(x=>x[0] in DL);const before=gen;const g0=genF(p,curOf());const nD=r?clamp((r.pts-lvEsik(r.lv??NOTE.ref))*NOTE.kat,-NOTE.katMax,NOTE.katMax):0;if(r)ch=noteSpread(p,curOf(),ch,nD);const DL0={...DL};
       const req={};for(const[k,v]of ch){req[k]=(req[k]||0)+v;DL[k]=clamp(DL[k]+v,-ENG.cap,ENG.cap)}
       let ng=genF(p,curOf());
@@ -1946,7 +1946,7 @@ function viewKurallar(inSheet){
   <section class="card"><h2>Kart</h2><p>Not, kartın <b>eşik notunun</b> üstündeyse kart yükselir, altındaysa düşer: <b>kart değişimi = (not − eşik) × ${fN(n.kat)}</b>, tek maçta en fazla ±${fN(n.katMax)}. Yüksek kartlı oyuncudan beklenti de yüksektir:</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th>Kart</th><th>Eşik not</th></tr></thead><tbody>${[84,80,77,74,71,67,64].map(v=>`<tr><td>${v}</td><td>${lvEsik(v).toFixed(2).replace(".",",")}</td></tr>`).join("")}</tbody></table></div></section>
   <section class="card"><h2>Karttaki özellikler</h2><p>Kart değişimi, maçta yapılan işe göre özelliklere dağıtılır: gol bitiriciliğe, asist pasa, defansın gol katkısı vizyon ve şut gücüne, az gol yemek savunmaya ya da reflekse yazılır. Özel bir iş yoksa kartın en önemli özelliği değişir.</p>
-   <div class="rules">${row("As kadro maça gelmezse","kart en fazla −0,3")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Reyting","küsüratlı hesaplanır, kartta tam kısmı görünür (74,99 → 74)")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
+   <div class="rules">${row("Maça gelmeyen","kartı değişmez")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Reyting","küsüratlı hesaplanır, kartta tam kısmı görünür (74,99 → 74)")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
    <p class="muted small">Haftanın Takımı, form ve ortalamalar da maç notuna göre hesaplanır.</p></section>`;
 }
 
