@@ -950,8 +950,16 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .slide{background:#161616}.tls{background:var(--tB);color:var(--tBink)}
 .report{background:var(--card)}
 .motmc{background:var(--acc);color:#050505;border:0}.motmc *{color:#050505}.motmc .muted{color:rgba(5,5,5,.7)}.motmc .mst{background:rgba(5,5,5,.12)}
-.myr.B{background:rgba(255,255,255,.1);color:#E5E5E5}.myr.none{visibility:hidden}
+.myr.B{background:rgba(255,159,28,.16);color:#FFA53D}.myr.none{visibility:hidden}
 .grow .gs2{row-gap:4px}
+.motmc .mms span{background:#050505;border-radius:14px;padding:6px 12px;min-width:60px}.motmc .mms small{color:#BDBDBD!important;text-transform:uppercase;letter-spacing:.08em}.motmc .mms b{color:var(--acc)!important;font-weight:400;font-size:1.6rem}
+.motmc .nt{color:#fff!important}.motmc .nt.n65,.motmc .nt.n6{color:#1A1300!important}
+.evleg>span{display:inline-flex;align-items:center;gap:6px}.evleg .pkb{margin-right:4px}
+.pkb b{font-weight:400}
+.gs1{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px}.gs1 .bibdot,.gs1 .nobib{margin:0;width:10px;height:10px}
+.gs1 .gt{font-weight:700;font-size:.92rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.gs1 .gt.b{text-align:right}.gs1 .gt.w{color:#fff}
+.gs1>b{font-family:var(--display);font-weight:400;font-size:1.5rem;color:var(--muted);white-space:nowrap}.gs1>b .w{color:#fff}
 </style>
 </head>
 <body>
@@ -1389,9 +1397,9 @@ function _sheetHtml(){const t=S.sheet.type;if(t==="eval"){const m=S.matches.find
     return `<div class="ch"><div><div class="eyebrow">Yönetici · ${fmtShort(m.date)}</div><h2>${esc(nmOf(m,"A"))} ${m.score_a} – ${m.score_b} ${esc(nmOf(m,"B"))}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
       ${namesForm(m)}
       <div class="mngl"><button class="btn block" data-act="evalOpen" data-id="${M}">Değerlendirmeyi düzenle<small>çok iyi / iyi / orta / kötü, penaltı, çizgi</small></button>
-      <button class="btn block${S.f.confReopen===m.id?" danger":""}" data-act="reopen" data-id="${M}">${S.f.confReopen===m.id?"Maç yeniden açılsın mı? Tekrar bas":"Skoru ve golleri düzelt"}<small>maç düzeltme için yeniden açılır</small></button>
+      <button class="btn block" data-act="reopen" data-id="${M}">Skoru, golleri ve ödülleri düzelt<small>maç kayıt ekranı açılır, kaydedince kartlar yeniden hesaplanır</small></button>
       <button class="btn block ghost danger" data-act="delMatch" data-id="${M}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div>`}
-  if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&m.state==="takim"?statEntry(m):""}
+  if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&(m.state==="takim"||m.state==="bitti")?inM(m,()=>statEntry(m)):""}
   if(t==="rules")return `<div class="ch"><h2>Puanlama</h2><button class="btn sm" data-act="close">Kapat</button></div>`+viewKurallar(true);
   if(t==="share")return sheetShare();
   return t==="player"?sheetPlayer():t==="me"?sheetMe():t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="ext"?sheetExt():""}
@@ -1459,7 +1467,7 @@ function viewGecmis(){
     const nA=ext?esc(S.settings.group_name):`<span class="bibdot"></span>${esc(nmOf(m,"A"))}`,nB=ext?esc(m.opponent||"Rakip"):`<span class="nobib"></span>${esc(nmOf(m,"B"))}`;
     const motm=ext?m.motm:i.motm;
     h+=`<button class="grow${ext?" ext":""}" data-act="viewm" data-id="${esc(m.id)}"><span class="gd"><b>${d.getDate()}</b><small>${GUNLER[d.getDay()].slice(0,3)}</small></span>
-      <span class="gb">${ext?`<span class="xchip">Dış maç</span>`:""}<span class="gs2"><span class="gt${sa>sb?" w":""}">${nA}</span><b class="num${sa>sb?" w":""}">${sa}</b><span class="gt${sb>sa?" w":""}">${nB}</span><b class="num${sb>sa?" w":""}">${sb}</b></span>
+      <span class="gb">${ext?`<span class="xchip">Dış maç</span>`:""}<span class="gs1"><span class="gt a${sa>sb?" w":""}">${ext?esc(S.settings.group_name):esc(nmOf(m,"A"))}</span><b class="num"><span class="${sa>sb?"w":""}">${sa}</span> - <span class="${sb>sa?"w":""}">${sb}</span></b><span class="gt b${sb>sa?" w":""}">${ext?esc(m.opponent||"Rakip"):esc(nmOf(m,"B"))}</span></span>
 </span>${myRes?`<span class="myr ${myRes}" aria-label="${{G:"Galibiyet",B:"Beraberlik",M:"Mağlubiyet"}[myRes]}">${myRes}</span>`:`<span class="myr none"></span>`}</button>`}
   return h+`</div>`}
 function sheetExt(){if(!S.admin)return"";const f=S.f.ext;if(!f)return"";const ps=[...S.players,...S.guests];const opps=[...new Set(extFin().map(m=>m.opponent).filter(Boolean))];
@@ -1812,7 +1820,7 @@ function statEntry(m){
   const last=sd.undo.length?JSON.parse(sd.undo[sd.undo.length-1]).l:"";
   const bot=`<div class="stBot">${conf?`<div class="stSum">${esc(TEAM.A)} <b>${sd.a} – ${sd.b}</b> ${esc(TEAM.B)} · ${gA+gB} gol${sd.motm?" · ★ "+esc(shortName(nameOf(sd.motm))):" · Maçın Adamı yok"} · ${nPerf} değerlendirme</div>`:""}
     <div class="stBtns"><button class="btn" data-act="undo" data-m="${M}" ${sd.undo.length?"":"disabled"} title="${esc(last)}" aria-label="Geri al${last?": "+esc(last):""}">↶</button>
-    <button class="btn ${conf?"primary":"turf"} block" data-act="finish" data-id="${M}" ${sd.touched?"":"disabled"}>${ICON.check} ${conf?"Onayla ve bitir":sd.touched?"Maçı bitir":"Önce golleri gir"}</button></div></div>`;
+    <button class="btn ${conf?"primary":"turf"} block" data-act="finish" data-id="${M}" ${sd.touched?"":"disabled"}>${ICON.check} ${m.state==="bitti"?(conf?"Onayla ve kaydet":"Değişiklikleri kaydet"):conf?"Onayla ve bitir":sd.touched?"Maçı bitir":"Önce golleri gir"}</button></div></div>`;
   return `${top}${body}${bot}`;
 }
 function perfBlock(m,...r){return inM(m,()=>_perfBlock(m,...r))}
@@ -2373,9 +2381,8 @@ document.addEventListener("click",async e=>{
 }
       const pl=new Set(plAll(m));const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>x.pk?{g:x.g,a:null,pk:true}:{g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null});
       const r=await A("admin_finish_match_v3",{p_id:id,p_score_a:sd.a,p_score_b:sd.b,p_stats:stats,p_motm:sd.motm||null,p_links:links});
-      const sc=new Set(links.map(x=>x.g));if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;render(true);window.scrollTo(0,0);confetti()}break}
-    case"reopen":{if(S.f.confReopen!==id){S.f.confReopen=id;render(true);toast("Maç yeniden açılır, düzeltene kadar sonuçları sayılmaz. Sadece değerlendirme için “Değerlendirmeyi düzenle”yi kullan.");break}S.f.confReopen=null;const om=openMatch();if(om&&om.id!==id){toast("Önce açık maçı bitir ya da sil");break}const m=S.matches.find(x=>x.id===id);delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.view=null;
-      const r=await A("admin_set_state",{p_id:id,p_state:"takim"});if(r){S.sheet={type:"stats",mid:id};render(true)}break}
+      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);if(!wasFin){window.scrollTo(0,0);confetti()}}break}
+    case"reopen":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f.confReopen=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.f.stTab="gol";S.f.confirmFinish=null;S.sheet={type:"stats",mid:id};render(true);break}
     case"vote":{const vd=S.f["v_"+id]||{};if(!vd.fiyasko&&!vd.gol){toast("En az bir seçim yap");break}
       await act("vote",{p_match:id,p_voter:S.me,p_motm:null,p_fiyasko:vd.fiyasko||null,p_gol:vd.gol||null},"Oyun kaydedildi");break}
     case"stType":S.f.st.type=el.dataset.v;render(true);break;
