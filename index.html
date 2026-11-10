@@ -1246,14 +1246,10 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
 ::view-transition-old(nav){display:none}::view-transition-new(nav){animation:none}
 ::view-transition-group(page){animation:none}
 ::view-transition-image-pair(page){isolation:auto}
-::view-transition-old(page){animation:vtOut .3s cubic-bezier(.4,0,1,1) both}
-::view-transition-new(page){animation:vtIn .42s cubic-bezier(.16,1,.3,1) both}
-html[data-pdir="l"]::view-transition-old(page){animation-name:vtOutL}
-html[data-pdir="l"]::view-transition-new(page){animation-name:vtInL}
-@keyframes vtOut{to{opacity:0;transform:translateX(-40px) scale(.985)}}
-@keyframes vtIn{from{opacity:0;transform:translateX(56px)}}
-@keyframes vtOutL{to{opacity:0;transform:translateX(40px) scale(.985)}}
-@keyframes vtInL{from{opacity:0;transform:translateX(-56px)}}
+::view-transition-old(page){animation:vtFo .14s linear both}
+::view-transition-new(page){animation:vtFi .16s linear both}
+@keyframes vtFo{to{opacity:0}}
+@keyframes vtFi{from{opacity:0}}
 </style>
 </head>
 <body>
