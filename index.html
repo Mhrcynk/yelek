@@ -950,6 +950,8 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .slide{background:#161616}.tls{background:var(--tB);color:var(--tBink)}
 .report{background:var(--card)}
 .motmc{background:var(--acc);color:#050505;border:0}.motmc *{color:#050505}.motmc .muted{color:rgba(5,5,5,.7)}.motmc .mst{background:rgba(5,5,5,.12)}
+.myr.B{background:rgba(255,255,255,.1);color:#E5E5E5}.myr.none{visibility:hidden}
+.grow .gs2{row-gap:4px}
 </style>
 </head>
 <body>
@@ -1453,13 +1455,12 @@ function viewGecmis(){
   for(const m of F){const d=parseYmd(m.date);const mk=AYLAR[d.getMonth()]+" "+d.getFullYear();if(mk!==cur){h+=`<div class="gm">${mk}</div>`;cur=mk}
     const i=S.mInfo[m.id]||{};const sa=+m.score_a||0,sb=+m.score_b||0;const st=m.stats||{};const ext=isExt(m);
     const sc=k=>(k==="A"?m.team_a:m.team_b||[]).filter(id=>+st[id]?.g).map(id=>firstName(nameOf(id))+(+st[id].g>1?" ×"+st[id].g:"")).join(", ");
-    const me=S.me&&sideOf(m,S.me);const myRes=me?((me==="A"?sa-sb:sb-sa)>0?"G":(me==="A"?sa-sb:sb-sa)<0?"M":"B"):"";
+    const me=S.me&&sideOf(m,S.me);const myRes=!ext&&sa===sb?"B":me?((me==="A"?sa-sb:sb-sa)>0?"G":(me==="A"?sa-sb:sb-sa)<0?"M":"B"):"";
     const nA=ext?esc(S.settings.group_name):`<span class="bibdot"></span>${esc(nmOf(m,"A"))}`,nB=ext?esc(m.opponent||"Rakip"):`<span class="nobib"></span>${esc(nmOf(m,"B"))}`;
     const motm=ext?m.motm:i.motm;
     h+=`<button class="grow${ext?" ext":""}" data-act="viewm" data-id="${esc(m.id)}"><span class="gd"><b>${d.getDate()}</b><small>${GUNLER[d.getDay()].slice(0,3)}</small></span>
       <span class="gb">${ext?`<span class="xchip">Dış maç</span>`:""}<span class="gs2"><span class="gt${sa>sb?" w":""}">${nA}</span><b class="num${sa>sb?" w":""}">${sa}</b><span class="gt${sb>sa?" w":""}">${nB}</span><b class="num${sb>sa?" w":""}">${sb}</b></span>
-      <span class="muted small gsc">${[sc("A"),ext?"":sc("B")].filter(Boolean).join(" · ")||"Gol bilgisi yok"}</span>
-      ${motm?`<span class="small">★ ${esc(nameOf(motm))}</span>`:""}</span>${myRes?`<span class="myr ${myRes}">${myRes}</span>`:""}</button>`}
+</span>${myRes?`<span class="myr ${myRes}" aria-label="${{G:"Galibiyet",B:"Beraberlik",M:"Mağlubiyet"}[myRes]}">${myRes}</span>`:`<span class="myr none"></span>`}</button>`}
   return h+`</div>`}
 function sheetExt(){if(!S.admin)return"";const f=S.f.ext;if(!f)return"";const ps=[...S.players,...S.guests];const opps=[...new Set(extFin().map(m=>m.opponent).filter(Boolean))];
   const inT=id=>f.team.includes(id);const stp2=(id,k,l)=>{const v=(f.stats[id]||{})[k]||0;return `<span class="stp${v?" on":""}"><label>${l}</label><button data-act="extSt" data-p="${esc(id)}" data-k="${k}" data-d="-1" aria-label="${l} azalt">−</button><b>${v}</b><button data-act="extSt" data-p="${esc(id)}" data-k="${k}" data-d="1" aria-label="${l} artır">+</button></span>`};
