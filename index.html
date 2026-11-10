@@ -960,6 +960,38 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .gs1 .gt{font-weight:700;font-size:.92rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .gs1 .gt.b{text-align:right}.gs1 .gt.w{color:#fff}
 .gs1>b{font-family:var(--display);font-weight:400;font-size:1.5rem;color:var(--muted);white-space:nowrap}.gs1>b .w{color:#fff}
+
+/* skorbord */
+.sbd{background:var(--acc);color:#050505;border-radius:28px;padding:18px 18px 16px;display:grid;gap:14px;min-width:0}
+.sbt{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.82rem;font-weight:800;min-width:0}.sbt>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbd .clk{display:inline-flex;align-items:center;width:auto;padding:5px 11px;border:0;border-radius:99px;background:#050505;gap:0;flex:none}
+.sbd .clk[hidden]{display:none}.sbd .clk .eyebrow{display:none}.sbd .clk b{width:auto;font:800 .76rem var(--body);color:var(--acc);text-shadow:none;letter-spacing:0}.sbd .clk b.day{font-size:.76rem}
+.sbd .clk.live{background:#050505}.sbd .clk.live b{color:var(--ok)}
+.sbm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:10px}
+.sbn{display:grid;gap:4px;min-width:0}.sbn.r{text-align:right;justify-items:end}
+.sbn small{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.sbn b{font:400 2rem/.95 var(--display);text-transform:uppercase;overflow-wrap:normal;word-break:normal;hyphens:none}
+.sbtm{font:400 clamp(1.9rem,10vw,2.8rem)/.95 var(--display)}
+.sbp{display:grid;gap:6px}.sbbar{height:10px;border-radius:99px;background:rgba(5,5,5,.15);display:flex;overflow:hidden;gap:3px}
+.sbbar i:first-child{background:#050505}.sbbar i:last-child{flex:1;background:var(--tB)}
+.sbl{display:flex;justify-content:space-between;font-size:.74rem;font-weight:800}
+.sbme{display:flex;align-items:center;gap:12px;background:#161616;border-radius:22px;padding:12px 16px}
+.sbme>span:last-child{display:grid}.sbme b{font-size:.95rem}.sbme small{font-size:.8rem;color:var(--muted)}
+.sbme .bibdot,.sbme .nobib{width:12px;height:12px;margin:0;border-radius:4px}
+/* karşılıklı kadro */
+.pl2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:14px}
+.plh{display:flex;align-items:baseline;gap:8px;padding-bottom:8px;border-bottom:2px solid var(--tA);min-width:0}.plh.b{border-color:var(--tB);justify-content:flex-end}
+.plh b{font:400 1.1rem/1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.plh span{font-size:.74rem;color:var(--muted);flex:none}
+.prc{display:flex;align-items:center;gap:7px;min-height:44px;border:0;border-bottom:1px solid #1E1E1E;background:none;color:inherit;padding:0;text-align:left;min-width:0;width:100%}
+.prc.b{flex-direction:row-reverse;text-align:right}
+.prc.none{pointer-events:none}
+.prp{width:30px;flex:none;font-size:.62rem;font-weight:800;color:#8C8C8C}.prc.b .prp{text-align:right}
+.prn{flex:1;min-width:0;font-size:.88rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prcap{font-style:normal;display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#fff;color:#050505;font:400 .56rem/1 var(--display);margin:0 4px;vertical-align:1px}
+.pro{font:400 1rem/1 var(--display);color:var(--acc);flex:none}.prc.b .pro{color:#B7A6FF}
+.prc .nt{font-style:normal;font:400 .74rem/1.45 var(--display);color:#fff;border-radius:6px;padding:0 5px;flex:none}
+.prc .nt.n8{background:#0E8F4E}.prc .nt.n7{background:#5DB443}.prc .nt.n65{background:#E3C33C;color:#1A1300}.prc .nt.n6{background:#EE8A2A;color:#1A0E02}.prc .nt.n5{background:#D9423F}.prc .nt.motm{box-shadow:0 0 0 2px var(--acc)}
+.plb{font-size:.78rem;color:var(--muted);padding-top:8px;min-width:0}.plb.r{text-align:right}
 </style>
 </head>
 <body>
@@ -1503,13 +1535,29 @@ function bhWhen(date,time,extra){const d=parseYmd(date);const fld=S.settings.fie
   return `<span class="bh-ey">Sıradaki maç</span><h1 class="bh-when">${dw||GUNLER[d.getDay()]}<br>${esc(time||"")}</h1>
   <div class="bh-chips">${extra||""}<span>${d.getDate()} ${AYLAR[d.getMonth()]}</span>${fld?`<span>${esc(fld)}</span>`:""}</div>`}
 const bhTeam=k=>`<div class="bh-t ${k.toLowerCase()}"><span class="bh-c" aria-hidden="true">${esc((TEAM[k]||"?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><b>${esc(TEAM[k])}</b></div>`;
+const sbFs=t=>{const w=Math.max(...String(t||"").split(/\s+/).map(x=>x.length));return w<=5?"2.4rem":w<=7?"1.95rem":w<=9?"1.6rem":"1.3rem"};
 function hero(om){
-  const A=om.team_a||[],B=om.team_b||[];const has=A.length&&B.length;const a=has?flo(avgX(A)):0,b=has?flo(avgX(B)):0;
+  const A=om.team_a||[],B=om.team_b||[];const has=A.length&&B.length;const d=parseYmd(om.date);const fld=S.settings.field_name;const dw=dayWord(om.date);
+  const avA=has?sumAvg(A):0,avB=has?sumAvg(B):0;const pA=has?Math.round(100/(1+Math.pow(10,-(avA-avB)/15))):50;
+  const me=S.me&&(A.includes(S.me)?"A":B.includes(S.me)?"B":"");let meRow="";
+  if(me){const L=pad7(lineupOf(om,me),me==="A"?A:B),PS=posArr(om,me);const i=L.indexOf(S.me);const ep=i<0?"":i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]);
+    meRow=`<div class="sbme"><span class="${me==="A"?"bibdot":"nobib"}"></span><span><b>Takımın: ${esc(TEAM[me])}</b><small>${i<0?"Yedek":esc(EPOS[ep]?.[1]||ep)}${(me==="A"?om.cap_a:om.cap_b)===S.me?" · Kaptan":""}</small></span></div>`}
   const actH=om.state==="kayit"?`<p class="bh-note">Kadrolar henüz açıklanmadı.</p>`:"";
-  return `<section class="bh">${bhWhen(om.date,om.time,cdClock(om))}
-    <div class="bh-vs"><div class="bh-row">${bhTeam("A")}<span class="bh-x">VS</span>${bhTeam("B")}</div>
-    ${has?`<div class="bh-st"><div><b class="num">${a}</b><span>Güç</span></div><div class="mid"><b class="num">${a===b?"=":Math.abs(a-b)}</b><span>${a===b?"Denk maç":"Fark"}</span></div><div><b class="num">${b}</b><span>Güç</span></div></div>`:""}${actH}</div></section>`;
+  return `<section class="sbd"><div class="sbt"><span>${dw?dw+" · ":""}${GUNLER[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()]}${fld?" · "+esc(fld):""}</span>${cdClock(om)}</div>
+    <div class="sbm"><div class="sbn"><small>Takım 1</small><b style="font-size:${sbFs(TEAM.A)}">${esc(TEAM.A)}</b></div><b class="sbtm num">${esc(om.time||"")}</b><div class="sbn r"><small>Takım 2</small><b style="font-size:${sbFs(TEAM.B)}">${esc(TEAM.B)}</b></div></div>
+    ${has?`<div class="sbp"><div class="sbbar" role="img" aria-label="Kazanma ihtimali ${esc(TEAM.A)} yüzde ${pA}, ${esc(TEAM.B)} yüzde ${100-pA}"><i style="width:${pA}%"></i><i></i></div><div class="sbl"><span>Güç ${avA} · %${pA}</span><span>%${100-pA} · Güç ${avB}</span></div></div>`:""}${actH}</section>${meRow}`;
 }
+function pairList(m,notes){const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
+  const rows=k=>{const PS=k==="A"?pa:pb,L=k==="A"?la:lb;return L.map((id,i)=>({id,ep:i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]),y:i===0?-99:PS[i][1]})).filter(x=>x.id).sort((a,b)=>b.y-a.y)};
+  const ra=rows("A"),rb=rows("B");const n=Math.max(ra.length,rb.length);const caps={A:m.cap_a,B:m.cap_b};
+  const cell=(x,k)=>{if(!x)return `<span class="prc ${k.toLowerCase()} none"></span>`;const r=notes&&notes.pts[x.id];const p=P(x.id);
+    const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===x.id?" motm":""}">${notes.motm===x.id?"★":""}${fN(r.pts)}</i>`:"";
+    return `<button class="prc ${k.toLowerCase()}" data-act="open" data-id="${esc(x.id)}" aria-label="${esc(nameOf(x.id))}, ${EPOS[x.ep]?.[1]||x.ep}, reyting ${p?.guest?"misafir":ovrOf(x.id)}"><span class="prp">${x.ep}</span><span class="prn">${esc(shortName(nameOf(x.id)))}${caps[k]===x.id?'<i class="prcap">C</i>':""}</span>${nt||`<b class="pro num">${p?.guest?"MİS":ovrOf(x.id)}</b>`}</button>`};
+  let h=`<div class="pl2"><div class="plh a"><b>${esc(TEAM.A)}</b><span>${esc(formLabel(formOf(m,"A"),pa))}</span></div><div class="plh b"><span>${esc(formLabel(formOf(m,"B"),pb))}</span><b>${esc(TEAM.B)}</b></div>`;
+  for(let i=0;i<n;i++)h+=cell(ra[i],"A")+cell(rb[i],"B");
+  const bench=(ids,L)=>ids.filter(x=>!L.includes(x)).map(x=>esc(shortName(nameOf(x)))).join(", ");const ba=bench(A,la),bb=bench(B,lb);
+  if(ba||bb)h+=`<span class="plb">${ba?"Yedek: "+ba:""}</span><span class="plb r">${bb?"Yedek: "+bb:""}</span>`;
+  return h+`</div>`}
 function rsvpLists(m){
   const rs=m.rsvp||{},at=m.rsvp_at||{};const ps=S.players;const ok=p=>!UNAVAIL.includes(stOf(p));
   const gel=ps.filter(p=>rs[p.id]==="g"&&ok(p)).sort((a,b)=>(at[a.id]||0)-(at[b.id]||0));
@@ -1657,7 +1705,7 @@ const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
 const formText=(fk,ps)=>samePos(ps,fk)?fk:"Özel diziliş";
 const dot=k=>k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>';
 function viewSeg(mode,act,both){
-  const opts=both?[["A",TEAM.A],["B",TEAM.B],["both","İkisi"]]:[["A",TEAM.A],["B",TEAM.B]];
+  const opts=both?[["both","İkisi"],["A",TEAM.A],["B",TEAM.B]]:[["A",TEAM.A],["B",TEAM.B]];
   return `<div class="seg3${both?"":" two"}" role="tablist" aria-label="Görünüm">${opts.map(([v,l])=>`<button data-act="${act}" data-v="${v}" class="${mode===v?"on":""} t${v.toLowerCase()}" role="tab" aria-selected="${mode===v}">${v==="both"?"":dot(v)}${esc(l)}</button>`).join("")}</div>`;
 }
 function roleGroups(L,PS){const g={ATT:[],MID:[],DEF:[]};L.forEach((id,i)=>{if(!id)return;const r=i===0?"KL":(PS[i]?.[2]||"OS");(r==="KL"||r==="DF"?g.DEF:r==="OS"?g.MID:g.ATT).push(id)});return g}
@@ -1670,9 +1718,10 @@ function legendHtml(k,fk,ps,ids,L,cap){const bench=ids.filter(x=>!L.includes(x))
   return `<div class="lg"><div class="lgh">${dot(k)}<b>${TEAM[k]}</b><span class="chip muted">${esc(formLabel(fk,ps))}</span><span class="avg num">${sumAvg(ids)}</span></div>${cap&&ids.includes(cap)?`<p class="small"><span class="capi">C</span> Kaptan: <b>${esc(nameOf(cap))}</b></p>`:""}${bench.length?`<p class="small">Yedek: ${bench.map(x=>esc(nameOf(x))).join(", ")}</p>`:""}</div>`}
 function teamsView(m,noShare){
   const fa=formOf(m,"A"),fb=formOf(m,"B");const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");
-  const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||(B.includes(S.me)?"B":"A");
-  return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b},m.state==="bitti"&&!isExt(m)?S.mInfo?.[m.id]:null)}
-    <div class="legend">${legendHtml("A",fa,pa,A,la,m.cap_a)}${legendHtml("B",fb,pb,B,lb,m.cap_b)}</div>
+  const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||"both";const NI=m.state==="bitti"&&!isExt(m)?S.mInfo?.[m.id]:null;
+  if(mode==="both")return `${viewSeg(mode,"fv",true)}${pairList(m,NI)}`;
+  return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b},NI)}
+    <div class="legend">${legendHtml(mode,mode==="A"?fa:fb,mode==="A"?pa:pb,mode==="A"?A:B,mode==="A"?la:lb,mode==="A"?m.cap_a:m.cap_b)}</div>
 
     `;
 }
