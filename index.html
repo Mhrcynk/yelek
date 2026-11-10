@@ -1246,12 +1246,24 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
 ::view-transition-old(nav){display:none}::view-transition-new(nav){animation:none}
 ::view-transition-group(page){animation:none}
 ::view-transition-image-pair(page){isolation:auto}
-::view-transition-old(page){animation:vtFo .14s linear both}
-::view-transition-new(page){animation:vtFi .16s linear both}
+::view-transition-old(page){animation:vtFo .12s ease-out both}
+::view-transition-new(page){animation:none}
 @keyframes vtFo{to{opacity:0}}
 @keyframes vtFi{from{opacity:0}}
 
 .board .bv{display:grid;justify-items:end;line-height:1.05}.board .bv small{font-size:.62rem;font-weight:700;color:var(--dim)}.board .bv b small{font:600 .7rem Inter,sans-serif;color:var(--dim);margin-left:4px}
+
+/* açılış koreografisi */
+@media (prefers-reduced-motion:no-preference){
+  .rvc{animation:rvC .6s cubic-bezier(.16,1,.3,1) backwards}
+  .rv{animation:rvI .55s cubic-bezier(.16,1,.3,1) backwards}
+  .rvb{animation:rvB .7s cubic-bezier(.16,1,.3,1) backwards;transform-origin:left center}
+  .lfs .lf.rvb{animation-name:rvD;transform-origin:center}
+}
+@keyframes rvC{from{opacity:0;transform:translate3d(0,14px,0)}}
+@keyframes rvI{from{opacity:0;transform:translate3d(0,8px,0)}}
+@keyframes rvB{from{transform:scaleX(0)}}
+@keyframes rvD{from{transform:scale(0);opacity:0}}
 </style>
 </head>
 <body>
@@ -1659,6 +1671,19 @@ function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>TABS.findIndex(y=>y[0
   if(RM||!document.startViewTransition){run();return}
   document.documentElement.dataset.pdir=dir;try{S._vt&&S._vt.skipTransition&&S._vt.skipTransition()}catch(_){}
   S._vt=document.startViewTransition(run);S._vt.finished.finally(()=>{S._vt=null})}
+/* sayfa açılışı: başlık, kartlar ve satırlar sırayla süzülür, çubuklar dolar, sayılar akar */
+const RV_SEL=":scope>*, .lgr, .board li, .lrow, .grow, .kdr, .nrow, .fmc, .bh-st>div, .psh>div, .pt, .slide, .kdf .av, .cr, .gl, .evc4 .pfc";
+function reveal(root){const els=[...root.querySelectorAll(RV_SEL)];const vh=innerHeight;let i=0;
+  for(const el of els){const r=el.getBoundingClientRect();if(r.top>vh+40||r.bottom<-40)continue;
+    const top=el.parentElement===root;el.classList.remove("rv","rvc");void 0;el.style.animationDelay=Math.min(60+i*38,900)+"ms";el.classList.add(top?"rvc":"rv");i++}
+  root.querySelectorAll(".kdb i,.sbbar i,.pwb i,.lfs .lf").forEach((el,k)=>{el.classList.add("rvb");el.style.animationDelay=(260+k*22)+"ms"});
+  root.querySelectorAll(".lp,.kdn,.board .bv>b,.fmc .nt").forEach(el=>countUp(el));
+  clearTimeout(S._rvT);S._rvT=setTimeout(()=>root.querySelectorAll(".rv,.rvc,.rvb").forEach(el=>{el.classList.remove("rv","rvc","rvb");el.style.animationDelay=""}),2000)}
+function countUp(el){const n=el.firstChild;if(!n||n.nodeType!==3)return;const t=n.textContent.trim();const m=t.match(/^([+%]?)(\d+)(?:,(\d))?$/);if(!m)return;
+  const pre=m[1],dec=m[3]!=null,end=+(m[2]+(dec?"."+m[3]:""));if(!end)return;const t0=performance.now()+200,dur=800;
+  const raw=n.textContent;const put=x=>{n.textContent=raw.replace(t,x)};
+  const step=now=>{const k=Math.min(1,Math.max(0,(now-t0)/dur));const e=1-Math.pow(1-k,3);const v=end*e;put(pre+(dec?v.toFixed(1).replace(".",","):Math.round(v)));if(k<1)requestAnimationFrame(step)};
+  put(pre+(dec?"0,0":"0"));requestAnimationFrame(step)}
 function render(force){
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -1676,6 +1701,7 @@ function render(force){
   else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});
+  if(chg&&!RM)reveal(v);
 
   renderSheet();wakeSync();
 }
