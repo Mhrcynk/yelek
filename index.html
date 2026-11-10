@@ -1175,6 +1175,19 @@ h1{text-shadow:0 0 30px rgba(255,255,255,.12)}
 .kdc{width:26px;height:26px;border-radius:8px;border:1.5px solid rgba(255,255,255,.25);display:grid;place-items:center;font-style:normal;font-weight:900;color:#06080D}
 .kdr.on .kdc{background:var(--acc);border-color:var(--acc);box-shadow:0 0 12px rgba(198,244,50,.6)}
 .kdr.out{opacity:.5}.kdr .chip.bad{font-size:.66rem}
+
+/* alt bar: tam genişlik, opak, ikon üstte yazı altta */
+:root{--nav:64px}
+body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
+.nav{left:0;right:0;bottom:0;max-width:none;margin:0;padding:0 0 env(safe-area-inset-bottom,0px);border-radius:0;border:0;border-top:1px solid rgba(255,255,255,.1);background:#0A0D14;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 -12px 30px rgba(0,0,0,.6)}
+.nav .in{grid-template-columns:repeat(4,minmax(0,1fr));max-width:720px;margin:0 auto;height:var(--nav);gap:0;padding:0 8px}
+.nav button{height:100%;border-radius:0;flex-direction:column;gap:4px;padding:0;background:none!important;color:rgba(255,255,255,.55);font-size:.64rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.nav .ic{display:grid;place-items:center;width:52px;height:30px;border-radius:99px;transition:background .2s,box-shadow .2s}
+.nav svg{width:22px;height:22px}
+.nav button[aria-current="page"]{color:#fff;background:none!important}
+.nav button[aria-current="page"] .ic{background:var(--acc);color:#06080D;box-shadow:0 0 18px rgba(198,244,50,.45)}
+.nav button[aria-current="page"]::after{display:none}
+.toast{bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 14px)}
 </style>
 </head>
 <body>
