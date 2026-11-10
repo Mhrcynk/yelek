@@ -992,6 +992,13 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .prc .nt{font-style:normal;font:400 .74rem/1.45 var(--display);color:#fff;border-radius:6px;padding:0 5px;flex:none}
 .prc .nt.n8{background:#0E8F4E}.prc .nt.n7{background:#5DB443}.prc .nt.n65{background:#E3C33C;color:#1A1300}.prc .nt.n6{background:#EE8A2A;color:#1A0E02}.prc .nt.n5{background:#D9423F}.prc .nt.motm{box-shadow:0 0 0 2px var(--acc)}
 .plb{font-size:.78rem;color:var(--muted);padding-top:8px;min-width:0}.plb.r{text-align:right}
+.field.cards.both{aspect-ratio:68/158}
+.field .tcard.sm{width:70px;height:82px;border-radius:16px;padding:6px 3px 5px;gap:3px}
+.field .tcard.sm .pa{width:36px;height:36px;font-size:.8rem}
+.field .tcard.sm .tnm{font-size:.6rem;max-width:66px}
+.field .tcard.sm .tov{font-size:.95rem}.field .tcard.sm .tps{font-size:.5rem}
+.field .tcard.sm .nt{font-size:.68rem;right:-9px;top:-7px;padding:0 4px}
+.field .tcard.sm .cap{width:14px;height:14px;font-size:.52rem;line-height:14px;left:-5px;bottom:-5px}
 </style>
 </head>
 <body>
@@ -1662,8 +1669,8 @@ function layout(mode,pa,pb,la,lb,cards){
   const ROW={KL:87,DF:63.5,OS:40,FV:16.5};
   const add=(k,PS,L)=>PS.forEach(([x,y,r],i)=>{let l,t;if(mode==="both"){({l,t}=pos2(k,x,y))}else if(cards){l=x;t=ROW[i===0?"KL":r]??95-y*.88}else{l=x;t=95-y*.88}toks.push({k,i,id:L[i],r:i===0?"KL":r,ep:i===0?"KL":slotPos(x,y,r),l,t})});
   if(mode!=="B")add("A",pa,la);if(mode!=="A")add("B",pb,lb);
-  const wx=cards?(mode==="both"?21:25):mode==="both"?22:25,wy=cards?(mode==="both"?13:20):mode==="both"?11.5:14;
-  const lim=cards?T=>{T.l=clamp(T.l,11,89);if(mode==="both")T.t=T.k==="A"?clamp(T.t,58,93):clamp(T.t,7,42);else T.t=clamp(T.t,11,89)}:T=>{T.l=clamp(T.l,10,90);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,92):clamp(T.t,7,44);else T.t=clamp(T.t,7,92)};
+  const wx=cards?(mode==="both"?22.5:25):mode==="both"?22:25,wy=cards?(mode==="both"?12.4:20):mode==="both"?11.5:14;
+  const lim=cards?T=>{T.l=clamp(T.l,11,89);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,93.5):clamp(T.t,7,44);else T.t=clamp(T.t,11,89)}:T=>{T.l=clamp(T.l,10,90);if(mode==="both")T.t=T.k==="A"?clamp(T.t,56,92):clamp(T.t,7,44);else T.t=clamp(T.t,7,92)};
   toks.forEach(lim);
   for(let it=0;it<200;it++){let moved=false;
     for(let a=0;a<toks.length;a++)for(let b=a+1;b<toks.length;b++){const A=toks[a],B=toks[b];
@@ -1688,15 +1695,14 @@ const noteCls=v=>v>=8?"n8":v>=7?"n7":v>=6.5?"n65":v>=6?"n6":"n5";
 // saha üstünde kart: iki takımda kompakt kart, tek takımda büyük FUT kartı
 function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCase();const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   const isSel=editable&&sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;const act=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:`data-act="open" data-id="${esc(id)}"`;const xc=isSel?" sel":"";
-  const cls=mode==="both"?"tc":"tcard";
+  const cls=mode==="both"?"tcard sm":"tcard";
   if(!id)return `<button class="${cls} ${kc} empty${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="pa">+</span><span class="tnm">Boş</span><span class="trow"><i class="tps">${T.ep}</i></span></button>`;
   const p=P(id),o=ovrOf(id),ph=photoOf(id);
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
   const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;
   const img=`<span class="pi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</span>`;
   const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
-  if(mode==="both")return `<button class="tc ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}<b class="tov num">${ov}</b>${cap}${nt}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span></button>`;
-  return `<button class="tcard ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><span class="trow"><b class="tov num">${ov}</b><i class="tps">${T.ep}</i></span>${nt}</button>`}
+  return `<button class="${cls} ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><span class="trow"><b class="tov num">${ov}</b><i class="tps">${T.ep}</i></span>${nt}</button>`}
 function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
   return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
 }
@@ -1719,9 +1725,8 @@ function legendHtml(k,fk,ps,ids,L,cap){const bench=ids.filter(x=>!L.includes(x))
 function teamsView(m,noShare){
   const fa=formOf(m,"A"),fb=formOf(m,"B");const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");
   const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||"both";const NI=m.state==="bitti"&&!isExt(m)?S.mInfo?.[m.id]:null;
-  if(mode==="both")return `${viewSeg(mode,"fv",true)}${pairList(m,NI)}`;
   return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b},NI)}
-    <div class="legend">${legendHtml(mode,mode==="A"?fa:fb,mode==="A"?pa:pb,mode==="A"?A:B,mode==="A"?la:lb,mode==="A"?m.cap_a:m.cap_b)}</div>
+    <div class="legend">${mode!=="B"?legendHtml("A",fa,pa,A,la,m.cap_a):""}${mode!=="A"?legendHtml("B",fb,pb,B,lb,m.cap_b):""}</div>
 
     `;
 }
