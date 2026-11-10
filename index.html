@@ -1200,6 +1200,12 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
 .nav button.ctr[aria-current="page"] .ic{box-shadow:0 0 0 6px #0A0D14,0 0 34px rgba(198,244,50,.75)}
 .nav button:not(.ctr)[aria-current="page"] .ic{background:rgba(198,244,50,.14);color:var(--acc);box-shadow:none}
 .nav button:not(.ctr)[aria-current="page"]{color:#fff}
+
+/* sade sayfa başlıkları */
+.ph h1{font-size:1.55rem;letter-spacing:.02em}
+.mehd{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:20px;background:var(--glass);border:1px solid var(--gline)}
+.mehd .av{width:44px;height:44px;flex:none}
+.mehd>div{flex:1;min-width:0;display:grid;gap:2px}.mehd b{font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mehd span{font-size:.78rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1696,7 +1702,7 @@ function viewGecmis(){
   const F=[...fin(),...extFin()].sort((a,b)=>matchTs(b)-matchTs(a));const E=extFin();
   if(S.view){const vm=F.find(m=>m.id===S.view);if(vm){const i=F.indexOf(vm);
     return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="back">${ICON.back} Fikstür</button><span class="row" style="gap:6px">${F[i+1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i+1].id)}" aria-label="Önceki maç">‹ Önceki</button>`:""}${F[i-1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i-1].id)}" aria-label="Sonraki maç">Sonraki ›</button>`:""}</span></div>`+(isExt(vm)?extPanel(vm):resultPanel(vm))}}
-  let h=`<div class="ph"><div><h1>Fikstür</h1></div>${S.admin?`<button class="btn sm primary" data-act="extNew">${ICON.plus} Dış maç</button>`:""}</div>`;
+  let h=`${S.admin?`<div class="ph kph"><button class="btn sm primary" data-act="extNew" style="margin-left:auto">${ICON.plus} Dış maç</button></div>`:""}`;
   h+=rivalCard(E);
   if(!F.length&&!openMatch())return h+`<section class="card"><div class="empty"><h3>İlk düdük bekleniyor</h3><p>İlk maçı gir, kartlar uyansın. Oynanan her maç burada birikir.</p></div></section>`;
   const om=openMatch();let cur="";h+=`<div class="glist">`;
@@ -2328,7 +2334,7 @@ function viewBen(){return _viewBen()+(S.admin?`<button class="btn block ghost" d
 function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div class="empty"><h3>Kim olduğunu seç</h3><p>Kendi kartını, formunu ve maçlarını görmek için oyuncunu seç.</p><button class="btn primary" data-act="meSheet">Kimsin?</button></div></section>`;
   const s=S.stats[p.id]||{};const hp=(s.hist||[]).filter(x=>x.r);const om=openMatch();
   const cnt=[0,0,0,0,0];hp.forEach(x=>{if(x.r.pk)cnt[x.r.pk]++});const last5=hp.slice(-5);
-  let h=`<div class="ph"><div><h1>Merhaba ${esc(firstName(p.name))}</h1><span class="muted">${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div><button class="btn sm" data-act="meSheet">Değiştir</button></div>
+  let h=`<div class="mehd">${avatar(p)}<div><b>${esc(p.name)}</b><span>${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div><button class="btn sm" data-act="meSheet">Değiştir</button></div>
   <section class="card benp"><div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${rtHist(s)}</div>
     <div style="display:grid;gap:12px;min-width:0">
       ${profStats(p,s)}
