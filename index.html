@@ -1136,6 +1136,21 @@ h1{text-shadow:0 0 30px rgba(255,255,255,.12)}
 .lf.G{background:#22C55E;box-shadow:0 0 8px #22C55E}.lf.B{background:#FFB547;box-shadow:0 0 8px rgba(255,181,71,.8)}.lf.M{background:#EF4444;box-shadow:0 0 8px rgba(239,68,68,.8)}
 .rivc{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;color:inherit;background:linear-gradient(120deg,rgba(123,92,255,.35),rgba(123,92,255,.1))!important;border:1px solid rgba(123,92,255,.5)!important;box-shadow:0 0 30px rgba(123,92,255,.22)}
 .rivc>span{display:grid;gap:2px}.rivc b{font-size:1rem}.rivc .eyebrow{color:#C9BCFF}.rivc .rvs{font:400 1.9rem/1 var(--display)}
+
+/* formun: maç notu kutuları */
+.formrow{gap:8px}
+.fmc{position:relative;overflow:hidden;gap:6px;padding:12px 2px 10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--gline)}
+.fmc::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--fc,#9AA3B1);box-shadow:0 0 12px var(--fc,#9AA3B1)}
+.fmc .nt{background:none!important;box-shadow:none!important;padding:0!important;font:400 1.75rem/1 var(--display)!important;color:var(--fc)!important;text-shadow:0 0 16px var(--fc)}
+.fmc:has(.n8){--fc:#22C55E}.fmc:has(.n7){--fc:#84CC16}.fmc:has(.n65){--fc:#FACC15}.fmc:has(.n6){--fc:#F59E0B}.fmc:has(.n5){--fc:#EF4444}
+.fmc small.G,.fmc small.B,.fmc small.M{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;font-size:.66rem;font-weight:900;color:#06080D}
+.fmc small.G{background:#22C55E;box-shadow:0 0 10px rgba(34,197,94,.6)}.fmc small.B{background:#FFB547;box-shadow:0 0 10px rgba(255,181,71,.6)}.fmc small.M{background:#EF4444;color:#fff;box-shadow:0 0 10px rgba(239,68,68,.6)}
+.fmc small.muted{font-size:.68rem;font-weight:700;color:var(--dim)}
+.evc4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.evc4 .pfc{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin:0;padding:7px 4px;white-space:nowrap;font-size:.74rem!important;border-radius:99px;background:rgba(255,255,255,.05)!important;border:1px solid var(--gline);color:#fff!important;font-weight:700}
+.evc4 .pfc::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pc);box-shadow:0 0 8px var(--pc)}
+.evc4 .pfc b{margin:0;font:400 1rem/1 var(--display);color:var(--pc)}
+.evc4 .pfc.p1{--pc:#22C55E}.evc4 .pfc.p2{--pc:#84CC16}.evc4 .pfc.p3{--pc:#FACC15}.evc4 .pfc.p4{--pc:#EF4444}
 </style>
 </head>
 <body>
@@ -2196,7 +2211,7 @@ function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.se
   t+=`\nKadro ve kartlar: ${location.origin+location.pathname}`;return t}
 
 /* ================= Kartlar ================= */
-const oyTabs=v=>`<div class="seg3 oyt" role="tablist" aria-label="Oyuncular">${[["lig","Lig"],["kartlar","Kartlar"],["sezon","Sıralama"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
+const oyTabs=v=>`<div class="seg3 oyt" role="tablist" aria-label="Oyuncular">${[["lig","Lig"],["kartlar","Kartlar"],["sezon","İstatistikler"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
 function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
   const kv=S.f.kv||LS.get("y_kv")||"list";
@@ -2374,7 +2389,7 @@ function viewSezon(){
   const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastO||0;
     return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):""}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2.4em;text-align:right">${d?(d>0?"+":"−")+Math.abs(d):""}</span></span></li>`}).join("");
   const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
-  let h=`${oyTabs("sezon")}<div class="ph"><div><h1>Sezon ${yr}</h1><span class="muted">${F.length} maç oynandı</span></div></div>`;
+  let h=`${oyTabs("sezon")}<div class="ph"><div><h1>İstatistikler</h1><span class="muted">Sezon ${yr} · ${F.length} maç oynandı</span></div></div>`;
   if(!F.length)h+=`<section class="card"><div class="empty"><h3>Sezon yeni başlıyor</h3><p>Krallık yarışı boş, ilk golü atan zirveye yerleşir.</p></div></section>`;
   if(S.players.length)h+=rkCard;
   if(F.length)h+=`<div class="boards">${board("Gol krallığı",x=>x.g,x=>x.g)}${board("Asist krallığı",x=>x.a,x=>x.a)}${board("Maçın Adamı",x=>x.motm,x=>x.motm+" kez")}</div>`;
