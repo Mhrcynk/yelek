@@ -1197,7 +1197,7 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1E2740"/><path d="M32 9l18 6v15c0 12-8 20-18 25C22 50 14 42 14 30V15z" fill="none" stroke="#C6F432" stroke-width="3.5"/><path d="M23 22l9 12 9-12M32 34v11" fill="none" stroke="#F1F5F9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="16" r="2" fill="#C6F432"/></svg>
       <div class="t"><b>YELEK<span class="adm" id="admPill" hidden>YÖNETİCİ</span></b></div>
     </div>
-    <button class="gearBtn" id="gearBtn" data-act="tab" data-tab="ayarlar" aria-label="Ayarlar" hidden></button>
+    <button class="gearBtn" id="gearBtn" data-act="tab" data-tab="ayarlar" aria-label="Yönetici girişi"></button>
     <button class="meBtn ask" id="meBtn" data-act="meSheet">Kimsin?</button>
   </div>
 </header>
@@ -1585,7 +1585,7 @@ function render(force){
   const s=S.settings;
   
   $("#admPill").hidden=!S.admin;
-  {const gb=$("#gearBtn");if(gb){gb.hidden=!S.admin;if(!gb.innerHTML)gb.innerHTML=ICON.ayar;gb.classList.toggle("on",S.tab==="ayarlar")}}
+  {const gb=$("#gearBtn");if(gb){const k=S.admin?"ayar":"lock";if(gb.dataset.k!==k){gb.innerHTML=S.admin?ICON.ayar:LOCK_SVG;gb.dataset.k=k;gb.setAttribute("aria-label",S.admin?"Ayarlar":"Yönetici girişi");gb.title=S.admin?"Ayarlar":"Yönetici girişi"}gb.classList.toggle("on",S.tab==="ayarlar")}}
   const me=P(S.me);const mb=$("#meBtn");
   if(me){mb.className="meBtn";mb.innerHTML=`${avatar(me,"sm")}<span>${esc(firstName(me.name))}</span>`;mb.setAttribute("aria-label","Ben: "+me.name+". Değiştir")}
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
@@ -2310,7 +2310,8 @@ function sheetAdd(){
     <span class="muted small">Başlangıç reytingi: <b class="num" id="ap_ovr" style="color:var(--ink);font-size:1.1rem">${baseOf({pos:f.pos,epos:f.epos,attrs:f.attrs})}</b></span>
     <button class="btn primary block" type="submit">${ICON.plus} Kadroya ekle</button></form>`;
 }
-function viewBen(){return _viewBen()+`<button class="btn block ghost" data-act="tab" data-tab="ayarlar">${ICON.ayar} ${S.admin?"Ayarlar":"Ayarlar · kurallar · yönetici girişi"}</button>`}
+const LOCK_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+function viewBen(){return _viewBen()+(S.admin?`<button class="btn block ghost" data-act="tab" data-tab="ayarlar">${ICON.ayar} Ayarlar</button>`:`<button class="btn block" data-act="tab" data-tab="ayarlar">${LOCK_SVG} Yönetici girişi</button>`)}
 function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div class="empty"><h3>Kim olduğunu seç</h3><p>Kendi kartını, formunu ve maçlarını görmek için oyuncunu seç.</p><button class="btn primary" data-act="meSheet">Kimsin?</button></div></section>`;
   const s=S.stats[p.id]||{};const hp=(s.hist||[]).filter(x=>x.r);const om=openMatch();
   const cnt=[0,0,0,0,0];hp.forEach(x=>{if(x.r.pk)cnt[x.r.pk]++});const last5=hp.slice(-5);
@@ -2511,7 +2512,10 @@ function viewKurallar(inSheet){
 /* ================= Ayarlar ================= */
 function viewAyarlar(){
   const url=location.origin+location.pathname;
-  let h=`<div class="ph"><div><h1>Ayarlar</h1></div></div>
+  let h=`<div class="ph"><div><h1>${S.admin?"Ayarlar":"Yönetici girişi"}</h1></div></div>`;
+  if(!S.admin)h+=`<section class="card">
+    <form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`;
+  h+=`
   <section class="card"><div class="ch"><div><h2>Puanlama kuralları</h2></div></div><button class="btn block" data-act="rulesSheet">${ICON.kural} Kuralları gör</button></section>`;
   h+=`<section class="card"><h2>Telefona uygulama gibi ekle</h2><ol class="steps-list">
     <li><b>iPhone:</b> Safari'de bu sayfayı aç, alttaki Paylaş düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</li>
@@ -2520,9 +2524,7 @@ function viewAyarlar(){
   <section class="card"><h2>Arkadaşlarınla paylaş</h2>
     <input type="text" readonly value="${esc(url)}" id="shareUrl" aria-label="Uygulama linki">
     <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent("⚽ "+S.settings.group_name+" artık Yelek'te. Kartına ve kadroya buradan bak: "+url)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(url)}">${ICON.copy} Kopyala</button></div></section>`;
-  if(!S.admin)h+=`<section class="card"><h2>Yönetici girişi</h2>
-    <form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`;
-  else{const s=S.f.set||(S.f.set={...S.settings});
+  if(S.admin){const s=S.f.set||(S.f.set={...S.settings});
     h+=`<section class="card"><div class="ch"><h2>Grup ayarları</h2><span class="chip adm">Yönetici</span></div><form data-form="settings" style="display:grid;gap:12px">
       <label class="f" for="sGroup">Ekip adı<input id="sGroup" type="text" maxlength="40" data-bind="set.group_name" value="${esc(s.group_name)}"></label>
 
