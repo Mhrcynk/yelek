@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Yelek</title>
 <meta name="description" content="Halı saha ekibi için FIFA tarzı oyuncu kartları, 7'li dizilişler ve maç sonu puanlama.">
-<meta name="theme-color" content="#0A0E17">
+<meta name="theme-color" content="#050505">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 /* Düzen: projektör altında gece maçı. Koyu çim zemin, turuncu yelek vurgusu. Telefona göre tek kolon (max 720px), alt menü, alttan açılan paneller. */
 :root{
@@ -844,6 +844,111 @@ details.nrow>summary::before{display:none}details.nrow>summary::after{content:""
 .nrow .nt.n8{background:#0E8F4E}.nrow .nt.n7{background:#5DB443}.nrow .nt.n65{background:#E3C33C;color:#1A1300}.nrow .nt.n6{background:#EE8A2A;color:#1A0E02}.nrow .nt.n5{background:#D9423F}
 .nrb{padding:4px 12px 12px;display:grid;gap:6px;background:var(--card2)}.nrb p{margin:0}
 .nrp{display:flex;flex-wrap:wrap;gap:5px}.nrp span{font-size:.76rem;border-radius:8px;padding:3px 8px;background:var(--bg2);border:1px solid var(--line)}.nrp b{font-weight:800}.nrp .pos b{color:var(--ok)}.nrp .neg b{color:var(--bad)}
+
+/* ===== B · Volt Stadyum: siyah zemin, volt bloklar, iri dar başlıklar, hap düğmeler ===== */
+:root{--bg:#050505;--bg2:#0E0E0E;--card:#121212;--card2:#1A1A1A;--card3:#262626;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.14);
+  --ink:#FFFFFF;--muted:#A6A6A6;--dim:#7A7A7A;--tA:#C6F432;--tB:#8B6CFF;--tAink:#0B1400;--tBink:#0E0726;--accInk:#050505;
+  --display:Anton,"Inter Tight",Inter,system-ui,sans-serif;--r:26px;--nav:58px}
+body{background:#050505;background-image:none;font-synthesis:none;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.01em;line-height:1}
+h1{font-size:2.5rem}h2{font-size:1.45rem}h3{font-size:1.12rem}
+.top{background:rgba(5,5,5,.86);border-bottom:0}
+.brand b{font-family:var(--display);font-weight:400;font-size:1.7rem;letter-spacing:.05em}
+.logo rect{fill:var(--acc)}.logo path{stroke:#050505}.logo circle{fill:#050505}
+.meBtn,.gearBtn{background:#161616;border-color:transparent}
+.meBtn.ask{background:var(--acc);color:#050505}
+.chip.adm,.adm{background:var(--acc);color:#050505;border:0}
+/* alt menü: yüzen hap */
+.nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;padding:6px;background:rgba(22,22,22,.94);border:1px solid rgba(255,255,255,.06);border-radius:99px;box-shadow:0 14px 34px rgba(0,0,0,.6)}
+.nav .in{grid-template-columns:repeat(4,minmax(0,1fr));height:auto;gap:4px;padding:0}
+.nav button{height:46px;border-radius:99px;flex-direction:row;font-size:.72rem;letter-spacing:.04em;color:#BDBDBD;padding:0 4px}
+.nav .ic{display:none}
+.nav button[aria-current="page"]{background:var(--acc);color:#050505}
+.nav button[aria-current="page"]::after{display:none}
+/* yüzeyler */
+.card{background:var(--card);border:0;border-radius:26px;box-shadow:none;padding:18px}
+.card .card{background:var(--card2)}
+.btn{border-radius:99px}.btn.sm{border-radius:99px}
+.btn:not(.primary):not(.ghost):not(.danger):not(.wa):not(.turf):not(.light):not(.gbtn){background:#1C1C1C;border-color:transparent}
+.btn.primary{background:var(--acc);border-color:var(--acc);color:#050505;box-shadow:none}
+.btn.light{background:#fff;border-color:#fff;color:#050505}
+.btn.turf{background:#fff;border-color:#fff;color:#050505}
+.chips button{background:#1A1A1A;border:0}
+.chips button.on,.statuses button.on{background:#fff;color:#050505;border-color:#fff}
+.seg3,.vtog,.mtabs{background:#161616;border:0;border-radius:99px;padding:4px}
+.seg3 button,.vtog button,.mtabs button{border-radius:99px}
+.seg3 button.on,.vtog button.on,.mtabs button.on{background:#fff;color:#050505}
+.seg3 button.ta.on{background:var(--tA);color:var(--tAink)}.seg3 button.tb.on{background:var(--tB);color:var(--tBink)}
+.seg3 button.on .bibdot,.seg3 button.on .nobib{display:none}
+.oyt{margin-bottom:-4px}
+input[type=text],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{background:#161616;border-color:transparent;border-radius:14px}
+.sheet{background:#0E0E0E}
+.lrow,.grow{background:#121212;border:0;border-radius:20px}
+.lrow.me{box-shadow:inset 0 0 0 2px var(--acc)}
+.grow.next{box-shadow:inset 0 0 0 2px var(--acc)}
+.note.warn{background:rgba(198,244,50,.1);color:#E2FF94}
+.toast{background:#fff;color:#050505}
+.pwb i.a{background:var(--tA)}.pwb i.b{background:var(--tB)}
+.pwb::after{background:#050505}
+.bibdot{background:var(--tA)}.nobib{background:var(--tB);border:0}
+.eyebrow{color:var(--muted)}
+/* sıradaki maç */
+.bh{display:grid;gap:14px;padding:4px 2px 0;min-width:0}
+.bh-ey{font-size:.95rem;color:var(--muted);font-weight:600}
+.bh-when{font-size:clamp(3.1rem,16vw,4.6rem);line-height:.92;margin-top:-4px;overflow-wrap:anywhere}
+.bh-chips{display:flex;flex-wrap:wrap;gap:8px}
+.bh-chips>span{padding:8px 14px;border-radius:99px;background:#161616;font-size:.84rem;font-weight:700}
+.bh-chips>span.on{background:var(--acc);color:#050505}
+.bh .clk{display:inline-flex;align-items:center;width:auto;padding:8px 14px;border:0;border-radius:99px;background:var(--acc);color:#050505;gap:0}
+.bh .clk[hidden]{display:none}.bh .clk .eyebrow{display:none}
+.bh .clk b{width:auto;font:800 .84rem var(--body);color:#050505;text-shadow:none;letter-spacing:0}
+.bh .clk b.day{font-size:.84rem}.bh .clk b.day::after{content:" kaldı"}
+.bh .clk.live{background:var(--ok)}.bh .clk.live b{color:#03130A}
+.bh-vs{background:var(--acc);color:#050505;border-radius:30px;padding:22px 16px 18px;display:grid;gap:18px}
+.bh-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px}
+.bh-t{display:grid;justify-items:center;gap:8px;text-align:center;min-width:0}
+.bh-c{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:400 1.75rem/1 var(--display)}
+.bh-t.a .bh-c{background:#050505;color:var(--acc)}
+.bh-t.b .bh-c{background:var(--tB);color:#fff;box-shadow:0 0 0 3px #050505}
+.bh-t b{font:400 1.2rem/1.05 var(--display);text-transform:uppercase;overflow-wrap:anywhere}
+.bh-x{width:42px;height:42px;border-radius:50%;background:#050505;color:var(--acc);display:grid;place-items:center;font-weight:800;font-size:.78rem}
+.bh-st{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.bh-st>div{background:rgba(5,5,5,.1);border-radius:18px;padding:10px 6px;text-align:center;display:grid;gap:2px}
+.bh-st b{font:400 1.65rem/1.05 var(--display)}.bh-st span{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.bh-st .mid{background:#050505;color:#fff}.bh-st .mid b{color:var(--acc)}
+.bh-note{font-size:.84rem;font-weight:700;text-align:center;margin:0}
+.bh-form{display:grid;gap:12px}
+/* saha ve oyuncular */
+.field{background:#0F0F0F;border-radius:26px;box-shadow:none;border:1px solid rgba(255,255,255,.05)}
+.field svg.lines{opacity:.28}
+.field .pa{position:relative;width:44px;height:44px;border-radius:50%;background:#262626;display:grid;place-items:center;font:400 .95rem var(--display);color:#fff;flex:none}
+.field .pa img{width:100%;height:100%;object-fit:cover;object-position:center 20%;border-radius:50%}
+.field .tc{width:76px;gap:5px;color:#fff}
+.field .tc.a .pa,.field .tcard.a .pa{box-shadow:0 0 0 3px var(--tA)}.field .tc.b .pa,.field .tcard.b .pa{box-shadow:0 0 0 3px var(--tB)}
+.field .tc .tov{position:absolute;right:-13px;bottom:-5px;min-width:22px;height:18px;padding:0 4px;border-radius:6px;background:#fff;color:#050505;font:400 .8rem/18px var(--display);text-align:center}
+.field .tnm{font-size:.64rem;font-weight:800;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+.field .tc .tnm{background:rgba(5,5,5,.8);padding:1px 6px;border-radius:6px}
+.field .tc .nt{position:absolute;left:-16px;top:-8px;font-style:normal;font:400 .72rem/1.45 var(--display);color:#fff;border-radius:6px;padding:0 4px}
+.field .tc .cap,.field .tcard .cap{position:absolute;left:-6px;bottom:-6px;width:16px;height:16px;border-radius:50%;background:#fff;color:#050505;font:400 .6rem/16px var(--display);text-align:center;font-style:normal;border:0}
+.field .tcard{width:86px;height:106px;border-radius:20px;background:#1A1A1A;border:1px solid rgba(255,255,255,.08);box-shadow:0 8px 18px rgba(0,0,0,.45);padding:8px 4px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#fff;overflow:visible}
+.field .tcard::before,.field .tcard::after{display:none}
+.field .tcard .pa{width:48px;height:48px}
+.field .tcard .tnm{font-size:.72rem}
+.field .tcard .trow{display:flex;gap:5px;align-items:baseline}
+.field .tcard .tov{font:400 1.1rem/1 var(--display);color:var(--acc)}.field .tcard.b .tov{color:#B7A6FF}
+.field .tps{font-style:normal;font-size:.58rem;font-weight:800;color:var(--muted);letter-spacing:.04em}
+.field .tcard .nt{position:absolute;right:-8px;top:-8px;font-style:normal;font:400 .8rem/1.45 var(--display);color:#fff;border-radius:7px;padding:0 5px;box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.field .nt.n8{background:#0E8F4E}.field .nt.n7{background:#5DB443}.field .nt.n65{background:#E3C33C;color:#1A1300}.field .nt.n6{background:#EE8A2A;color:#1A0E02}.field .nt.n5{background:#D9423F}
+.field .nt.motm{box-shadow:0 0 0 2px var(--acc)}
+.field .tcard.empty{background:transparent;border:1.5px dashed rgba(255,255,255,.3);box-shadow:none}
+.field .empty .pa{background:transparent;border:1.5px dashed rgba(255,255,255,.35);box-shadow:none!important;font:600 1.2rem var(--body)}
+.field .tcard.sel{box-shadow:0 0 0 3px #fff,0 0 20px rgba(255,255,255,.35)}.field .tc.sel .pa{box-shadow:0 0 0 3px #fff,0 0 18px rgba(255,255,255,.5)}
+.field.edit .tc,.field.edit .tcard{touch-action:none;cursor:grab}
+.mhd{background:#161616;border:0;border-radius:30px}
+.mhd .msc b,.msc b{font-family:var(--display);font-weight:400}
+.slide{background:#161616}.tls{background:var(--tB);color:var(--tBink)}
+.report{background:var(--card)}
+.motmc{background:var(--acc);color:#050505;border:0}.motmc *{color:#050505}.motmc .muted{color:rgba(5,5,5,.7)}.motmc .mst{background:rgba(5,5,5,.12)}
 </style>
 </head>
 <body>
@@ -944,7 +1049,7 @@ const fN=x=>x==null?"–":(Math.round(x*10)/10).toFixed(1).replace(".",",");
 const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 const GUNLER=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 const DEF_SET={group_name:"Salı Ekibi",field_name:"",day:2,time:"21:00"};
-const TABS=[["mac","Maç","mac"],["gecmis","Fikstür","gecmis"],["kartlar","Kartlar","kart"],["sezon","Sezon","sezon"],["ben","Ben","ben"]];
+const TABS=[["mac","Maç","mac"],["gecmis","Fikstür","gecmis"],["kartlar","Oyuncular","kart"],["ben","Ben","ben"]];
 
 const sv=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const ICON={
@@ -1243,7 +1348,7 @@ function render(force){
   const me=P(S.me);const mb=$("#meBtn");
   if(me){mb.className="meBtn";mb.innerHTML=`${avatar(me,"sm")}<span>${esc(firstName(me.name))}</span>`;mb.setAttribute("aria-label","Ben: "+me.name+". Değiştir")}
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
-  $("#navIn").innerHTML=TABS.map(([k,l,ic])=>`<button data-tab="${k}"${S.tab===k?' aria-current="page"':""}><span class="ic">${ICON[ic]}</span>${l}</button>`).join("");
+  $("#navIn").innerHTML=TABS.map(([k,l,ic])=>`<button data-tab="${k}"${S.tab===k||(k==="kartlar"&&S.tab==="sezon")?' aria-current="page"':""}><span class="ic">${ICON[ic]}</span>${l}</button>`).join("");
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
   if(!S.loaded&&!S.err)h+=`<section class="card"><div class="empty"><h3>Yükleniyor</h3></div></section>`;
   else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
@@ -1376,18 +1481,24 @@ function heroVs(om){const fld=S.settings.field_name;const d=parseYmd(om.date);co
   <div class="vmeta">${ICON.pin}<span>${dw?`<b>${dw}</b> · `:""}${d.getDate()} ${AYLAR[d.getMonth()]}${dw?"":" "+GUNLER[d.getDay()]} · <b>${esc(om.time||"")}</b>${fld?" · "+esc(fld):""}</span></div>`}
 function heroWhen(date,time){const d=parseYmd(date);const fld=S.settings.field_name;
   return `<div class="when"><span class="wd">${GUNLER[d.getDay()]}</span><span class="dt">${d.getDate()} ${AYLAR[d.getMonth()]}</span><span class="tm">${ICON.pin}${esc(time)}${fld?" · "+esc(fld):""}</span></div>`}
-function noMatchHero(){return `<section class="hero"><div class="hero-top"><span class="eyebrow">Sıradaki maç</span></div><div class="when"><span class="wd">Yakında</span><span class="dt">Maç henüz açılmadı</span></div></section>`}
+function noMatchHero(){return `<section class="bh"><span class="bh-ey">Sıradaki maç</span><h1 class="bh-when">Yakında</h1><div class="bh-chips"><span>Maç henüz açılmadı</span></div></section>`}
 function createHero(){const d=S.f.newDate||nextDay(+S.settings.day);
-  return `<section class="hero"><div class="hero-top"><span class="eyebrow">Yönetici · yeni maç</span></div>${heroWhen(d,S.f.newTime||S.settings.time)}
-    <div class="grid2"><label class="f" for="nmDate" style="color:rgba(255,255,255,.8)">Tarih<input type="date" id="nmDate" data-bind="newDate" value="${esc(d)}"></label>
-    <label class="f" for="nmTime" style="color:rgba(255,255,255,.8)">Saat<input type="time" id="nmTime" data-bind="newTime" value="${esc(S.f.newTime||S.settings.time)}"></label></div>
-    <div class="grid2"><label class="f" for="nmA" style="color:rgba(255,255,255,.8)"><span><i class="bibdot"></i> 1. takımın adı</span><input type="text" id="nmA" maxlength="20" data-bind="newNameA" value="${esc(S.f.newNameA||"")}" placeholder="Örn. Eriş Gücü"></label>
-    <label class="f" for="nmB" style="color:rgba(255,255,255,.8)"><span><i class="nobib"></i> 2. takımın adı</span><input type="text" id="nmB" maxlength="20" data-bind="newNameB" value="${esc(S.f.newNameB||"")}" placeholder="Örn. Emiş Gücü"></label></div>
-    <button class="btn primary block" data-act="createMatch">${ICON.plus} Maçı aç</button></section>`}
+  return `<section class="bh">${bhWhen(d,S.f.newTime||S.settings.time,'<span class="on">Yeni maç</span>')}<div class="bh-form">
+    <div class="grid2"><label class="f" for="nmDate">Tarih<input type="date" id="nmDate" data-bind="newDate" value="${esc(d)}"></label>
+    <label class="f" for="nmTime">Saat<input type="time" id="nmTime" data-bind="newTime" value="${esc(S.f.newTime||S.settings.time)}"></label></div>
+    <div class="grid2"><label class="f" for="nmA"><span><i class="bibdot"></i> 1. takımın adı</span><input type="text" id="nmA" maxlength="20" data-bind="newNameA" value="${esc(S.f.newNameA||"")}" placeholder="Örn. Eriş Gücü"></label>
+    <label class="f" for="nmB"><span><i class="nobib"></i> 2. takımın adı</span><input type="text" id="nmB" maxlength="20" data-bind="newNameB" value="${esc(S.f.newNameB||"")}" placeholder="Örn. Emiş Gücü"></label></div>
+    <button class="btn primary block" data-act="createMatch">${ICON.plus} Maçı aç</button></div></section>`}
+function bhWhen(date,time,extra){const d=parseYmd(date);const fld=S.settings.field_name;const dw=dayWord(date);
+  return `<span class="bh-ey">Sıradaki maç</span><h1 class="bh-when">${dw||GUNLER[d.getDay()]}<br>${esc(time||"")}</h1>
+  <div class="bh-chips">${extra||""}<span>${d.getDate()} ${AYLAR[d.getMonth()]}</span>${fld?`<span>${esc(fld)}</span>`:""}</div>`}
+const bhTeam=k=>`<div class="bh-t ${k.toLowerCase()}"><span class="bh-c" aria-hidden="true">${esc((TEAM[k]||"?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><b>${esc(TEAM[k])}</b></div>`;
 function hero(om){
-  const actH=om.state==="kayit"?`<div class="hero-note">Kadrolar henüz açıklanmadı.</div>`:"";
-  return `<section class="hero"><div class="hero-top"><span class="eyebrow">Sıradaki maç</span></div>
-    ${cdClock(om)}${heroVs(om)}${actH}</section>`;
+  const A=om.team_a||[],B=om.team_b||[];const has=A.length&&B.length;const a=has?flo(avgX(A)):0,b=has?flo(avgX(B)):0;
+  const actH=om.state==="kayit"?`<p class="bh-note">Kadrolar henüz açıklanmadı.</p>`:"";
+  return `<section class="bh">${bhWhen(om.date,om.time,cdClock(om))}
+    <div class="bh-vs"><div class="bh-row">${bhTeam("A")}<span class="bh-x">VS</span>${bhTeam("B")}</div>
+    ${has?`<div class="bh-st"><div><b class="num">${a}</b><span>Güç</span></div><div class="mid"><b class="num">${a===b?"=":Math.abs(a-b)}</b><span>${a===b?"Denk maç":"Fark"}</span></div><div><b class="num">${b}</b><span>Güç</span></div></div>`:""}${actH}</div></section>`;
 }
 function rsvpLists(m){
   const rs=m.rsvp||{},at=m.rsvp_at||{};const ps=S.players;const ok=p=>!UNAVAIL.includes(stOf(p));
@@ -1519,15 +1630,15 @@ const noteCls=v=>v>=8?"n8":v>=7?"n7":v>=6.5?"n65":v>=6?"n6":"n5";
 // saha üstünde kart: iki takımda kompakt kart, tek takımda büyük FUT kartı
 function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCase();const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   const isSel=editable&&sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;const act=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:`data-act="open" data-id="${esc(id)}"`;const xc=isSel?" sel":"";
-  if(!id){if(mode==="both")return `<button class="tc ${kc} empty${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="tcb"><span class="tph">+</span><b>–</b></span><span class="tcn">Boş</span><span class="tcr"><i>${T.ep}</i></span></button>`;
-    return `<button class="tcard empty ${kc}${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><b class="o">+</b><i class="p">${T.ep}</i><span class="tph"></span><span class="nm">Boş</span></button>`}
+  const cls=mode==="both"?"tc":"tcard";
+  if(!id)return `<button class="${cls} ${kc} empty${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="pa">+</span><span class="tnm">Boş</span><span class="trow"><i class="tps">${T.ep}</i></span></button>`;
   const p=P(id),o=ovrOf(id),ph=photoOf(id);
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
-  const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;const tr=p?.guest?"silver":tierOf(o);
+  const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;
   const img=ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`;
   const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
-  if(mode==="both")return `<button class="tc ${kc}${xc}" style="${st}" ${act} ${lab}><span class="tcb ${tr}"><span class="tph">${img}</span><b class="num">${ov}</b>${cap}</span><span class="tcn">${esc(shortName(nameOf(id)))}</span><span class="tcr"><i>${T.ep}</i>${nt}</span></button>`;
-  return `<button class="tcard ${tr} ${kc}${xc}" style="${st}" ${act} ${lab}><b class="o num">${ov}</b><i class="p">${T.ep}</i><span class="tph">${img}</span><span class="nm">${esc(shortName(nameOf(id)))}</span>${nt}${cap}</button>`}
+  if(mode==="both")return `<button class="tc ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}<b class="tov num">${ov}</b>${cap}${nt}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span></button>`;
+  return `<button class="tcard ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><span class="trow"><b class="tov num">${ov}</b><i class="tps">${T.ep}</i></span>${nt}</button>`}
 function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
   return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
 }
@@ -1536,8 +1647,8 @@ const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
 const formText=(fk,ps)=>samePos(ps,fk)?fk:"Özel diziliş";
 const dot=k=>k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>';
 function viewSeg(mode,act,both){
-  const opts=both?[["both","İki takım"],["A",TEAM.A],["B",TEAM.B]]:[["A",TEAM.A],["B",TEAM.B]];
-  return `<div class="seg3${both?"":" two"}" role="tablist" aria-label="Görünüm">${opts.map(([v,l])=>`<button data-act="${act}" data-v="${v}" class="${mode===v?"on":""}" role="tab" aria-selected="${mode===v}">${v==="both"?"":dot(v)}${l}</button>`).join("")}</div>`;
+  const opts=both?[["A",TEAM.A],["B",TEAM.B],["both","İkisi"]]:[["A",TEAM.A],["B",TEAM.B]];
+  return `<div class="seg3${both?"":" two"}" role="tablist" aria-label="Görünüm">${opts.map(([v,l])=>`<button data-act="${act}" data-v="${v}" class="${mode===v?"on":""} t${v.toLowerCase()}" role="tab" aria-selected="${mode===v}">${v==="both"?"":dot(v)}${esc(l)}</button>`).join("")}</div>`;
 }
 function roleGroups(L,PS){const g={ATT:[],MID:[],DEF:[]};L.forEach((id,i)=>{if(!id)return;const r=i===0?"KL":(PS[i]?.[2]||"OS");(r==="KL"||r==="DF"?g.DEF:r==="OS"?g.MID:g.ATT).push(id)});return g}
 function strengthHtml(A,B,la,pa,lb,pb){
@@ -1549,7 +1660,7 @@ function legendHtml(k,fk,ps,ids,L,cap){const bench=ids.filter(x=>!L.includes(x))
   return `<div class="lg"><div class="lgh">${dot(k)}<b>${TEAM[k]}</b><span class="chip muted">${esc(formLabel(fk,ps))}</span><span class="avg num">${sumAvg(ids)}</span></div>${cap&&ids.includes(cap)?`<p class="small"><span class="capi">C</span> Kaptan: <b>${esc(nameOf(cap))}</b></p>`:""}${bench.length?`<p class="small">Yedek: ${bench.map(x=>esc(nameOf(x))).join(", ")}</p>`:""}</div>`}
 function teamsView(m,noShare){
   const fa=formOf(m,"A"),fb=formOf(m,"B");const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");
-  const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||"both";
+  const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||(B.includes(S.me)?"B":"A");
   return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b},m.state==="bitti"&&!isExt(m)?S.mInfo?.[m.id]:null)}
     <div class="legend">${legendHtml("A",fa,pa,A,la,m.cap_a)}${legendHtml("B",fb,pb,B,lb,m.cap_b)}</div>
 
@@ -1820,7 +1931,7 @@ function radar(pa,pb){const set=attrSet(pa.pos);const N=set.length,C=110,Rr=78;c
   const poly=a=>set.map(([k],i)=>pt(i,+a[k]||30).map(x=>x.toFixed(1)).join(",")).join(" ");
   const rings=[.25,.5,.75,1].map(f=>`<polygon points="${set.map((_,i)=>{const ang=-Math.PI/2+i*2*Math.PI/N;return (C+Rr*f*Math.cos(ang)).toFixed(1)+","+(C+Rr*f*Math.sin(ang)).toFixed(1)}).join(" ")}" fill="none" stroke="var(--line2)"/>`).join("");
   const labels=set.map(([k,l],i)=>{const ang=-Math.PI/2+i*2*Math.PI/N;const x=C+(Rr+18)*Math.cos(ang),y=C+(Rr+18)*Math.sin(ang);return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle">${l}</text>`}).join("");
-  return `<svg class="radar" viewBox="0 0 220 220" role="img" aria-label="Özellik karşılaştırması">${rings}${labels}<polygon points="${poly(sa)}" fill="rgba(255,122,26,.28)" stroke="#C6F432" stroke-width="2"/>${pb?`<polygon points="${poly(sb)}" fill="rgba(232,240,234,.18)" stroke="#4DA3FF" stroke-width="2"/>`:""}</svg>`}
+  return `<svg class="radar" viewBox="0 0 220 220" role="img" aria-label="Özellik karşılaştırması">${rings}${labels}<polygon points="${poly(sa)}" fill="rgba(198,244,50,.25)" stroke="#C6F432" stroke-width="2"/>${pb?`<polygon points="${poly(sb)}" fill="rgba(139,108,255,.25)" stroke="#8B6CFF" stroke-width="2"/>`:""}</svg>`}
 function sheetCmp(){const c=S.sheet;const pa=P(c.a),pb=P(c.b);
   const sel=(k,v)=>`<select data-cmp="${k}" aria-label="${k==="a"?"Birinci":"İkinci"} oyuncu"><option value="">Oyuncu seç</option>${S.players.map(q=>`<option value="${esc(q.id)}"${v===q.id?" selected":""}>${esc(q.name)}</option>`).join("")}</select>`;
   let h=`<div class="ch"><h2>Karşılaştır</h2><button class="btn sm" data-act="close">Kapat</button></div><div class="grid2 cmpsel"><div><span class="bibdot"></span>${sel("a",c.a)}</div><div><span class="nobib"></span>${sel("b",c.b)}</div></div>`;
@@ -1883,12 +1994,13 @@ function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.se
   t+=`\nKadro ve kartlar: ${location.origin+location.pathname}`;return t}
 
 /* ================= Kartlar ================= */
+const oyTabs=v=>`<div class="seg3 two oyt" role="tablist" aria-label="Oyuncular">${[["kartlar","Kartlar"],["sezon","Sıralama"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
 function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
   const kv=S.f.kv||LS.get("y_kv")||"list";
   let ps=S.players.filter(p=>flt==="all"||(flt==="yedek"?p.yedek:flt==="as"?!p.yedek:false)||p.pos===flt||(altOf(p)&&GROUP_POS[EPOS[altOf(p)][0]]===flt));
   ps=[...ps].sort((a,b)=>sort==="isim"?a.name.localeCompare(b.name,"tr"):sort==="form"?(S.stats[b.id]?.lastD||0)-(S.stats[a.id]?.lastD||0)||genOf(b.id)-genOf(a.id):genOf(b.id)-genOf(a.id));
-  let h=`<div class="ph"><div><h1>Kartlar</h1><span class="muted">${S.players.length} oyuncu</span></div><div class="row" style="gap:8px;flex-wrap:nowrap"><button class="btn sm" data-act="cmpOpen" aria-label="Oyuncu karşılaştır">${ICON.scale}</button><div class="vtog" role="group" aria-label="Görünüm"><button data-act="kview" data-v="list" class="${kv==="list"?"on":""}">Liste</button><button data-act="kview" data-v="grid" class="${kv==="grid"?"on":""}">Kart</button></div>${S.admin?`<button class="btn primary sm" data-act="addSheet" aria-label="Oyuncu ekle">${ICON.plus}</button>`:""}</div></div>
+  let h=`${oyTabs("kartlar")}<div class="ph"><div><h1>Kartlar</h1><span class="muted">${S.players.length} oyuncu</span></div><div class="row" style="gap:8px;flex-wrap:nowrap"><button class="btn sm" data-act="cmpOpen" aria-label="Oyuncu karşılaştır">${ICON.scale}</button><div class="vtog" role="group" aria-label="Görünüm"><button data-act="kview" data-v="list" class="${kv==="list"?"on":""}">Liste</button><button data-act="kview" data-v="grid" class="${kv==="grid"?"on":""}">Kart</button></div>${S.admin?`<button class="btn primary sm" data-act="addSheet" aria-label="Oyuncu ekle">${ICON.plus}</button>`:""}</div></div>
     <div class="chips" role="group" aria-label="Mevkiye göre">${[["all","Tümü"],...POS_KEYS.map(k=>[k,k]),["as","As"],["yedek","Yedek"]].map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${flt===k?"on":""}">${l}</button>`).join("")}
     <select id="sortSel" data-bind="sort" aria-label="Sırala">${[["ovr","Reytinge göre"],["form","Formdakiler"],["isim","İsme göre"]].map(([k,l])=>`<option value="${k}"${sort===k?" selected":""}>${l}</option>`).join("")}</select></div>`;
   if(S.admin)h+=`<div class="row" style="justify-content:space-between;gap:8px"><span class="muted small">${S.players.filter(p=>!p.yedek).length} as · ${S.players.filter(p=>p.yedek).length} yedek</span><button class="btn sm${S.f.sqMode?" primary":""}" data-act="sqMode">${S.f.sqMode?"Bitti":"As / yedek seç"}</button></div>`;
@@ -2041,7 +2153,7 @@ function viewSezon(){
   const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastO||0;
     return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):""}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2.4em;text-align:right">${d?(d>0?"+":"−")+Math.abs(d):""}</span></span></li>`}).join("");
   const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
-  let h=`<div class="ph"><div><h1>Sezon ${yr}</h1><span class="muted">${F.length} maç oynandı</span></div></div>`;
+  let h=`${oyTabs("sezon")}<div class="ph"><div><h1>Sezon ${yr}</h1><span class="muted">${F.length} maç oynandı</span></div></div>`;
   if(!F.length)h+=`<section class="card"><div class="empty"><h3>Sezon yeni başlıyor</h3><p>Krallık yarışı boş, ilk golü atan zirveye yerleşir.</p></div></section>`;
   if(S.players.length)h+=rkCard;
   if(F.length)h+=`<div class="boards">${board("Gol krallığı",x=>x.g,x=>x.g)}${board("Asist krallığı",x=>x.a,x=>x.a)}${board("Maçın Adamı",x=>x.motm,x=>x.motm+" kez")}</div>`;
@@ -2362,7 +2474,7 @@ document.addEventListener("click",e=>{if(SUPPRESS){e.stopImmediatePropagation();
 function rr(x,X,Y,w,h,r){x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w,Y,X+w,Y+h,r);x.arcTo(X+w,Y+h,X,Y+h,r);x.arcTo(X,Y+h,X,Y,r);x.arcTo(X,Y,X+w,Y,r);x.closePath()}
 // ===== Story görselleri (1080×1920) =====
 function confetti(n){if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const c=document.createElement("canvas");c.className="cfx";const W=c.width=innerWidth*devicePixelRatio,H=c.height=innerHeight*devicePixelRatio;document.body.appendChild(c);const x=c.getContext("2d");
-  const cols=["#C6F432","#00E676","#FF8A3D","#4DA3FF","#F1F5F9"];const ps=Array.from({length:n||140},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.32,vx:(Math.random()-.5)*W*.022,vy:-Math.random()*H*.02-H*.006,r:(6+Math.random()*8)*devicePixelRatio,a:Math.random()*6,va:(Math.random()-.5)*.3,c:cols[Math.random()*5|0],s:Math.random()<.3}));
+  const cols=["#C6F432","#00E676","#8B6CFF","#B7A6FF","#F1F5F9"];const ps=Array.from({length:n||140},()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.32,vx:(Math.random()-.5)*W*.022,vy:-Math.random()*H*.02-H*.006,r:(6+Math.random()*8)*devicePixelRatio,a:Math.random()*6,va:(Math.random()-.5)*.3,c:cols[Math.random()*5|0],s:Math.random()<.3}));
   const t0=performance.now();(function f(t){const k=(t-t0)/2600;x.clearRect(0,0,W,H);for(const p of ps){p.vy+=H*.0006;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;x.save();x.globalAlpha=Math.max(0,1-k);x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;
     if(p.s){x.beginPath();for(let i=0;i<5;i++){const q=i*1.2566-1.5708;x.lineTo(Math.cos(q)*p.r,Math.sin(q)*p.r);x.lineTo(Math.cos(q+.628)*p.r*.45,Math.sin(q+.628)*p.r*.45)}x.fill()}else x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()}
     if(k<1)requestAnimationFrame(f);else c.remove()})(t0)}
@@ -2374,25 +2486,25 @@ const loadImg=src=>new Promise(r=>{if(!src)return r(null);const im=new Image();i
 function fitFont(x,txt,max,min,weight,fam,w){let f=max;x.font=`${weight} ${f}px ${fam}`;while(f>min&&x.measureText(txt).width>w){f-=2;x.font=`${weight} ${f}px ${fam}`}return f}
 const NOTE_COL=v=>v>=8?"#0E8F4E":v>=7?"#5DB443":v>=6.5?"#E3C33C":v>=6?"#EE8A2A":"#D9423F";
 async function shareStory(m,kind){
-  try{await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,800))])}catch(_){}
+  try{await Promise.race([Promise.all([document.fonts.load("40px Anton"),document.fonts.ready]),new Promise(r=>setTimeout(r,800))])}catch(_){}
   const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
-  const D='"Inter Tight",Inter,system-ui,sans-serif',F='Inter,system-ui,sans-serif';
+  const D='Anton,"Inter Tight",Inter,system-ui,sans-serif',F='Inter,system-ui,sans-serif';
   const inf=S.mInfo[m.id]||{pts:{}};const st=m.stats||{};const sa=+m.score_a||0,sb=+m.score_b||0;
-  x.fillStyle="#0A0E17";x.fillRect(0,0,W,H);
-  const g=x.createRadialGradient(W/2,-200,40,W/2,-200,1300);g.addColorStop(0,"rgba(77,163,255,.32)");g.addColorStop(1,"rgba(77,163,255,0)");x.fillStyle=g;x.fillRect(0,0,W,1400);
+  x.fillStyle="#050505";x.fillRect(0,0,W,H);
+  const g=x.createRadialGradient(W/2,-200,40,W/2,-200,1300);g.addColorStop(0,"rgba(198,244,50,.12)");g.addColorStop(1,"rgba(198,244,50,0)");x.fillStyle=g;x.fillRect(0,0,W,1400);
   x.textAlign="center";x.textBaseline="alphabetic";
   const meta=`${fmtDate(m.date)}${S.settings.field_name?" · "+S.settings.field_name:""}`;
-  const pill=(t,y,bg,fg)=>{x.font=`900 34px ${D}`;const w=x.measureText(t).width+48;rr(x,W/2-w/2,y-42,w,58,29);x.fillStyle=bg;x.fill();x.fillStyle=fg;x.fillText(t,W/2,y)};
-  const sq=(X,Y,k)=>{x.fillStyle=k==="A"?"#FF8A3D":"#4DA3FF";rr(x,X,Y,26,26,6);x.fill()};
+  const pill=(t,y,bg,fg)=>{x.font=`400 34px ${D}`;const w=x.measureText(t).width+48;rr(x,W/2-w/2,y-42,w,58,29);x.fillStyle=bg;x.fill();x.fillStyle=fg;x.fillText(t,W/2,y)};
+  const sq=(X,Y,k)=>{x.fillStyle=k==="A"?"#C6F432":"#8B6CFF";rr(x,X,Y,26,26,6);x.fill()};
   if(kind==="res"){
     pill("MAÇ SONUCU",170,"#C6F432","#121A00");
     x.fillStyle="#A0AEC0";x.font=`600 34px ${F}`;x.fillText(meta,W/2,250);
     // takımlar ve skor
     const half=W/2-60;
-    x.fillStyle="#F1F5F9";fitFont(x,up(nmOf(m,"A")),64,34,900,D,half-40);x.fillText(up(nmOf(m,"A")),W/4+15,420);
-    fitFont(x,up(nmOf(m,"B")),64,34,900,D,half-40);x.fillText(up(nmOf(m,"B")),W*3/4-15,420);
+    x.fillStyle="#F1F5F9";fitFont(x,up(nmOf(m,"A")),64,34,400,D,half-40);x.fillText(up(nmOf(m,"A")),W/4+15,420);
+    fitFont(x,up(nmOf(m,"B")),64,34,400,D,half-40);x.fillText(up(nmOf(m,"B")),W*3/4-15,420);
     sq(W/4+2,450,"A");sq(W*3/4-28,450,"B");
-    x.font=`900 270px ${D}`;x.fillStyle=sa>sb?"#C6F432":"#F1F5F9";x.textAlign="right";x.fillText(String(sa),W/2-60,780);
+    x.font=`400 270px ${D}`;x.fillStyle=sa>sb?"#C6F432":"#F1F5F9";x.textAlign="right";x.fillText(String(sa),W/2-60,780);
     x.fillStyle=sb>sa?"#C6F432":"#F1F5F9";x.textAlign="left";x.fillText(String(sb),W/2+60,780);x.textAlign="center";x.fillStyle="#A0AEC0";x.fillRect(W/2-26,672,52,16);
     const mt=Object.values(inf.pts).find(Boolean)?.mt||"";x.font=`600 32px ${F}`;x.fillStyle="#A0AEC0";x.fillText(sa===sb?"Berabere":mt,W/2,850);
     // iki takımın oyuncuları: küçük kart + isim + olaylar + not (nota göre sıralı)
@@ -2404,15 +2516,15 @@ async function shareStory(m,kind){
       for(const id of ids){const r=inf.pts[id];drawMini(x,id,X0,y+6,72,90,k,IMS[id]);
         x.textAlign="left";x.textBaseline="alphabetic";x.fillStyle="#F1F5F9";x.font=`800 30px ${F}`;x.fillText(shortName(nameOf(id)),X0+86,y+42,250);
         x.fillStyle="#CBD5E1";x.font=`500 26px ${F}`;x.fillText(evs(id)||"–",X0+86,y+80,250);
-        if(r){x.font=`900 34px ${D}`;const t=(inf.motm===id?"★":"")+fN(r.pts);const w=Math.max(78,x.measureText(t).width+24);rr(x,X0+450-w,y+28,w,48,12);x.fillStyle=NOTE_COL(r.pts);x.fill();if(inf.motm===id){x.lineWidth=3;x.strokeStyle="#C6F432";x.stroke()}x.fillStyle="#fff";x.textAlign="center";x.fillText(t,X0+450-w/2,y+64)}
+        if(r){x.font=`400 34px ${D}`;const t=(inf.motm===id?"★":"")+fN(r.pts);const w=Math.max(78,x.measureText(t).width+24);rr(x,X0+450-w,y+28,w,48,12);x.fillStyle=NOTE_COL(r.pts);x.fill();if(inf.motm===id){x.lineWidth=3;x.strokeStyle="#C6F432";x.stroke()}x.fillStyle="#fff";x.textAlign="center";x.fillText(t,X0+450-w/2,y+64)}
         y+=101}};
     col("A",50);col("B",W/2+30);
     // maçın adamı şeridi
     const mo=inf.motm;if(mo){const r=inf.pts[mo];const y0=1650;
       rr(x,60,y0,W-120,160,32);x.fillStyle="rgba(198,244,50,.14)";x.fill();x.strokeStyle="rgba(198,244,50,.5)";x.lineWidth=3;x.stroke();
       drawMini(x,mo,90,y0+16,100,128,null,IMS[mo]);
-      x.textAlign="left";x.fillStyle="#C6F432";x.font=`900 30px ${D}`;x.fillText("★ MAÇIN ADAMI",220,y0+66);x.fillStyle="#F1F5F9";x.font=`900 50px ${D}`;x.fillText(up(nameOf(mo)),220,y0+122,580);
-      if(r){x.font=`900 46px ${D}`;const t=fN(r.pts);const w=x.measureText(t).width+34;rr(x,W-90-w,y0+48,w,62,14);x.fillStyle=NOTE_COL(r.pts);x.fill();x.fillStyle="#fff";x.textAlign="center";x.fillText(t,W-90-w/2,y0+96)}}
+      x.textAlign="left";x.fillStyle="#C6F432";x.font=`400 30px ${D}`;x.fillText("★ MAÇIN ADAMI",220,y0+66);x.fillStyle="#F1F5F9";x.font=`400 50px ${D}`;x.fillText(up(nameOf(mo)),220,y0+122,580);
+      if(r){x.font=`400 46px ${D}`;const t=fN(r.pts);const w=x.measureText(t).width+34;rr(x,W-90-w,y0+48,w,62,14);x.fillStyle=NOTE_COL(r.pts);x.fill();x.fillStyle="#fff";x.textAlign="center";x.fillText(t,W-90-w/2,y0+96)}}
   }else{
     const mo=inf.motm;if(!mo){toast("Maçın Adamı seçilmemiş");return}const r=inf.pts[mo];const p=P(mo);
     pill("★ MAÇIN ADAMI",170,"#C6F432","#121A00");
@@ -2421,34 +2533,34 @@ async function shareStory(m,kind){
     const fw=600,fx=(W-fw)/2,fy=310,fh=fw*1000/700;
     const gl=x.createRadialGradient(W/2,fy+fh/2,60,W/2,fy+fh/2,560);gl.addColorStop(0,"rgba(198,244,50,.42)");gl.addColorStop(1,"rgba(198,244,50,0)");x.fillStyle=gl;x.fillRect(0,fy-100,W,fh+200);
     if(p)await drawFut(x,p,fx,fy,fw,{border:"#C6F432",noTrend:true});
-    if(r){x.font=`900 72px ${D}`;const t=fN(r.pts);const w=x.measureText(t).width+60;rr(x,fx+fw-w+30,fy-30,w,100,24);x.fillStyle=NOTE_COL(r.pts);x.fill();x.lineWidth=4;x.strokeStyle="#C6F432";x.stroke();x.fillStyle="#fff";x.textAlign="center";x.textBaseline="alphabetic";x.fillText(t,fx+fw-w/2+30,fy+45)}
+    if(r){x.font=`400 72px ${D}`;const t=fN(r.pts);const w=x.measureText(t).width+60;rr(x,fx+fw-w+30,fy-30,w,100,24);x.fillStyle=NOTE_COL(r.pts);x.fill();x.lineWidth=4;x.strokeStyle="#C6F432";x.stroke();x.fillStyle="#fff";x.textAlign="center";x.textBaseline="alphabetic";x.fillText(t,fx+fw-w/2+30,fy+45)}
     const fyh=fy+fh-80;
     const k=r?r.side:sideOf(m,mo);x.textAlign="center";x.fillStyle="#A0AEC0";x.font=`600 36px ${F}`;x.fillText(`${p?EPOS[eposOf(p)][1]:""}${k?" · "+nmOf(m,k):""}`,W/2,fyh+140);
     // istatistik kutuları
     const o=st[mo]||{};const kl=r&&r.role==="KL";const boxes=[[kl?"YENİLEN":"GOL",kl?(r.op):(+o.g||0)],["ASİST",+o.a||0],["NOT",r?fN(r.pts):"–"],["KART",ovrOf(mo)]];
     const bw=200,bg=24,bx0=(W-(bw*4+bg*3))/2,by=fyh+185;
-    boxes.forEach(([l,v],i)=>{const X=bx0+i*(bw+bg);rr(x,X,by,bw,150,26);x.fillStyle="rgba(255,255,255,.07)";x.fill();x.fillStyle="#A0AEC0";x.font=`800 26px ${F}`;x.fillText(l,X+bw/2,by+48);x.fillStyle="#F1F5F9";x.font=`900 72px ${D}`;x.fillText(String(v),X+bw/2,by+125)});
+    boxes.forEach(([l,v],i)=>{const X=bx0+i*(bw+bg);rr(x,X,by,bw,150,26);x.fillStyle="rgba(255,255,255,.07)";x.fill();x.fillStyle="#A0AEC0";x.font=`800 26px ${F}`;x.fillText(l,X+bw/2,by+48);x.fillStyle="#F1F5F9";x.font=`400 72px ${D}`;x.fillText(String(v),X+bw/2,by+125)});
     // skor satırı
-    const yS=by+235;x.font=`900 46px ${D}`;const sTxt=`${up(nmOf(m,"A"))}  ${sa} - ${sb}  ${up(nmOf(m,"B"))}`;fitFont(x,sTxt,46,30,900,D,W-160);x.fillStyle="#CBD5E1";x.fillText(sTxt,W/2,yS);
+    const yS=by+235;x.font=`400 46px ${D}`;const sTxt=`${up(nmOf(m,"A"))}  ${sa} - ${sb}  ${up(nmOf(m,"B"))}`;fitFont(x,sTxt,46,30,400,D,W-160);x.fillStyle="#CBD5E1";x.fillText(sTxt,W/2,yS);
   }
   x.textAlign="center";x.fillStyle="#64748B";x.font=`600 26px ${F}`;x.fillText(location.host+location.pathname,W/2,H-50);
   shareCanvas(c,kind==="motm"?"macin-adami.png":"mac-sonucu.png",kind==="motm"?"Maçın Adamı":"Maç sonucu");
 }
 async function shareImg(m){
-  try{await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,800))])}catch(_){}
+  try{await Promise.race([Promise.all([document.fonts.load("40px Anton"),document.fonts.ready]),new Promise(r=>setTimeout(r,800))])}catch(_){}
   const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
-  const D='"Inter Tight",Inter,system-ui,sans-serif',F='Inter,system-ui,sans-serif';
-  x.fillStyle="#0A0E17";x.fillRect(0,0,W,H);
-  const g=x.createRadialGradient(W/2,-160,40,W/2,-160,1000);g.addColorStop(0,"rgba(77,163,255,.32)");g.addColorStop(1,"rgba(77,163,255,0)");x.fillStyle=g;x.fillRect(0,0,W,900);
+  const D='Anton,"Inter Tight",Inter,system-ui,sans-serif',F='Inter,system-ui,sans-serif';
+  x.fillStyle="#050505";x.fillRect(0,0,W,H);
+  const g=x.createRadialGradient(W/2,-160,40,W/2,-160,1000);g.addColorStop(0,"rgba(198,244,50,.12)");g.addColorStop(1,"rgba(198,244,50,0)");x.fillStyle=g;x.fillRect(0,0,W,900);
   x.textBaseline="alphabetic";
   // üstte ortalı: TAKIM 1 – TAKIM 2, altında diziliş/ortalama ve tarih
-  {const nA=up(nmOf(m,"A")),nB=up(nmOf(m,"B")),cx0=W/2,gap=44;let fs=72;x.font=`900 ${fs}px ${D}`;
-   while(fs>40&&Math.max(x.measureText(nA).width,x.measureText(nB).width)>cx0-gap-60-40){fs-=4;x.font=`900 ${fs}px ${D}`}
+  {const nA=up(nmOf(m,"A")),nB=up(nmOf(m,"B")),cx0=W/2,gap=44;let fs=72;x.font=`400 ${fs}px ${D}`;
+   while(fs>40&&Math.max(x.measureText(nA).width,x.measureText(nB).width)>cx0-gap-60-40){fs-=4;x.font=`400 ${fs}px ${D}`}
    const yN=200;x.fillStyle="#F1F5F9";x.textAlign="right";x.fillText(nA,cx0-gap,yN);x.textAlign="left";x.fillText(nB,cx0+gap,yN);
    x.textAlign="center";x.fillStyle="#A0AEC0";x.fillText("–",cx0,yN);
    const wA=x.measureText(nA).width,wB=x.measureText(nB).width,sq=24;
-   x.fillStyle="#FF8A3D";rr(x,cx0-gap-wA-sq-14,yN-fs*.62,sq,sq,6);x.fill();
-   x.fillStyle="#4DA3FF";rr(x,cx0+gap+wB+14,yN-fs*.62,sq,sq,6);x.fill();
+   x.fillStyle="#C6F432";rr(x,cx0-gap-wA-sq-14,yN-fs*.62,sq,sq,6);x.fill();
+   x.fillStyle="#8B6CFF";rr(x,cx0+gap+wB+14,yN-fs*.62,sq,sq,6);x.fill();
    const A0=m.team_a||[],B0=m.team_b||[];x.font=`600 26px ${F}`;x.fillStyle="#A0AEC0";
    x.textAlign="right";x.fillText(`${formText(formOf(m,"A"),posArr(m,"A"))} · ortalama ${sumAvg(A0)}`,cx0-gap,yN+44);
    x.textAlign="left";x.fillText(`${formText(formOf(m,"B"),posArr(m,"B"))} · ortalama ${sumAvg(B0)}`,cx0+gap,yN+44);
@@ -2456,9 +2568,9 @@ async function shareImg(m){
   x.textAlign="left";
   const px=60,py=330,pw=960,ph=1500;
   x.save();rr(x,px,py,pw,ph,36);x.clip();
-  for(let i=0;i<12;i++){x.fillStyle=i%2?"#145A36":"#17663D";x.fillRect(px,py+i*ph/12,pw,ph/12+1)}
+  for(let i=0;i<12;i++){x.fillStyle=i%2?"#0E0E0E":"#121212";x.fillRect(px,py+i*ph/12,pw,ph/12+1)}
   const sx=pw/68,sy=ph/100,L=(a,b)=>[px+a*sx,py+b*sy];
-  x.strokeStyle="rgba(255,255,255,.55)";x.lineWidth=4;
+  x.strokeStyle="rgba(255,255,255,.16)";x.lineWidth=4;
   const rect=(a,b,w,h)=>{const[X,Y]=L(a,b);x.strokeRect(X,Y,w*sx,h*sy)};
   rect(3,3,62,94);rect(17,3,34,13);rect(26,3,16,5);rect(17,84,34,13);rect(26,92,16,5);
   x.beginPath();x.moveTo(...L(3,50));x.lineTo(...L(65,50));x.stroke();
@@ -2467,20 +2579,22 @@ async function shareImg(m){
   const A=m.team_a||[],B=m.team_b||[],pa=posArr(m,"A"),pb=posArr(m,"B"),la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
   const TT=layout("both",pa,pb,la,lb,true),IM={};const NI=m.state==="bitti"?S.mInfo[m.id]:null;
   await Promise.all(TT.filter(T=>T.id&&photoOf(T.id)).map(T=>new Promise(r=>{const im=new Image();im.onload=()=>{IM[T.id]=im;r()};im.onerror=()=>r();im.src=photoOf(T.id)})));
-  // kompakt oyuncu kartı: seviye renginde kart (foto + reyting), takım renginde çerçeve, altında isim, mevki ve not
-  for(const T of TT){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-30;const p=P(T.id);const o=ovrOf(T.id);const tr=p?.guest?"silver":tierOf(o);const[c1,c2,tx]=TIER_COL[tr];
-    const cw=150,chh=70,X=cx-cw/2,Y=cy-chh/2;const tc=T.k==="A"?"#FF8A3D":"#4DA3FF";
-    x.shadowColor="rgba(0,0,0,.45)";x.shadowBlur=16;x.shadowOffsetY=5;const gr=x.createLinearGradient(X,Y,X+cw,Y+chh);gr.addColorStop(0,c1);gr.addColorStop(1,c2);rr(x,X,Y,cw,chh,18);x.fillStyle=gr;x.fill();x.shadowBlur=0;x.shadowOffsetY=0;
-    rr(x,X-5,Y-5,cw+10,chh+10,22);x.lineWidth=5;x.strokeStyle=tc;x.stroke();
-    const im=IM[T.id];const pX=X+6,pY=Y+6,pS=chh-12;x.save();rr(x,pX,pY,pS,pS,13);x.clip();x.fillStyle="rgba(0,0,0,.2)";x.fillRect(pX,pY,pS,pS);
-    if(im){const sc=Math.max(pS/im.width,pS/im.height);x.drawImage(im,pX+(pS-im.width*sc)/2,pY-(im.height*sc-pS)*.2,im.width*sc,im.height*sc)}else{x.fillStyle=tx;x.font=`900 22px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(T.id)),pX+pS/2,pY+pS/2+1)}
-    x.restore();x.fillStyle=tx;x.font=`900 44px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(p?.guest?"MİS":String(o),X+pS+12+(cw-pS-12)/2,Y+chh/2+2);
-    if((T.k==="A"?m.cap_a:m.cap_b)===T.id){x.beginPath();x.arc(X-2,Y+chh-2,17,0,Math.PI*2);x.fillStyle="#C6F432";x.fill();x.lineWidth=2;x.strokeStyle="rgba(0,0,0,.4)";x.stroke();x.fillStyle="#121A00";x.font=`900 20px ${D}`;x.fillText("C",X-2,Y+chh-1)}
-    const nm=shortName(nameOf(T.id));x.font=`700 28px ${F}`;const nw=Math.min(210,x.measureText(nm).width+24);rr(x,cx-nw/2,Y+chh+10,nw,40,11);x.fillStyle="rgba(6,10,18,.85)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,Y+chh+31,190);
-    const r=NI&&NI.pts[T.id];x.font=`800 22px ${D}`;const ew=x.measureText(T.ep).width+16;let nwd=0,nt="";if(r){nt=(NI.motm===T.id?"★":"")+fN(r.pts);x.font=`900 24px ${D}`;nwd=x.measureText(nt).width+18}
-    const tot=ew+(r?nwd+8:0),sx0=cx-tot/2,yy=Y+chh+58;
-    rr(x,sx0,yy,ew,32,8);x.fillStyle="#0A0E17";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.4)";x.stroke();x.fillStyle="#fff";x.font=`800 22px ${D}`;x.fillText(T.ep,sx0+ew/2,yy+17);
-    if(r){rr(x,sx0+ew+8,yy,nwd,32,8);x.fillStyle=NOTE_COL(r.pts);x.fill();if(NI.motm===T.id){x.lineWidth=3;x.strokeStyle="#C6F432";x.stroke()}x.fillStyle="#fff";x.font=`900 24px ${D}`;x.fillText(nt,sx0+ew+8+nwd/2,yy+17)}}
+  // oyuncu: takım renginde halkalı yuvarlak foto, köşede reyting, altında isim, mevki ve not
+  for(const T of TT){if(!T.id)continue;const cx=px+T.l/100*pw,cy=py+T.t/100*ph-34;const p=P(T.id);const o=ovrOf(T.id);
+    const R=44;const tc=T.k==="A"?"#C6F432":"#8B6CFF";
+    x.shadowColor="rgba(0,0,0,.5)";x.shadowBlur=18;x.shadowOffsetY=6;x.beginPath();x.arc(cx,cy,R+7,0,Math.PI*2);x.fillStyle=tc;x.fill();x.shadowBlur=0;x.shadowOffsetY=0;
+    x.beginPath();x.arc(cx,cy,R,0,Math.PI*2);x.fillStyle="#262626";x.fill();
+    const im=IM[T.id];x.save();x.beginPath();x.arc(cx,cy,R,0,Math.PI*2);x.clip();
+    if(im){const pS=R*2,sc=Math.max(pS/im.width,pS/im.height);x.drawImage(im,cx-R+(pS-im.width*sc)/2,cy-R-(im.height*sc-pS)*.2,im.width*sc,im.height*sc)}else{x.fillStyle="#fff";x.font=`400 34px ${D}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(T.id)),cx,cy+1)}
+    x.restore();
+    const ov=p?.guest?"MİS":String(o);x.font=`400 34px ${D}`;const bw=Math.max(50,x.measureText(ov).width+18),bx=cx+R-bw/2+10,by=cy+R-26;
+    rr(x,bx,by,bw,40,10);x.fillStyle="#fff";x.fill();x.fillStyle="#050505";x.textAlign="center";x.textBaseline="middle";x.fillText(ov,bx+bw/2,by+21);
+    if((T.k==="A"?m.cap_a:m.cap_b)===T.id){x.beginPath();x.arc(cx-R+4,cy+R-6,17,0,Math.PI*2);x.fillStyle="#fff";x.fill();x.fillStyle="#050505";x.font=`400 20px ${D}`;x.fillText("C",cx-R+4,cy+R-5)}
+    const nm=shortName(nameOf(T.id));x.font=`700 28px ${F}`;const nw=Math.min(210,x.measureText(nm).width+24),ny=cy+R+16;rr(x,cx-nw/2,ny,nw,40,11);x.fillStyle="rgba(5,5,5,.85)";x.fill();x.fillStyle="#fff";x.fillText(nm,cx,ny+21,190);
+    const r=NI&&NI.pts[T.id];x.font=`400 22px ${D}`;const ew=x.measureText(T.ep).width+16;let nwd=0,nt="";if(r){nt=(NI.motm===T.id?"★":"")+fN(r.pts);x.font=`400 24px ${D}`;nwd=x.measureText(nt).width+18}
+    const tot=ew+(r?nwd+8:0),sx0=cx-tot/2,yy=ny+48;
+    rr(x,sx0,yy,ew,32,8);x.fillStyle="#050505";x.fill();x.lineWidth=2;x.strokeStyle="rgba(255,255,255,.3)";x.stroke();x.fillStyle="#fff";x.font=`400 22px ${D}`;x.fillText(T.ep,sx0+ew/2,yy+17);
+    if(r){rr(x,sx0+ew+8,yy,nwd,32,8);x.fillStyle=NOTE_COL(r.pts);x.fill();if(NI.motm===T.id){x.lineWidth=3;x.strokeStyle="#C6F432";x.stroke()}x.fillStyle="#fff";x.font=`400 24px ${D}`;x.fillText(nt,sx0+ew+8+nwd/2,yy+17)}}
   x.textBaseline="alphabetic";
   x.fillStyle="#64748B";x.font=`600 24px ${F}`;x.textAlign="center";x.fillText(location.host+location.pathname,W/2,H-60);
   c.toBlob(async blob=>{if(!blob){toast("Görsel oluşturulamadı");return}
@@ -2491,12 +2605,12 @@ async function shareImg(m){
 
 
 /* Story: ortak zemin */
-const SD='"Inter Tight",Inter,system-ui,sans-serif',SF='Inter,system-ui,sans-serif';
-function storyBase(x,W,H,glow){x.fillStyle="#0A0E17";x.fillRect(0,0,W,H);
-  const g=x.createRadialGradient(W/2,-200,40,W/2,-200,1300);g.addColorStop(0,glow||"rgba(77,163,255,.32)");g.addColorStop(1,"rgba(77,163,255,0)");x.fillStyle=g;x.fillRect(0,0,W,1400);
+const SD='Anton,"Inter Tight",Inter,system-ui,sans-serif',SF='Inter,system-ui,sans-serif';
+function storyBase(x,W,H,glow){x.fillStyle="#050505";x.fillRect(0,0,W,H);
+  const g=x.createRadialGradient(W/2,-200,40,W/2,-200,1300);g.addColorStop(0,glow||"rgba(198,244,50,.12)");g.addColorStop(1,"rgba(198,244,50,0)");x.fillStyle=g;x.fillRect(0,0,W,1400);
   const g2=x.createRadialGradient(W/2,H+200,40,W/2,H+200,900);g2.addColorStop(0,"rgba(0,230,118,.10)");g2.addColorStop(1,"rgba(0,230,118,0)");x.fillStyle=g2;x.fillRect(0,H-900,W,900);
   x.textAlign="center";x.textBaseline="alphabetic"}
-function storyPill(x,W,t,y,bg,fg){x.font=`900 34px ${SD}`;const w=x.measureText(t).width+56;rr(x,W/2-w/2,y-44,w,62,31);x.fillStyle=bg||"#C6F432";x.fill();x.fillStyle=fg||"#121A00";x.textAlign="center";x.fillText(t,W/2,y)}
+function storyPill(x,W,t,y,bg,fg){x.font=`400 34px ${SD}`;const w=x.measureText(t).width+56;rr(x,W/2-w/2,y-44,w,62,31);x.fillStyle=bg||"#C6F432";x.fill();x.fillStyle=fg||"#121A00";x.textAlign="center";x.fillText(t,W/2,y)}
 function storyFoot(x,W,H){x.textAlign="center";x.fillStyle="#64748B";x.font=`600 26px ${SF}`;x.fillText(location.host+location.pathname,W/2,H-50)}
 function drawPhoto(x,im,X,Y,w,h,r){x.save();rr(x,X,Y,w,h,r);x.clip();if(im){const sc=Math.max(w/im.width,h/im.height);x.drawImage(im,X+(w-im.width*sc)/2,Y+(h-im.height*sc)*.2,im.width*sc,im.height*sc)}x.restore()}
 const TIER_COL={star:["#1F7A43","#0B2F1B","#F6DE8F"],gold:["#F6DE8F","#C8962C","#2A1D04"],silver:["#ECEFF1","#A4ADB3","#1A2227"],bronze:["#E8BF96","#A46A3E","#2A1608"]};
@@ -2508,27 +2622,27 @@ async function drawFut(x,p,cx,cy,cw,opt){opt=opt||{};const f=cw/700,cw0=700,ch=1
   x.save();rr(x,0,0,cw0,ch,56);x.clip();const sh=x.createRadialGradient(cw0*.3,0,10,cw0*.3,0,cw0*.9);sh.addColorStop(0,"rgba(255,255,255,.45)");sh.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=sh;x.fillRect(0,0,cw0,ch);
   x.strokeStyle="rgba(255,255,255,.18)";x.lineWidth=10;for(let i=-4;i<10;i++){x.beginPath();x.moveTo(cw0*.55+i*34,40);x.lineTo(cw0*.55+i*34-160,640);x.stroke()}
   const pw=430,ph=540;if(im){drawPhoto(x,im,cw0-pw-40,60,pw,ph,0);const fd=x.createLinearGradient(0,60+ph*.7,0,60+ph);fd.addColorStop(0,"rgba(0,0,0,0)");fd.addColorStop(1,c2);x.fillStyle=fd;x.fillRect(cw0-pw-40,60+ph*.7,pw,ph*.3+2)}
-  else{x.fillStyle=tx;x.globalAlpha=.35;x.font=`900 170px ${SD}`;x.textAlign="center";x.textBaseline="alphabetic";x.fillText(initials(p.name),cw0-pw/2-20,400);x.globalAlpha=1}
+  else{x.fillStyle=tx;x.globalAlpha=.35;x.font=`400 170px ${SD}`;x.textAlign="center";x.textBaseline="alphabetic";x.fillText(initials(p.name),cw0-pw/2-20,400);x.globalAlpha=1}
   x.restore();const border=opt.border||(s.lastO>0?"#00E676":tw?"#C6F432":"rgba(255,255,255,.4)");rr(x,0,0,cw0,ch,56);x.lineWidth=opt.border||s.lastO>0||tw?8:3;x.strokeStyle=border;x.stroke();
-  x.textBaseline="alphabetic";x.fillStyle=tx;x.textAlign="center";x.font=`900 190px ${SD}`;x.fillText(p.guest?"MİS":String(o),150,230);x.font=`800 56px ${SD}`;x.fillText(opt.ep||eposOf(p),150,300);
-  if(s.lastO&&!opt.noTrend){x.font=`900 44px ${SD}`;x.fillStyle=s.lastO>0?"#0A8A45":"#C8372D";x.fillText((s.lastO>0?"▲":"▼")+Math.abs(s.lastO),150,365)}
-  if(tw){x.font=`900 34px ${SD}`;const t="HAFTANIN TAKIMI";const w=x.measureText(t).width+30;rr(x,150-w/2,400,w,50,12);x.fillStyle="#C6F432";x.fill();x.fillStyle="#121A00";x.fillText(t,150,437)}
-  x.fillStyle=tx;fitFont(x,up(shortName(p.name)),84,48,900,SD,cw0-80);x.fillText(up(shortName(p.name)),cw0/2,690);
+  x.textBaseline="alphabetic";x.fillStyle=tx;x.textAlign="center";x.font=`400 190px ${SD}`;x.fillText(p.guest?"MİS":String(o),150,230);x.font=`400 56px ${SD}`;x.fillText(opt.ep||eposOf(p),150,300);
+  if(s.lastO&&!opt.noTrend){x.font=`400 44px ${SD}`;x.fillStyle=s.lastO>0?"#0A8A45":"#C8372D";x.fillText((s.lastO>0?"▲":"▼")+Math.abs(s.lastO),150,365)}
+  if(tw){x.font=`400 34px ${SD}`;const t="HAFTANIN TAKIMI";const w=x.measureText(t).width+30;rr(x,150-w/2,400,w,50,12);x.fillStyle="#C6F432";x.fill();x.fillStyle="#121A00";x.fillText(t,150,437)}
+  x.fillStyle=tx;fitFont(x,up(shortName(p.name)),84,48,400,SD,cw0-80);x.fillText(up(shortName(p.name)),cw0/2,690);
   x.globalAlpha=.3;x.fillRect(60,720,cw0-120,3);x.globalAlpha=1;
   attrSet(p.pos).forEach(([k,l],i)=>{const col=i%2,row=i/2|0;const X=70+col*(cw0/2-20),Y=800+row*80;const v=+(s.attrs?.[k])||0;
-    x.textAlign="left";x.fillStyle=tx;x.font=`900 52px ${SD}`;x.fillText(String(v||"–"),X,Y);x.font=`800 30px ${SF}`;x.fillText(l,X+88,Y-4);
+    x.textAlign="left";x.fillStyle=tx;x.font=`400 52px ${SD}`;x.fillText(String(v||"–"),X,Y);x.font=`800 30px ${SF}`;x.fillText(l,X+88,Y-4);
     x.globalAlpha=.2;rr(x,X,Y+14,cw0/2-110,6,3);x.fill();x.globalAlpha=.75;rr(x,X,Y+14,(cw0/2-110)*Math.min(1,v/100),6,3);x.fill();x.globalAlpha=1});
   x.restore();return ch*f}
 // küçük kart: seviye renginde, reyting + mevki + foto, takım renginde çerçeve
 function drawMini(x,id,X,Y,w,h,team,im,ep){const p=P(id);const o=ovrOf(id);const[c1,c2,tx]=TIER_COL[p?.guest?"silver":tierOf(o)];
   x.save();x.shadowColor="rgba(0,0,0,.4)";x.shadowBlur=12;x.shadowOffsetY=4;const gr=x.createLinearGradient(X,Y,X+w,Y+h);gr.addColorStop(0,c1);gr.addColorStop(1,c2);rr(x,X,Y,w,h,h*.14);x.fillStyle=gr;x.fill();x.restore();
-  if(team){rr(x,X-4,Y-4,w+8,h+8,h*.14+4);x.lineWidth=4;x.strokeStyle=team==="A"?"#FF8A3D":"#4DA3FF";x.stroke()}
+  if(team){rr(x,X-4,Y-4,w+8,h+8,h*.14+4);x.lineWidth=4;x.strokeStyle=team==="A"?"#C6F432":"#8B6CFF";x.stroke()}
   // reyting sol üstte, foto sağ altta (çakışmaz)
   const ps=w*.56,pX=X+w-ps-w*.06,pY=Y+h-ps-h*.07;x.save();x.beginPath();x.arc(pX+ps/2,pY+ps/2,ps/2,0,Math.PI*2);x.clip();x.fillStyle="rgba(0,0,0,.16)";x.fillRect(pX,pY,ps,ps);
-  if(im){const sc=Math.max(ps/im.width,ps/im.height);x.drawImage(im,pX+(ps-im.width*sc)/2,pY-(im.height*sc-ps)*.2,im.width*sc,im.height*sc)}else{x.fillStyle=tx;x.globalAlpha=.7;x.font=`900 ${Math.round(ps*.36)}px ${SD}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(id)),pX+ps/2,pY+ps/2+1);x.globalAlpha=1}
-  x.restore();x.textBaseline="alphabetic";x.textAlign="left";x.fillStyle=tx;x.font=`900 ${Math.round(h*.3)}px ${SD}`;x.fillText(p?.guest?"MİS":String(o),X+w*.09,Y+h*.34);x.font=`800 ${Math.round(h*.13)}px ${SD}`;x.fillText(ep||eposOf(p),X+w*.1,Y+h*.5)}
+  if(im){const sc=Math.max(ps/im.width,ps/im.height);x.drawImage(im,pX+(ps-im.width*sc)/2,pY-(im.height*sc-ps)*.2,im.width*sc,im.height*sc)}else{x.fillStyle=tx;x.globalAlpha=.7;x.font=`400 ${Math.round(ps*.36)}px ${SD}`;x.textAlign="center";x.textBaseline="middle";x.fillText(initials(nameOf(id)),pX+ps/2,pY+ps/2+1);x.globalAlpha=1}
+  x.restore();x.textBaseline="alphabetic";x.textAlign="left";x.fillStyle=tx;x.font=`400 ${Math.round(h*.3)}px ${SD}`;x.fillText(p?.guest?"MİS":String(o),X+w*.09,Y+h*.34);x.font=`400 ${Math.round(h*.13)}px ${SD}`;x.fillText(ep||eposOf(p),X+w*.1,Y+h*.5)}
 async function storyCard(p){
-  try{await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,800))])}catch(_){}
+  try{await Promise.race([Promise.all([document.fonts.load("40px Anton"),document.fonts.ready]),new Promise(r=>setTimeout(r,800))])}catch(_){}
   const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
   const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{}};const o=s.ovr;const tr=tierOf(o);const[c1,c2,tx]=TIER_COL[tr];const tw=lastTotw().includes(p.id);
   storyBase(x,W,H,tw?"rgba(198,244,50,.30)":undefined);
@@ -2536,16 +2650,16 @@ async function storyCard(p){
   x.fillStyle="#A0AEC0";x.font=`600 34px ${SF}`;x.fillText(`${S.settings.group_name||""}${S.settings.group_name?" · ":""}${fmtShort(new Date().toISOString().slice(0,10))}`,W/2,250);
   // kart
   const cw=700,ch=1000,cx=(W-cw)/2,cy=320;
-  const gl=x.createRadialGradient(W/2,cy+ch/2,80,W/2,cy+ch/2,640);gl.addColorStop(0,tw?"rgba(198,244,50,.4)":"rgba(77,163,255,.25)");gl.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gl;x.fillRect(0,cy-120,W,ch+240);
+  const gl=x.createRadialGradient(W/2,cy+ch/2,80,W/2,cy+ch/2,640);gl.addColorStop(0,tw?"rgba(198,244,50,.4)":"rgba(198,244,50,.12)");gl.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gl;x.fillRect(0,cy-120,W,ch+240);
   await drawFut(x,p,cx,cy,cw,{tw});
   // sezon kutuları
   const boxes=[["MAÇ",s.games||0],["GOL",s.goals||0],["ASİST",s.ast||0],["ORT. NOT",fN(s.avgPts)]];const bw=210,bgp=20,bx0=(W-(bw*4+bgp*3))/2,by=cy+ch+70;
-  boxes.forEach(([l,v],i)=>{const X=bx0+i*(bw+bgp);rr(x,X,by,bw,160,28);x.fillStyle="#1E2740";x.fill();x.textAlign="center";x.fillStyle="#A0AEC0";x.font=`800 26px ${SF}`;x.fillText(l,X+bw/2,by+50);x.fillStyle="#F1F5F9";x.font=`900 74px ${SD}`;x.fillText(String(v),X+bw/2,by+130)});
+  boxes.forEach(([l,v],i)=>{const X=bx0+i*(bw+bgp);rr(x,X,by,bw,160,28);x.fillStyle="#1E2740";x.fill();x.textAlign="center";x.fillStyle="#A0AEC0";x.font=`800 26px ${SF}`;x.fillText(l,X+bw/2,by+50);x.fillStyle="#F1F5F9";x.font=`400 74px ${SD}`;x.fillText(String(v),X+bw/2,by+130)});
   if(s.genX!=null){x.textAlign="center";x.fillStyle="#C6F432";x.font=`800 36px ${SF}`;x.fillText(`Reyting ${s.ovr}${s.motm?` · ${s.motm}× Maçın Adamı`:""}`,W/2,by+250)}
   storyFoot(x,W,H);shareCanvas(c,"yelek-kart.png","Oyuncu kartı");
 }
 async function storyTotw(m){
-  try{await Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,800))])}catch(_){}
+  try{await Promise.race([Promise.all([document.fonts.load("40px Anton"),document.fonts.ready]),new Promise(r=>setTimeout(r,800))])}catch(_){}
   const inf=S.mInfo[m.id]||{pts:{},totw:[]};const ids=(inf.totw||[]).slice(0,7);if(!ids.length){toast("Haftanın takımı henüz yok");return}
   const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");storyBase(x,W,H,"rgba(198,244,50,.28)");
   storyPill(x,W,"HAFTANIN TAKIMI",170);
@@ -2555,10 +2669,10 @@ async function storyTotw(m){
   ids.forEach((id,i)=>{const Y=y0+i*(rowH+20),r=inf.pts[id]||{};const k=r.side||sideOf(m,id);const top=i===1||(ids.length&&inf.motm===id);
     rr(x,70,Y,W-140,rowH,36);x.fillStyle=inf.motm===id?"rgba(198,244,50,.14)":"#161D2E";x.fill();x.lineWidth=inf.motm===id?4:2;x.strokeStyle=inf.motm===id?"#C6F432":"rgba(160,174,192,.18)";x.stroke();
     drawMini(x,id,100,Y+18,128,164,k,ims[i],r.role==="KL"?"KL":undefined);
-    const p=P(id);x.textAlign="left";x.fillStyle="#F1F5F9";fitFont(x,up(nameOf(id)),56,34,900,SD,520);x.fillText(up(nameOf(id)),275,Y+92);
+    const p=P(id);x.textAlign="left";x.fillStyle="#F1F5F9";fitFont(x,up(nameOf(id)),56,34,400,SD,520);x.fillText(up(nameOf(id)),275,Y+92);
     const o=(m.stats||{})[id]||{};const ev=[];if(+o.g)ev.push(o.g+" gol");if(+o.a)ev.push(o.a+" asist");if(r.role==="KL")ev.push((r.op??"")+" yenilen");
     x.fillStyle="#A0AEC0";x.font=`600 32px ${SF}`;x.fillText(`${i===0&&r.role==="KL"?"Kaleci":p?EPOS[eposOf(p)][1]:""}${ev.length?" · "+ev.join(", "):""}${inf.motm===id?" · ★":""}`,275,Y+145,520);
-    if(r.pts!=null){x.font=`900 60px ${SD}`;const t=fN(r.pts);const w=Math.max(130,x.measureText(t).width+44);rr(x,W-110-w,Y+rowH/2-46,w,92,22);x.fillStyle=NOTE_COL(r.pts);x.fill();x.fillStyle="#fff";x.textAlign="center";x.fillText(t,W-110-w/2,Y+rowH/2+21)}});
+    if(r.pts!=null){x.font=`400 60px ${SD}`;const t=fN(r.pts);const w=Math.max(130,x.measureText(t).width+44);rr(x,W-110-w,Y+rowH/2-46,w,92,22);x.fillStyle=NOTE_COL(r.pts);x.fill();x.fillStyle="#fff";x.textAlign="center";x.fillText(t,W-110-w/2,Y+rowH/2+21)}});
   storyFoot(x,W,H);shareCanvas(c,"haftanin-takimi.png","Haftanın Takımı");
 }
 
