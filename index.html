@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Yelek</title>
 <meta name="description" content="Halı saha ekibi için FIFA tarzı oyuncu kartları, 7'li dizilişler ve maç sonu puanlama.">
-<meta name="theme-color" content="#050505">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 /* Düzen: projektör altında gece maçı. Koyu çim zemin, turuncu yelek vurgusu. Telefona göre tek kolon (max 720px), alt menü, alttan açılan paneller. */
 :root{
@@ -999,6 +999,128 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .field .tcard.sm .tov{font-size:.95rem}.field .tcard.sm .tps{font-size:.5rem}
 .field .tcard.sm .nt{font-size:.68rem;right:-9px;top:-7px;padding:0 4px}
 .field .tcard.sm .cap{width:14px;height:14px;font-size:.52rem;line-height:14px;left:-5px;bottom:-5px}
+
+/* ===== C · Lig Bülteni: açık zemin, beyaz kartlar, çim yeşili saha, renkli not rozetleri ===== */
+:root{--bg:#F3F4F6;--bg2:#FFFFFF;--card:#FFFFFF;--card2:#F5F6F8;--card3:#E9EBEF;--line:#E4E7EC;--line2:#D5D9E0;
+  --ink:#0E1116;--muted:#5B6472;--dim:#7A8494;--acc:#C6F432;--accInk:#0E1116;--tA:#1F2430;--tB:#7B5CFF;--tAink:#FFFFFF;--tBink:#FFFFFF;
+  --ok:#12804A;--bad:#D93A2B;--display:"Inter Tight","Inter",system-ui,sans-serif;--r:16px;--nav:64px;color-scheme:light}
+body{background:#F3F4F6;color:var(--ink);font-synthesis:weight style;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
+h1,h2,h3{font-family:var(--display);font-weight:800;text-transform:none;letter-spacing:-.015em;line-height:1.1}
+h1{font-size:1.9rem}h2{font-size:1.2rem}h3{font-size:1.02rem}
+.top{background:rgba(255,255,255,.92);border-bottom:1px solid var(--line)}
+.brand b{font-family:var(--display);font-weight:800;font-size:1.35rem;letter-spacing:-.01em}
+.logo rect{fill:#0E1116}.logo path:first-of-type{stroke:#C6F432}.logo path:last-of-type{stroke:#FFFFFF}.logo circle{fill:#C6F432}
+.meBtn,.gearBtn{background:#F0F1F4;border-color:transparent;color:var(--ink)}
+.meBtn.ask{background:#0E1116;color:#fff}
+.chip.adm,.adm{background:#0E1116;color:#C6F432;border:0}
+/* alt menü: düz beyaz şerit */
+.nav{left:0;right:0;bottom:0;max-width:none;margin:0;padding:0 0 env(safe-area-inset-bottom,0px);background:rgba(255,255,255,.96);border:0;border-top:1px solid var(--line);border-radius:0;box-shadow:none}
+.nav .in{grid-template-columns:repeat(4,minmax(0,1fr));height:var(--nav);gap:0;padding:0;max-width:720px;margin:0 auto}
+.nav button{height:auto;border-radius:0;flex-direction:column;gap:3px;font-size:.66rem;letter-spacing:.02em;color:#6B7482;text-transform:none;font-weight:700}
+.nav .ic{display:grid;width:44px;height:28px;border-radius:9px}
+.nav button[aria-current="page"]{background:none;color:var(--ink)}
+.nav button[aria-current="page"] .ic{background:var(--acc);color:#0E1116}
+/* yüzeyler */
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:none;padding:16px}
+.card .card{background:var(--card2)}
+.btn{border-radius:12px}.btn.sm{border-radius:10px}
+.btn:not(.primary):not(.ghost):not(.danger):not(.wa):not(.turf):not(.light):not(.gbtn){background:#fff;border-color:var(--line2);color:var(--ink)}
+.btn.primary,.btn.turf{background:#0E1116;border-color:#0E1116;color:#fff;box-shadow:none}
+.btn.primary:hover{background:#262B35}
+.btn.light{background:#fff;border-color:var(--line2);color:var(--ink)}
+.btn.ghost{color:var(--muted)}
+.chips button{background:#fff;border:1px solid var(--line2);color:var(--ink)}
+.chips button.on,.statuses button.on{background:#0E1116;color:#fff;border-color:#0E1116}
+.seg3,.vtog,.mtabs{background:#EEF0F3;border:0;border-radius:12px;padding:3px}
+.seg3 button,.vtog button,.mtabs button{border-radius:9px;color:var(--muted)}
+.seg3 button.on,.vtog button.on,.mtabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(14,17,22,.12)}
+.seg3 button.ta.on{background:var(--tA);color:#fff}.seg3 button.tb.on{background:var(--tB);color:#fff}
+input[type=text],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{background:#fff;border:1px solid var(--line2);border-radius:12px;color:var(--ink)}
+.sheet{background:#F3F4F6}
+.lrow,.grow{background:#fff;border:1px solid var(--line);border-radius:14px}
+.lrow.me{box-shadow:inset 0 0 0 2px #0E1116}.grow.next{box-shadow:inset 0 0 0 2px #0E1116}
+.note.warn{background:#FFF7DB;color:#5C4300}
+.toast{background:#0E1116;color:#fff}
+.pwb{background:#EEF0F3}.pwb::after{background:#fff}
+.eyebrow{color:var(--muted)}
+.empty::before{filter:grayscale(.3)}
+/* sıradaki maç (yönetici/boş) */
+.bh-when{font-family:var(--display);font-weight:800;text-transform:none;font-size:clamp(2.2rem,11vw,3rem);line-height:1}
+.bh-chips>span{background:#fff;border:1px solid var(--line)}
+.bh-chips>span.on{background:#0E1116;color:#C6F432;border-color:#0E1116}
+/* skorbord */
+.sbd{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:16px}
+.sbt{color:var(--muted)}
+.sbd .clk,.sbd .clk.live{background:#0E1116}.sbd .clk b{color:#C6F432}
+.sbn small{color:var(--muted)}
+.sbn b{font-family:var(--display);font-weight:800;text-transform:none;letter-spacing:-.02em}
+.sbtm{font-family:var(--display);font-weight:800}
+.sbbar{background:#EEF0F3}.sbbar i:first-child{background:var(--tA)}.sbbar i:last-child{background:var(--tB)}
+.sbme{background:#fff;border:1px solid var(--line);border-radius:14px}
+/* maç başlığı ve sonuç */
+.mhd{background:#0E1116;color:#fff;border:0;border-radius:16px}
+.mhd .msc b,.msc b{font-family:var(--display);font-weight:800}
+.slide{background:#0E1116;color:#fff}.tls{background:var(--tB);color:#fff}
+.motmc{background:#fff;color:var(--ink);border:1px solid var(--line)}.motmc *{color:inherit}.motmc .muted{color:var(--muted)}
+.motmc .mms span{background:#0E1116}.motmc .mms small{color:#B8C0CC!important}.motmc .mms b{color:#C6F432!important;font-weight:800;font-family:var(--display)}
+.motmc .nt{color:#fff!important}.motmc .eyebrow{color:var(--muted)}
+.aw.motm{background:#fff}
+.myr.G{background:#E3F4EA;color:#12804A}.myr.M{background:#FCE7E5;color:#C0352A}.myr.B{background:#FFF1E0;color:#C25E00}
+.gs1 .gt.w,.gs1>b .w{color:var(--ink)}.gs1>b{font-family:var(--display);font-weight:800;color:#9AA3AF}
+/* saha: çim yeşili, beyaz çerçeveli yuvarlak oyuncular */
+.field{background:repeating-linear-gradient(180deg,#2F8A52 0 8.33%,#2B804C 8.33% 16.66%);border:0;border-radius:14px;box-shadow:none}
+.field svg.lines{opacity:1}
+.field .tcard,.field .tcard.sm{width:96px;height:auto;padding:0;border:0;border-radius:0;background:none;box-shadow:none;gap:3px;color:#fff;justify-content:flex-start}
+.field .tcard.sm{width:80px}
+.field .pa{width:56px;height:56px;border-radius:50%;background:#E9EBEF;color:#0E1116;font:800 .95rem var(--display);box-shadow:0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.28)!important;overflow:visible}
+.field .tcard.sm .pa{width:42px;height:42px;font-size:.75rem}
+.field .tcard.a .pa{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--tA),0 4px 10px rgba(0,0,0,.28)!important}
+.field .tcard.b .pa{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--tB),0 4px 10px rgba(0,0,0,.28)!important}
+.field .tov,.field .tcard .nt{position:absolute;right:-14px;top:-6px;min-width:26px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:6px;font:800 .74rem/20px var(--display);text-align:center;font-style:normal;box-shadow:0 2px 4px rgba(0,0,0,.25)}
+.field .tov{background:#0E1116;color:#fff}.field .tcard.b .tov{background:#4B2FD1}
+.field .tcard.sm .tov,.field .tcard.sm .nt{right:-13px;top:-7px;min-width:24px;height:18px;line-height:18px;font-size:.68rem}
+.field .nt.n8{background:#1C64F2;color:#fff}.field .nt.n7{background:#12804A;color:#fff}.field .nt.n65{background:#8BC34A;color:#0E1116}.field .nt.n6{background:#F2B53A;color:#0E1116}.field .nt.n5{background:#D93A2B;color:#fff}
+.field .nt.motm{box-shadow:0 0 0 2px #fff,0 2px 4px rgba(0,0,0,.25)}
+.field .tnm{margin-top:4px;padding:2px 7px;border-radius:6px;background:#fff;color:#0E1116;font-size:.7rem;font-weight:700;max-width:92px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.field .tcard.sm .tnm{font-size:.6rem;padding:1px 5px;max-width:78px;margin-top:3px}
+.field .tps{font-style:normal;font-size:.56rem;font-weight:800;color:rgba(255,255,255,.92);letter-spacing:.04em}
+.field .tcard.sm .tps{font-size:.5rem}
+.field .cap{background:#C6F432!important;color:#0E1116!important}
+.field .tcard.empty .pa{background:rgba(255,255,255,.15);border:2px dashed rgba(255,255,255,.7);box-shadow:none!important;color:#fff}
+.field .tcard.sel .pa{box-shadow:0 0 0 3px #C6F432,0 0 0 6px rgba(198,244,50,.45)!important}
+.field.cards.single{aspect-ratio:68/100}.field.cards.both{aspect-ratio:68/150}
+/* oyuncu profili ve listeler */
+.rth,.psh>div,.pwl2,.pmini>div{background:#fff;border:1px solid var(--line)}
+.nrow[open] summary,.nrb{background:var(--card2)}
+.nrp span{background:#fff}
+.stTop,.stBot{background:#F3F4F6}
+.pt{background:#fff;border-color:var(--line2)}.pt.on{background:#F4FBE3;border-color:#0E1116;box-shadow:0 0 0 1px #0E1116 inset}
+.lnk{color:#1C5FD4}
+.gl{border-top-color:var(--line)}.glist2{border-color:var(--line);background:#fff}
+.pfs button{background:#fff;border-color:var(--line2)}
+.pfs button.p1{color:#12804A}.pfs button.p2{color:#4E7D12}.pfs button.p4{color:#C0352A}
+.board li,.rank li{border-color:var(--line)}
+.tcard .tov.num,.tov{font-variant-numeric:tabular-nums}
+.sb .t.win .sc,.lcs .lt.win,.mtm.win b{color:var(--ink)}.mhd .mtm.win b,.mhd .sb .t.win .sc{color:#C6F432}
+:focus-visible{outline-color:#1C5FD4}
+.pk i,.act svg,.timer,.when .dt,.gearBtn.on,.pvx,.gl .gi u,.exp{color:#1C5FD4}
+.clk b{color:var(--ink);text-shadow:none}
+.shic{background:#EEF0F3;color:var(--ink)}
+.exp{border-color:#1C5FD4}
+.grow.next,.subp,.askp,.gstep{border-color:#0E1116}
+.tp.sel{border-color:#0E1116;box-shadow:0 0 0 2px #0E1116}
+.pk.on{border-color:#0E1116;background:#F4FBE3}
+.who-grid button.on{border-color:#0E1116;box-shadow:0 0 0 2px #0E1116}
+.btn.on{border-color:#0E1116!important;background:#F4FBE3!important}
+.report{background:#fff;color:var(--ink)}.report p,.report .muted{color:#3B4350}
+.mhd .mst{background:#C6F432;color:#0E1116}.mhd .bibdot{background:#fff}.mhd .muted,.mhd small{color:#B8C0CC}
+.gearBtn.on{border-color:#0E1116;color:#0E1116}
+.v8{color:#12804A!important}.v7{color:#4E7D12!important}.v6{color:#B7791F!important}.v5{color:#C0352A!important}
+.psh b.n8{color:#12804A}.psh b.n7{color:#4E7D12}.psh b.n65{color:#B7791F}.psh b.n6{color:#C25E00}.psh b.n5{color:#C0352A}
+.pnt.hi{color:#12804A}.pnt.lo{color:#C0352A}
+.trend.up,.delta.pos,.cr b.hi,.rank .mv.up{color:#12804A}.trend.down,.delta.neg,.rank .mv.down{color:#C0352A}
+.btn.gbtn.a{background:var(--tA);border-color:var(--tA);color:#fff}.btn.gbtn.b{background:var(--tB);border-color:var(--tB);color:#fff}
+.stTabs button.on{background:#0E1116;color:#fff}
 </style>
 </head>
 <body>
@@ -1696,13 +1818,14 @@ const noteCls=v=>v>=8?"n8":v>=7?"n7":v>=6.5?"n65":v>=6?"n6":"n5";
 function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCase();const st=`left:${T.l.toFixed(1)}%;top:${T.t.toFixed(1)}%`;
   const isSel=editable&&sel&&sel.kind==="slot"&&sel.team===T.k&&sel.idx===T.i;const act=editable?`data-act="slot" data-k="${T.k}" data-i="${T.i}"`:`data-act="open" data-id="${esc(id)}"`;const xc=isSel?" sel":"";
   const cls=mode==="both"?"tcard sm":"tcard";
-  if(!id)return `<button class="${cls} ${kc} empty${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="pa">+</span><span class="tnm">Boş</span><span class="trow"><i class="tps">${T.ep}</i></span></button>`;
+  if(!id)return `<button class="${cls} ${kc} empty${xc}" style="${st}" ${act} aria-label="Boş ${EPOS[T.ep][1]} yeri"><span class="pa">+</span><span class="tnm">Boş</span><i class="tps">${T.ep}</i></button>`;
   const p=P(id),o=ovrOf(id),ph=photoOf(id);
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
   const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;
   const img=`<span class="pi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</span>`;
   const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
-  return `<button class="${cls} ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><span class="trow"><b class="tov num">${ov}</b><i class="tps">${T.ep}</i></span>${nt}</button>`}
+  const badge=nt||`<b class="tov num">${ov}</b>`;
+  return `<button class="${cls} ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}${badge}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><i class="tps">${T.ep}</i></button>`}
 function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
   return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
 }
