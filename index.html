@@ -1125,11 +1125,17 @@ h1{text-shadow:0 0 30px rgba(255,255,255,.12)}
 /* lig tablosu */
 .seg3.oyt{grid-template-columns:repeat(3,minmax(0,1fr))}
 .card.lig{padding:8px 0 4px;gap:0}
-.lgr{display:grid;grid-template-columns:18px minmax(0,1fr) 16px 16px 16px 16px 24px 50px;gap:5px;align-items:center;min-height:46px;padding:0 12px;border:0;border-top:1px solid var(--line);background:none;color:inherit;text-align:left;width:100%;font-size:.85rem}
+.lgr{display:grid;grid-template-columns:20px minmax(0,1fr) 15px 15px 15px 15px 24px 26px 46px;gap:4px;align-items:center;min-height:46px;padding:0 12px;border:0;border-top:1px solid var(--line);background:none;color:inherit;text-align:left;width:100%;font-size:.85rem}
 .lgr.lgh{min-height:30px;border-top:0;font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .lgr .r,.lfs{justify-self:end}.lgr>.num,.lgr.lgh>span:nth-child(n+3):not(.r){text-align:center;justify-self:stretch}.lgr>.lp{text-align:center}
 .lgr.me{background:rgba(198,244,50,.1);box-shadow:inset 3px 0 0 var(--acc)}
-.lrk{font-size:.82rem;color:var(--dim)}.lrk.lt3{color:var(--acc)}
+.lrk{display:grid;justify-items:center;line-height:1;gap:2px}.lrk b{font-size:.8rem;color:var(--dim)}
+.lrk.g1 b,.lrk.g2 b,.lrk.g3 b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:.7rem;color:#06080D}
+.lrk.g1 b{background:linear-gradient(145deg,#FFE08A,#C8962C);box-shadow:0 0 10px rgba(255,214,107,.6)}.lrk.g2 b{background:linear-gradient(145deg,#F1F4F9,#9AA3B1)}.lrk.g3 b{background:linear-gradient(145deg,#F0B98C,#9A5A33)}
+.lmv{font-size:.52rem;font-weight:900}.lmv.up{color:var(--acc)}.lmv.dn{color:#F87171}
+.lav{font-size:.74rem;color:var(--muted)}.lav.pos{color:#4ADE80}.lav.neg{color:#F87171}
+.lgr.rl{border-top:1px solid rgba(239,68,68,.7);box-shadow:0 -1px 10px rgba(239,68,68,.25)}
+.ligsw{margin-bottom:-4px}.lgr.few{opacity:.5}
 .lnm{display:flex;align-items:center;gap:8px;min-width:0}.lnm .av{width:26px;height:26px;flex:none;font-size:.6rem}.lnm>span:last-child{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lp{font:400 1.15rem/1 var(--display)}
 .lfs{display:flex;gap:4px}.lf{width:9px;height:9px;border-radius:50%;display:block}
@@ -2383,21 +2389,28 @@ function spark(arr){if(arr.length<3)return"";const W=240,H=52,mn=Math.min(...arr
 
 /* ================= Sezon ================= */
 /* Lig: galibiyet 3, beraberlik 1 puan; sadece maç sonu kadrosu sayılır */
-function ligTable(){const F=fin();const t={};
+function ligTable(F,avg){F=F||fin();const t={};
   for(const m of F){const a=+m.score_a||0,b=+m.score_b||0;
     for(const[side,ids]of[["A",plOf(m,"A")],["B",plOf(m,"B")]]){const my=side==="A"?a:b,op=side==="A"?b:a;const r=my>op?"G":my<op?"M":"B";
       for(const id of ids){const p=P(id);if(!p||p.guest||p.archived)continue;const o=t[id]||(t[id]={id,G:0,B:0,M:0,ag:0,yg:0,f:[]});o[r]++;o.ag+=my;o.yg+=op;o.f.push(r)}}}
-  return Object.values(t).map(o=>({...o,n:o.G+o.B+o.M,p:o.G*3+o.B})).sort((x,y)=>y.p-x.p||y.G-x.G||(y.ag-y.yg)-(x.ag-x.yg)||x.n-y.n||genOf(y.id)-genOf(x.id))}
+  return Object.values(t).map(o=>{const n=o.G+o.B+o.M,p=o.G*3+o.B;return{...o,n,p,av:o.ag-o.yg,ppm:n?p/n:0}})
+    .sort((x,y)=>(avg?((y.n>=2)-(x.n>=2))||y.ppm-x.ppm:0)||y.p-x.p||y.G-x.G||y.av-x.av||x.n-y.n||genOf(y.id)-genOf(x.id))}
 function rivalOf(me){if(!me)return null;const t={};
   for(const m of fin()){const sd=playSide(m,me);if(!sd)continue;const a=+m.score_a||0,b=+m.score_b||0;const my=sd==="A"?a:b,op=sd==="A"?b:a;const r=my>op?"G":my<op?"M":"B";
     for(const id of plOf(m,sd==="A"?"B":"A")){const p=P(id);if(!p||p.guest||p.archived)continue;const o=t[id]||(t[id]={id,n:0,G:0,B:0,M:0});o.n++;o[r]++}}
   const L=Object.values(t).sort((x,y)=>y.n-x.n||y.M-x.M);return L[0]||null}
-function viewLig(){const L=ligTable();const F=fin();
+function viewLig(){const avg=!!S.f.ligAvg;const F=fin();const L=ligTable(F,avg);
   let h=`${oyTabs("lig")}<div class="ph"><div><h1>Lig</h1></div></div>`;
   if(!L.length)return h+`<section class="card"><div class="empty"><h3>Henüz biten maç yok</h3><p>İlk maç bitince puan durumu burada oluşur.</p></div></section>`;
+  // geçen haftaya göre sıra değişimi: son maç günü hariç tablo
+  const lastD=F.length?F[F.length-1].date:null;const PF=F.filter(m=>m.date!==lastD);const prev=PF.length?ligTable(PF,avg).map(o=>o.id):null;
   const fd=f=>f.slice(-5).map(r=>`<i class="lf ${r}" title="${r==="G"?"Galibiyet":r==="B"?"Beraberlik":"Mağlubiyet"}"></i>`).join("");
-  h+=`<section class="card lig"><div class="lgr lgh"><span>#</span><span>Oyuncu</span><span>O</span><span>G</span><span>B</span><span>M</span><span>P</span><span class="r">Form</span></div>`+
-    L.map((o,i)=>{const p=P(o.id);return `<button class="lgr${o.id===S.me?" me":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${o.p} puan, ${o.G} galibiyet, ${o.B} beraberlik, ${o.M} mağlubiyet"><b class="lrk${i<3?" lt3":""}">${i+1}</b><span class="lnm">${avatar(p)}<span>${esc(p.name)}</span></span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><b class="num lp">${o.p}</b><span class="lfs">${fd(o.f)}</span></button>`}).join("")+`</section>`;
+  const elg=avg?L.filter(o=>o.n>=2).length:L.length;const nb=elg>=6?elg-3:-1;const MED=["g1","g2","g3"];
+  const pt=o=>avg?fN(o.ppm):String(o.p);
+  h+=`<div class="seg3 two ligsw" role="tablist" aria-label="Puan"><button class="${avg?"":"on"}" data-act="ligAvg" data-v="0" aria-selected="${!avg}">Toplam puan</button><button class="${avg?"on":""}" data-act="ligAvg" data-v="1" aria-selected="${avg}">Maç başı</button></div>`;
+  h+=`<section class="card lig"><div class="lgr lgh"><span>#</span><span>Oyuncu</span><span>O</span><span>G</span><span>B</span><span>M</span><span>AV</span><span>${avg?"P/M":"P"}</span><span class="r">Form</span></div>`+
+    L.map((o,i)=>{const p=P(o.id);let mv="";if(prev){const j=prev.indexOf(o.id);const d=j<0?0:j-i;mv=d>0?`<small class="lmv up">▲${d}</small>`:d<0?`<small class="lmv dn">▼${-d}</small>`:""}
+      return `<button class="lgr${o.id===S.me?" me":""}${i===nb?" rl":""}${avg&&o.n<2?" few":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.p} puan, averaj ${o.av}"><span class="lrk${i<3?" "+MED[i]:""}"><b>${i+1}</b>${mv}</span><span class="lnm">${avatar(p)}<span>${esc(p.name)}</span></span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num lav${o.av>0?" pos":o.av<0?" neg":""}">${o.av>0?"+":""}${o.av}</span><b class="num lp">${pt(o)}</b><span class="lfs">${fd(o.f)}</span></button>`}).join("")+`</section>`;
   const rv=rivalOf(S.me);
   if(rv){const q=P(rv.id);h+=`<button class="card rivc" data-act="cmpPair" data-a="${esc(S.me)}" data-b="${esc(rv.id)}"><span><span class="eyebrow">Ezeli rakibin</span><b>${esc(q.name)}</b><span class="muted small">${rv.n} maçta karşı karşıya geldiniz</span></span><b class="rvs num">${rv.G}-${rv.B}-${rv.M}</b></button>`}
   return h}
@@ -2571,6 +2584,7 @@ document.addEventListener("click",async e=>{
     case"copy":{const tx=el.dataset.txt;try{await navigator.clipboard.writeText(tx);toast("Kopyalandı")}catch(_){toast("Kopyalanamadı, metni elle seç")}break}
     case"balance":{const ids=t?[...t.A,...t.B]:[];if(ids.length<4){toast("Önce en az 4 oyuncu seç");break}const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
     case"editTeams":{const m=S.matches.find(x=>x.id===id);startEditor(id,m.team_a||[],m.team_b||[],m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);render(true);break}
+    case"ligAvg":S.f.ligAvg=el.dataset.v==="1";render(true);break;
     case"kTog":{if(!S.admin||el.disabled)break;const m=S.matches.find(x=>x.id===el.dataset.m);if(!m)break;const v=(m.rsvp||{})[el.dataset.p]==="g"?"n":"g";
       m.rsvp={...(m.rsvp||{}),[el.dataset.p]:v};render(true);const r=await act("rsvp",{p_match:m.id,p_player:el.dataset.p,p_value:v});if(!r){toast("Kaydedilemedi");await load()}break}
     case"autoKadro":{const m=S.matches.find(x=>x.id===id);if(!m)break;const ids=rsvpLists(m).kadro.map(p=>p.id);if(ids.length<4){toast("Önce en az 4 oyuncu işaretle");break}
