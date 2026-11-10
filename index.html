@@ -336,7 +336,7 @@ details[open]>summary::before{transform:rotate(45deg)}
 .tls{justify-self:center;background:#2D68A6;color:#fff;font-family:var(--display);font-weight:900;font-size:.85rem;border-radius:9px;padding:3px 8px;white-space:nowrap}.tls.x{background:var(--card3);color:var(--ink)}
 .evg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.evc{display:grid;gap:6px;align-content:start;background:var(--card2);border-radius:14px;padding:10px;min-width:0}
 .evt{font-family:var(--display);font-weight:800;font-size:.8rem;text-transform:uppercase;color:var(--muted);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.evp{display:grid;gap:3px;min-width:0}.evn{font-weight:800;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.evs{display:flex;flex-wrap:wrap;gap:4px}
+.evp{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;padding:3px 0}.evp .evs{justify-content:flex-end;flex-wrap:nowrap}.evn{font-weight:800;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.evs{display:flex;flex-wrap:wrap;gap:4px}
 .evi{display:inline-flex;align-items:center;gap:1px;font-style:normal;font-size:.9rem;line-height:1;background:rgba(255,255,255,.07);border-radius:8px;padding:3px 6px}.evi small{font-size:.72rem;font-weight:900;margin-left:2px}
 .evi.p{background:#D9423F;color:#fff;font-family:var(--display);font-weight:900;font-size:.78rem}.evi.og{background:rgba(217,66,63,.35)}.evi.c{background:rgba(45,104,166,.4)}
 .pkb{position:relative;display:inline-block;line-height:1}.pkb b{position:absolute;right:-5px;bottom:-4px;background:#D9423F;color:#fff;font-family:var(--display);font-weight:900;font-size:.52rem;line-height:1;border-radius:4px;padding:1px 2px;border:1px solid rgba(0,0,0,.3)}
@@ -815,6 +815,35 @@ button.card.pvc{display:flex}
 .mngl{display:grid;gap:8px}.mngl .btn{display:grid;justify-items:start;text-align:left;gap:2px;padding:12px 14px}.mngl .btn small{font-weight:600;color:var(--muted);font-size:.74rem}
 .stHd{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ptiles.c4{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ptiles.c4 .pt{min-height:72px;padding:8px 2px 7px}.ptiles.c4 .pt b{font-size:.74rem}.ptiles.c4 .pt .av.xs{width:28px;height:28px;font-size:.68rem}
+.rth{width:min(100%,280px);background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:10px 12px 4px}
+.rthh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.rthh b{font-family:var(--display);font-weight:900;font-size:1rem}.rthh small{font-size:.8rem}
+.rth svg{width:100%;height:auto;display:block}.rtl{font-size:9px;fill:var(--muted);font-weight:700}
+.pst{display:grid;gap:10px;width:100%;justify-items:stretch}
+.psh{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.psh>div{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:grid;gap:2px;min-width:0}
+.psh span{font-size:.62rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.12em}
+.psh b{font-family:var(--display);font-weight:900;font-size:1.9rem;line-height:1.05}.psh small{font-size:.7rem;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psh em{font-style:normal;font-weight:800}.psh em.up{color:var(--ok)}.psh em.dn{color:var(--bad)}
+.psh b.n8{color:#00E676}.psh b.n7{color:#A9DE5C}.psh b.n65{color:#FFC107}.psh b.n6{color:#FF8A3D}.psh b.n5{color:#FF4D6D}
+.pwl2{width:100%;box-sizing:border-box;justify-self:stretch;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:grid;gap:8px}
+.pwlh{display:flex;justify-content:space-between;font-size:.84rem;gap:8px}.pwlh b{font-family:var(--display);font-weight:900}.pwlh b.w{color:var(--ok)}.pwlh b.l{color:var(--bad)}
+.pbar{display:flex;gap:3px;height:8px;border-radius:99px;overflow:hidden;background:var(--line)}.pbar i{display:block}.pbar .w{background:var(--ok)}.pbar .d{background:#8A96A8}.pbar .l{background:var(--bad)}
+.pmini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pmini>div{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:8px 4px;display:grid;justify-items:center;gap:1px;min-width:0}
+.pmini i{font-style:normal;font-size:.9rem;opacity:.8}.pmini b{font-family:var(--display);font-weight:900;font-size:1.3rem}.pmini span{font-size:.62rem;color:var(--muted);font-weight:700;text-align:center;line-height:1.2}
+.evc4{display:flex;flex-wrap:wrap;gap:6px}.evc4 .pfc{font-size:.78rem;padding:4px 10px}.evc4 b{margin-left:4px}
+.nlist{display:grid;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.nrow{border-top:1px solid var(--line)}.nrow:first-child{border-top:0}
+details.nrow>summary{list-style:none;display:grid;grid-template-columns:3.2em minmax(0,1fr) auto auto 10px;gap:8px;align-items:center;padding:10px 12px;cursor:pointer;min-height:0}
+details.nrow>summary::before{display:none}details.nrow>summary::after{content:"";width:7px;height:7px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(-45deg);transition:transform .2s}details.nrow[open]>summary::after{transform:rotate(45deg)}
+.nrow summary::-webkit-details-marker{display:none}.nrow[open] summary{background:var(--card2)}
+.nrl{display:flex;align-items:center;gap:4px}.nrl small{font-size:.7rem;font-weight:800;color:var(--muted)}
+.nrn{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-width:0}.nrn b{font-size:.92rem}.nrn small{flex-basis:100%;color:var(--muted);font-size:.74rem}
+.nrd{font-size:.74rem;font-weight:800}.nrd.up{color:var(--ok)}.nrd.dn{color:var(--bad)}
+.nrow .nt{display:inline-block;min-width:2.6em;text-align:center;font-family:var(--display);font-weight:900;border-radius:7px;padding:2px 6px;color:#fff}
+.nrow .nt.n8{background:#0E8F4E}.nrow .nt.n7{background:#5DB443}.nrow .nt.n65{background:#E3C33C;color:#1A1300}.nrow .nt.n6{background:#EE8A2A;color:#1A0E02}.nrow .nt.n5{background:#D9423F}
+.nrb{padding:4px 12px 12px;display:grid;gap:6px;background:var(--card2)}.nrb p{margin:0}
+.nrp{display:flex;flex-wrap:wrap;gap:5px}.nrp span{font-size:.76rem;border-radius:8px;padding:3px 8px;background:var(--bg2);border:1px solid var(--line)}.nrp b{font-weight:800}.nrp .pos b{color:var(--ok)}.nrp .neg b{color:var(--bad)}
 </style>
 </head>
 <body>
@@ -1736,8 +1765,11 @@ function _resultPanel(m){
       ${S.admin?`<button class="btn ghost sm" data-act="evalOpen" data-id="${M}">Değerlendirmeyi düzenle</button>`:""}`}
   else if(tab==="notlar"){
     const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>inf.pts[b].pts-inf.pts[a].pts);
-    h+=`<div class="hist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const d=hh?hh.d:0;const chs=hh?chText(hh.ch):"";
-      return `<div><span class="d">${dot2(r.side)}${r.role}</span><span>${esc(nameOf(id))}${NOTE.perf[r.pk]?` <span class="pfc p${r.pk}">${NOTE.perf[r.pk][1]}</span>`:""}<br><span class="muted small">${r.parts.map(([l,v])=>`${esc(l)} ${v>0?"+"+fN(v):"−"+fN(-v)}`).join(" · ")||"Ortalama maç"}${(r.g||r.a)&&r.gf&&r.gf!==1?` · ${esc(r.mt||"")}, ${sa+sb} gol: gol/asist ×${String(r.gf).replace(".",",")}`:""}${r.mul&&r.mul!==1?` · artılar ×${String(r.mul).replace(".",",")}`:""}</span>${chs?`<br><span class="muted small">Kart: ${chs}</span>`:""}</span><span class="p num"><span class="nt ${noteCls(r.pts)}">${fN(r.pts)}</span></span><span class="delta ${d>0?"pos":d<0?"neg":"zero"}">${fD(d)}</span></div>`}).join("")+`</div>`}
+    h+=`<p class="muted small" style="margin:0">Notun nasıl çıktığını görmek için oyuncuya dokun.</p><div class="nlist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const od=hh?hh.od||0:0;const chs=hh?chText(hh.ch):"";
+      const sub=[r.g?r.g+" gol":"",r.a?r.a+" asist":"",inf.motm===id?"★ Maçın Adamı":"",inf.gol===id?"Haftanın Golü":"",inf.fiy===id?"Fiyasko":""].filter(Boolean).join(" · ");
+      return `<details class="nrow"><summary><span class="nrl">${dot2(r.side)}<small>${r.role}</small></span><span class="nrn"><b>${esc(shortName(nameOf(id)))}</b>${NOTE.perf[r.pk]?`<span class="pfc p${r.pk}">${NOTE.perf[r.pk][1]}</span>`:""}${sub?`<small>${sub}</small>`:""}</span>${od?`<span class="nrd ${od>0?"up":"dn"}">${od>0?"▲":"▼"}${Math.abs(od)}</span>`:"<span></span>"}<span class="nt ${noteCls(r.pts)}">${fN(r.pts)}</span></summary>
+        <div class="nrb"><div class="nrp">${r.parts.map(([l,v])=>`<span class="${v>0?"pos":"neg"}">${esc(l)} <b>${v>0?"+"+fN(v):"−"+fN(-v)}</b></span>`).join("")||"<span>Ortalama maç</span>"}</div>
+        ${(r.g||r.a)&&r.gf&&r.gf!==1?`<p class="muted small">${esc(r.mt||"")}, ${sa+sb} gol: gol/asist ×${String(r.gf).replace(".",",")}</p>`:""}${chs?`<p class="muted small">Karta etkisi: ${chs}</p>`:""}</div></details>`}).join("")+`</div>`}
   else{
     const sum=(k,f)=>T(k).reduce((q,id)=>q+f(id),0);const cnt=(k,f)=>T(k).filter(f).length;
     const rows=[["Gol",sa,sb],["Asist",sum("A",id=>+stt[id]?.a||0),sum("B",id=>+stt[id]?.a||0)],
@@ -1904,10 +1936,9 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   const s=S.stats[p.id]||{};const hp=(s.hist||[]).filter(x=>x.r);const om=openMatch();
   const cnt=[0,0,0,0,0];hp.forEach(x=>{if(x.r.pk)cnt[x.r.pk]++});const last5=hp.slice(-5);
   let h=`<div class="ph"><div><h1>Merhaba ${esc(firstName(p.name))}</h1><span class="muted">${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div><button class="btn sm" data-act="meSheet">Değiştir</button></div>
-  <section class="card benp"><div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(sparkData(s))}</div>
+  <section class="card benp"><div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${rtHist(s)}</div>
     <div style="display:grid;gap:12px;min-width:0">
-      <div class="kv"><div><span>Reyting</span><b>${s.ovr||"–"}</b></div><div><span>Maç</span><b>${s.games||0}</b></div><div><span>Gol</span><b>${s.goals||0}</b></div><div><span>Asist</span><b>${s.ast||0}</b></div>
-        <div><span>Ort. not</span><b>${fN(s.avgPts)}</b></div><div><span>Form</span><b>${fN(s.form)}</b></div><div><span>Maçın Adamı</span><b>${s.motm||0}</b></div><div><span>Devam</span><b>${s.att!=null?"%"+Math.round(s.att*100):"–"}</b></div></div>
+      ${profStats(p,s)}
       ${s.streak?`<span class="chip ${s.streak.hot?"warn":"info"}">${s.streak.hot?"🔥":"❄️"} ${esc(s.streak.t)}</span>`:""}
       <div class="btns2"><button class="btn sm primary" data-act="storyCard" data-id="${esc(p.id)}">${ICON.share||""} Kart görseli</button><button class="btn sm" data-act="open" data-id="${esc(p.id)}">Tüm detaylar</button></div></div></div></section>`;
   if(om){const v=(om.rsvp||{})[p.id];h+=`<section class="card"><div class="ch"><div><div class="eyebrow">Sıradaki maç</div><h2>${fmtDate(om.date)} · ${esc(om.time||"")}</h2></div></div>
@@ -1915,7 +1946,7 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   if(!s.games)h+=`<section class="card"><div class="empty"><h3>Kartın uykuda</h3><p>İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikecek.</p></div></section>`;
   h+=`<section class="card"><div class="ch"><h2>Formun</h2><span class="muted small">son ${last5.length} maç</span></div>
     ${last5.length?`<div class="formrow">${last5.map(x=>`<button class="fmc" data-act="viewm" data-id="${esc(x.m.id)}"><span class="nt ${noteCls(x.r.pts)}">${fN(x.r.pts)}</span><small class="${x.r.res}">${x.r.res==="G"?"G":x.r.res==="B"?"B":"M"}</small><small class="muted">${fmtShort(x.m.date)}</small></button>`).join("")}</div>`:'<p class="muted small">Henüz maç oynamadın.</p>'}
-    ${hp.length?`<div class="kv"><div><span>Çok iyi</span><b>${cnt[1]}</b></div><div><span>İyi</span><b>${cnt[2]}</b></div><div><span>Orta</span><b>${cnt[3]}</b></div><div><span>Kötü</span><b>${cnt[4]}</b></div></div>
+    ${hp.length?`<div class="evc4">${[1,2,3,4].map(k=>`<span class="pfc p${k}">${NOTE.perf[k][1]} <b>${cnt[k]}</b></span>`).join("")}</div>
       ${s.bestM?`<p class="small">En iyi maçın: <b>${fmtDate(s.bestM.date)}</b> · not <b>${fN(s.bestM.pts)}</b></p>`:""}`:""}</section>`;
   h+=`<section class="card"><h2>Son maçların</h2><div class="hist">${(s.hist||[]).slice(-8).reverse().map(x=>{const r=x.r;
       const desc=x.kind==="oynadi"?`${r.res==="G"?"Galibiyet":r.res==="B"?"Beraberlik":"Mağlubiyet"} · ${ROLE_NAME[r.role]}${r.g?" · "+r.g+" gol":""}${r.a?" · "+r.a+" asist":""}${NOTE.perf[r.pk]?` <span class="pfc p${r.pk}">${NOTE.perf[r.pk][1]}</span>`:""}`:"Maça gelmedi";
@@ -1929,14 +1960,31 @@ function sheetMe(){
     <div class="row">${S.me?`<button class="btn sm ghost" data-act="pickMe" data-id="">Seçimi kaldır</button>`:""}<button class="btn sm" data-act="close">Kapat</button></div>
     `;
 }
+function rtHist(s){const h=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.gx!=null);if(!h.length)return"";
+  const arr=[s.baseX??s.base,...h.map(x=>x.gx)];const lab=["Başl.",...h.map(x=>fmtShort(x.m.date))];
+  const W=260,H=86,pad=16,mn=Math.min(...arr)-.4,mx=Math.max(...arr)+.4;const X=i=>arr.length<2?W/2:pad+i*(W-2*pad)/(arr.length-1),Y=v=>10+(mx-v)/(mx-mn)*(H-36);
+  const d=arr.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(" ");const dO=flo(arr[arr.length-1])-flo(arr[0]);const dx=arr[arr.length-1]-arr[0];const c=dx>.05?"var(--ok)":dx<-.05?"var(--bad)":"var(--acc)";
+  return `<div class="rth"><div class="rthh"><span class="eyebrow">Reyting geçmişi</span><b class="num">${flo(arr[0])} → ${flo(arr[arr.length-1])}${dO?` <small style="color:${c}">${dO>0?"▲":"▼"}${Math.abs(dO)}</small>`:""}</b></div>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Reyting geçmişi: başlangıç ${flo(arr[0])}, şimdi ${flo(arr[arr.length-1])}"><line x1="${pad}" x2="${W-pad}" y1="${Y(arr[0]).toFixed(1)}" y2="${Y(arr[0]).toFixed(1)}" stroke="var(--line2)" stroke-dasharray="3 4"/>
+    <path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+    ${arr.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${i===arr.length-1?4.5:3}" fill="${i===arr.length-1?c:"var(--bg2)"}" stroke="${c}" stroke-width="2"/>`).join("")}
+    ${arr.length<=7?lab.map((l,i)=>`<text x="${X(i).toFixed(1)}" y="${H-4}" text-anchor="${i===0&&arr.length>1?"start":i===arr.length-1&&arr.length>1?"end":"middle"}" class="rtl">${esc(l)}</text>`).join(""):""}</svg></div>`}
+function profStats(p,s){const g=s.games||0,W=s.W||0,D=s.D||0,L=s.L||0;const cap=fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id).length;const dO=(s.ovr||0)-(s.base||0);
+  const seg=(n,c,l)=>n?`<i class="${c}" style="flex:${n}" title="${l} ${n}"></i>`:"";
+  return `<div class="pst">
+    <div class="psh"><div><span>Reyting</span><b class="num">${s.ovr||"–"}</b><small>${dO?`<em class="${dO>0?"up":"dn"}">${dO>0?"▲":"▼"}${Math.abs(dO)}</em> · başl. ${s.base}`:"başlangıç "+(s.base??"–")}</small></div>
+      <div><span>Ort. not</span><b class="num ${s.avgPts!=null?noteCls(s.avgPts):""}">${fN(s.avgPts)}</b><small>${s.bestM?"en iyi "+fN(s.bestM.pts):"henüz yok"}</small></div>
+      <div><span>Maç</span><b class="num">${g}</b><small>${s.att!=null?"devam %"+Math.round(s.att*100):"–"}</small></div></div>
+    ${g?`<div class="pwl2"><div class="pwlh"><span><b class="w">${W}</b> G · <b>${D}</b> B · <b class="l">${L}</b> M</span><span class="muted">kazanma %${Math.round(W/g*100)}</span></div><div class="pbar">${seg(W,"w","Galibiyet")}${seg(D,"d","Beraberlik")}${seg(L,"l","Mağlubiyet")}</div></div>`:""}
+    <div class="pmini">${[["⚽","Gol",s.goals||0],["👟","Asist",s.ast||0],["★","Maçın Adamı",s.motm||0],["©","Kaptanlık",cap]].map(([i,l,v])=>`<div><i>${i}</i><b class="num">${v}</b><span>${l}</span></div>`).join("")}</div></div>`}
 function sheetPlayer(){
   const p=P(S.sheet.id);if(!p)return"";const s=S.stats[p.id]||{};const st=stOf(p);const canSt=S.admin||p.id===S.me;
   const sf=S.f.st||(S.f.st={type:st,until:p.status?.until||"",note:p.status?.note||""});
   let h=`<div class="ch"><div><div class="eyebrow">${eposOf(p)} · ${EPOS[eposOf(p)][1]}${altOf(p)?" · Alternatif: "+altOf(p):""}</div><h2 style="font-size:1.9rem">${esc(p.name)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
-    <div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${spark(sparkData(s))}</div>
+    <div class="prof"><div style="display:grid;gap:10px;justify-items:center">${card(p,true)}${rtHist(s)}</div>
     <div style="display:grid;gap:12px;min-width:0">
       <div class="row">${st==="hazir"?'<span class="chip ok"><span class="dot"></span>Hazır</span>':stChip(p)}${s.streak?`<span class="chip ${s.streak.hot?"warn":"info"}">${s.streak.hot?"🔥":"❄️"} ${esc(s.streak.t)}</span>`:""}${p.status?.note?`<span class="muted small">${esc(p.status.note)}</span>`:""}<button class="btn sm" data-act="cmpOpen" data-id="${esc(p.id)}">${ICON.scale} Karşılaştır</button></div>
-      <div class="kv"><div><span>Reyting</span><b>${s.ovr}</b></div><div><span>Başlangıç</span><b>${s.base}</b></div><div><span>Maç</span><b>${s.games||0}</b></div><div><span>Gol</span><b>${s.goals||0}</b></div><div><span>Asist</span><b>${s.ast||0}</b></div><div><span>Ort. not</span><b>${fN(s.avgPts)}</b></div><div><span>Devam</span><b>${s.att!=null?"%"+Math.round(s.att*100):"–"}</b></div><div><span>Galibiyet</span><b class="v8">${s.W||0}</b></div><div><span>Beraberlik</span><b>${s.D||0}</b></div><div><span>Mağlubiyet</span><b style="color:var(--bad)">${s.L||0}</b></div><div><span>Kazanma</span><b>${s.games?"%"+Math.round((s.W||0)/s.games*100):"–"}</b></div><div><span>Maçın Adamı</span><b>${s.motm||0}</b></div><div><span>Kaptanlık</span><b>${fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id).length}</b></div></div>
+      ${profStats(p,s)}
     </div></div>
     ${attrDetail(p)}
     <div><h3>Son maçlar</h3><div class="hist">${(s.hist||[]).slice(-8).reverse().map(x=>{
@@ -2100,7 +2148,7 @@ document.addEventListener("click",async e=>{
     case"pickMe":S.me=id||"";if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
     case"close":case"closeBg":S.sheet=null;render(true);break;
     case"filter":S.filter=el.dataset.v;render(true);break;
-    case"cmpOpen":S.sheet={type:"cmp",a:id||"",b:""};render(true);break;
+    case"cmpOpen":S.sheet={type:"cmp",a:id||S.me||"",b:id&&S.me&&id!==S.me?S.me:""};render(true);break;
     case"cmpPair":S.sheet={type:"cmp",a:el.dataset.a,b:el.dataset.b};render(true);break;
     case"prS":{const k="pr_"+el.dataset.m;const d=S.f[k];if(!d)break;d[el.dataset.side]=clamp(d[el.dataset.side]+(+el.dataset.d),0,40);render(true);break}
     case"predict":{const d=S.f["pr_"+id];if(!d||!S.me)break;const r=await act("predict",{p_match:id,p_player:S.me,p_a:d.a,p_b:d.b},"Tahminin kaydedildi");if(r)S.f["pr_"+id]=null;break}
