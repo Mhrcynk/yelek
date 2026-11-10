@@ -1206,6 +1206,42 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
 .mehd{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:20px;background:var(--glass);border:1px solid var(--gline)}
 .mehd .av{width:44px;height:44px;flex:none}
 .mehd>div{flex:1;min-width:0;display:grid;gap:2px}.mehd b{font-size:1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mehd span{font-size:.78rem;color:var(--muted)}
+
+/* ===== Akışkan arayüz: yüzen ada alt bar, kayan gösterge, sayfa geçişleri ===== */
+:root{--spring:cubic-bezier(.34,1.45,.5,1);--ease:cubic-bezier(.2,.8,.2,1)}
+body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
+.navfade{position:fixed;left:0;right:0;bottom:0;height:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px);z-index:24;pointer-events:none;background:linear-gradient(180deg,rgba(6,8,13,0),rgba(6,8,13,.92) 45%,#06080D)}
+.nav{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto;padding:5px;border-radius:28px;border:1px solid rgba(255,255,255,.1);background:#141823;box-shadow:0 16px 40px rgba(0,0,0,.7),0 0 0 1px rgba(0,0,0,.4);overflow:hidden}
+.nav .in{position:relative;z-index:1;height:58px;padding:0;gap:2px}
+.nav button,.nav button.ctr{position:relative;height:100%;border-radius:22px;padding:0;justify-content:center;gap:3px;color:rgba(255,255,255,.58);font-size:.6rem;letter-spacing:.03em;transition:color .35s var(--ease)}
+.nav button .ic,.nav button.ctr .ic{position:static;transform:none;width:auto;height:auto;background:none!important;box-shadow:none!important;border-radius:0;color:inherit;transition:transform .45s var(--spring)}
+.nav button.ctr .ic svg,.nav svg{width:22px;height:22px}
+.nav button[aria-current="page"],.nav button.ctr[aria-current="page"]{color:#06080D!important}
+.nav button[aria-current="page"] .ic{transform:translateY(-1px) scale(1.08);color:inherit!important}
+.nav .tl{font-size:.58rem;letter-spacing:.02em;white-space:nowrap}
+.nav button:active .ic{transform:scale(.88)}
+.nind{position:absolute;left:0;top:5px;bottom:5px;width:0;border-radius:22px;background:#fff;box-shadow:0 6px 20px rgba(255,255,255,.18);opacity:0;z-index:0;transition:transform .5s var(--spring),width .5s var(--spring),opacity .2s}
+.nav .tl{line-height:1}
+/* dokunma geri bildirimi */
+.btn,.chips button,.seg3 button,.vtog button,.lgr,.lrow,.kdr,.pt,.mrow,.grow,button.card{transition:transform .25s var(--spring),background-color .25s,color .25s,border-color .25s,box-shadow .25s}
+.btn:active,.chips button:active,.seg3 button:active,.vtog button:active,button.card:active{transform:scale(.96)}
+.lgr:active,.lrow:active,.kdr:active,.grow:active{transform:scale(.985)}
+/* sayfa geçişi: içerik yönüne göre kayarak, kartlar sırayla gelir */
+@media (prefers-reduced-motion:no-preference){
+  #view.pg-r>*{animation:pgR .5s var(--ease) both}
+  #view.pg-l>*{animation:pgL .5s var(--ease) both}
+  #view.pg-r>*:nth-child(2),#view.pg-l>*:nth-child(2){animation-delay:.04s}
+  #view.pg-r>*:nth-child(3),#view.pg-l>*:nth-child(3){animation-delay:.08s}
+  #view.pg-r>*:nth-child(4),#view.pg-l>*:nth-child(4){animation-delay:.12s}
+  #view.pg-r>*:nth-child(n+5),#view.pg-l>*:nth-child(n+5){animation-delay:.16s}
+  .sheet{animation:up .45s var(--spring)}
+  .toast{animation:tIn .4s var(--spring)}
+  .kdr .kdc{transition:background .25s,transform .35s var(--spring)}.kdr.on .kdc{animation:pk .35s var(--spring)}
+}
+@keyframes pgR{from{opacity:0;transform:translateX(22px)}}
+@keyframes pgL{from{opacity:0;transform:translateX(-22px)}}
+@keyframes tIn{from{opacity:0;transform:translate(-50%,16px) scale(.96)}}
+@keyframes pk{0%{transform:scale(.7)}100%{transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -1223,7 +1259,7 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 24px)}
   <section class="card"><div class="empty"><h3>Saha hazırlanıyor</h3><p>Kadro ve maçlar yükleniyor.</p></div></section>
 </main>
 
-<nav class="nav" aria-label="Ana menü"><div class="in" id="navIn"></div></nav>
+<div class="navfade" aria-hidden="true"></div><nav class="nav" aria-label="Ana menü"><span class="nind" id="nind" aria-hidden="true"></span><div class="in" id="navIn"></div></nav>
 <div id="modal"></div>
 <div id="toast" class="toast" hidden></div>
 
@@ -1597,6 +1633,15 @@ const A=(fn,args,ok)=>act(fn,{p_pin:S.pin,...args},ok);
 /* ================= Çizim ================= */
 function isEditing(){const a=document.activeElement;if(!a||a===document.body)return false;if(!(a.closest("#view")||a.closest("#modal")))return false;
   return a.tagName==="TEXTAREA"||(a.tagName==="INPUT"&&!["button","checkbox","radio","range"].includes(a.type))}
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+// alt bardaki seçili sekme göstergesi: yeni sekmeye kayarak geçer
+function navInd(){const ind=$("#nind"),nav=ind&&ind.parentElement;if(!ind)return;const b=nav.querySelector('button[aria-current="page"]');
+  if(!b){ind.style.opacity=0;return}const nr=nav.getBoundingClientRect(),br=b.getBoundingClientRect();
+  if(!br.width){requestAnimationFrame(navInd);return}
+  const first=!ind.dataset.on;if(first)ind.style.transition="none";
+  ind.style.width=br.width+"px";ind.style.transform=`translateX(${br.left-nr.left}px)`;ind.style.opacity=1;
+  if(first){ind.dataset.on=1;void ind.offsetWidth;ind.style.transition=""}}
+addEventListener("resize",()=>navInd());
 function render(force){
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -1607,11 +1652,14 @@ function render(force){
   const me=P(S.me);const mb=$("#meBtn");
   if(me){mb.className="meBtn";mb.innerHTML=`${avatar(me,"sm")}<span>${esc(firstName(me.name))}</span>`;mb.setAttribute("aria-label","Ben: "+me.name+". Değiştir")}
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
-  $("#navIn").innerHTML=TABS.map(([k,l,ic])=>`<button data-tab="${k}"${k==="mac"?' class="ctr"':""}${S.tab===k||(k==="kartlar"&&S.tab==="sezon")?' aria-current="page"':""}><span class="ic">${ic==="lig"?LIG_SVG:ICON[ic]}</span>${l}</button>`).join("");
+  {const ni=$("#navIn");if(!ni.firstChild)ni.innerHTML=TABS.map(([k,l,ic])=>`<button data-tab="${k}"><span class="ic">${ic==="lig"?LIG_SVG:ICON[ic]}</span><span class="tl">${l}</span></button>`).join("");
+    const cur=S.tab==="sezon"?"kartlar":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
   if(!S.loaded&&!S.err)h+=`<section class="card"><div class="empty"><h3>Yükleniyor</h3></div></section>`;
   else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
-  keepOpen($("#view"),()=>{$("#view").innerHTML=h});
+  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
+  keepOpen(v,()=>{v.innerHTML=h});
+  if(chg&&!RM){v.classList.remove("pg-r","pg-l");void v.offsetWidth;v.classList.add("pg-"+dir);clearTimeout(S._pgT);S._pgT=setTimeout(()=>v.classList.remove("pg-r","pg-l"),700)}
   renderSheet();wakeSync();
 }
 // yeniden çizimde açık <details> bölümlerini koru
