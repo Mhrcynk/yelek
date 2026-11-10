@@ -1228,12 +1228,6 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
 .lgr:active,.lrow:active,.kdr:active,.grow:active{transform:scale(.985)}
 /* sayfa geçişi: içerik yönüne göre kayarak, kartlar sırayla gelir */
 @media (prefers-reduced-motion:no-preference){
-  #view.pg-r>*{animation:pgR .5s var(--ease) both}
-  #view.pg-l>*{animation:pgL .5s var(--ease) both}
-  #view.pg-r>*:nth-child(2),#view.pg-l>*:nth-child(2){animation-delay:.04s}
-  #view.pg-r>*:nth-child(3),#view.pg-l>*:nth-child(3){animation-delay:.08s}
-  #view.pg-r>*:nth-child(4),#view.pg-l>*:nth-child(4){animation-delay:.12s}
-  #view.pg-r>*:nth-child(n+5),#view.pg-l>*:nth-child(n+5){animation-delay:.16s}
   .sheet{animation:up .45s var(--spring)}
   .toast{animation:tIn .4s var(--spring)}
   .kdr .kdc{transition:background .25s,transform .35s var(--spring)}.kdr.on .kdc{animation:pk .35s var(--spring)}
@@ -1659,7 +1653,8 @@ function render(force){
   else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});
-  if(chg&&!RM){v.classList.remove("pg-r","pg-l");void v.offsetWidth;v.classList.add("pg-"+dir);clearTimeout(S._pgT);S._pgT=setTimeout(()=>v.classList.remove("pg-r","pg-l"),700)}
+  if(chg&&!RM&&v.animate){if(S._pgA)S._pgA.cancel();const dx=dir==="r"?14:-14;
+    S._pgA=v.animate([{opacity:0,transform:`translate3d(${dx}px,0,0)`},{opacity:1,transform:"translate3d(0,0,0)"}],{duration:260,easing:"cubic-bezier(.22,.9,.3,1)"});S._pgA.onfinish=()=>{S._pgA=null}}
   renderSheet();wakeSync();
 }
 // yeniden çizimde açık <details> bölümlerini koru
@@ -2605,10 +2600,10 @@ function viewAyarlar(){
 
 /* ================= Olaylar ================= */
 document.addEventListener("click",async e=>{
-  const tb=e.target.closest(".nav button[data-tab]");if(tb){S.tab=tb.dataset.tab;S.view=null;LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab);render(true);window.scrollTo(0,0);return}
+  const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}window.scrollTo(0,0);S.tab=tb.dataset.tab;S.view=null;LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab);render(true);return}
   const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;const id=el.dataset.id;const t=S.teams;
   switch(a){
-    case"tab":S.tab=el.dataset.tab;S.view=null;render(true);window.scrollTo(0,0);break;
+    case"tab":window.scrollTo(0,0);S.tab=el.dataset.tab;S.view=null;render(true);break;
     case"open":S.sheet={type:"player",id};S.f.st=null;S.f.ed=null;S.f.delP=null;render(true);break;
     case"meSheet":if(S.me&&P(S.me)&&S.tab!=="ben"&&el.id==="meBtn"){S.tab="ben";S.view=null;render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":S.f[el.dataset.k]=!S.f[el.dataset.k];render(true);break;
