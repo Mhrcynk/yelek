@@ -1236,6 +1236,24 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
 @keyframes pgL{from{opacity:0;transform:translateX(-22px)}}
 @keyframes tIn{from{opacity:0;transform:translate(-50%,16px) scale(.96)}}
 @keyframes pk{0%{transform:scale(.7)}100%{transform:scale(1)}}
+
+/* View Transitions: sadece sayfa içeriği hareket eder, üst bar ve alt bar sabit kalır */
+#view{view-transition-name:page}
+.top{view-transition-name:top}
+.nav{view-transition-name:nav}
+.navfade{view-transition-name:navfade}
+::view-transition-old(root),::view-transition-new(root),::view-transition-old(top),::view-transition-new(top),::view-transition-old(navfade),::view-transition-new(navfade){animation:none}
+::view-transition-old(nav){display:none}::view-transition-new(nav){animation:none}
+::view-transition-group(page){animation:none}
+::view-transition-image-pair(page){isolation:auto}
+::view-transition-old(page){animation:vtOut .3s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(page){animation:vtIn .42s cubic-bezier(.16,1,.3,1) both}
+html[data-pdir="l"]::view-transition-old(page){animation-name:vtOutL}
+html[data-pdir="l"]::view-transition-new(page){animation-name:vtInL}
+@keyframes vtOut{to{opacity:0;transform:translateX(-40px) scale(.985)}}
+@keyframes vtIn{from{opacity:0;transform:translateX(56px)}}
+@keyframes vtOutL{to{opacity:0;transform:translateX(40px) scale(.985)}}
+@keyframes vtInL{from{opacity:0;transform:translateX(-56px)}}
 </style>
 </head>
 <body>
@@ -1636,6 +1654,13 @@ function navInd(){const ind=$("#nind"),nav=ind&&ind.parentElement;if(!ind)return
   ind.style.width=br.width+"px";ind.style.transform=`translateX(${br.left-nr.left}px)`;ind.style.opacity=1;
   if(first){ind.dataset.on=1;void ind.offsetWidth;ind.style.transition=""}}
 addEventListener("resize",()=>navInd());
+/* sayfa değişimi: eski sayfa kayarak çekilirken yenisi aynı anda süzülür (View Transitions); boş kare yok */
+function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>TABS.findIndex(y=>y[0]===(x==="sezon"?"kartlar":x));
+  const dir=S.tab==="sezon"&&t==="kartlar"?"l":(idx(t)<0||idx(S.tab)<0)?"r":(idx(t)>=idx(S.tab)?"r":"l");
+  const run=()=>{window.scrollTo(0,0);S.tab=t;S.view=null;if(fromNav){LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab)}render(true)};
+  if(RM||!document.startViewTransition){run();return}
+  document.documentElement.dataset.pdir=dir;try{S._vt&&S._vt.skipTransition&&S._vt.skipTransition()}catch(_){}
+  S._vt=document.startViewTransition(run);S._vt.finished.finally(()=>{S._vt=null})}
 function render(force){
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -1653,8 +1678,7 @@ function render(force){
   else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});
-  if(chg&&!RM&&v.animate){if(S._pgA)S._pgA.cancel();const dx=dir==="r"?14:-14;
-    S._pgA=v.animate([{opacity:0,transform:`translate3d(${dx}px,0,0)`},{opacity:1,transform:"translate3d(0,0,0)"}],{duration:260,easing:"cubic-bezier(.22,.9,.3,1)"});S._pgA.onfinish=()=>{S._pgA=null}}
+
   renderSheet();wakeSync();
 }
 // yeniden çizimde açık <details> bölümlerini koru
@@ -2600,10 +2624,10 @@ function viewAyarlar(){
 
 /* ================= Olaylar ================= */
 document.addEventListener("click",async e=>{
-  const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}window.scrollTo(0,0);S.tab=tb.dataset.tab;S.view=null;LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab);render(true);return}
+  const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}goTab(tb.dataset.tab,true);return}
   const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;const id=el.dataset.id;const t=S.teams;
   switch(a){
-    case"tab":window.scrollTo(0,0);S.tab=el.dataset.tab;S.view=null;render(true);break;
+    case"tab":goTab(el.dataset.tab);break;
     case"open":S.sheet={type:"player",id};S.f.st=null;S.f.ed=null;S.f.delP=null;render(true);break;
     case"meSheet":if(S.me&&P(S.me)&&S.tab!=="ben"&&el.id==="meBtn"){S.tab="ben";S.view=null;render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":S.f[el.dataset.k]=!S.f[el.dataset.k];render(true);break;
