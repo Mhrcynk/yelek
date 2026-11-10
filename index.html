@@ -922,7 +922,8 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .field{background:#0F0F0F;border-radius:26px;box-shadow:none;border:1px solid rgba(255,255,255,.05)}
 .field svg.lines{opacity:.28}
 .field .pa{position:relative;width:44px;height:44px;border-radius:50%;background:#262626;display:grid;place-items:center;font:400 .95rem var(--display);color:#fff;flex:none}
-.field .pa img{width:100%;height:100%;object-fit:cover;object-position:center 20%;border-radius:50%}
+.field .pi{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:grid;place-items:center;clip-path:circle(50%)}
+.field .pi img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center 20%}
 .field .tc{width:76px;gap:5px;color:#fff}
 .field .tc.a .pa,.field .tcard.a .pa{box-shadow:0 0 0 3px var(--tA)}.field .tc.b .pa,.field .tcard.b .pa{box-shadow:0 0 0 3px var(--tB)}
 .field .tc .tov{position:absolute;right:-13px;bottom:-5px;min-width:22px;height:18px;padding:0 4px;border-radius:6px;background:#fff;color:#050505;font:400 .8rem/18px var(--display);text-align:center}
@@ -1635,7 +1636,7 @@ function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCas
   const p=P(id),o=ovrOf(id),ph=photoOf(id);
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
   const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;
-  const img=ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`;
+  const img=`<span class="pi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</span>`;
   const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
   if(mode==="both")return `<button class="tc ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}<b class="tov num">${ov}</b>${cap}${nt}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span></button>`;
   return `<button class="tcard ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><span class="trow"><b class="tov num">${ov}</b><i class="tps">${T.ep}</i></span>${nt}</button>`}
