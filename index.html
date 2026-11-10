@@ -1250,6 +1250,8 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 44px)}
 ::view-transition-new(page){animation:vtFi .16s linear both}
 @keyframes vtFo{to{opacity:0}}
 @keyframes vtFi{from{opacity:0}}
+
+.board .bv{display:grid;justify-items:end;line-height:1.05}.board .bv small{font-size:.62rem;font-weight:700;color:var(--dim)}.board .bv b small{font:600 .7rem Inter,sans-serif;color:var(--dim);margin-left:4px}
 </style>
 </head>
 <body>
@@ -2521,8 +2523,12 @@ function viewSezon(){
   const yrStart=new Date(yr,0,1).getTime();
   for(const p of S.players){const s=S.stats[p.id];if(!s)continue;const before=(s.hist||[]).filter(x=>matchTs(x.m)<yrStart);ys[p.id].dOvr=s.ovr-(before.length?before[before.length-1].ovr:s.base)}
   const minG=Math.min(5,Math.max(1,Math.ceil(F.length/2)));
-  const board=(t,val,fmt,filt,asc)=>{const l=S.players.filter(p=>filt?filt(ys[p.id]):val(ys[p.id])>0).sort((a,b)=>asc?val(ys[a.id])-val(ys[b.id]):val(ys[b.id])-val(ys[a.id])).slice(0,5);
-    if(!l.length)return"";return `<section class="card board"><h3>${t}</h3>${l.length?`<ol>${l.map((p,i)=>`<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)}</span><b>${fmt(ys[p.id])}</b></li>`).join("")}</ol>`:'<p class="muted small">Henüz veri yok.</p>'}</section>`};
+  // sıralama: önce değer, eşitlikte daha az maçta yapan, sonra ikinci ölçüt, sonra isim. Eşit olanlar aynı sırayı paylaşır
+  const board=(t,val,fmt,filt,asc,tie)=>{const v=p=>val(ys[p.id]);const l=S.players.filter(p=>!p.guest&&(ys[p.id]?.games||0)>0&&(filt?filt(ys[p.id]):v(p)>0))
+      .sort((a,b)=>(asc?v(a)-v(b):v(b)-v(a))||(ys[a.id].games-ys[b.id].games)||(tie?tie(ys[b.id])-tie(ys[a.id]):0)||a.name.localeCompare(b.name,"tr")).slice(0,5);
+    if(!l.length)return"";let rk=0,prev=null;
+    return `<section class="card board"><h3>${t}</h3><ol>${l.map((p,i)=>{const k=v(p)+"|"+ys[p.id].games+"|"+(tie?tie(ys[p.id]):"");if(k!==prev){rk=i+1;prev=k}
+      return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${rk}</span>${esc(p.name)}</span><span class="bv"><b>${fmt(ys[p.id])}</b>${t==="Demir adamlar"?"":`<small>${ys[p.id].games} maç</small>`}</span></li>`}).join("")}</ol></section>`};
   const prevO=id=>{const st=S.stats[id];const h=st?.hist||[];return h.length>1?(h[h.length-2].gx??h[h.length-2].ovr):h.length===1?(st.baseX??st.base):genOf(id)};
   const played=p=>!p.guest&&(S.stats[p.id]?.games||0)>0;
   const rk=S.players.filter(played).sort((a,b)=>genOf(b.id)-genOf(a.id)||a.name.localeCompare(b.name,"tr"));
@@ -2532,10 +2538,10 @@ function viewSezon(){
   const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
   let h=`${oyTabs("sezon")}`;
   if(!F.length)h+=`<section class="card"><div class="empty"><h3>Sezon yeni başlıyor</h3><p>Krallık yarışı boş, ilk golü atan zirveye yerleşir.</p></div></section>`;
-  if(F.length)h+=`<div class="boards">${board("Gol krallığı",x=>x.g,x=>x.g)}${board("Asist krallığı",x=>x.a,x=>x.a)}${board("Maçın Adamı",x=>x.motm,x=>x.motm+" kez")}</div>`;
+  if(F.length)h+=`<div class="boards">${board("Gol krallığı",x=>x.g,x=>x.g,null,false,x=>x.a)}${board("Asist krallığı",x=>x.a,x=>x.a,null,false,x=>x.g)}${board("Gol + asist",x=>x.g+x.a,x=>`${x.g+x.a} <small class="muted">${x.g}G ${x.a}A</small>`,null,false,x=>x.g)}${board("Maçın Adamı",x=>x.motm,x=>x.motm+" kez",null,false,x=>x.totw)}</div>`;
   if(F.length)h+=`<button class="morebtn${S.f.sezAll?" on":""}" data-act="tog" data-k="sezAll">${S.f.sezAll?"Daha az göster ▴":"Tüm istatistikler ▾"}</button>`;
   {const ids=new Set(S.players.map(p=>p.id));const pairs=Object.entries(S.tog||{}).map(([k,o])=>({a:k.split("|")[0],b:k.split("|")[1],o})).filter(x=>ids.has(x.a)&&ids.has(x.b));
-   const best=pairs.filter(x=>x.o.n>=3).sort((x,y)=>y.o.W/y.o.n-x.o.W/x.o.n||y.o.n-x.o.n).slice(0,5);
+   const best=pairs.filter(x=>x.o.n>=3&&x.o.W>0).sort((x,y)=>y.o.W/y.o.n-x.o.W/x.o.n||y.o.n-x.o.n).slice(0,5);
    const ga=pairs.filter(x=>x.o.ga>0).sort((x,y)=>y.o.ga-x.o.ga||y.o.n-x.o.n).slice(0,5);
    const rv=Object.entries(S.vs||{}).map(([k,o])=>({a:k.split("|")[0],b:k.split("|")[1],o})).filter(x=>ids.has(x.a)&&ids.has(x.b)&&x.o.n>=3).sort((x,y)=>y.o.n-x.o.n||Math.abs((x.o.w[x.a]||0)-(x.o.w[x.b]||0))-Math.abs((y.o.w[y.a]||0)-(y.o.w[y.b]||0))).slice(0,5);
    const li=(x,val)=>`<li data-act="cmpPair" data-a="${esc(x.a)}" data-b="${esc(x.b)}"><span>${esc(shortName(nameOf(x.a)))} & ${esc(shortName(nameOf(x.b)))}</span><b>${val}</b></li>`;
@@ -2544,11 +2550,12 @@ function viewSezon(){
    const dl=Object.entries(S.duo||{}).map(([k,n])=>({a:k.split(">")[0],b:k.split(">")[1],n})).filter(x=>ids.has(x.a)&&ids.has(x.b)).sort((x,y)=>y.n-x.n).slice(0,5);
    const k2=dl.length?cardB("Gol–asist ikilileri","Pası veren → golü atan",dl.map(x=>`<li data-act="cmpPair" data-a="${esc(x.a)}" data-b="${esc(x.b)}"><span>${esc(shortName(nameOf(x.a)))} → ${esc(shortName(nameOf(x.b)))}</span><b>${x.n} gol</b></li>`).join(""))
      :cardB("Gole birlikte katkı","Aynı maçta ikisinin de gol ya da asisti olduğu maç sayısı",ga.map(x=>li(x,x.o.ga+" maç")).join(""));
-   const k3=cardB("Ezeli rakipler","En çok karşı karşıya gelenler (kazandı – berabere – kazandı)",rv.map(x=>li(x,`${x.o.w[x.a]||0}-${x.o.d}-${x.o.w[x.b]||0}`)).join(""));
-   if((k1||k2||k3)&&S.f.sezAll)h+=`<div class="boards">${k1}${k2}${k3}</div>`}
-  if(F.length&&S.f.sezAll)h+=`<div class="boards">${board("Gol + asist",x=>x.g+x.a,x=>x.g+x.a)}
-    ${board("En çok galibiyet",x=>x.W,x=>x.W+" G")}${board("Kazanma yüzdesi",x=>x.W/x.games,x=>"%"+Math.round(x.W/x.games*100),x=>x.games>=minG)}${board("Not ortalaması",x=>x.pts/x.games,x=>fN(x.pts/x.games),x=>x.games>=minG)}${board("Haftanın Takımı",x=>x.totw,x=>x.totw+" kez")}
-    ${board("Yılın yükselenleri",x=>x.dOvr||0,x=>"+"+x.dOvr)}${board("Kalede en az gol yiyen",x=>x.klC/x.klG,x=>(x.klC/x.klG).toFixed(1)+" / maç",x=>x.klG>=2,true)}${board("Tek maçta en yüksek not",x=>x.best,x=>fN(x.best))}${board("Demir adamlar",x=>x.games,x=>x.games+" maç")}${board("Fiyasko listesi",x=>x.fiy,x=>x.fiy+" kez")}</div>`;
+   const k3="";
+   var K12=[k1,k2]}
+  if(F.length&&S.f.sezAll)h+=`<div class="boards">${board("Not ortalaması",x=>x.pts/x.games,x=>fN(x.pts/x.games),x=>x.games>=minG,false,x=>x.games)}${board("Haftanın Takımı",x=>x.totw,x=>x.totw+" kez",null,false,x=>x.pts/x.games)}
+    ${board("Kazanma yüzdesi",x=>x.W/x.games,x=>"%"+Math.round(x.W/x.games*100),x=>x.games>=minG,false,x=>x.games)}${board("En çok galibiyet",x=>x.W,x=>x.W+" G",null,false,x=>x.D)}${board("Tek maçta en yüksek not",x=>x.best,x=>fN(x.best))}
+    ${board("Yılın yükselenleri",x=>x.dOvr||0,x=>"+"+x.dOvr)}${board("Kalede en az gol yiyen",x=>x.klC/x.klG,x=>fN(x.klC/x.klG)+" / maç",x=>x.klG>=2,true,x=>x.klG)}${board("Demir adamlar",x=>x.games,x=>x.games+" maç",null,false,x=>x.W)}</div>`;
+  if(K12&&(K12[0]||K12[1])&&S.f.sezAll)h+=`<div class="boards">${K12[0]}${K12[1]}</div>`;
   const wp=P(S.f.wrapP||S.me);
   if(!S.f.yOz){h+=`<button class="card pvc" data-act="tog" data-k="yOz"><span><span class="eyebrow">Yıl özeti</span><b>${wp?esc(firstName(wp.name))+" · "+yr:"Oyuncu seç"}</b></span><span class="pvx">Aç ▾</span></button>`;return h}
   h+=`<section class="card"><button class="pvc in" data-act="tog" data-k="yOz"><span><span class="eyebrow">Yıl özeti</span><b>Bir yıl, beş kart</b></span><span class="pvx">Kapat ▴</span></button><div class="ch"><div><h2>${wp?esc(firstName(wp.name))+" · "+yr:"Bir oyuncu seç"}</h2></div>
