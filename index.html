@@ -2580,7 +2580,7 @@ function viewSezon(){
    var K12=[k1,k2]}
   if(F.length&&S.f.sezAll)h+=`<div class="boards">${board("Not ortalaması",x=>x.pts/x.games,x=>fN(x.pts/x.games),x=>x.games>=minG,false,x=>x.games)}${board("Haftanın Takımı",x=>x.totw,x=>x.totw+" kez",null,false,x=>x.pts/x.games)}
     ${board("Kazanma yüzdesi",x=>x.W/x.games,x=>"%"+Math.round(x.W/x.games*100),x=>x.games>=minG,false,x=>x.games)}${board("En çok galibiyet",x=>x.W,x=>x.W+" G",null,false,x=>x.D)}${board("Tek maçta en yüksek not",x=>x.best,x=>fN(x.best))}
-    ${board("Yılın yükselenleri",x=>x.dOvr||0,x=>"+"+x.dOvr)}${board("Kalede en az gol yiyen",x=>x.klC/x.klG,x=>fN(x.klC/x.klG)+" / maç",x=>x.klG>=2,true,x=>x.klG)}${board("Demir adamlar",x=>x.games,x=>x.games+" maç",null,false,x=>x.W)}</div>`;
+    ${board("Yılın yükselenleri",x=>x.dOvr||0,x=>"+"+x.dOvr)}${board("Kalede en az gol yiyen",x=>x.klC/x.klG,x=>fN(x.klC/x.klG)+" / maç",x=>x.klG>=2,true,x=>x.klG)}${board("Demir adamlar",x=>x.games,x=>x.games+" maç",null,false,x=>x.W)}${board("Fiyasko listesi",x=>x.fiy,x=>x.fiy+" kez")}</div>`;
   if(K12&&(K12[0]||K12[1])&&S.f.sezAll)h+=`<div class="boards">${K12[0]}${K12[1]}</div>`;
   const wp=P(S.f.wrapP||S.me);
   if(!S.f.yOz){h+=`<button class="card pvc" data-act="tog" data-k="yOz"><span><span class="eyebrow">Yıl özeti</span><b>${wp?esc(firstName(wp.name))+" · "+yr:"Oyuncu seç"}</b></span><span class="pvx">Aç ▾</span></button>`;return h}
