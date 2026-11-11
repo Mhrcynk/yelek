@@ -1330,9 +1330,9 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .myr.G{background:#E3F8EE;color:#00874C}.myr.M{background:#FDE5EE;color:#C2003F}.myr.B{background:#FFF1DC;color:#B26A00}
 /* not rozetleri: PL renkleri, parlama yok */
 .nt.n8,.field .nt.n8,.prc .nt.n8{background:#00A35B!important;color:#fff!important;box-shadow:none}
-.nt.n7,.field .nt.n7,.prc .nt.n7{background:#5BBF2E!important;color:#fff!important;box-shadow:none}
+.nt.n7,.field .nt.n7,.prc .nt.n7{background:#3F9F1F!important;color:#fff!important;box-shadow:none}
 .nt.n65,.field .nt.n65,.prc .nt.n65{background:#F2B800!important;color:#37003C!important}
-.nt.n6,.field .nt.n6,.prc .nt.n6{background:#F28C00!important;color:#fff!important}
+.nt.n6,.field .nt.n6,.prc .nt.n6{background:#D96E00!important;color:#fff!important}
 .nt.n5,.field .nt.n5,.prc .nt.n5{background:#E90052!important;color:#fff!important;box-shadow:none}
 .v8{color:#00874C!important}.v7{color:#3F8F1F!important}.v6{color:#B26A00!important}.v5{color:#C2003F!important}
 .psh b.n8{color:#00874C}.psh b.n7{color:#3F8F1F}.psh b.n65{color:#A87F00}.psh b.n6{color:#B26A00}.psh b.n5{color:#C2003F}
@@ -1452,7 +1452,7 @@ h1{font-size:1.6rem}h2{font-size:1.3rem}.board h3{font-size:1.05rem}
 /* formun: not rakamı kutusuz, renk notun kendisinde */
 .fmc .nt,.fmc .nt.n8,.fmc .nt.n7,.fmc .nt.n65,.fmc .nt.n6,.fmc .nt.n5{background:none!important;box-shadow:none!important;padding:0!important;color:var(--fc)!important;font:900 1.7rem/1 var(--display)!important;text-shadow:none}
 .fmc:has(.n8){--fc:#00A35B}.fmc:has(.n7){--fc:#3F9F1F}.fmc:has(.n65){--fc:#C99700}.fmc:has(.n6){--fc:#E07B00}.fmc:has(.n5){--fc:#E90052}
-.evc4 .pfc.p1{--pc:#00A35B}.evc4 .pfc.p2{--pc:#5BBF2E}.evc4 .pfc.p3{--pc:#F2B800}.evc4 .pfc.p4{--pc:#E90052}
+.evc4 .pfc.p1{--pc:#00A35B}.evc4 .pfc.p2{--pc:#3F9F1F}.evc4 .pfc.p3{--pc:#B88A00}.evc4 .pfc.p4{--pc:#E90052}
 
 /* koyu takım isim şeridi ayırt edilsin */
 .field .tcard.a .tnm{background:#fff!important;color:#1F2430!important;box-shadow:inset 0 -3px 0 #1F2430}
@@ -1677,6 +1677,24 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 110px)!i
 .ptr i{width:18px;height:18px;border-radius:50%;border:2.5px solid #7B3FF2;border-right-color:transparent}
 .ptr.go i{border-color:#00A35B;border-right-color:transparent}
 .ptr.spin{opacity:1!important;transition:transform .2s}.ptr.spin i{animation:ptrs .7s linear infinite}@keyframes ptrs{to{transform:rotate(360deg)}}
+
+/* hikâye düğmeleri her temada okunur */
+.stgo,.stsh{background:#fff!important;color:#37003C!important}
+.stx{color:#fff!important}
+
+@media (prefers-color-scheme:dark){
+.card .card,.nrow[open] summary,.nrb{background:var(--card2)!important}
+.bh-x,.nrp span,.shic{background:var(--card3)!important;color:var(--ink)!important}
+.badge i,.capi,.fut .xi,.tok .cap,.board li:first-child .rk,.xi{background:#7B3FF2!important;color:#fff!important}
+.muted,.small.muted{color:var(--muted)}
+}
+
+.chip.warn{color:#B26A00}
+@media (prefers-color-scheme:dark){.chip.warn{color:#FFC233}.evc4 .pfc.p3{--pc:#F2C230}.evc4 .pfc.p2{--pc:#6FD14A}}
+
+.stspk strong{text-transform:none!important;letter-spacing:-.015em}
+.btn.danger,.btn.ghost.danger{color:var(--bad)!important}
+@media (prefers-color-scheme:dark){.btn.danger,.btn.ghost.danger{color:#FF5C8A!important}}
 </style>
 </head>
 <body>
@@ -2775,7 +2793,7 @@ function _resultPanel(m){
       return `<div class="msr"><div class="msl"><b class="num${x>y?" hi":""}">${F(x)}</b><span>${l}</span><b class="num${y>x?" hi":""}">${F(y)}</b></div><div class="msb"><span class="l"><i style="width:${x/t*100}%"></i></span><span class="r"><i style="width:${y/t*100}%"></i></span></div></div>`}).join("")}</div>`}
   return h+`</section>`;
 }
-function spiker(m,inf){
+function spiker(m,inf){const up=x=>"\u0001"+String(x||"")+"\u0002";const sc=t=>{let o=String(t).split(/(\u0001[^\u0002]*\u0002)/).map(q=>q.startsWith("\u0001")?q.slice(1,-1):q.toLocaleLowerCase("tr-TR")).join("");o=o.replace(/trıck/g,"trick");return o.charAt(0).toLocaleUpperCase("tr-TR")+o.slice(1)};const clr=t=>String(t).replace(/[\u0001\u0002]/g,"");
   const r=hash(m.id);const pick=arr=>arr[r%arr.length];const sa=+m.score_a||0,sb=+m.score_b||0;const stt=m.stats||{};
   const W=sa>sb?"A":sb>sa?"B":null;const Lz=W==="A"?"B":"A";const diff=Math.abs(sa-sb);
   const pl=plAll(m);
@@ -2794,7 +2812,7 @@ function spiker(m,inf){
   for(const k of["A","B"]){const gk=lineupOf(m,k)[0];const conc=k==="A"?sb:sa;if(gk){if(conc===0)body+=`${N(gk)} kalesini gole kapattı, tribünler ayakta. `;else if(conc>=8)body+=`${N(gk)} için zor bir geceydi: kalesinde ${conc} gol gördü. `}}
   if(inf.motm)body+=`Maçın Adamı ödülünü ${N(inf.motm)} aldı. `;
   if(inf.fiy)body+=`Haftanın Fiyaskosu ise ${N(inf.fiy)}; soyunma odasında bu konu daha çok konuşulur.`;
-  return `<span class="eyebrow">Spiker</span><strong>${esc(head)}</strong>${esc(body.trim())}`;
+  return `<span class="eyebrow">Spiker</span><strong>${esc(sc(head))}</strong>${esc(clr(body).trim())}`;
 }
 
 /* ================= Kimya, karşılaştırma ================= */
