@@ -1427,6 +1427,35 @@ input[type=text],input[type=password],input[type=number],input[type=date],input[
 .field .tcard.sm .tnm{height:16px;font-size:.5rem}
 .field .tcard.sm .tov{font-size:.95rem}
 .field .tcard.sm .tps{top:20px;font-size:.42rem}
+
+/* diziliş kartı düzeltmeleri: reyting sol üstte, mevki altında, foto kartın üstünden taşar */
+.field .tcard .tov,.field .tcard.sm .tov{position:absolute;z-index:2;left:6px!important;right:auto!important;top:6px!important;width:auto;min-width:0!important;height:auto!important;padding:0!important;line-height:1!important;text-align:left!important;transform:none;background:none!important;border:0!important;border-radius:0;box-shadow:none!important;color:#fff!important;font:900 1.45rem/1 var(--display)!important;letter-spacing:-.02em;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 10px rgba(0,0,0,.55)}
+.field .tcard.sm .tov{left:4px!important;top:4px!important;font-size:1rem!important}
+.field .tcard .tps{left:7px;top:30px}
+.field .tcard.sm .tps{left:5px;top:21px}
+.field .pi{width:74%;height:120%}
+.field .tcard.sm .pi{width:72%;height:118%}
+.field .pi img{object-position:center bottom}
+.field .tcard{transition:transform .2s,box-shadow .2s}
+.field .tcard .tnm{letter-spacing:.01em}
+
+.field .tcard .pa{position:absolute;left:0;right:0;top:0;bottom:22px;width:auto;height:auto;border-radius:0;background:none!important;box-shadow:none!important;display:block;overflow:visible}
+.field .tcard,.field .tcard:not(.sm){width:74px;height:96px}
+.field .tcard .tnm{height:22px;font-size:.62rem}
+.field .tcard.sm .pa{bottom:16px}
+.field.cards.single{aspect-ratio:68/112}
+
+/* PL tipografi: başlıklar büyük harf değil, kalın ve düzgün */
+h1,h2,h3,.board h3,.ch h2{text-transform:none!important;letter-spacing:-.015em}
+h1{font-size:1.6rem}h2{font-size:1.3rem}.board h3{font-size:1.05rem}
+.nav .tl,.nav button{text-transform:none!important;letter-spacing:0!important;font-size:.66rem}
+/* formun: not rakamı kutusuz, renk notun kendisinde */
+.fmc .nt,.fmc .nt.n8,.fmc .nt.n7,.fmc .nt.n65,.fmc .nt.n6,.fmc .nt.n5{background:none!important;box-shadow:none!important;padding:0!important;color:var(--fc)!important;font:900 1.7rem/1 var(--display)!important;text-shadow:none}
+.fmc:has(.n8){--fc:#00A35B}.fmc:has(.n7){--fc:#3F9F1F}.fmc:has(.n65){--fc:#C99700}.fmc:has(.n6){--fc:#E07B00}.fmc:has(.n5){--fc:#E90052}
+.evc4 .pfc.p1{--pc:#00A35B}.evc4 .pfc.p2{--pc:#5BBF2E}.evc4 .pfc.p3{--pc:#F2B800}.evc4 .pfc.p4{--pc:#E90052}
+
+/* koyu takım isim şeridi ayırt edilsin */
+.field .tcard.a .tnm{background:#fff!important;color:#1F2430!important;box-shadow:inset 0 -3px 0 #1F2430}
 </style>
 </head>
 <body>
@@ -2627,7 +2656,7 @@ function profStats(p,s){const g=s.games||0,W=s.W||0,D=s.D||0,L=s.L||0;const cap=
   return `<div class="pst">
     <div class="psh"><div><span>Reyting</span><b class="num">${s.ovr||"–"}</b><small>${dO?`<em class="${dO>0?"up":"dn"}">${dO>0?"▲":"▼"}${Math.abs(dO)}</em> · başl. ${s.base}`:"başlangıç "+(s.base??"–")}</small></div>
       <div><span>Ort. not</span><b class="num ${s.avgPts!=null?noteCls(s.avgPts):""}">${fN(s.avgPts)}</b><small>${s.bestM?"en iyi "+fN(s.bestM.pts):"henüz yok"}</small></div>
-      <div><span>Maç</span><b class="num">${g}</b><small>${s.att!=null?"devam %"+Math.round(s.att*100):"–"}</small></div></div>
+      <div><span>Maç</span><b class="num">${g}</b><small>${s.att!=null?"%"+Math.round(s.att*100)+" geldi":"–"}</small></div></div>
     ${g?`<div class="pwl2"><div class="pwlh"><span><b class="w">${W}</b> G · <b>${D}</b> B · <b class="l">${L}</b> M</span><span class="muted">kazanma %${Math.round(W/g*100)}</span></div><div class="pbar">${seg(W,"w","Galibiyet")}${seg(D,"d","Beraberlik")}${seg(L,"l","Mağlubiyet")}</div></div>`:""}
     <div class="pmini">${[["⚽","Gol",s.goals||0],["👟","Asist",s.ast||0],["★","Maçın Adamı",s.motm||0],["©","Kaptanlık",cap]].map(([i,l,v])=>`<div><i>${i}</i><b class="num">${v}</b><span>${l}</span></div>`).join("")}</div></div>`}
 function sheetPlayer(){
