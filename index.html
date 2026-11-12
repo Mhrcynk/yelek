@@ -1626,7 +1626,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261112181546";
+const APP_V="261112181644";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2324,7 +2324,7 @@ function hero(om){
   const actH=om.state==="kayit"?`<p class="bh-note">Kadrolar henüz açıklanmadı.</p>`:"";
   return `<section class="sbd"><div class="sbt"><span>${dw?dw+" · ":""}${GUNLER[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()]}${fld?" · "+esc(fld):""}</span>${cdClock(om)}</div>
     <div class="sbm"><div class="sbn">${crest(TEAM.A,"A",34)}<b style="font-size:${sbFs(TEAM.A)}">${esc(TEAM.A)}</b></div><b class="sbtm num">${esc(om.time||"")}</b><div class="sbn r">${crest(TEAM.B,"B",34)}<b style="font-size:${sbFs(TEAM.B)}">${esc(TEAM.B)}</b></div></div>
-    ${has?`<div class="sbp"><div class="sbbar" role="img" aria-label="Kazanma ihtimali ${esc(TEAM.A)} yüzde ${pA}, ${esc(TEAM.B)} yüzde ${100-pA}"><i style="width:${pA}%"></i><i></i></div><div class="sbl"><span>Güç ${avA} · %${pA}</span><span>%${100-pA} · Güç ${avB}</span></div></div>`:""}${actH}</section>${meRow}<div class="qkslot"></div>`;
+    ${has?`<div class="sbp"><div class="sbbar" role="img" aria-label="Kazanma ihtimali ${esc(TEAM.A)} yüzde ${pA}, ${esc(TEAM.B)} yüzde ${100-pA}"><i style="width:${pA}%"></i><i></i></div><div class="sbl"><span>Güç ${avA} · %${pA}</span><span>%${100-pA} · Güç ${avB}</span></div></div>`:""}${actH}</section>`;
 }
 function pairList(m,notes){const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
   const rows=k=>{const PS=k==="A"?pa:pb,L=k==="A"?la:lb;return L.map((id,i)=>({id,ep:i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]),y:i===0?-99:PS[i][1]})).filter(x=>x.id).sort((a,b)=>b.y-a.y)};
