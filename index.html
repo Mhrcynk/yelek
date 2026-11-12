@@ -1572,6 +1572,7 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .tsp.t1,.tsp.t2,.tsp.t3,.tsp.t4{background:linear-gradient(160deg,var(--c1),var(--c2))!important;color:var(--tx)!important}
 .tsp.t1{--c1:#00FF85;--c2:#9C7BFF;--tx:#14001A;background:linear-gradient(135deg,#00FF85,#5FD8F5 35%,#9C7BFF 65%,#FF7AB0)!important;background-size:200% 200%!important;animation:holo 6s ease-in-out infinite alternate}
 .tsp.t2{--c1:#8A4DFF;--c2:#4A16C9;--tx:#fff}.tsp.t3{--c1:#7FA8FF;--c2:#3D63E0;--tx:#fff}.tsp.t4{--c1:#EDE6F7;--c2:#CFC2EC;--tx:#37003C}
+.stpg{position:relative;z-index:3;pointer-events:none}.stpg button,.stpg a,.stpg [data-act]{pointer-events:auto}
 </style>
 </head>
 <body>
@@ -3366,7 +3367,7 @@ document.addEventListener("change",e=>{const t=e.target;
 document.addEventListener("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.dataset.actToggle)S.f[d.dataset.actToggle]=d.open;if(d.dataset.actToggleTeam&&S.teams)S.teams[d.dataset.actToggleTeam]=d.open},true);
 document.addEventListener("focusout",()=>{setTimeout(()=>{if(S.pending&&!isEditing())render()},0)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=null;render(true)}});
-const APP_V="261112180816";
+const APP_V="261112181101";
 // yeni sürüm varsa (ana ekran uygulaması dahil) sayfayı taze yükle
 async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
   const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
