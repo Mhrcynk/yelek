@@ -3076,17 +3076,6 @@ function viewSezon(){
     ${board("Galibiyet yüzdesi",x=>x.aW,x=>"%"+Math.round(x.aW*100),x=>x.games>=minG,false,x=>x.games,y=>"gerçek %"+Math.round(y.W/y.games*100)+" · "+y.W+"/"+y.games+" maç")}${board("Galibiyet",x=>x.W,x=>x.W,null,false,x=>x.D)}${board("Sezonun en iyi tek maçı",x=>x.best,x=>fN(x.best))}
     ${board(yr==="all"?"En çok yükselenler":"Sezonun yükselenleri",x=>x.dOvr||0,x=>"+"+x.dOvr)}${board("Kalede maç başı yenen gol",x=>x.aK,x=>fN(x.aK),x=>x.klG>=minK,true,x=>x.klG,y=>"gerçek "+fN(y.klC/y.klG)+" · "+y.klG+" maç kalede")}${board("En çok maç",x=>x.games,x=>x.games,null,false,x=>x.W)}${board("Fiyasko",x=>x.fiy,x=>x.fiy)}</div>`;
   if(K12&&(K12[0]||K12[1])&&S.f.sezAll)h+=`<div class="boards">${K12[0]}${K12[1]}</div>`;
-  const wp=P(S.f.wrapP||S.me);
-  if(!S.f.yOz){h+=`<button class="card pvc" data-act="tog" data-k="yOz"><span><span class="eyebrow">Sezon özeti</span><b>${wp?esc(firstName(wp.name))+" · "+(yr==="all"?"Tüm zamanlar":"Sezon "+yr):"Oyuncu seç"}</b></span><span class="pvx">Aç ▾</span></button>`;return h}
-  h+=`<section class="card"><button class="pvc in" data-act="tog" data-k="yOz"><span><span class="eyebrow">Sezon özeti</span><b>Bir sezon, beş kart</b></span><span class="pvx">Kapat ▴</span></button><div class="ch"><div><h2>${wp?esc(firstName(wp.name))+" · "+(yr==="all"?"Tüm zamanlar":"Sezon "+yr):"Bir oyuncu seç"}</h2></div>
-    <select id="wrapSel" data-bind="wrapP" aria-label="Oyuncu" style="width:auto"><option value="">Seç</option>${S.players.filter(played).map(p=>`<option value="${esc(p.id)}"${wp&&wp.id===p.id?" selected":""}>${esc(p.name)}</option>`).join("")}</select></div>`;
-  if(wp){const y=ys[wp.id]||{};const s=S.stats[wp.id]||{};const bm=s.bestM&&(yr==="all"||yrOf(S.matches.find(m=>m.id===s.bestM.id)||s.bestM)===yr)?s.bestM:null;const diff=(s.ovr||0)-(s.base||0);
-    h+=`<div class="wrapped"><div class="slide"><span class="lb">Bu sezon sahaya çıktın</span><span class="big num">${y.games||0}</span><span>maç. ${s.best>=4?"En uzun serin "+s.best+" maç üst üste.":"Gelecek sezon daha sık bekliyoruz."}</span></div>
-      <div class="slide"><span class="lb">Gol + asist</span><span class="big num">${(y.g||0)+(y.a||0)}</span><span>${y.g||0} gol, ${y.a||0} asist.</span></div>
-      <div class="slide"><span class="lb">En iyi maçın</span><span class="big num">${bm?fN(bm.pts):"–"}</span><span>${bm?fmtDate(bm.date)+" maçında aldığın not.":"Henüz notlu maç yok."}</span></div>
-      <div class="slide"><span class="lb">Kartın şimdi</span><span class="big num">${s.ovr||"–"}</span><span>Başlangıçtan ${diff>0?"+"+diff:diff} puan.${y.motm?" "+y.motm+" kez Maçın Adamı seçildin.":""}</span></div>
-      <div class="slide"><span class="lb">Rozetler</span><span class="big num">${(s.badges||[]).filter(b=>!b.shame).length}</span><span>${(s.badges||[]).map(b=>esc(b.t)).join(", ")||"Daha rozet yok."}</span></div></div>`}
-  h+=`</section>`;
   return h;
 }
 
