@@ -2140,6 +2140,7 @@ function qkRender(){const old=$("#qk");if(old)old.innerHTML="";const el=$("#view
   addEventListener("touchend",async()=>{if(y0==null)return;y0=null;const el=ptr();
     if(d>=MAX&&el){busy=true;B.classList.add("ptrb");set(MAX);el.classList.add("loading");const t0=Date.now();
       try{await load(true)}catch(_){}
+      if(await newVer())return;
       await new Promise(r=>setTimeout(r,Math.max(0,900-(Date.now()-t0))));
       el.classList.remove("loading");el.classList.add("done");await new Promise(r=>setTimeout(r,800));back(420);busy=false}
     else if(d)back(300)})})();
@@ -3365,7 +3366,12 @@ document.addEventListener("change",e=>{const t=e.target;
 document.addEventListener("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.dataset.actToggle)S.f[d.dataset.actToggle]=d.open;if(d.dataset.actToggleTeam&&S.teams)S.teams[d.dataset.actToggleTeam]=d.open},true);
 document.addEventListener("focusout",()=>{setTimeout(()=>{if(S.pending&&!isEditing())render()},0)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=null;render(true)}});
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){load();wakeSync()}});
+const APP_V="261112180816";
+// yeni sürüm varsa (ana ekran uygulaması dahil) sayfayı taze yükle
+async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
+  const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
+  if(v&&v!=="dev"&&APP_V!=="dev"&&v!==APP_V){location.replace(location.pathname+"?v="+v+location.hash);return true}}catch(_){}return false}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){load();wakeSync()}})}});
 setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)load()},25000);
 
 /* Sahada sürükle-bırak */
