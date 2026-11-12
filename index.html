@@ -1626,7 +1626,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261112181644";
+const APP_V="261112182419";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2214,8 +2214,16 @@ const teamIni=(n,o)=>{const w=String(n||"").trim().split(/\s+/).filter(Boolean);
   if(o){const v=String(o).trim().split(/\s+/).filter(Boolean);const oi=(v.length>1?v[0][0]+v[1][0]:(v[0]||"?").slice(0,2));
     if(oi.toLocaleUpperCase("tr")===ini.toLocaleUpperCase("tr")&&n!==o){const j=w.findIndex((x,i)=>x!==v[i]);const ww=w[j<0?0:j]||"";let q=1;while(q<ww.length&&(v[j<0?0:j]||"").slice(0,q+1)===ww.slice(0,q+1))q++;ini=ww[0]+(ww[q]||ww[1]||"")}}
   return ini.toLocaleUpperCase("tr")};
-function crest(name,k,sz,other){sz=sz||32;if(other===undefined&&typeof TEAM!=="undefined")other=name===TEAM.A?TEAM.B:name===TEAM.B?TEAM.A:"";const ini=teamIni(name,other);
-  return `<svg class="crest" viewBox="0 0 40 46" width="${sz}" height="${Math.round(sz*1.15)}" aria-hidden="true"><path d="M20 1.5l17 5.2v14.6c0 11.4-7.4 19.2-17 23.9C10.4 40.5 3 32.7 3 21.3V6.7z" style="fill:var(--t${k==="A"?"A":"B"})"/><path d="M20 6l13 4v11.3c0 8.7-5.6 14.8-13 18.6C12.6 36.1 7 30 7 21.3V10z" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.3"/><text x="20" y="27.5" text-anchor="middle" font-family="Inter Tight,Inter,sans-serif" font-weight="900" font-size="${ini.length>1?13:16}" fill="#fff">${esc(ini)}</text></svg>`}
+let _bid=0;
+function ballSvg(cx,cy,r,col){const id="yb"+(_bid++);const f=v=>v.toFixed(2);
+  const pent=(x,y,rr,a0)=>[...Array(5)].map((_,i)=>{const a=a0+i*2*Math.PI/5;return f(x+rr*Math.cos(a))+","+f(y+rr*Math.sin(a))}).join(" ");
+  const ri=r*.32,ro=r*.3;let out="",seam="";
+  for(let i=0;i<5;i++){const a=-Math.PI/2+i*2*Math.PI/5;
+    seam+=`M${f(cx+ri*Math.cos(a))} ${f(cy+ri*Math.sin(a))}L${f(cx+r*.68*Math.cos(a))} ${f(cy+r*.68*Math.sin(a))}`;
+    out+=`<polygon points="${pent(cx+(r*.68+ro)*Math.cos(a),cy+(r*.68+ro)*Math.sin(a),ro,a+Math.PI)}" style="fill:${col}"/>`}
+  return `<clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff"/><g clip-path="url(#${id})">${out}</g><polygon points="${pent(cx,cy,ri,-Math.PI/2)}" style="fill:${col}"/><path d="${seam}" style="stroke:${col}" stroke-width="${f(r*.08)}" fill="none"/>`}
+function crest(name,k,sz,other){sz=sz||32;const col=`var(--t${k==="A"?"A":"B"})`;
+  return `<svg class="crest" viewBox="0 0 40 46" width="${sz}" height="${Math.round(sz*1.15)}" aria-hidden="true"><path d="M20 1.5l17 5.2v14.6c0 11.4-7.4 19.2-17 23.9C10.4 40.5 3 32.7 3 21.3V6.7z" style="fill:${col}"/><path d="M20 6l13 4v11.3c0 8.7-5.6 14.8-13 18.6C12.6 36.1 7 30 7 21.3V10z" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.3"/>${ballSvg(20,22.5,8.6,col)}</svg>`}
 const lastSide=id=>{const F=fin();for(let i=F.length-1;i>=0;i--){const sd=playSide(F[i],id);if(sd)return sd}return""};
 const photoOf=id=>{const d=S.photos[id];return d&&/^data:image\//.test(d)?d:""};
 function avatar(p,size){const ph=photoOf(p.id);return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
