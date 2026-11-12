@@ -1695,6 +1695,10 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 110px)!i
 .stspk strong{text-transform:none!important;letter-spacing:-.015em}
 .btn.danger,.btn.ghost.danger{color:var(--bad)!important}
 @media (prefers-color-scheme:dark){.btn.danger,.btn.ghost.danger{color:#FF5C8A!important}}
+
+/* kaptan rozeti: mevkinin altında, sol kenarda (hiçbir bilginin üstüne binmez) */
+.field .tcard .cap{left:6px!important;right:auto!important;top:44px!important;bottom:auto!important;width:16px!important;height:16px!important;border-radius:50%;background:#FFD400!important;color:#37003C!important;font:900 .6rem/16px Inter,sans-serif!important;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.35);z-index:3}
+.field .tcard.sm .cap{left:4px!important;top:31px!important;width:14px!important;height:14px!important;font-size:.52rem!important;line-height:14px!important}
 </style>
 </head>
 <body>
@@ -3557,7 +3561,7 @@ async function shareImg(m){await fontsOk();
     // maç notu (bitti ise) sağ üst
     const r=NI&&NI.pts[T.id];if(r)noteBadge(x,r.pts,X+cw-2,Y+4,22,NI.motm===T.id);
     // kaptan
-    if((T.k==="A"?m.cap_a:m.cap_b)===T.id){x.save();x.shadowColor="rgba(0,0,0,.3)";x.shadowBlur=6;x.beginPath();x.arc(X+4,Y+chh-4,8*k,0,Math.PI*2);x.fillStyle="#fff";x.fill();x.restore();x.fillStyle="#050505";x.font=`900 ${Math.round(9*k)}px ${SD}`;x.textAlign="center";x.textBaseline="middle";x.fillText("C",X+4,Y+chh-3);x.textBaseline="alphabetic"}}
+    if((T.k==="A"?m.cap_a:m.cap_b)===T.id){const ccx=X+(4+7)*k,ccy=Y+(31+7)*k;x.save();x.shadowColor="rgba(0,0,0,.35)";x.shadowBlur=6;x.beginPath();x.arc(ccx,ccy,7*k,0,Math.PI*2);x.fillStyle="#FFD400";x.fill();x.restore();x.fillStyle="#37003C";x.font=`900 ${Math.round(8.3*k)}px ${SF}`;x.textAlign="center";x.textBaseline="middle";x.fillText("C",ccx,ccy+1);x.textBaseline="alphabetic"}}
   const bench=[...A0.filter(id=>!la.includes(id)),...B0.filter(id=>!lb.includes(id))];
   x.textAlign="center";x.fillStyle=C_MUT;x.font=`600 26px ${SF}`;if(bench.length)x.fillText("Yedek: "+bench.map(id=>shortName(nameOf(id))).join(", "),W/2,py+ph+40,W-120);
   storyFoot(x,W,H);shareCanvas(c,"kadrolar.png","Kadrolar");
