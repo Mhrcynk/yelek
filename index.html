@@ -2265,7 +2265,7 @@ function viewGecmis(){
     return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="back">${ICON.back} Fikstür</button><span class="row" style="gap:6px">${F[i+1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i+1].id)}" aria-label="Önceki maç">‹ Önceki</button>`:""}${F[i-1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i-1].id)}" aria-label="Sonraki maç">Sonraki ›</button>`:""}</span></div>`+(isExt(vm)?"":`<button class="stbtn" data-act="story" data-id="${esc(vm.id)}"><span class="sr0"><span class="sr1">${ICON_PLAY}</span></span><span><b>Maç hikâyesi</b><small>Skor, Maçın Adamı, Haftanın Takımı</small></span><i>${CHV}</i></button>`)+(isExt(vm)?extPanel(vm):resultPanel(vm))}}
   let h=`${S.admin?`<div class="ph kph"><button class="btn sm primary" data-act="extNew" style="margin-left:auto">${ICON.plus} Dış maç</button></div>`:""}`;
   h+=rivalCard(E);
-  {const R=fin().filter(inYr).slice(-6).reverse();const sy=selYr();const sr=sy!=="all"&&seasonDone(sy)?`<button class="sring" role="listitem" data-act="seasonStory" data-id="${sy}" aria-label="Sezon ${sy} özeti"><span class="sr0 gold"><span class="sr1"><b>🏆</b></span></span><small>Sezon ${sy}</small></button>`:"";if(R.length)h+=`<div class="strip" role="list" aria-label="Maç hikâyeleri">${sr}${R.map(m=>{const d=parseYmd(m.date);const mo=S.mInfo[m.id]?.motm;const ph=mo&&photoOf(mo);return `<button class="sring" role="listitem" data-act="story" data-id="${esc(m.id)}" aria-label="${d.getDate()} ${AYLAR[d.getMonth()]} maç hikâyesi"><span class="sr0"><span class="sr1">${ph?`<img src="${esc(ph)}" alt="">`:`<b class="num">${+m.score_a||0}-${+m.score_b||0}</b>`}</span></span><small>${d.getDate()} ${AYLAR[d.getMonth()].slice(0,3)}</small></button>`}).join("")}</div>`}
+  // fikstür hikâye şeridi kaldırıldı; maç hikâyesi yalnızca maç detayında
   if(!F.length&&!openMatch())return h+`<section class="card"><div class="empty"><h3>İlk düdük bekleniyor</h3><p>İlk maçı gir, kartlar uyansın. Oynanan her maç burada birikir.</p></div></section>`;
   const om=openMatch();let cur="";h+=`<div class="glist">`;
   if(om){const d=parseYmd(om.date);h+=`<div class="gm">Sıradaki maç</div><button class="grow next" data-act="tab" data-tab="mac"><span class="gd"><b>${d.getDate()}</b><small>${GUNLER[d.getDay()].slice(0,3)}</small></span><span class="gb"><b>${esc(TEAM.A)} – ${esc(TEAM.B)}</b><span class="muted small">${d.getDate()} ${AYLAR[d.getMonth()]} · ${esc(om.time||"")}${S.settings.field_name?" · "+esc(S.settings.field_name):""}</span><span class="small">${om.state==="kayit"?"Kadrolar henüz açıklanmadı":"Kadrolar belli"}</span></span><span class="muted">›</span></button>`}
@@ -3188,7 +3188,7 @@ document.addEventListener("click",async e=>{
     case"shareSeason":{if(S.story)stPause(true);await shareSeason(+id);break}
     case"seasonSave":{const L=+(S.f.sLen||sLen());await A("admin_season",{p_len:L,p_close:false},"Sezon ayarı kaydedildi");await load(true);break}
     case"seasonClose":{if(!S.f.sClose){S.f.sClose=1;render(true);break}S.f.sClose=0;await A("admin_season",{p_len:sLen(),p_close:true},"Sezon bitirildi");await load(true);break}
-    case"story":S._stChain=!!el.closest(".strip");stOpen(id,0);break;
+    case"story":S._stChain=false;stOpen(id,0);break;
     case"stDetail":stClose();S.view=id;S.tab="gecmis";render(true);window.scrollTo(0,0);break;
     case"stX":stClose();break;
     case"viewm":S.view=id;S.tab="gecmis";render(true);window.scrollTo(0,0);break;
@@ -3367,7 +3367,7 @@ document.addEventListener("change",e=>{const t=e.target;
 document.addEventListener("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.dataset.actToggle)S.f[d.dataset.actToggle]=d.open;if(d.dataset.actToggleTeam&&S.teams)S.teams[d.dataset.actToggleTeam]=d.open},true);
 document.addEventListener("focusout",()=>{setTimeout(()=>{if(S.pending&&!isEditing())render()},0)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=null;render(true)}});
-const APP_V="261112181101";
+const APP_V="261112181325";
 // yeni sürüm varsa (ana ekran uygulaması dahil) sayfayı taze yükle
 async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
   const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
