@@ -1660,7 +1660,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261112184823";
+const APP_V="261112185405";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2281,7 +2281,7 @@ function card(p,big){
   const tw=lastTotw().includes(p.id);const chp=reigningChamp()===p.id;const cls=(s.lastO>0?" rise":s.lastO<0?" fall":"")+(tw?" totw":"")+(chp?" champ":"")+(!big&&S.me===p.id?" me":"")+(big?anim("fb_"+p.id)+(s.lastO>0&&!ANIM.has("pop_"+p.id)?(ANIM.add("pop_"+p.id)," pop"):""):"");
   return `<button class="fut ${tierOf(o)}${UNAVAIL.includes(st)?" out":""}${big?" big":""}${cls}" ${big?'tabindex="-1"':`data-act="open" data-id="${esc(p.id)}"`} aria-label="${esc(p.name)} kartı, reyting ${o}">
     <span class="face"><span class="tl"><span class="ovr num">${o}</span><span class="ps">${eposOf(p)}</span>${tr}${p.guest?"":p.yedek?'<span class="sq">YEDEK</span>':'<span class="sq as">AS</span>'}</span>
-    ${stkIcon(s)}${chp?'<span class="chb" title="Son şampiyon">🏆</span>':""}<span class="stripe"></span>${tw?'<span class="xi">XI</span>':""}<span class="pic">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><span class="nm">${esc(up(shortName(p.name)))}</span><span class="at">${at}</span>${BALL}</span>${flag}</button>`;
+    ${chp?'<span class="chb" title="Son şampiyon">🏆</span>':""}<span class="stripe"></span>${tw?'<span class="xi">XI</span>':""}<span class="pic">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><span class="nm">${esc(up(shortName(p.name)))}</span><span class="at">${at}</span>${BALL}</span>${flag}</button>`;
 }
 function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];const u=p.status?.until?" · "+fmtShort(p.status.until)+"'e kadar":"";return`<span class="chip ${x.cls}"><span class="dot"></span>${x.label}${u}</span>`}
 
@@ -2919,7 +2919,7 @@ function listRow(p,rk){
   const flag=st!=="hazir"?`<span class="lflag ${x.cls==="bad"?"":x.cls}">${x.flag}</span>`:"";
   return `<button class="lrow${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}">
     <span class="lth ${tierOf(o)}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span>
-    <span class="lmid"><span class="lhd"><span class="rk">${rk}</span><span class="ln">${esc(p.name)}</span>${stkIcon(s)}</span>
+    <span class="lmid"><span class="lhd"><span class="rk">${rk}</span><span class="ln">${esc(p.name)}</span></span>
       <span class="lsub"><span class="pchip">${eposOf(p)}</span>${altOf(p)?`<span class="pchip alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="pchip sqc">Yedek</span>':'<span class="pchip sqa">As</span>'}${flag}</span></span>
     <span class="lr"><b class="num ${vcls(o)}">${o}</b>${tr}</span></button>`;
 }
