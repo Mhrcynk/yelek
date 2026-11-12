@@ -1540,6 +1540,18 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 40px)!im
 @media (prefers-color-scheme:dark){.chst{background:var(--card3);color:var(--ink)}}
 
 .tsund{margin:4px 0 0;font:500 .74rem/1.35 Inter,sans-serif;color:var(--muted)}
+
+/* tek tasarım dili: seviye renkleri (altın/gümüş/bronz) kaldırıldı */
+.fut.gold,.fut.silver,.fut.bronze,.fut.star{--c1:#9C7BFF;--c2:#4F2FC4;--tx:#fff;--rim:rgba(255,255,255,.35)}
+.fut .trend.up,.fut .at .ad.up{color:#7CF5B0!important}.fut .trend.down,.fut .at .ad.dn{color:#FF9CB5!important}
+.av.pl,.lth.pl{background:linear-gradient(160deg,#9C7BFF,#4F2FC4)!important;color:#fff!important;border:0!important;box-shadow:none!important}
+.av.pl{border-radius:30%!important}
+.lth.pl{border-radius:12px!important}
+.av.pl img,.lth.pl img{object-fit:cover;object-position:50% 10%}
+
+.lrk.g1 b,.lrk.g2 b,.lrk.g3 b{color:#fff!important;box-shadow:none!important}
+.lrk.g1 b{background:#37003C!important}.lrk.g2 b{background:#7B3FF2!important}.lrk.g3 b{background:#A48BFF!important}
+@media (prefers-color-scheme:dark){.lrk.g1 b{background:#7B3FF2!important}.lrk.g2 b{background:#9C7BFF!important}.lrk.g3 b{background:#B9A6E6!important;color:#37003C!important}}
 </style>
 </head>
 <body>
@@ -2177,7 +2189,7 @@ function crest(name,k,sz,other){sz=sz||32;if(other===undefined&&typeof TEAM!=="u
   return `<svg class="crest" viewBox="0 0 40 46" width="${sz}" height="${Math.round(sz*1.15)}" aria-hidden="true"><path d="M20 1.5l17 5.2v14.6c0 11.4-7.4 19.2-17 23.9C10.4 40.5 3 32.7 3 21.3V6.7z" style="fill:var(--t${k==="A"?"A":"B"})"/><path d="M20 6l13 4v11.3c0 8.7-5.6 14.8-13 18.6C12.6 36.1 7 30 7 21.3V10z" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.3"/><text x="20" y="27.5" text-anchor="middle" font-family="Inter Tight,Inter,sans-serif" font-weight="900" font-size="${ini.length>1?13:16}" fill="#fff">${esc(ini)}</text></svg>`}
 const lastSide=id=>{const F=fin();for(let i=F.length-1;i>=0;i--){const sd=playSide(F[i],id);if(sd)return sd}return""};
 const photoOf=id=>{const d=S.photos[id];return d&&/^data:image\//.test(d)?d:""};
-function avatar(p,size){const ph=photoOf(p.id);return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
+function avatar(p,size){const ph=photoOf(p.id);return `<span class="av pl${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
 function avatarO(p){return `<span class="avw">${avatar(p)}<b class="ab num">${ovrOf(p.id)}</b></span>`}
 const ANIM=new Set();const anim=k=>ANIM.has(k)?"":(ANIM.add(k)," anim");
 const lastFinM=()=>S.matches.filter(x=>x.state==="bitti"&&!isExt(x)).sort((a,b)=>matchTs(b)-matchTs(a))[0];
@@ -2824,7 +2836,7 @@ function listRow(p,rk){
   const tr=s.lastO>0?`<span class="trend up">▲${s.lastO}</span>`:s.lastO<0?`<span class="trend down">▼${-s.lastO}</span>`:"";
   const flag=st!=="hazir"?`<span class="lflag ${x.cls==="bad"?"":x.cls}">${x.flag}</span>`:"";
   return `<button class="lrow${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}">
-    <span class="lth ${tierOf(o)}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span>
+    <span class="lth pl">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span>
     <span class="lmid"><span class="lhd"><span class="rk">${rk}</span><span class="ln">${esc(p.name)}</span>${stkIcon(s)}</span>
       <span class="lsub"><span class="pchip">${eposOf(p)}</span>${altOf(p)?`<span class="pchip alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="pchip sqc">Yedek</span>':'<span class="pchip sqa">As</span>'}${flag}</span></span>
     <span class="lr"><b class="num ${vcls(o)}">${o}</b>${tr}</span></button>`;
@@ -2941,7 +2953,7 @@ function sheetPlayer(){
     <button class="btn primary block" data-act="saveStatus">Durumu kaydet</button>
     ${(p.status_log||[]).length?`<details><summary class="small">Durum geçmişi</summary><div class="hist">${p.status_log.slice().reverse().map(e=>`<div style="grid-template-columns:4.4em 1fr"><span class="d">${fmtShort(e.at)}</span><span>${esc(STATUS[e.type]?.label||e.type)}${e.note?" · "+esc(e.note):""}</span></div>`).join("")}</div></details>`:""}</div>`;
   if(S.admin){const ph=photoOf(p.id);
-    h+=`<div class="phrow"><span class="av ${tierOf(ovrOf(p.id))}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":""}</p></div>
+    h+=`<div class="phrow"><span class="av pl${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":""}</p></div>
       <label class="btn sm primary" for="phFile">${ph?"Değiştir":"Yükle"}</label><input class="vh" id="phFile" type="file" accept="image/*" data-photo="${esc(p.id)}">${ph?`<button class="btn sm ghost" data-act="delPhoto" data-id="${esc(p.id)}" aria-label="Fotoğrafı kaldır">${ICON.x}</button>`:""}</div>`}
   if(S.admin){const a=S.f.ed||(S.f.ed={name:p.name,pos:p.pos,epos:eposOf(p),alt:altOf(p),yedek:p.yedek?"1":"",attrs:{...(p.attrs||{})}});
     h+=`<details${S.f.edOpen?" open":""} data-act-toggle="edOpen"><summary>Kartı düzenle (yönetici)</summary><div style="display:grid;gap:12px;margin-top:10px">
@@ -3491,7 +3503,7 @@ async function shareImg(m){await fontsOk();
   storyFoot(x,W,H);shareCanvas(c,"kadrolar.png","Kadrolar");
 }
 function drawPhoto(x,im,X,Y,w,h,r){x.save();rr(x,X,Y,w,h,r);x.clip();if(im){const sc=Math.max(w/im.width,h/im.height);x.drawImage(im,X+(w-im.width*sc)/2,Y+(h-im.height*sc)*.2,im.width*sc,im.height*sc)}x.restore()}
-const TIER_COL={star:["#1F7A43","#0B2F1B","#F6DE8F"],gold:["#F6DE8F","#C8962C","#2A1D04"],silver:["#ECEFF1","#A4ADB3","#1A2227"],bronze:["#E8BF96","#A46A3E","#2A1608"]};
+const _PLC=["#9C7BFF","#4F2FC4","#FFFFFF"];const TIER_COL={star:_PLC,gold:_PLC,silver:_PLC,bronze:_PLC};
 
 // büyük FUT kartı (700×1000 taban ölçü, cw'ye göre ölçeklenir)
 async function drawFut(x,p,cx,cy,cw,opt){opt=opt||{};const f=cw/700,cw0=700,ch=1000;const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{}};const o=s.ovr;const[c1,c2,tx]=TIER_COL[p.guest?"silver":tierOf(o)];const tw=opt.tw;
