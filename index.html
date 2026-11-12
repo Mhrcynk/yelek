@@ -1606,8 +1606,20 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .mern small{font:700 .72rem/1 Inter,sans-serif;color:var(--muted)}
 .mer .o{font:900 1.1rem/1 "Inter Tight",Inter,sans-serif}
 .mer.on{background:#F3ECFF;border-radius:14px;border-bottom-color:transparent;padding:8px 10px}
-.mer.on .o::after{content:" ✓";color:#7B3FF2}
 .mer[hidden],.mes[hidden]{display:none}
+.kpills{display:flex;gap:6px;padding:4px 6px 8px}
+.kpills button{flex:1;border:0;border-radius:10px;padding:10px 4px;background:var(--bg2);color:var(--muted);font:700 .8rem/1 Inter,sans-serif;justify-content:center;min-height:0}
+.kpills button.on{background:var(--ink);color:#fff}
+.kmenu .kpills button:hover{background:var(--bg2)}.kmenu .kpills button.on:hover{background:var(--ink)}
+.mecur{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#7B3FF2,#5FD8F5);color:#fff}
+.mecur .av{width:48px;height:48px;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+.mecur span:not(.av){min-width:0;flex:1;display:grid;gap:3px}
+.mecur small{font:600 .74rem/1 Inter,sans-serif;opacity:.9}
+.mecur b{font:900 1.1rem/1.1 "Inter Tight",Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mecur .btn{flex:none;background:#fff!important;color:#37003C!important;border:0}
+.fnts{display:flex;gap:3px;flex-wrap:nowrap}
+.fnts i{font-style:normal;min-width:27px;height:21px;padding:0 3px;border-radius:7px;display:grid;place-items:center;font:800 .68rem/1 "Inter Tight",Inter,sans-serif;color:#fff}
+.fnts .fn8{background:#0E8F4E}.fnts .fn7{background:#5DB443}.fnts .fn65{background:#E3C33C;color:#1A1300}.fnts .fn6{background:#EE8A2A;color:#1A0E02}.fnts .fn5{background:#D9423F}
 </style>
 </head>
 <body>
@@ -1660,7 +1672,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261112185405";
+const APP_V="261112185844";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2905,7 +2917,7 @@ function viewKartlar(){
   const mi=(act,l,on,extra)=>`<button role="menuitem" data-act="${act}" ${extra||""}>${l}${on?"<i>✓</i>":""}</button>`;
   let h=`${oyTabs("kartlar")}<div class="ktb"><div class="vtog sqt" role="group" aria-label="Kadro">${[["as","As",nAs],["yedek","Yedek",nYd],["all","Tümü",""]].map(([k,l,n])=>`<button data-act="sqf" data-v="${k}" class="${sq===k?"on":""}" aria-pressed="${sq===k}">${l}${n!==""?` <small>${n}</small>`:""}</button>`).join("")}</div>
     <button class="kic" data-act="kview" data-v="${kv==="list"?"grid":"list"}" aria-label="${kv==="list"?"Kart görünümü":"Liste görünümü"}">${kv==="list"?ICON_GRID:ICON_LIST}</button>
-    <span class="kmw"><button class="kic" data-act="kmenu" aria-label="Diğer" aria-haspopup="menu" aria-expanded="${!!S.f.kmenu}">${ICON_DOTS}</button>${S.f.kmenu?`<button class="kmx" data-act="kmenu" aria-label="Menüyü kapat" tabindex="-1"></button><div class="kmenu" role="menu"><span class="kml">Sırala</span>${mi("ksort","Reytinge göre",sort==="ovr",'data-v="ovr"')}${mi("ksort","Formdakiler",sort==="form",'data-v="form"')}${mi("ksort","İsme göre",sort==="isim",'data-v="isim"')}<hr>${mi("cmpOpen","Karşılaştır")}${S.admin?mi("addSheet","Oyuncu ekle")+mi("sqMode","As / yedek seç"):""}</div>`:""}</span></div>
+    <span class="kmw"><button class="kic" data-act="kmenu" aria-label="Diğer" aria-haspopup="menu" aria-expanded="${!!S.f.kmenu}">${ICON_DOTS}</button>${S.f.kmenu?`<button class="kmx" data-act="kmenu" aria-label="Menüyü kapat" tabindex="-1"></button><div class="kmenu" role="menu"><span class="kml">Sırala</span><div class="kpills" role="group" aria-label="Sırala">${[["ovr","Reyting"],["form","Form"],["isim","İsim"]].map(([k,l])=>`<button data-act="ksort" data-v="${k}" class="${sort===k?"on":""}" aria-pressed="${sort===k}">${l}</button>`).join("")}</div><hr>${mi("cmpOpen","Karşılaştır")}${S.admin?mi("addSheet","Oyuncu ekle")+mi("sqMode","As / yedek seç"):""}</div>`:""}</span></div>
     <div class="chips kchips" role="group" aria-label="Mevkiye göre">${[["all","Tümü"],...POS_KEYS.map(k=>[k,k])].map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${flt===k||(k==="all"&&(flt==="as"||flt==="yedek"))?"on":""}">${l}</button>`).join("")}</div>`;
   if(S.admin&&S.f.sqMode)h+=`<div class="sqbar"><span><b>As / yedek seçiliyor</b><small>${nAs} as · ${nYd} yedek</small></span><button class="btn sm primary" data-act="sqMode">Bitti</button></div>`;
   if(S.admin&&S.f.sqMode)return h+(ps.length?`<section class="card" style="gap:0">${ps.map(p=>`<div class="sqrow">${avatar(p)}<span class="sqn"><b>${esc(p.name)}</b><span class="muted small">${eposOf(p)} · ${ovrOf(p.id)}</span></span><div class="vtog" role="group" aria-label="${esc(p.name)} kadro"><button data-act="setSq" data-id="${esc(p.id)}" data-v="" class="${p.yedek?"":"on"}" aria-pressed="${!p.yedek}">As</button><button data-act="setSq" data-id="${esc(p.id)}" data-v="1" class="${p.yedek?"on":""}" aria-pressed="${!!p.yedek}">Yedek</button></div></div>`).join("")}</section>`:"");
@@ -2913,6 +2925,8 @@ function viewKartlar(){
   return h;
 }
 const vcls=v=>v>=80?"v8":v>=70?"v7":v>=60?"v6":"v5";
+function formNotes(s){const L=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r&&x.r.pts!=null).slice(-5);
+  return L.length?`<span class="fnts" aria-label="Son ${L.length} maç notu">${L.map(x=>`<i class="f${noteCls(x.r.pts)}">${fN(x.r.pts)}</i>`).join("")}</span>`:'<span class="muted small">Henüz maç yok</span>'}
 function listRow(p,rk){
   const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{},lastD:0};const st=stOf(p);const o=s.ovr;const ph=photoOf(p.id);const x=STATUS[st];
   const tr=s.lastO>0?`<span class="trend up">▲${s.lastO}</span>`:s.lastO<0?`<span class="trend down">▼${-s.lastO}</span>`:"";
@@ -2920,7 +2934,7 @@ function listRow(p,rk){
   return `<button class="lrow${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}">
     <span class="lth ${tierOf(o)}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span>
     <span class="lmid"><span class="lhd"><span class="rk">${rk}</span><span class="ln">${esc(p.name)}</span></span>
-      <span class="lsub"><span class="pchip">${eposOf(p)}</span>${altOf(p)?`<span class="pchip alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="pchip sqc">Yedek</span>':'<span class="pchip sqa">As</span>'}${flag}</span></span>
+      <span class="lsub">${S.f.sort==="form"&&S.tab==="kartlar"?formNotes(s):`<span class="pchip">${eposOf(p)}</span>${altOf(p)?`<span class="pchip alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="pchip sqc">Yedek</span>':'<span class="pchip sqa">As</span>'}`}${flag}</span></span>
     <span class="lr"><b class="num ${vcls(o)}">${o}</b>${tr}</span></button>`;
 }
 
@@ -2980,11 +2994,13 @@ function sheetMe(){
   const row=p=>{used.add(p.id);return `<button class="mer${p.id===S.me?" on":""}" data-act="pickMe" data-id="${esc(p.id)}" data-q="${esc(trq(p.name))}">${avatar(p)}<span class="mern"><b>${esc(p.name)}</b><small>${esc(eposOf(p))}${p.yedek?" · yedek":""}</small></span><span class="o num">${ovrOf(p.id)}</span></button>`};
   const sec=(l,arr)=>arr.length?`<div class="mes"><div class="mel">${l}</div>${arr.map(row).join("")}</div>`:"";
   let h=`<div class="ch"><div><h2>Sen kimsin?</h2></div></div><label class="mesr">${ICON_SRCH}<input id="meQ" type="search" placeholder="İsmini yaz" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="İsmini ara"></label><div id="meL">`;
-  const lp=lastId&&P(lastId);if(lp)h+=sec(S.me?"Seçili":"Bu cihazda son",[lp]);
+  const lp=lastId&&P(lastId);
+  if(S.me&&lp){used.add(lp.id);h=h.replace('<label class="mesr">',`<div class="mecur">${avatar(lp)}<span><small>Şu an sen</small><b>${esc(lp.name)}</b></span><button class="btn sm" data-act="pickMe" data-id="">Çıkış</button></div><label class="mesr">`)}
+  else if(lp)h+=sec("Bu cihazda son",[lp]);
   if(om)h+=sec("Bu hafta gelenler",ps.filter(p=>rs[p.id]==="g"&&!used.has(p.id)));
   const rest=ps.filter(p=>!used.has(p.id));const G={};rest.forEach(p=>{const L=p.name.trim()[0].toLocaleUpperCase("tr");(G[L]=G[L]||[]).push(p)});
   Object.keys(G).forEach(L=>{h+=sec(L,G[L])});
-  h+=`<p class="muted small mee" hidden>Bu isimde oyuncu yok.</p></div><div class="row">${S.me?`<button class="btn sm ghost" data-act="pickMe" data-id="">Seçimi kaldır</button>`:""}<button class="btn sm" data-act="close">Kapat</button></div>`;
+  h+=`<p class="muted small mee" hidden>Bu isimde oyuncu yok.</p></div><div class="row"><button class="btn sm" data-act="close">Kapat</button></div>`;
   return h}
 function meFilter(q){q=trq(q.trim());const L=$("#meL");if(!L)return;let any=0;
   L.querySelectorAll(".mes").forEach(sc=>{let n=0;sc.querySelectorAll(".mer").forEach(b=>{const ok=!q||b.dataset.q.includes(q)||b.dataset.q.split(" ").some(w=>w.startsWith(q));b.hidden=!ok;if(ok)n++});sc.hidden=!n;any+=n});
@@ -3227,7 +3243,7 @@ document.addEventListener("click",async e=>{
     case"storyTotw":{const m=S.matches.find(x=>x.id===id);if(S.sheet&&S.sheet.type==="share"){S.sheet=null;render(true)}if(m)storyTotw(m);break}
     case"storyRes":case"storyMotm":{if(S.story)stPause(true);const m=S.matches.find(x=>x.id===id);if(S.sheet&&S.sheet.type==="share"){S.sheet=null;render(true)}if(m)shareStory(m,a==="storyMotm"?"motm":"res");break}
     case"addSheet":S.sheet={type:"add"};render(true);break;
-    case"pickMe":S.me=id||"";if(S.me){LS.set("y_me",S.me);LS.set("y_me_last",S.me)}if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
+    case"pickMe":if(!id&&S.me)LS.set("y_me_last",S.me);S.me=id||"";if(S.me){LS.set("y_me",S.me);LS.set("y_me_last",S.me)}if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
     case"close":case"closeBg":S.sheet=null;render(true);break;
     case"filter":S.filter=el.dataset.v;render(true);break;
     case"cmpOpen":S.sheet={type:"cmp",a:id||S.me||"",b:id&&S.me&&id!==S.me?S.me:""};render(true);break;
