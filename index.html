@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Yelek</title>
 <meta name="description" content="Halı saha ekibi için FIFA tarzı oyuncu kartları, 7'li dizilişler ve maç sonu puanlama.">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#7B3FF2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Yelek">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest?v=3">
+<link rel="icon" href="icon.svg?v=3" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap">
@@ -1699,13 +1699,17 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 110px)!i
 /* kaptan rozeti: mevkinin altında, sol kenarda (hiçbir bilginin üstüne binmez) */
 .field .tcard .cap{left:6px!important;right:auto!important;top:44px!important;bottom:auto!important;width:16px!important;height:16px!important;border-radius:50%;background:#FFD400!important;color:#37003C!important;font:900 .6rem/16px Inter,sans-serif!important;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.35);z-index:3}
 .field .tcard.sm .cap{left:4px!important;top:31px!important;width:14px!important;height:14px!important;font-size:.52rem!important;line-height:14px!important}
+
+/* yeni logo (Kalkan) — eski katman kurallarını ez */
+.logo rect.lgbg{fill:#fff!important}.logo .lgsh{fill:#37003C!important;stroke:none!important}.logo .lgy{stroke:#fff!important;fill:none!important}.logo .lgd{fill:#00FF85!important}
+.logo{border-radius:10px;box-shadow:0 2px 8px rgba(55,0,60,.18)}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="wrap in">
     <div class="brand">
-      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#1E2740"/><path d="M32 9l18 6v15c0 12-8 20-18 25C22 50 14 42 14 30V15z" fill="none" stroke="#C6F432" stroke-width="3.5"/><path d="M23 22l9 12 9-12M32 34v11" fill="none" stroke="#F1F5F9" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="16" r="2" fill="#C6F432"/></svg>
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="lgG" cx="1" cy="1" r=".75"><stop offset="0" stop-color="#5FD8F5" stop-opacity=".95"/><stop offset=".45" stop-color="#7B3FF2" stop-opacity=".55"/><stop offset="1" stop-color="#7B3FF2" stop-opacity="0"/></radialGradient></defs><rect class="lgbg" width="64" height="64" rx="16" fill="#fff"/><rect width="64" height="64" rx="16" fill="url(#lgG)"/><path class="lgsh" d="M32 8.8l18.8 6v15.2c0 12.5-8.3 20.8-18.8 25.8C21.5 50.8 13.2 42.5 13.2 30V14.8z" fill="#37003C"/><path class="lgy" d="M23.2 22l8.8 11.5 8.8-11.5M32 33.5v12" fill="none" stroke="#fff" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/><circle class="lgd" cx="32" cy="16" r="2" fill="#00FF85"/></svg>
       <div class="t"><b>YELEK<span class="adm" id="admPill" hidden>YÖNETİCİ</span></b></div>
     </div>
     <span class="tt" id="tt" aria-hidden="true"></span>
@@ -3462,7 +3466,7 @@ function storyBase(x,W,H){x.fillStyle=C_BG;x.fillRect(0,0,W,H);
 function cHead(x,W,h,label,meta){
   x.save();rr(x,0,-60,W,h+60,56);x.clip();x.strokeStyle="rgba(255,255,255,.06)";x.lineWidth=4;x.beginPath();x.arc(W/2,h,300,Math.PI,0);x.stroke();x.beginPath();x.moveTo(0,h-2);x.lineTo(W,h-2);x.stroke();
   const g=x.createRadialGradient(W/2,h,20,W/2,h,700);g.addColorStop(0,"rgba(198,244,50,.10)");g.addColorStop(1,"rgba(198,244,50,0)");x.fillStyle=g;x.fillRect(0,0,W,h);x.restore();
-  rr(x,60,58,64,64,18);x.fillStyle="#fff";x.fill();x.fillStyle=C_INK;x.font=`900 40px ${SD}`;x.textAlign="center";x.fillText("Y",92,105);
+  x.save();x.shadowColor="rgba(55,0,60,.25)";x.shadowBlur=14;rr(x,60,58,64,64,16);x.fillStyle="#fff";x.fill();x.restore();x.save();x.translate(60,58);x.fillStyle="#37003C";x.fill(new Path2D("M32 8.8l18.8 6v15.2c0 12.5-8.3 20.8-18.8 25.8C21.5 50.8 13.2 42.5 13.2 30V14.8z"));x.strokeStyle="#fff";x.lineWidth=4.8;x.lineCap="round";x.lineJoin="round";x.stroke(new Path2D("M23.2 22l8.8 11.5 8.8-11.5M32 33.5v12"));x.fillStyle="#00FF85";x.beginPath();x.arc(32,16,2,0,Math.PI*2);x.fill();x.restore();
   x.textAlign="left";x.fillStyle="#fff";x.font=`900 44px ${SD}`;x.fillText("YELEK",142,106);
   if(label){x.font=`800 26px ${SF}`;const w=x.measureText(label).width+44;rr(x,W-60-w,64,w,52,26);x.fillStyle="#fff";x.fill();x.fillStyle=C_INK;x.textAlign="center";x.fillText(label,W-60-w/2,99)}
   if(meta){x.textAlign="left";x.fillStyle="rgba(255,255,255,.9)";x.font=`600 30px ${SF}`;x.fillText(meta,60,192,W-120)}
