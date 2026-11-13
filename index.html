@@ -1728,9 +1728,20 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .igsth{display:flex;align-items:center;gap:7px;color:#fff;font:900 11px/1 Inter,sans-serif;letter-spacing:.08em}.igsth svg{width:20px;height:20px}
 .igstf{color:rgba(255,255,255,.85);font:800 10px/1 Inter,sans-serif;letter-spacing:.06em}
 .igtw2{padding:14px}.igtw2 .igtt{display:flex;align-items:baseline;gap:8px;font-size:20px}.igtw2 .igtt small{font:700 8px/1 Inter,sans-serif;color:rgba(255,255,255,.75);letter-spacing:0}
-.igfw{position:absolute;left:50%;top:54px;width:360px;height:420px;margin-left:-108px;transform:scale(.6);transform-origin:0 0}
-.igfw .field{width:360px;height:420px;max-width:none;aspect-ratio:auto!important;margin:0;border-radius:26px;box-shadow:0 14px 34px rgba(20,0,40,.4)}
+.igfw{position:absolute;left:50%;top:54px;width:400px;height:480px;margin-left:-108px;transform:scale(.54);transform-origin:0 0}
+.igfw .field{width:400px;height:480px;max-width:none;aspect-ratio:auto!important;margin:0;border-radius:26px;box-shadow:0 14px 34px rgba(20,0,40,.4)}
 .igfw .tcard{transition:none}.igfw .tcard.a{box-shadow:0 8px 20px rgba(55,0,60,.28)!important}.igfw .tcard.a .tnm{box-shadow:none!important;border-bottom:3px solid #1F2430;box-sizing:border-box}
+.ignum{display:flex;align-items:center;gap:9px}.ignum b{font:inherit}.ignum i{display:block;width:13px;height:4px;border-radius:2px;background:rgba(255,255,255,.7)}
+.iglu{padding:14px}.iglu .igtt{font-size:15px;line-height:1.2}.igsm{display:inline-block;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.18);font-size:13px;margin:0 2px}
+.iglw{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.iglc{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:8px 8px 6px}
+.iglh{display:flex;align-items:center;gap:6px;padding-bottom:6px;margin-bottom:3px;border-bottom:1px solid rgba(255,255,255,.18)}
+.iglh span{min-width:0}.iglh b{display:block;font:800 9.5px/1.15 Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.iglh small{display:block;margin-top:2px;font:700 7.5px/1 Inter,sans-serif;color:#5FD8F5}
+.iglr{display:flex;align-items:center;gap:5px;height:24px}
+.iglr i{font-style:normal;width:22px;flex:none;font:800 6.5px/1 Inter,sans-serif;color:rgba(255,255,255,.65);letter-spacing:.04em}
+.iglr b{flex:1;min-width:0;font:700 8.5px/1 Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iglr em{font-style:normal;flex:none;min-width:20px;text-align:center;padding:2px 3px;border-radius:4px;font:800 7.5px/1 Inter,sans-serif;color:#fff}
+.iglr em.n8{background:#0E8F4E}.iglr em.n7{background:#5DB443}.iglr em.n65{background:#E3C33C;color:#1A1300}.iglr em.n6{background:#EE8A2A;color:#1A0E02}.iglr em.n5{background:#D9423F}
 </style>
 </head>
 <body>
@@ -1784,7 +1795,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113142057";
+const APP_V="261113153557";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2409,12 +2420,22 @@ function igScore(m){const inf=S.mInfo[m.id]||{pts:{}};const a=+m.score_a||0,b=+m
   const title=a===b?(a+b>=8?"Gol düellosu, kazanan yok":"Puanlar paylaşıldı"):(Math.abs(a-b)>=4?esc(a>b?nA:nB)+" farka koştu":esc(a>b?nA:nB)+" kazandı");
   const mo=inf.motm,r=mo&&inf.pts[mo];
   const html=`<div class="igp igpg igms"><div class="igey">Maç sonucu · ${igDate(m.date)}</div><div class="igtt">${title}</div>
-    <div class="igsc"><div class="igtm">${crest(nA,"A",54,nB)}<span>${esc(nA)}</span></div><div class="ignum">${a}–${b}</div><div class="igtm">${crest(nB,"B",54,nA)}<span>${esc(nB)}</span></div></div>
+    <div class="igsc"><div class="igtm">${crest(nA,"A",54,nB)}<span>${esc(nA)}</span></div><div class="ignum"><b>${a}</b><i></i><b>${b}</b></div><div class="igtm">${crest(nB,"B",54,nA)}<span>${esc(nB)}</span></div></div>
     <div class="iggl"><div>${sc("A").map(x=>"⚽ "+x).join("<br>")}</div><div>${sc("B").map(x=>x+" ⚽").join("<br>")}</div></div>
     ${mo?`<div class="igmotm">${igAv(mo)}<span><small>MAÇIN ADAMI</small><b>${esc(nameOf(mo))}</b></span>${r?`<em>${fN(r.pts)}</em>`:""}</div>`:""}${igWm(igWeek(m))}</div>`;
   const gl=[...sc("A"),...sc("B")].join(" · ");
   const cap=`${igDate(m.date)} · ${nA} ${a}–${b} ${nB} ${a===b?"🤝":"🔥"}\n${mo?`${nameOf(mo)} maçın adamı ⭐\n`:""}${gl?"⚽ "+gl+"\n":""}#abilerkardeslerfc #halısaha #yelek`;
   return{html,cap,name:"skor-"+m.date}}
+function igLineup(m){const inf=S.mInfo[m.id]||{pts:{}};const O={KL:0,DF:1,OS:2,FV:3};
+  const col=k=>{const nm=nmOf(m,k),ps=posArr(m,k),L=lineupOf(m,k),T=plOf(m,k);
+    let rows=L.length?L.map((id,i)=>id?[id,i===0?"KL":slotPos(ps[i][0],ps[i][1],ps[i][2])]:null).filter(Boolean):T.map(id=>[id,eposOf(P(id))||""]);
+    rows.sort((x,y)=>(O[EPOS[x[1]]?.[0]]??9)-(O[EPOS[y[1]]?.[0]]??9));
+    return `<div class="iglc ${k.toLowerCase()}"><div class="iglh">${crest(nm,k,26,nmOf(m,k==="A"?"B":"A"))}<span><b>${esc(nm)}</b><small>${esc(formLabel(formOf(m,k),ps))}</small></span></div>${rows.map(([id,ep])=>{const r=inf.pts[id];return `<div class="iglr"><i>${esc(ep)}</i><b>${esc(shortName(nameOf(id)))}${inf.motm===id?" ★":""}</b>${r?`<em class="${noteCls(r.pts)}">${fN(r.pts)}</em>`:""}</div>`}).join("")}</div>`};
+  const a=+m.score_a||0,b=+m.score_b||0;
+  const html=`<div class="igp igpg iglu"><div class="igey">Kadrolar · ${igDate(m.date)}</div><div class="igtt">${esc(nmOf(m,"A"))} <span class="igsm">${a} – ${b}</span> ${esc(nmOf(m,"B"))}</div><div class="iglw">${col("A")}${col("B")}</div>${igWm(igWeek(m))}</div>`;
+  const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
+  const cap=`${igDate(m.date)} kadroları 📋\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n#abilerkardeslerfc #halısaha`;
+  return{html,cap,name:"kadrolar-"+m.date}}
 function igTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.length)return null;
   const fk=T.form||"2-3-1",sl=T.slot||{};const O={KL:0,DF:1,OS:2,FV:3};
   // uygulamadaki tek takım sahasıyla aynı yerleşim ve kartlar
@@ -2452,18 +2473,18 @@ function igCard(p){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=photoO
   return{html,cap,name:"kart-"+shortName(p.name).toLowerCase().replace(/[^a-z0-9ğüşıöç]+/g,"-")}}
 function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));const m=S.matches.find(x=>x.id===f.mid)||ms[0];
   const k=f.item||(f.tab==="mac"?"skor":f.tab==="sezon"?"mvp":"kart");
-  if(f.tab==="mac"&&m){if(k==="totw")return igTotw(m);return igScore(m)}
+  if(f.tab==="mac"&&m){if(k==="totw")return igTotw(m);if(k==="kadro")return igLineup(m);return igScore(m)}
   if(f.tab==="sezon"){if(k==="piyasa")return igMarket();return igMvp()}
   if(f.tab==="oyuncu"){const p=P(f.pid||S.me)||S.players.find(x=>!x.guest);return p?igCard(p):null}
   return null}
-const igFrame=(x,fmt)=>fmt==="story"?`<div class="igstory"><div class="igsth">${IGLOGO}<b>ABİLER KARDEŞLER FC</b></div>${x.html}<div class="igstf">${IGH}</div></div>`:x.html;
+const igFrame=(x,fmt)=>fmt==="story"?`<div class="igstory"><div class="igsth">${IGLOGO}<b>ABİLER KARDEŞLER FC</b></div>${x.html}</div>`:x.html;
 function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));
   const tabs=[["mac","Maç"],["sezon","Sezon"],["oyuncu","Oyuncu"]];
   const items={mac:[["skor","Skor"],["totw","Haftanın takımı"],["kadro","Kadro ve diziliş"]],sezon:[["mvp","Sezonun oyuncusu"],["piyasa","Transfer piyasası"]].concat(seasonsAll().some(n=>seasonDone(n))?[["final","Sezon finali"]]:[]),oyuncu:[["kart","Kartını tanı"]]};
   const it=f.item&&items[f.tab].some(x=>x[0]===f.item)?f.item:items[f.tab][0][0];f.item=it;
   let sel="";if(f.tab==="mac"){const mid=f.mid||(ms[0]&&ms[0].id);sel=`<select class="pmsel" data-bind="pm.mid" aria-label="Maç">${ms.map(m=>`<option value="${esc(m.id)}"${m.id===mid?" selected":""}>${fmtShort(m.date)} · ${esc(nmOf(m,"A"))} ${m.score_a}–${m.score_b} ${esc(nmOf(m,"B"))}</option>`).join("")}</select>`}
   if(f.tab==="oyuncu"){const pid=f.pid||S.me;sel=`<select class="pmsel" data-bind="pm.pid" aria-label="Oyuncu">${S.players.filter(p=>!p.guest).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(p=>`<option value="${esc(p.id)}"${p.id===pid?" selected":""}>${esc(p.name)}</option>`).join("")}</select>`}
-  const legacy=it==="kadro"||it==="final";const x=legacy?null:igBuild();
+  const legacy=it==="final";const x=legacy?null:igBuild();
   return `<div class="ch"><div><div class="eyebrow">${IGH}</div><h2>Paylaşım merkezi</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
    <div class="vtog pmt">${tabs.map(([k,l])=>`<button data-act="pmTab" data-v="${k}" class="${f.tab===k?"on":""}">${l}</button>`).join("")}</div>${sel}
    <div class="pmi">${items[f.tab].map(([k,l])=>`<button data-act="pmItem" data-v="${k}" class="${it===k?"on":""}">${l}</button>`).join("")}</div>
