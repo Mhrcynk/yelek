@@ -1655,6 +1655,78 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .mvx div{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line2);font-size:.82rem}
 .mvx div b{font-family:"Inter Tight",Inter,sans-serif}
 .mvt{font:900 .86rem/1 "Inter Tight",Inter,sans-serif;color:#4A16C9;background:#F1E8FF;border-radius:8px;padding:4px 7px}
+.pmBtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;padding:0;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#fff}
+.pmBtn svg{width:20px;height:20px}
+.pmt,.pmf{margin:4px 0 10px}.pmt button,.pmf button{flex:1}
+.pmsel{width:100%;height:44px;border-radius:12px;border:1px solid var(--line2);background:var(--card);padding:0 12px;font:600 .9rem/1 Inter,sans-serif;color:var(--ink);margin-bottom:10px}
+.pmi{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.pmi button{border:1px solid var(--line2);background:var(--card);border-radius:99px;padding:9px 12px;font:700 .8rem/1 Inter,sans-serif;color:var(--ink);min-height:0}
+.pmi button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pmprev{display:flex;justify-content:center;padding:14px 0;background:#F1ECF6;border-radius:18px;margin-bottom:10px}
+.pmcap{background:#F7F4FB;border-radius:14px;padding:10px 12px;margin-bottom:10px}
+.pmch{display:flex;justify-content:space-between;align-items:center;font:800 .64rem/1 Inter,sans-serif;letter-spacing:.12em;color:var(--muted);margin-bottom:6px}
+.pmcap textarea{width:100%;border:0;background:none;resize:none;font:600 .82rem/1.45 Inter,sans-serif;color:var(--ink);padding:0;outline:none}
+.igrender{position:fixed;left:-10000px;top:0;pointer-events:none}
+/* paylaşım şablonları (270 px genişlik, 4 kat büyütülerek 1080 px) */
+.igp{width:270px;height:337.5px;position:relative;overflow:hidden;font-family:Inter,system-ui,sans-serif;color:#37003C;background:#fff;flex:none;text-align:left}
+.igpg{background:linear-gradient(160deg,#7B3FF2,#4C22C4 55%,#2A1270);color:#fff}
+.igpg::before{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(closest-side,rgba(95,216,245,.55),rgba(95,216,245,0))}
+.igey{position:relative;font:800 8.5px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#5FD8F5}
+.igtt{position:relative;font:900 21px/1.02 "Inter Tight",Inter,sans-serif;letter-spacing:-.02em;margin-top:5px}
+.igwm{position:absolute;left:12px;right:12px;bottom:10px;display:flex;justify-content:space-between;align-items:center;font:800 8.5px/1 Inter,sans-serif;letter-spacing:.06em}
+.igwm span{display:flex;align-items:center;gap:5px}.igwm svg{width:14px;height:14px}
+.igav{width:38px;height:38px;border-radius:10px;overflow:hidden;display:grid;place-items:center;font:900 11px/1 "Inter Tight",Inter,sans-serif;color:#fff;background:linear-gradient(150deg,#8A4DFF,#4A16C9);flex:none}
+.igav img{width:100%;height:120%;object-fit:cover;object-position:50% 8%}
+.igav.t1,.igav.h{background:linear-gradient(135deg,#00FF85,#5FD8F5 35%,#9C7BFF 65%,#FF7AB0);color:#14001A}.igav.t3{background:linear-gradient(150deg,#7FA8FF,#3D63E0)}.igav.t4{background:linear-gradient(150deg,#EDE6F7,#CFC2EC);color:#37003C}
+.igms{padding:16px 14px}
+.igsc{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;margin-top:14px}
+.igtm{display:grid;justify-items:center;gap:5px;font:800 10px/1.15 "Inter Tight",Inter,sans-serif;text-align:center}
+.ignum{font:900 42px/1 "Inter Tight",Inter,sans-serif;letter-spacing:-.04em}
+.iggl{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;font:700 9.5px/1.45 Inter,sans-serif;color:rgba(255,255,255,.92)}
+.iggl div:last-child{text-align:right}
+.igmotm{position:absolute;left:14px;right:14px;bottom:30px;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:8px 9px}
+.igmotm b{display:block;font:900 13px/1.15 "Inter Tight",Inter,sans-serif}.igmotm small{font:700 8.5px/1.2 Inter,sans-serif;color:#5FD8F5;letter-spacing:.1em}
+.igmotm em{margin-left:auto;font:900 19px/1 "Inter Tight",Inter,sans-serif;font-style:normal}
+.igtw{background:#0E5A3A;color:#fff;padding:14px}.igtw .igey{color:#00FF85}.igtw .igtt{font-size:18px}
+.igpitch{position:absolute;left:14px;right:14px;top:62px;bottom:32px;border:1.5px solid rgba(255,255,255,.35);border-radius:6px;background:repeating-linear-gradient(0deg,#127049 0 26px,#116845 26px 52px)}
+.igpitch::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px solid rgba(255,255,255,.35)}
+.igpitch::after{content:"";position:absolute;left:50%;top:50%;width:54px;height:54px;border:1.5px solid rgba(255,255,255,.35);border-radius:50%;transform:translate(-50%,-50%)}
+.igpl{position:absolute;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:2px;z-index:1;width:70px}
+.igpl .igav{width:34px;height:34px;box-shadow:0 0 0 2px #fff}
+.igpl b{font:800 8px/1 Inter,sans-serif;background:rgba(0,0,0,.45);padding:2px 4px;border-radius:4px;white-space:nowrap}
+.igpl em{font-style:normal;font:900 9px/1 "Inter Tight",Inter,sans-serif;color:#00FF85}
+.igso{padding:16px 14px}
+.igpd{position:relative;display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:end;gap:6px;margin-top:14px}
+.igpd div{display:grid;justify-items:center;gap:4px;text-align:center}
+.igpd .igav.big{width:100%;height:auto;aspect-ratio:3/4;border-radius:10px;font-size:16px;box-shadow:0 0 0 1.5px rgba(255,255,255,.4)}
+.igpd b{font:800 9px/1.1 "Inter Tight",Inter,sans-serif}.igpd em{font-style:normal;font:900 15px/1 "Inter Tight",Inter,sans-serif;color:#00FF85}
+.igrk{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font:900 9.5px/1 "Inter Tight",Inter,sans-serif}.igrk.g{background:#00FF85;color:#14001A}
+.iglb{position:relative;font:700 9px/1 Inter,sans-serif;color:rgba(255,255,255,.8);margin-top:10px}
+.igstrip{position:relative;display:grid;grid-template-columns:repeat(var(--n),1fr);gap:3px;margin-top:6px}
+.igstrip i{height:18px;border-radius:5px;font:800 8px/1 "Inter Tight",Inter,sans-serif;font-style:normal;display:grid;place-items:center;background:rgba(255,255,255,.18)}
+.igstrip i.h{background:#00FF85;color:#14001A}.igstrip i.f{border:1px dashed rgba(255,255,255,.3);background:none}
+.igtr{padding:14px}.igtr .igey{color:#0A7A52}.igtr .igwm{color:#6E5A72}
+.igit{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #E7E2EC}
+.igit .igav{width:34px;height:34px}
+.igit b{display:block;font:900 12px/1.15 "Inter Tight",Inter,sans-serif}.igit small{font:600 9px/1.2 Inter,sans-serif;color:#6E5A72}
+.igv{margin-left:auto;text-align:right;font:900 14px/1 "Inter Tight",Inter,sans-serif}.igv span{display:block;font:800 9px/1.3 Inter,sans-serif;color:#0A7A52}
+.igtot{margin-top:10px;background:#F1E8FF;border-radius:12px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;font:700 9.5px/1.3 Inter,sans-serif;color:#4A16C9}.igtot b{font:900 13px/1 "Inter Tight",Inter,sans-serif}
+.igkt{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.igkt .igey,.igkt .igtt{grid-column:1/-1}.igkt .igey{color:#7B3FF2}.igkt .igwm{color:#6E5A72}
+.igfc{aspect-ratio:3/4.3;border-radius:14px;position:relative;overflow:hidden;background:linear-gradient(150deg,#8A4DFF,#4A16C9);color:#fff}
+.igfc.t1{background:linear-gradient(135deg,#00FF85,#5FD8F5 35%,#9C7BFF 65%,#FF7AB0);color:#14001A}.igfc.t3{background:linear-gradient(150deg,#7FA8FF,#3D63E0)}.igfc.t4{background:linear-gradient(150deg,#EDE6F7,#CFC2EC);color:#37003C}
+.igfc .o{position:absolute;left:9px;top:8px;font:900 25px/1 "Inter Tight",Inter,sans-serif}.igfc .o small{display:block;font:800 8px/1.2 Inter,sans-serif}
+.igfc img{position:absolute;right:-6px;bottom:22px;height:66%}
+.igfc .ini{position:absolute;inset:30% 0 30%;display:grid;place-items:center;font:900 26px/1 "Inter Tight",Inter,sans-serif}
+.igfc .n{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.92);color:#37003C;font:900 10.5px/1 "Inter Tight",Inter,sans-serif;text-align:center;padding:6px 2px}
+.igst{display:grid;gap:6px;align-content:start}
+.igst div{background:#F5F3F8;border-radius:10px;padding:6px 8px;font:700 8px/1.2 Inter,sans-serif;color:#6E5A72;letter-spacing:.06em;text-transform:uppercase}
+.igst div b{display:block;font:900 13px/1.15 "Inter Tight",Inter,sans-serif;color:#37003C;letter-spacing:0;text-transform:none}
+.igq{grid-column:1/-1;font:700 10px/1.45 Inter,sans-serif;color:#37003C;border-left:3px solid #7B3FF2;padding-left:8px}
+.igstory{width:270px;height:480px;position:relative;overflow:hidden;background:linear-gradient(170deg,#2A1270,#4C22C4 50%,#7B3FF2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;flex:none}
+.igstory .igp{border-radius:14px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.igsth{display:flex;align-items:center;gap:7px;color:#fff;font:900 11px/1 "Inter Tight",Inter,sans-serif;letter-spacing:.08em}.igsth svg{width:20px;height:20px}
+.igstf{color:rgba(255,255,255,.85);font:800 10px/1 Inter,sans-serif;letter-spacing:.06em}
 </style>
 </head>
 <body>
@@ -1665,6 +1737,7 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
       <div class="t"><b>YELEK<span class="adm" id="admPill" hidden>YÖNETİCİ</span></b></div>
     </div>
     <span class="tt" id="tt" aria-hidden="true"></span>
+    <button class="pmBtn" id="pmBtn" data-act="pmOpen" aria-label="Paylaşım merkezi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></button>
     <button class="gearBtn" id="gearBtn" data-act="tab" data-tab="ayarlar" aria-label="Yönetici girişi"></button>
     <button class="meBtn ask" id="meBtn" data-act="meSheet">Kimsin?</button>
   </div>
@@ -1707,7 +1780,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113131850";
+const APP_V="261113133609";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2239,7 +2312,7 @@ function stDraw(){const st=S.story,host=$("#story");if(!st)return;const pg=st.P[
   host.innerHTML=`<div class="stv st-${pg.k}" role="dialog" aria-modal="true" aria-label="Maç hikâyesi"><div class="stbars">${st.P.map((_,k)=>`<i class="${k<st.i?"done":k===st.i?"run":""}"><b></b></i>`).join("")}</div>
     <div class="sttop"><span class="stbrand">YELEK</span><button class="stx" data-act="stX" aria-label="Kapat">✕</button></div>
     <div class="stpg">${pg.h}</div>
-    ${pg.sh?`<button class="stsh" data-act="${pg.sh}" data-id="${esc(st.mid)}">${ICON.share} Paylaş</button>`:""}
+
     <button class="stnav l" aria-label="Önceki" data-st="-1"></button><button class="stnav r" aria-label="Sonraki" data-st="1"></button></div>`;
   const run=host.querySelector(".stbars .run b");if(run&&!RM){run.style.animationDuration=ST_MS+"ms"}
   clearTimeout(S._stT);S._stT0=Date.now();S._stLeft=ST_MS;S._stT=setTimeout(()=>stGo(1),ST_MS)}
@@ -2312,6 +2385,91 @@ function renderSheet(){
   if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
   keepOpen(body,()=>{body.innerHTML=html});
 }
+/* ================= Paylaşım merkezi ================= */
+const IGH="@abilerkardeslerfc";
+const canPM=()=>true;
+const IG_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>';
+const IGLOGO=`<svg viewBox="0 0 512 512"><path d="M256 70l150 48v122c0 100-66 166-150 206C172 406 106 340 106 240V118z" fill="#37003C" stroke="#fff" stroke-width="18"/><path d="M186 176l70 92 70-92M256 268v96" fill="none" stroke="#fff" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/><circle cx="256" cy="128" r="16" fill="#00FF85"/></svg>`;
+const igWeek=m=>{if(!m||m.season==null)return"";const L=fin().filter(x=>+x.season===+m.season).sort((a,b)=>matchTs(a)-matchTs(b));const i=L.findIndex(x=>x.id===m.id);return i>=0?"HAFTA "+(i+1):""};
+const igWm=t=>`<div class="igwm"><span>${IGLOGO}${IGH}</span><span>${esc(t||"")}</span></div>`;
+const igAv=(id,cls="")=>{const ph=photoOf(id);const p=P(id);return `<span class="igav ${tierOf(ovrOf(id))} ${cls}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p?p.name:"?"))}</span>`};
+const igDate=d=>{const x=new Date(d+"T12:00:00");return x.getDate()+" "+["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][x.getMonth()]};
+function igScore(m){const inf=S.mInfo[m.id]||{pts:{}};const a=+m.score_a||0,b=+m.score_b||0;const nA=nmOf(m,"A"),nB=nmOf(m,"B");
+  const sc=k=>plOf(m,k).map(id=>[id,+(m.stats||{})[id]?.g||0]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).map(([id,g])=>esc(shortName(nameOf(id)))+(g>1?" "+g:""));
+  const title=a===b?(a+b>=8?"Gol düellosu, kazanan yok":"Puanlar paylaşıldı"):(Math.abs(a-b)>=4?esc(a>b?nA:nB)+" farka koştu":esc(a>b?nA:nB)+" kazandı");
+  const mo=inf.motm,r=mo&&inf.pts[mo];
+  const html=`<div class="igp igpg igms"><div class="igey">Maç sonucu · ${igDate(m.date)}</div><div class="igtt">${title}</div>
+    <div class="igsc"><div class="igtm">${crest(nA,"A",54,nB)}<span>${esc(nA)}</span></div><div class="ignum">${a}–${b}</div><div class="igtm">${crest(nB,"B",54,nA)}<span>${esc(nB)}</span></div></div>
+    <div class="iggl"><div>${sc("A").map(x=>"⚽ "+x).join("<br>")}</div><div>${sc("B").map(x=>x+" ⚽").join("<br>")}</div></div>
+    ${mo?`<div class="igmotm">${igAv(mo)}<span><small>MAÇIN ADAMI</small><b>${esc(nameOf(mo))}</b></span>${r?`<em>${fN(r.pts)}</em>`:""}</div>`:""}${igWm(igWeek(m))}</div>`;
+  const gl=[...sc("A"),...sc("B")].join(" · ");
+  const cap=`${igDate(m.date)} · ${nA} ${a}–${b} ${nB} ${a===b?"🤝":"🔥"}\n${mo?`${nameOf(mo)} maçın adamı ⭐\n`:""}${gl?"⚽ "+gl+"\n":""}#abilerkardeslerfc #halısaha #yelek`;
+  return{html,cap,name:"skor-"+m.date}}
+function igTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=(inf.totw||[]).slice(0,7);if(!T.length)return null;
+  const rows={FV:[],OS:[],DF:[],KL:[]};T.forEach(id=>{const r=inf.pts[id];(rows[r?.role]||rows.OS).push(id)});
+  const ks=["FV","OS","DF","KL"].filter(k=>rows[k].length);const Y={};ks.forEach((k,i)=>Y[k]=ks.length<2?50:26+i*58/(ks.length-1));let pls="";for(const k of ks){const L=rows[k];L.forEach((id,i)=>{const x=(i+1)*100/(L.length+1);const r=inf.pts[id];
+    pls+=`<div class="igpl" style="left:${x.toFixed(1)}%;top:${Y[k].toFixed(1)}%">${igAv(id,inf.motm===id?"h":"")}<b>${esc(shortName(nameOf(id)))}</b><em>${r?fN(r.pts):""}</em></div>`})}
+  const html=`<div class="igp igtw"><div class="igey">Haftanın takımı · ${igDate(m.date)}</div><div class="igtt">En iyi ${T.length}</div><div class="igpitch"></div>${pls}${igWm(igWeek(m))}</div>`;
+  const cap=`Haftanın takımı · ${igDate(m.date)} 🟩\n${T.map(id=>shortName(nameOf(id))+" "+fN(inf.pts[id].pts)).join(" · ")}\n#abilerkardeslerfc #haftanıntakımı #halısaha`;
+  return{html,cap,name:"haftanin-takimi-"+m.date}}
+function igMvp(){const yr=curYr();const F=fin().filter(m=>+m.season===+yr);const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return null;
+  const t=L.slice(0,3),ord=t.length===3?[1,0,2]:t.map((_,i)=>i);const lead=t[0];const len=Math.max(sLen(),F.length);
+  const strip=[...Array(len)].map((_,i)=>{if(i>=F.length)return'<i class="f"></i>';const x=lead.m[i];return x?`<i class="${Math.max(...Object.values(lead.m).map(y=>y.p))===x.p?"h":""}">${fP(x.p)}</i>`:'<i>–</i>'}).join("");
+  const html=`<div class="igp igpg igso"><div class="igey">Sezonun oyuncusu · Hafta ${F.length}</div><div class="igtt">${F.length>=sLen()?"Sezonun en iyisi":"Yarış kızışıyor"}</div>
+    <div class="igpd">${ord.map(i=>{const o=t[i];return `<div><span class="igrk${i===0?" g":""}">${i+1}</span>${igAv(o.id,"big"+(i===0?" h":""))}<b>${esc(nameOf(o.id))}</b><em>${fP(o.tot)}</em></div>`}).join("")}</div>
+    <div class="iglb">${esc(shortName(nameOf(lead.id)))} · sezon şeridi</div><div class="igstrip" style="--n:${len}">${strip}</div>${igWm("HAFTA "+F.length+"/"+sLen())}</div>`;
+  const cap=`Sezonun oyuncusu yarışı · Hafta ${F.length} ⭐\n${t.map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+fP(o.tot)).join("\n")}\n#abilerkardeslerfc #halısaha #yelek`;
+  return{html,cap,name:"sezonun-oyuncusu"}}
+function igMarket(){const L=S.players.filter(p=>!p.guest).map(p=>{const m=mvInfo(p.id);return m&&m.prev!=null?{p,v:m.v,d:Math.round((m.v-m.prev)*10)/10}:null}).filter(x=>x&&x.d>0).sort((a,b)=>b.d-a.d).slice(0,3);
+  if(!L.length)return null;const tot=S.players.filter(p=>!p.guest).reduce((a,p)=>a+mvOf(p.id),0);
+  const html=`<div class="igp igtr"><div class="igey">Transfer piyasası</div><div class="igtt">Değeri en çok artanlar</div>
+    ${L.map(x=>`<div class="igit">${igAv(x.p.id)}<span><b>${esc(x.p.name)}</b><small>${esc(x.p.pos)}${ageOf(x.p)!=null?" · "+ageOf(x.p)+" yaş":""}</small></span><span class="igv">${fM(x.v)}<span>▲ ${fM(x.d)}</span></span></div>`).join("")}
+    <div class="igtot"><span>Kadronun toplam değeri</span><b>${fN1(tot)} M €</b></div>${igWm(igWeek(lastFinM()))}</div>`;
+  const cap=`Transfer piyasası 📈\n${L.map(x=>x.p.name+" "+fM(x.v)+" (▲ "+fM(x.d)+")").join("\n")}\n#abilerkardeslerfc #transfer #halısaha`;
+  return{html,cap,name:"transfer-piyasasi"}}
+function igCard(p){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=photoOf(p.id);const yr=curYr();const F=fin().filter(m=>+m.season===+yr);
+  let g=0,a=0,n=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[p.id];if(r){n++;g+=r.g||0;a+=r.a||0}});
+  const lt=ligTable(F);const li=lt.findIndex(x=>x.id===p.id);const facts=[];
+  const top=k=>{let b=null;F.length&&S.players.forEach(q=>{let v=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[q.id];if(r)v+=r[k]||0});if(!b||v>b.v)b={id:q.id,v}});return b};
+  const tg=top("g"),ta=top("a");if(tg&&tg.id===p.id&&tg.v>0)facts.push("Gol kralı");if(ta&&ta.id===p.id&&ta.v>0)facts.push("Asist kralı");if(li===0)facts.push("Puan durumunun lideri");
+  const html=`<div class="igp igkt"><div class="igey">Kartını tanı</div><div class="igtt">${esc(p.name)}</div>
+    <div class="igfc ${tierOf(o)}"><span class="o">${o}<small>${eposOf(p)}</small></span>${ph?`<img src="${esc(ph)}" alt="">`:`<span class="ini">${esc(initials(p.name))}</span>`}<span class="n">${esc(up(shortName(p.name)))}</span></div>
+    <div class="igst"><div>Piyasa değeri<b>${fM(mvOf(p.id))}</b></div><div>Sezon ${yr}<b>${n} maç · ${g?g+" gol":a?a+" asist":"–"}${g&&a?" · "+a+" asist":""}</b></div><div>Lig<b>${li>=0?(li+1)+". · "+lt[li].p+" puan":"–"}</b></div>${ageOf(p)!=null?`<div>Yaş<b>${ageOf(p)}</b></div>`:""}</div>
+    ${facts.length?`<div class="igq">${facts.join(" · ")}</div>`:""}${igWm("SEZON "+yr)}</div>`;
+  const cap=`Kartını tanı: ${p.name} 🃏\n${o} reyting · ${fM(mvOf(p.id))}${facts.length?"\n"+facts.join(" · "):""}\n#abilerkardeslerfc #halısaha #yelek`;
+  return{html,cap,name:"kart-"+shortName(p.name).toLowerCase().replace(/[^a-z0-9ğüşıöç]+/g,"-")}}
+function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));const m=S.matches.find(x=>x.id===f.mid)||ms[0];
+  const k=f.item||(f.tab==="mac"?"skor":f.tab==="sezon"?"mvp":"kart");
+  if(f.tab==="mac"&&m){if(k==="totw")return igTotw(m);return igScore(m)}
+  if(f.tab==="sezon"){if(k==="piyasa")return igMarket();return igMvp()}
+  if(f.tab==="oyuncu"){const p=P(f.pid||S.me)||S.players.find(x=>!x.guest);return p?igCard(p):null}
+  return null}
+const igFrame=(x,fmt)=>fmt==="story"?`<div class="igstory"><div class="igsth">${IGLOGO}<b>ABİLER KARDEŞLER FC</b></div>${x.html}<div class="igstf">${IGH}</div></div>`:x.html;
+function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));
+  const tabs=[["mac","Maç"],["sezon","Sezon"],["oyuncu","Oyuncu"]];
+  const items={mac:[["skor","Skor"],["totw","Haftanın takımı"],["kadro","Kadro ve diziliş"]],sezon:[["mvp","Sezonun oyuncusu"],["piyasa","Transfer piyasası"]].concat(seasonsAll().some(n=>seasonDone(n))?[["final","Sezon finali"]]:[]),oyuncu:[["kart","Kartını tanı"]]};
+  const it=f.item&&items[f.tab].some(x=>x[0]===f.item)?f.item:items[f.tab][0][0];f.item=it;
+  let sel="";if(f.tab==="mac"){const mid=f.mid||(ms[0]&&ms[0].id);sel=`<select class="pmsel" data-bind="pm.mid" aria-label="Maç">${ms.map(m=>`<option value="${esc(m.id)}"${m.id===mid?" selected":""}>${fmtShort(m.date)} · ${esc(nmOf(m,"A"))} ${m.score_a}–${m.score_b} ${esc(nmOf(m,"B"))}</option>`).join("")}</select>`}
+  if(f.tab==="oyuncu"){const pid=f.pid||S.me;sel=`<select class="pmsel" data-bind="pm.pid" aria-label="Oyuncu">${S.players.filter(p=>!p.guest).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(p=>`<option value="${esc(p.id)}"${p.id===pid?" selected":""}>${esc(p.name)}</option>`).join("")}</select>`}
+  const legacy=it==="kadro"||it==="final";const x=legacy?null:igBuild();
+  return `<div class="ch"><div><div class="eyebrow">${IGH}</div><h2>Paylaşım merkezi</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
+   <div class="vtog pmt">${tabs.map(([k,l])=>`<button data-act="pmTab" data-v="${k}" class="${f.tab===k?"on":""}">${l}</button>`).join("")}</div>${sel}
+   <div class="pmi">${items[f.tab].map(([k,l])=>`<button data-act="pmItem" data-v="${k}" class="${it===k?"on":""}">${l}</button>`).join("")}</div>
+   ${legacy?`<p class="muted small">${it==="kadro"?"Kadro görseli iki takımı sahada gösterir.":"Sezon finali görselleri bitmiş sezon için hazırlanır."}</p><button class="btn primary block" data-act="${it==="kadro"?"shareImg":"shareSeason"}" data-id="${it==="kadro"?esc(f.mid||(S.matches.filter(m=>(m.team_a||[]).length).sort((a,b)=>matchTs(b)-matchTs(a))[0]||{}).id||""):[...seasonsAll()].reverse().find(n=>seasonDone(n))}">${IG_SVG} Görseli hazırla</button>`:
+   x?`<div class="vtog pmf"><button data-act="pmFmt" data-v="post" class="${f.fmt!=="story"?"on":""}">Gönderi 4:5</button><button data-act="pmFmt" data-v="story" class="${f.fmt==="story"?"on":""}">Hikâye 9:16</button></div>
+   <div class="pmprev" id="pmPrev">${igFrame(x,f.fmt)}</div>
+   <div class="pmcap"><div class="pmch"><span>AÇIKLAMA</span><button class="btn sm ghost" data-act="pmCopy">Kopyala</button></div><textarea id="pmCap" rows="4" readonly>${esc(x.cap)}</textarea></div>
+   <div class="row" style="gap:8px"><button class="btn block" data-act="pmGo" data-v="save">Kaydet</button><button class="btn primary block" data-act="pmGo" data-v="share">${IG_SVG} Paylaş</button></div>`
+   :'<p class="muted small">Bunun için henüz yeterli veri yok.</p>'}`}
+let _h2c=null;const h2c=()=>_h2c||(_h2c=new Promise((ok,no)=>{if(window.html2canvas)return ok(window.html2canvas);const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";s.onload=()=>ok(window.html2canvas);s.onerror=()=>{_h2c=null;no(new Error("yüklenemedi"))};document.head.appendChild(s)}));
+async function pmGo(mode){const x=igBuild();if(!x)return;const f=S.f.pm;toast("Görsel hazırlanıyor…");
+  let h;try{h=await h2c()}catch(_){toast("Görsel aracı yüklenemedi, bağlantını kontrol et");return}
+  const box=document.createElement("div");box.className="igrender";box.innerHTML=igFrame(x,f.fmt);document.body.appendChild(box);
+  try{await document.fonts?.ready;const el=box.firstElementChild;const c=await h(el,{scale:1080/el.offsetWidth,backgroundColor:null,useCORS:true,logging:false});
+    const fn="abilerkardeslerfc-"+x.name+(f.fmt==="story"?"-hikaye":"")+".png";
+    if(mode==="save"){c.toBlob(b=>{if(!b){toast("Görsel oluşturulamadı");return}const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);toast("Görsel kaydedildi")},"image/png")}
+    else shareCanvas(c,fn,"Abiler Kardeşler FC")}catch(e){toast("Görsel oluşturulamadı")}finally{box.remove()}}
+
 function sheetShare(){const m=S.matches.find(x=>x.id===S.sheet.mid);if(!m)return"";return inM(m,()=>{const M=esc(m.id);const done=m.state==="bitti";const inf=S.mInfo[m.id]||{};
   const it=(act,ic,t,d)=>`<button class="shi" data-act="${act}" data-id="${M}"><span class="shic">${ic}</span><span class="sht"><b>${t}</b><small>${d}</small></span><span class="shx">›</span></button>`;
   return `<div class="ch"><div><div class="eyebrow">${fmtShort(m.date)} · ${esc(TEAM.A)} – ${esc(TEAM.B)}</div><h2>Paylaş</h2></div><button class="btn sm" data-act="close">Kapat</button></div><div class="shl">
@@ -2332,7 +2490,7 @@ function _sheetHtml(){const t=S.sheet.type;if(t==="eval"){const m=S.matches.find
       <button class="btn block ghost danger" data-act="delMatch" data-id="${M}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div>`}
   if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&(m.state==="takim"||m.state==="bitti")?inM(m,()=>statEntry(m)):""}
   if(t==="rules")return `<div class="ch"><h2>Puanlama</h2><button class="btn sm" data-act="close">Kapat</button></div>`+viewKurallar(true);
-  if(t==="share")return sheetShare();
+  if(t==="share")return sheetShare();if(t==="pm")return sheetPM();
   return t==="player"?sheetPlayer():t==="me"?sheetMe():t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="ext"?sheetExt():""}
 
 /* ================= Parçalar ================= */
@@ -2393,7 +2551,7 @@ function _lastCard(m){const inf=S.mInfo[m.id]||{pts:{}};const sa=+m.score_a||0,s
   return `<section class="card lastc"><div class="ch"><div><div class="eyebrow">Son maç · ${fmtShort(m.date)}</div></div><button class="btn sm" data-act="viewm" data-id="${M}">Maç detayı ›</button></div>
     <button class="lcs" data-act="viewm" data-id="${M}"><span class="lt${sa>sb?" win":""}"><span class="bibdot"></span>${esc(TEAM.A)}</span><b class="num">${sa} - ${sb}</b><span class="lt${sb>sa?" win":""}"><span class="nobib"></span>${esc(TEAM.B)}</span></button>
     ${mo?`<div class="lcm"><span class="muted small">★ Maçın Adamı</span><b>${esc(nameOf(mo))}</b>${r?`<span class="nt ${noteCls(r.pts)}">${fN(r.pts)}</span>`:""}</div>`:""}
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn sm ghost" data-act="storyRes" data-id="${M}">${ICON.share||""} Sonuç görseli</button>${mo?`<button class="btn sm ghost" data-act="storyMotm" data-id="${M}">${ICON.share||""} Maçın Adamı görseli</button>`:""}</div></section>`}
+    </section>`}
 function extRes(m){const a=+m.score_a||0,b=+m.score_b||0;return a>b?"G":a<b?"M":"B"}
 function rivalCard(E){if(!E.length)return"";const t={};for(const m of E){const k=(m.opponent||"Rakip").trim();const o=t[k]||(t[k]={n:0,G:0,B:0,M:0,at:0,ye:0,last:null});o.n++;o[extRes(m)]++;o.at+=+m.score_a||0;o.ye+=+m.score_b||0;o.last=m.date}
   const all={G:0,B:0,M:0};E.forEach(m=>all[extRes(m)]++);
@@ -2513,7 +2671,7 @@ function matchBody(m){
       <div class="grid2"><button class="btn primary" data-act="autoKadro" data-id="${esc(m.id)}">Otomatik kur</button><button class="btn" data-act="manual" data-id="${esc(m.id)}">${ICON.hand} Manuel kur</button></div>
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`;
   }else{
-    h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2><button class="btn sm" data-act="shareMenu" data-id="${esc(m.id)}">${ICON.share} Paylaş</button></div>${teamsView(m,true)}</section>`;
+    h+=`<section class="card"><div class="ch"><h2>Kadrolar</h2></div>${teamsView(m,true)}</section>`;
     h+=preview(m);
     if(S.admin)h+=finishCard(m);
   }
@@ -2859,7 +3017,6 @@ function _resultPanel(m){
       <div class="evleg"><span>⚽ gol</span><span><span class="pkb">⚽<b>P</b></span> penaltı golü</span><span>👟 asist</span><span>🛡️ çizgiden çıkarma</span><span>🧤 penaltı kurtardı</span><span><span class="pkb">⚽<b>✕</b></span> penaltı kaçırdı</span><span><b class="evi p">P</b> penaltı yaptırdı</span><span><b class="evi og">⚽</b> kendi kalesine</span></div>`;
     if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı</div><div class="hscroll" style="margin-top:10px">${inf.totw.map(id=>P(id)?card(P(id)):"").join("")}</div></div>`;
     h+=`<div class="report">${spiker(m,inf)}</div>`;
-    h+=`<button class="btn block" data-act="shareMenu" data-id="${M}">${ICON.share} Paylaş</button>`;
     if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
       h+=`<details><summary class="small">Ödülleri değiştir <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="grid2" style="margin-top:10px"><label class="f">⚽ Haftanın Golü<select data-act-change="awR" data-k="gol" data-m="${M}">${o(scorers,m.gol_id||"")}</select></label><label class="f">🙈 Haftanın Fiyaskosu<select data-act-change="awR" data-k="fiy" data-m="${M}">${o(pl,m.fiy_id||"")}</select></label></div></details>`}
   }else if(tab==="kadro"){h+=`<div style="display:grid;gap:12px">${teamsView(m)}</div>`}
@@ -3057,7 +3214,7 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
     <div style="display:grid;gap:12px;min-width:0">
       ${profStats(p,s)}
       ${s.streak?`<span class="chip ${s.streak.hot?"warn":"info"}">${s.streak.hot?"🔥":"❄️"} ${esc(s.streak.t)}</span>`:""}
-      <div class="btns2"><button class="btn sm primary" data-act="storyCard" data-id="${esc(p.id)}">${ICON.share||""} Kart görseli</button><button class="btn sm" data-act="open" data-id="${esc(p.id)}">Tüm detaylar</button></div></div></div></section>`;
+      <div class="btns2"><button class="btn sm" data-act="open" data-id="${esc(p.id)}">Tüm detaylar</button></div></div></div></section>`;
   if(om){const v=(om.rsvp||{})[p.id];h+=`<section class="card"><div class="ch"><div><div class="eyebrow">Sıradaki maç</div><h2>${fmtDate(om.date)} · ${esc(om.time||"")}</h2></div></div>
     ${om.state==="kayit"?`<div class="row" style="justify-content:space-between"><span>${v==="g"?"Geliyorsun ✓":v==="y"?"Yedektesin":v==="n"?"Gelemiyorsun":"Henüz cevap vermedin"}</span>${ms(om,p.id,v)}</div>`:(()=>{const k=sideOf(om,p.id);return `<p>${k?`Takımın: <b>${esc(TEAM[k])}</b>`:"Bu maçın kadrosunda değilsin."}</p>`})()}</section>`}
   if(!s.games)h+=`<section class="card"><div class="empty"><h3>Kartın uykuda</h3><p>İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikecek.</p></div></section>`;
@@ -3334,6 +3491,12 @@ document.addEventListener("click",async e=>{
     case"addSheet":S.sheet={type:"add"};render(true);break;
     case"pickMe":if(!id&&S.me)LS.set("y_me_last",S.me);S.me=id||"";if(S.me){LS.set("y_me",S.me);LS.set("y_me_last",S.me)}if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
     case"close":case"closeBg":S.sheet=null;render(true);break;
+    case"pmOpen":S.f.pm=S.f.pm||{tab:"mac",fmt:"post"};S.sheet={type:"pm"};render(true);break;
+    case"pmTab":S.f.pm.tab=el.dataset.v;S.f.pm.item=null;render(true);break;
+    case"pmItem":S.f.pm.item=el.dataset.v;render(true);break;
+    case"pmFmt":S.f.pm.fmt=el.dataset.v;render(true);break;
+    case"pmCopy":{const t=$("#pmCap");if(t){try{await navigator.clipboard.writeText(t.value);toast("Açıklama kopyalandı")}catch(_){t.select();document.execCommand&&document.execCommand("copy");toast("Açıklama kopyalandı")}}break}
+    case"pmGo":await pmGo(el.dataset.v);break;
     case"filter":S.filter=el.dataset.v;render(true);break;
     case"cmpOpen":S.sheet={type:"cmp",a:id||S.me||"",b:id&&S.me&&id!==S.me?S.me:""};render(true);break;
     case"cmpPair":S.sheet={type:"cmp",a:el.dataset.a,b:el.dataset.b};render(true);break;
@@ -3528,6 +3691,7 @@ document.addEventListener("input",e=>{const t=e.target;
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.bind){setPath(t.dataset.bind,t.value);const bd=t.dataset.bind;
     if(bd==="ap.epos"||bd==="ed.epos"){const o=S.f[bd.slice(0,2)];o.pos=GROUP_POS[EPOS[o.epos][0]];if(o.alt===o.epos)o.alt=""}
+    if(bd.startsWith("pm.")){render(true);return}
     if(["sort","wrapP","ap.epos","ed.epos","newDate","newTime","ext.motm","ext.date"].includes(bd)||bd.startsWith("when_"))render(true);return}
   if(t.dataset.cmp&&S.sheet&&S.sheet.type==="cmp"){S.sheet[t.dataset.cmp]=t.value;render(true);return}
   if(t.dataset.vote){const k="v_"+t.dataset.m;(S.f[k]||(S.f[k]={}))[t.dataset.vote]=t.value;return}
