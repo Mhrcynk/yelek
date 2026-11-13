@@ -1784,7 +1784,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113135551";
+const APP_V="261113135928";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2230,14 +2230,14 @@ function seasonAwards(n){const F=fin().filter(m=>+m.season===n);if(!F.length)ret
   const pos={};const YR=yelekRace(F);for(const[k]of POS_AW){const r=YR[k]?.[0];if(r&&r.tot>0)pos[k]=r}
   return{n,F,L,champ:L[0]||null,g:ag.g,a:ag.a,mo:ag.mo,mvp,pos}}
 /* Piyasa değeri (€): reyting tabanı × mevki × yaş × form × devamlılık × kupa. FC 27 değerlerinden ayarlandı. */
-const MV={base:30,ref:80,step:1.13,kl:1,floor:1,age:[[15,1.2],[22,1.1],[27,1],[31,.93],[35,.85]],formK:.1,formMax:.15,attK:.4,attMax:.1,cup:.05,cupOld:.02};
+const MV={base:30,ref:80,step:1.13,kl:1,floor:1,age:[[15,1.2],[22,1.1],[27,1],[31,.93],[35,.85]],formK:.1,formMax:.15,attK:.4,attMax:.1,attMin:5,cup:.05,cupOld:.02};
 const ageOf=p=>p&&p.birth_year?new Date().getFullYear()-p.birth_year:null;
 const ageMul=a=>{if(a==null)return 1;const A=MV.age;if(a<=A[0][0])return A[0][1];if(a>=A[A.length-1][0])return A[A.length-1][1];for(let i=1;i<A.length;i++)if(a<=A[i][0]){const[x0,y0]=A[i-1],[x1,y1]=A[i];return y0+(y1-y0)*(a-x0)/(x1-x0)}return 1};
 function mvParts(p,ovr,H,cups){const pr=[];let v=MV.base*Math.pow(MV.step,ovr-MV.ref);pr.push(["Reyting "+ovr,v]);
   if(posOf(p)==="KL"&&MV.kl!==1){v*=MV.kl;pr.push(["Kaleci",MV.kl])}
   const am=ageMul(ageOf(p));if(am!==1){v*=am;pr.push([ageOf(p)+" yaş",am])}
   const pl=H.filter(h=>h.kind==="oynadi"&&h.r).slice(-5);if(pl.length>=3){const av=pl.reduce((a,h)=>a+h.r.pts,0)/pl.length;const f=1+clamp((av-NOTE.orta)*MV.formK,-MV.formMax,MV.formMax);v*=f;pr.push(["Form (son "+pl.length+" maç ort. "+fN(av)+")",f])}
-  const L8=H.slice(-8);if(L8.length>=2&&!p.yedek){const r=L8.filter(h=>h.kind==="oynadi").length/L8.length;const f=1+clamp((r-.75)*MV.attK,-MV.attMax,MV.attMax);v*=f;pr.push(["Devamlılık (son "+L8.length+" maçta "+Math.round(r*L8.length)+" maç)",f])}
+  const L8=H.slice(-8);if(L8.length>=MV.attMin&&!p.yedek){const r=L8.filter(h=>h.kind==="oynadi").length/L8.length;const f=1+clamp((r-.75)*MV.attK,-MV.attMax,MV.attMax);v*=f;pr.push(["Devamlılık (son "+L8.length+" maçta "+Math.round(r*L8.length)+" maç)",f])}
   if(cups){const f=1+cups;v*=f;pr.push(["Kupalar",f])}
   return{v:Math.max(MV.floor,Math.round(v*10)/10),parts:pr}}
 const _mvC=new Map();
