@@ -1784,7 +1784,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113135928";
+const APP_V="261113135936";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -3424,7 +3424,7 @@ function viewKurallar(inSheet){
   const n=NOTE;const row=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;const f=x=>x>0?"+"+fN(x):x<0?"−"+fN(-x):"0";
   const RL=[["KL","Kaleci"],["DF","Defans"],["DOS","Defansif orta saha"],["OS","Orta saha"],["FV","Forvet"]];
   return `
-  <section class="card"><h2>Piyasa değeri</h2><p class="muted small">FC 27'deki oyuncu değerlerinden ayarlandı. Her maçtan sonra güncellenir.</p><div class="rules">${row("Reyting","80 reyting = 30 M €; her +1 reyting yaklaşık %13 artırır")}${row("Kaleci","×0,85")}${row("Yaş","15 yaş ×1,2 · 22 yaş ×1,1 · 27 yaş ×1 · 31 yaş ×0,93 · 35+ ×0,85, aralar kademeli")}${row("Form","en az 3 maç oynayanlarda son 5 maçın not ortalaması 7'nin üstündeyse +, altındaysa −; en fazla ±%15")}${row("Devamlılık","son 8 maçın katılımına göre en fazla ±%10; yedeklere uygulanmaz")}${row("Kupalar","son sezonun her kupası +%5, daha eskiler +%2")}${row("Taban","en düşük 1 M €")}</div></section>
+  <section class="card"><h2>Piyasa değeri</h2><p class="muted small">FC 27'deki oyuncu değerlerinden ayarlandı. Her maçtan sonra güncellenir.</p><div class="rules">${row("Reyting","80 reyting = 30 M €; her +1 reyting yaklaşık %13 artırır")}${row("Kaleci","×0,85")}${row("Yaş","15 yaş ×1,2 · 22 yaş ×1,1 · 27 yaş ×1 · 31 yaş ×0,93 · 35+ ×0,85, aralar kademeli")}${row("Form","en az 3 maç oynayanlarda son 5 maçın not ortalaması 7'nin üstündeyse +, altındaysa −; en fazla ±%15")}${row("Devamlılık","en az 5 maç oynandıktan sonra, son 8 maçın katılımına göre en fazla ±%10; yedeklere uygulanmaz")}${row("Kupalar","son sezonun her kupası +%5, daha eskiler +%2")}${row("Taban","en düşük 1 M €")}</div></section>
   <section class="card"><h2>Maç notu</h2><p>Sahada yapılanlar (sonuç, gol, asist, yenilen gol, değerlendirme) toplanır. Sonra <b>maç dengesi</b> uygulanır: maçtaki ortadaki oyuncu ${fN(n.orta)} alacak şekilde herkesin notu aynı miktarda kaydırılır. Böylece notlar şişmez, kim maçın ortalamasının üstünde kim altında net görünür. Not ${fN(n.tavan)}'i geçerse aşan kısım yarı sayılır.</p>
    <p class="muted small">Değerlendirme notun aralığını belirler. Aralığın dışına taşan kısmın dörtte biri sayılır:</p>
    <div class="rules">${[1,2,3,4].map(k=>{const[lo,hi]=n.bant[k];return row(n.perf[k][1],k===1?"en az "+fN(lo):k===4?"en fazla "+fN(hi):fN(lo)+" – "+fN(hi))}).join("")}</div></section>
