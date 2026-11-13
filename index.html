@@ -1634,8 +1634,10 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .mvpb{margin-bottom:6px}.mvpb .tsb{background:linear-gradient(160deg,#FBF9FE,#F1E8FF);border:1px solid #E4D8FB}
 .mvpod{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;margin:4px 0 12px}
 .mvc{display:grid;justify-items:center;gap:2px;min-width:0}
-.mvc .mvf{width:148px;zoom:.66}
-.mvc.r1 .mvf{zoom:.76}
+.mvc .mvf{--s:.56;width:calc(176px*var(--s));height:calc(176px*1.4333*var(--s));position:relative}
+.mvc.r1 .mvf{--s:.65}
+.mvc .mvi{position:absolute;left:0;top:0;width:176px;transform:scale(var(--s));transform-origin:0 0}
+.mvc .mvi .fut{max-width:none}
 .mvc>b{font:900 1.25rem/1 "Inter Tight",Inter,sans-serif;color:#37003C;margin-top:6px}
 .mvc.r1>b{font-size:1.5rem;color:#7B3FF2}
 .mvc>small{font:700 .62rem/1 Inter,sans-serif;color:var(--muted)}
@@ -1693,7 +1695,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113065241";
+const APP_V="261113093536";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2151,8 +2153,8 @@ function posRaceHtml(F){const YR=yelekRace(F);const card=raceCardsBase(F);const 
 function yelekAll(F){const YR=yelekRace(F);return Object.values(YR).flat().sort((a,b)=>b.tot-a.tot||a.n-b.n||nameOf(a.id).localeCompare(nameOf(b.id),"tr"))}
 function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return"";
   const top=L.slice(0,3);const ord=top.length===3?[1,0,2]:top.map((_,i)=>i);
-  const pod=`<div class="mvpod">${ord.map(i=>{const o=top[i];const p=P(o.id);return p?`<div class="mvc r${i+1}"><span class="mvr">${i+1}</span><div class="mvf">${card(p)}</div><b class="num">${fP(o.tot)}</b><small>puan</small></div>`:""}).join("")}</div>`;
-  return `<div class="boards mvpb">${raceCardsBase(F)(null,"Sezonun oyuncusu","⭐",L).replace('<ol>',pod+'<ol>')}</div>`}
+  const pod=`<div class="mvpod">${ord.map(i=>{const o=top[i];const p=P(o.id);return p?`<div class="mvc r${i+1}"><span class="mvr">${i+1}</span><div class="mvf"><div class="mvi">${card(p)}</div></div><b class="num">${fP(o.tot)}</b><small>puan</small></div>`:""}).join("")}</div>`;
+  return `<div class="boards mvpb"><section class="card tsb"><h3 class="tsh">⭐ Sezonun oyuncusu</h3>${pod}</section></div>`}
 function stSeason(n){const w=seasonAwards(n);if(!w||!w.champ){toast("Bu sezonda maç yok");return}
   const ph=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:`<span class="stini">${esc(initials(nameOf(id)))}</span>`};const c=w.champ;const P2=[];
   P2.push({k:"motm",sh:"shareSeason",h:`<span class="stey">Sezon ${n} · ${w.F.length} maç</span><span class="stey2">🏆 Şampiyon</span><div class="stph">${ph(c.id)}</div><h2>${esc(nameOf(c.id))}</h2><div class="stkv"><div><b class="num">${c.p}</b><small>Puan</small></div><div><b class="num">${c.G}-${c.B}-${c.M}</b><small>G-B-M</small></div><div><b class="num">${c.av>0?"+":""}${c.av}</b><small>Averaj</small></div></div>`});
