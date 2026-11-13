@@ -1727,6 +1727,10 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .igstory .igp{border-radius:14px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
 .igsth{display:flex;align-items:center;gap:7px;color:#fff;font:900 11px/1 "Inter Tight",Inter,sans-serif;letter-spacing:.08em}.igsth svg{width:20px;height:20px}
 .igstf{color:rgba(255,255,255,.85);font:800 10px/1 Inter,sans-serif;letter-spacing:.06em}
+.igtw2{padding:14px}.igtw2 .igtt{display:flex;align-items:baseline;gap:8px;font-size:20px}.igtw2 .igtt small{font:700 8px/1 Inter,sans-serif;color:rgba(255,255,255,.75);letter-spacing:0}
+.igfw{position:absolute;left:50%;top:54px;width:360px;height:420px;margin-left:-108px;transform:scale(.6);transform-origin:0 0}
+.igfw .field{width:360px;height:420px;max-width:none;aspect-ratio:auto!important;margin:0;border-radius:26px;box-shadow:0 14px 34px rgba(20,0,40,.4)}
+.igfw .tcard{transition:none}.igfw .tcard.a{box-shadow:0 8px 20px rgba(55,0,60,.28)!important}.igfw .tcard.a .tnm{box-shadow:none!important;border-bottom:3px solid #1F2430;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -1780,7 +1784,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113133609";
+const APP_V="261113134641";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2034,11 +2038,15 @@ function noteSpread(p,cur,ch,D){if(Math.abs(D)<.005)return[];
   return I?L.map(([k,v,why])=>[k,v*D/I,why]):[]}
 // Haftanın Takımı: en yüksek notlu kaleci + en yüksek notlu 6 oyuncu (misafirler hariç), nota göre sıralı
 function totwOf(pl,pts){const ok=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts);
-  // en iyi kaleci + en yüksek notlu 6 oyuncu; içlerinde hiç defans ya da hiç hücumcu yoksa 6.'nın yerine o mevkinin en iyisi girer
-  const gk=ok.find(id=>pts[id].role==="KL");const rest=ok.filter(id=>id!==gk&&pts[id].role!=="KL");const pick=rest.slice(0,6);
-  const need=(f)=>{if(pick.some(id=>f(pts[id].role)))return;const c=rest.find(id=>!pick.includes(id)&&f(pts[id].role));if(c&&pick.length)pick[pick.length-1]=c};
-  need(r=>r==="DF");need(r=>r==="OS"||r==="FV");
-  return (gk?[gk]:[]).concat(pick).sort((a,b)=>pts[b].pts-pts[a].pts)}
+  // mevkiye göre 7: 1 kaleci + 2-2-2 / 2-3-1 / 3-2-1 dizilişlerinden not toplamı en yüksek olanı; bir mevkide oyuncu yetmezse boşluğu en iyi kalan oyuncu doldurur
+  const gk=ok.find(id=>pts[id].role==="KL");const rest=ok.filter(id=>id!==gk);let best=null;
+  for(const [k,n] of [["2-3-1",[2,3,1]],["3-2-1",[3,2,1]],["2-2-2",[2,2,2]]]){const used=new Set(),slot={};let sum=0,fill=0;
+    ["DF","OS","FV"].forEach((r,i)=>{rest.filter(id=>pts[id].role===r).slice(0,n[i]).forEach(id=>{used.add(id);slot[id]=r;sum+=pts[id].pts})});
+    ["DF","OS","FV"].forEach((r,i)=>{let c=Object.values(slot).filter(x=>x===r).length;while(c<n[i]){const id=rest.find(x=>!used.has(x));if(!id)break;used.add(id);slot[id]=r;sum+=pts[id].pts;fill++;c++}});
+    if(!best||sum>best.sum+1e-9||(Math.abs(sum-best.sum)<1e-9&&fill<best.fill))best={k,slot,sum,fill}}
+  const slot=best?best.slot:{};let kp=gk;if(!kp)kp=rest.find(id=>!(id in slot));
+  const O={DF:1,OS:2,FV:3};const T=(kp?[kp]:[]).concat(Object.keys(slot).sort((a,b)=>O[slot[a]]-O[slot[b]]||pts[b].pts-pts[a].pts));
+  if(kp)slot[kp]="KL";T.form=best?best.k:"2-3-1";T.slot=slot;return T}
 function compute(){computeCore(null);const lv={};
   for(const[pid,st]of Object.entries(S.stats)){let prev=st.baseX??st.base;for(const h of st.hist){(lv[h.m.id]??={})[pid]=prev;prev=h.gx??h.ovr}}
   computeCore(lv)}
@@ -2405,12 +2413,14 @@ function igScore(m){const inf=S.mInfo[m.id]||{pts:{}};const a=+m.score_a||0,b=+m
   const gl=[...sc("A"),...sc("B")].join(" · ");
   const cap=`${igDate(m.date)} · ${nA} ${a}–${b} ${nB} ${a===b?"🤝":"🔥"}\n${mo?`${nameOf(mo)} maçın adamı ⭐\n`:""}${gl?"⚽ "+gl+"\n":""}#abilerkardeslerfc #halısaha #yelek`;
   return{html,cap,name:"skor-"+m.date}}
-function igTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=(inf.totw||[]).slice(0,7);if(!T.length)return null;
-  const rows={FV:[],OS:[],DF:[],KL:[]};T.forEach(id=>{const r=inf.pts[id];(rows[r?.role]||rows.OS).push(id)});
-  const ks=["FV","OS","DF","KL"].filter(k=>rows[k].length);const Y={};ks.forEach((k,i)=>Y[k]=ks.length<2?50:26+i*58/(ks.length-1));let pls="";for(const k of ks){const L=rows[k];L.forEach((id,i)=>{const x=(i+1)*100/(L.length+1);const r=inf.pts[id];
-    pls+=`<div class="igpl" style="left:${x.toFixed(1)}%;top:${Y[k].toFixed(1)}%">${igAv(id,inf.motm===id?"h":"")}<b>${esc(shortName(nameOf(id)))}</b><em>${r?fN(r.pts):""}</em></div>`})}
-  const html=`<div class="igp igtw"><div class="igey">Haftanın takımı · ${igDate(m.date)}</div><div class="igtt">En iyi ${T.length}</div><div class="igpitch"></div>${pls}${igWm(igWeek(m))}</div>`;
-  const cap=`Haftanın takımı · ${igDate(m.date)} 🟩\n${T.map(id=>shortName(nameOf(id))+" "+fN(inf.pts[id].pts)).join(" · ")}\n#abilerkardeslerfc #haftanıntakımı #halısaha`;
+function igTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.length)return null;
+  const fk=T.form||"2-3-1",sl=T.slot||{};const O={KL:0,DF:1,OS:2,FV:3};
+  // uygulamadaki tek takım sahasıyla aynı yerleşim ve kartlar
+  const toks=layout("A",FORMS[fk].slots,null,T,null,true).map(t=>({...t,k:sideOf(m,t.id)||"A"}));
+  const cards=toks.map(t=>cardTok(t,"A",null,{pts:inf.pts,motm:inf.motm},false,null)).join("").replace(/<button/g,"<div").replace(/<\/button>/g,"</div>").replace(/ data-act="[^"]*"| data-id="[^"]*"/g,"");
+  const html=`<div class="igp igpg igtw2"><div class="igey">Haftanın takımı · ${igDate(m.date)}</div><div class="igtt">${fk}<small>${esc(nmOf(m,"A"))} ${+m.score_a||0}-${+m.score_b||0} ${esc(nmOf(m,"B"))}</small></div><div class="igfw"><div class="field single cards">${fieldSvg()}${cards}</div></div>${igWm(igWeek(m))}</div>`;
+  const by=r=>T.filter(id=>(sl[id]||inf.pts[id]?.role)===r).map(id=>shortName(nameOf(id))+" "+fN(inf.pts[id].pts)).join(", ");
+  const cap=`Haftanın takımı · ${igDate(m.date)} · ${fk} 🟩\n🧤 ${by("KL")}\n🛡️ ${by("DF")}\n🎯 ${by("OS")}\n⚡ ${by("FV")}\n#abilerkardeslerfc #haftanıntakımı #halısaha`;
   return{html,cap,name:"haftanin-takimi-"+m.date}}
 function igMvp(){const yr=curYr();const F=fin().filter(m=>+m.season===+yr);const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return null;
   const t=L.slice(0,3),ord=t.length===3?[1,0,2]:t.map((_,i)=>i);const lead=t[0];const len=Math.max(sLen(),F.length);
