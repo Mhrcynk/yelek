@@ -1824,6 +1824,12 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .hkstf{color:rgba(255,255,255,.75);font:700 9px/1 Inter,sans-serif;letter-spacing:.06em}
 .hkstory .hk{box-shadow:0 14px 30px rgba(0,0,0,.4)}
 .pmemp{padding:18px;border-radius:14px;background:#F1ECF6;text-align:center}
+/* kaydırınca sayfa başlığı YELEK yazısının yerine geçer, sağdaki düğmelerle çakışmaz */
+.brand{flex:1;position:relative}
+.brand .t{transition:opacity .2s,transform .2s}
+.tt{left:44px;right:0;top:50%;transform:translateY(-30%);overflow:hidden;text-overflow:ellipsis}
+body.phout .tt{transform:translateY(-50%)}
+body.phout .brand .t{opacity:0;transform:translateY(-6px);pointer-events:none}
 </style>
 </head>
 <body>
@@ -1832,8 +1838,8 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
     <div class="brand">
       <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="lgG" cx="1" cy="1" r=".75"><stop offset="0" stop-color="#5FD8F5" stop-opacity=".95"/><stop offset=".45" stop-color="#7B3FF2" stop-opacity=".55"/><stop offset="1" stop-color="#7B3FF2" stop-opacity="0"/></radialGradient></defs><rect class="lgbg" width="64" height="64" rx="16" fill="#fff"/><rect width="64" height="64" rx="16" fill="url(#lgG)"/><path class="lgsh" d="M32 8.8l18.8 6v15.2c0 12.5-8.3 20.8-18.8 25.8C21.5 50.8 13.2 42.5 13.2 30V14.8z" fill="#37003C"/><path class="lgy" d="M23.2 22l8.8 11.5 8.8-11.5M32 33.5v12" fill="none" stroke="#fff" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/><circle class="lgd" cx="32" cy="16" r="2" fill="#00FF85"/></svg>
       <div class="t"><b>YELEK<span class="adm" id="admPill" hidden>YÖNETİCİ</span></b></div>
+      <span class="tt" id="tt" aria-hidden="true"></span>
     </div>
-    <span class="tt" id="tt" aria-hidden="true"></span>
     <button class="pmBtn" id="pmBtn" data-act="pmOpen" aria-label="Paylaşım merkezi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></button>
     <button class="gearBtn" id="gearBtn" data-act="tab" data-tab="ayarlar" aria-label="Yönetici girişi"></button>
     <button class="meBtn ask" id="meBtn" data-act="meSheet">Kimsin?</button>
@@ -1877,7 +1883,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113160532";
+const APP_V="261113195541";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -3478,7 +3484,7 @@ function rtHist(s){const h=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.gx!=null)
 function profStats(p,s){const g=s.games||0,W=s.W||0,D=s.D||0,L=s.L||0;const cap=fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id).length;const dO=(s.ovr||0)-(s.base||0);
   const seg=(n,c,l)=>n?`<i class="${c}" style="flex:${n}" title="${l} ${n}"></i>`:"";
   return `<div class="pst">
-    <div class="psh"><div><span>Reyting</span><b class="num">${s.ovr||"–"}</b><small>${dO?`<em class="${dO>0?"up":"dn"}">${dO>0?"▲":"▼"}${Math.abs(dO)}</em> · başl. ${s.base}`:"başlangıç "+(s.base??"–")}</small></div>
+    <div class="psh"><div><span>Reyting</span><b class="num">${s.ovr||"–"}</b><small>${dO?`<em class="${dO>0?"up":"dn"}">${dO>0?"▲":"▼"}${Math.abs(dO)}</em> · ilk ${s.base}`:"ilk "+(s.base??"–")}</small></div>
       <div><span>Ort. not</span><b class="num ${s.avgPts!=null?noteCls(s.avgPts):""}">${fN(s.avgPts)}</b><small>${s.bestM?"en iyi "+fN(s.bestM.pts):"henüz yok"}</small></div>
       <div><span>Maç</span><b class="num">${g}</b><small>${s.att!=null?"%"+Math.round(s.att*100)+" geldi":"–"}</small></div></div>
     ${g?`<div class="pwl2"><div class="pwlh"><span><b class="w">${W}</b> G · <b>${D}</b> B · <b class="l">${L}</b> M</span><span class="muted">kazanma %${Math.round(W/g*100)}</span></div><div class="pbar">${seg(W,"w","Galibiyet")}${seg(D,"d","Beraberlik")}${seg(L,"l","Mağlubiyet")}</div></div>`:""}
@@ -3567,7 +3573,7 @@ function viewLig(){const avg=false;const F=fin().filter(inYr);const L=ligTable(F
 
   h+=`<section class="card lig"><div class="lgr lgh"><span>#</span><span>Oyuncu</span><span>O</span><span>G</span><span>B</span><span>M</span><span>AV</span><span>${avg?"P/M":"P"}</span><span class="r">Form</span></div>`+
     L.map((o,i)=>{const p=P(o.id);let mv="";if(prev){const j=prev.indexOf(o.id);const d=j<0?0:j-i;mv=d>0?`<small class="lmv up">▲${d}</small>`:d<0?`<small class="lmv dn">▼${-d}</small>`:""}
-      return `<button class="lgr${o.id===S.me?" me":""}${i===nb?" rl":""}${avg&&o.n<2?" few":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.p} puan, averaj ${o.av}"><span class="lrk${i<3?" "+MED[i]:""}"><b>${i+1}</b>${mv}</span><span class="lnm">${avatar(p)}<span>${esc(p.name)}${o.id===champId?'<em class="chmp" title="Şampiyon">🏆</em>':""}</span></span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num lav${o.av>0?" pos":o.av<0?" neg":""}">${o.av>0?"+":""}${o.av}</span><b class="num lp">${pt(o)}</b><span class="lfs">${fd(o.f)}</span></button>`}).join("")+`</section>`;
+      return `<button class="lgr${o.id===S.me?" me":""}${i===nb?" rl":""}${avg&&o.n<2?" few":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.p} puan, averaj ${o.av}"><span class="lrk${i<3?" "+MED[i]:""}"><b>${i+1}</b>${mv}</span><span class="lnm">${avatar(p)}<span>${esc(p.name.length>10?shortName(p.name):p.name)}${o.id===champId?'<em class="chmp" title="Şampiyon">🏆</em>':""}</span></span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num lav${o.av>0?" pos":o.av<0?" neg":""}">${o.av>0?"+":""}${o.av}</span><b class="num lp">${pt(o)}</b><span class="lfs">${fd(o.f)}</span></button>`}).join("")+`</section>`;
   const rv=rivalOf(S.me);
   const cw=champWall();
   if(rv){const q=P(rv.id);h+=`<button class="card rivc" data-act="cmpPair" data-a="${esc(S.me)}" data-b="${esc(rv.id)}"><span><span class="eyebrow">Ezeli rakibin</span><b>${esc(q.name)}</b><span class="muted small">${rv.n} maçta karşı karşıya geldiniz</span></span><b class="rvs num">${rv.G}-${rv.B}-${rv.M}</b></button>`}
