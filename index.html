@@ -1465,7 +1465,7 @@ body{padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom,0px) + 40px)!im
 .abr b{font:900 1.05rem/1 var(--display);color:var(--pl)}.abr b i{font-style:normal;font-size:.6rem;margin-left:3px}.abr b i.up{color:#00A35B}.abr b i.dn{color:#E0245E}
 .abt{grid-column:1/-1;height:6px;border-radius:3px;background:var(--card3,#EEEAF2);overflow:hidden}
 .abt i{display:block;height:100%;border-radius:3px;background:#7B3FF2}.abt i.hi{background:linear-gradient(90deg,#7B3FF2,#5FD8F5)}.abt i.lo{background:#B9A6E6}
-.prof{grid-template-columns:1fr!important}
+.prof{grid-template-columns:1fr!important}.prof>div{width:100%;box-sizing:border-box}
 
 .brand b{font-size:1.25rem!important;letter-spacing:.03em}
 .top .logo{width:30px;height:30px}
@@ -1784,7 +1784,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113135936";
+const APP_V="261113140829";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2250,7 +2250,7 @@ const fM=v=>fN1(v)+" M €";const fN1=v=>(Math.round(v*10)/10).toFixed(1).replac
 function mvCard(p){const m=mvInfo(p.id);if(!m)return"";const d=m.prev!=null?Math.round((m.v-m.prev)*10)/10:0;
   const S2=m.ser.length>1?(()=>{const a=m.ser,mx=Math.max(...a),mn=Math.min(...a),W=220,H=44,X=i=>4+i*(W-8)/(a.length-1),Y=v=>H-4-(mx===mn?.5:(v-mn)/(mx-mn))*(H-8);return `<svg class="mvsp" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${a.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join("")}" fill="none" stroke="#7B3FF2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${X(a.length-1).toFixed(1)}" cy="${Y(a[a.length-1]).toFixed(1)}" r="3.5" fill="#7B3FF2"/></svg>`})():"";
   return `<section class="card mvc2"><div class="mvh"><span><small>Piyasa değeri</small><b class="num">${fM(m.v)}</b></span>${d?`<span class="mvd ${d>0?"up":"dn"}">${d>0?"▲":"▼"} ${fM(Math.abs(d))}</span>`:""}</div>${S2}
-    <details class="mvx"><summary>Nasıl hesaplandı?</summary>${m.parts.map(([l,x],i)=>`<div><span>${esc(l)}</span><b>${i===0?fM(x):"×"+String(+x.toFixed(2)).replace(".",",")}</b></div>`).join("")}</details></section>`}
+</section>`}
 function trophiesOf(id){const T=[];for(const n of seasonsAll()){if(!seasonDone(n))continue;const w=seasonAwards(n);if(!w)continue;
     if(w.champ?.id===id)T.push(["🏆","Şampiyon",n]);if(w.g?.id===id)T.push(["👟","Gol kralı",n]);if(w.a?.id===id)T.push(["🤝","Asist kralı",n]);
     if(w.mvp?.id===id)T.push(["⭐","Sezonun oyuncusu",n]);for(const[k,t,ic]of POS_AW)if(w.pos[k]?.id===id)T.push([ic,t,n])}return T}
