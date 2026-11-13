@@ -1683,7 +1683,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261113043733";
+const APP_V="261113044149";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -1844,7 +1844,7 @@ function matchPoints(m,pid,motmId,golId,fiyId,lvIn){
   // bol gollü maçta orta saha ve forvetin gol/asist değeri düşer: 10 gollü maç = ×1; 15 gol ×0,67; 5 gol ×1,2
   const gAll=Math.round(clamp(NOTE.golRef/Math.max(my+op,1),NOTE.golF.min,NOTE.golF.max)*100)/100;const gf=nr==="OS"||nr==="FV"?gAll:1;
   // alternatif pozisyonu forvet olan (kartı forvet değil) oyuncuda gol/asist etkisi yarı
-  const gaF=altFV?NOTE.altFV:1;
+  const gaF=1;
   const lv=lvIn!=null?lvIn:pp&&S.stats?.[pid]?genOf(pid):pp?baseOf(pp):NOTE.ref;const mul=lvMul(lv);
   const parts=[];let sum=0;const add=(l,v,x)=>{if(x&&v>0)v*=mul;v=Math.round(v*100)/100;if(v){parts.push([l,v]);sum+=v}};
   const g=+st.g||0,a=+st.a||0,og=+st.og||0;
@@ -1872,7 +1872,7 @@ function gyOrt(){const F=S.matches.filter(m=>m.state==="bitti"&&!isExt(m));let t
 // maç içi denge: maçın not ortalaması 7'ye oturur, değerlendirme notun aralığını belirler, eşik maçın ortalama kart seviyesine göre
 function matchNotes(m,motm,gol,fiy,lvF){const pl=plAll(m);const R={};for(const id of pl){const r=matchPoints(m,id,motm,gol,fiy,lvF?lvF(id):undefined);if(r)R[id]=r}
   const ids=Object.keys(R);if(!ids.length)return R;
-  const tf=(x,id)=>{let v=x>NOTE.tavan?NOTE.tavan+(x-NOTE.tavan)*NOTE.tavanK:x;const[lo,hi]=NOTE.bant[R[id].pk]||NOTE.bant[0];return clamp(clamp(v,lo,hi),NOTE.min,NOTE.max)};
+  const tf=(x,id)=>{let v=x>NOTE.tavan?NOTE.tavan+(x-NOTE.tavan)*NOTE.tavanK:x;const lo=R[id].pk?NOTE.bant[R[id].pk][0]:NOTE.min;return clamp(Math.max(v,lo),NOTE.min,NOTE.max)};
   // ortadaki oyuncu 7 alır (birkaç golcünün çok yüksek notu herkesi aşağı çekmesin)
   const med=a=>{const b=[...a].sort((x,y)=>x-y),n=b.length;return n%2?b[(n-1)/2]:(b[n/2-1]+b[n/2])/2};
   let sh=0;for(let i=0;i<6;i++){const md=med(ids.map(id=>tf(R[id].raw+sh,id)));sh+=NOTE.orta-md;if(Math.abs(NOTE.orta-md)<.005)break}
@@ -1896,7 +1896,7 @@ const subKeys=pos=>attrSet(pos).flatMap(([k,,,subs])=>subs.map(([sk])=>k+"_"+sk)
 const MENTAL={FV:"sut_poz",OS:"pas_viz",DF:"def_bil",KL:"poz_yer"};
 // kaleci ve defans için halı saha baremleri (takımın yediği gol)
 const CONC=[[3,"iyi+"],[6,"iyi"],[9,"orta"],[12,"kötü"],[999,"kötü+"]];
-const concBand=op=>CONC.find(([l])=>op<=l)[1];
+const concBand=op=>{const d=op-gyOrt();return d<=-3?"iyi+":d<=-1?"iyi":d<=1?"orta":d<=3?"kötü":"kötü+"};
 function genF(p,cur){const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const w=W[ep];
   const mv=k=>{const d=set.find(x=>x[0]===k);return d[3].reduce((q,[sk])=>q+cur[k+"_"+sk],0)/d[3].length};
   let s2=0,t=0;for(const[k]of set){const x=w[k]??0;s2+=x*mv(k);t+=x}return t?s2/t:set.reduce((q,[k])=>q+mv(k),0)/set.length}
@@ -3204,14 +3204,14 @@ function viewKurallar(inSheet){
   const RL=[["KL","Kaleci"],["DF","Defans"],["DOS","Defansif orta saha"],["OS","Orta saha"],["FV","Forvet"]];
   return `
   <section class="card"><h2>Maç notu</h2><p>Sahada yapılanlar (sonuç, gol, asist, yenilen gol, değerlendirme) toplanır. Sonra <b>maç dengesi</b> uygulanır: maçtaki ortadaki oyuncu ${fN(n.orta)} alacak şekilde herkesin notu aynı miktarda kaydırılır. Böylece notlar şişmez, kim maçın ortalamasının üstünde kim altında net görünür. Not ${fN(n.tavan)}'i geçerse aşan kısım yarı sayılır.</p>
-   <p class="muted small">Değerlendirme notun aralığını belirler, son sözü o söyler:</p>
-   <div class="rules">${[1,2,3,4].map(k=>{const[lo,hi]=n.bant[k];return row(n.perf[k][1],k===1?"en az "+fN(lo):k===4?"en fazla "+fN(hi):fN(lo)+" – "+fN(hi))}).join("")}</div></section>
+   <p class="muted small">Değerlendirme notun alt sınırını belirler; iyi oynayana üst sınır yok:</p>
+   <div class="rules">${[1,2,3,4].map(k=>row(n.perf[k][1],"en az "+fN(n.bant[k][0]))).join("")}</div></section>
   <section class="card"><h2>Sonuç</h2><div class="scroll-x"><table class="tbl"><thead><tr><th>Gol farkı</th><th>Kazanan</th><th>Kaybeden</th></tr></thead><tbody>
    ${n.fark.map((x,i)=>`<tr><td>${["0 · beraberlik","1–2 · çekişmeli","3–5 · net","6+ · farklı"][i]}</td><td>${f(x[1])}</td><td>${f(x[2])}</td></tr>`).join("")}</tbody></table></div></section>
   <section class="card"><h2>Gol ve asist</h2><p class="muted small">Oyuncu o maç sahada hangi mevkide oynadıysa ona göre sayılır. Bölgesinden uzak katkı daha değerli.</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th>Mevki</th><th>Gol</th><th>Asist</th><th>Katkı yok</th></tr></thead><tbody>
    ${RL.map(([k,l])=>`<tr><td>${l}</td><td>${f(n.gol[k])}</td><td>${f(n.asist[k])}</td><td>${n.bos[k]?f(n.bos[k]):"–"}</td></tr>`).join("")}</tbody></table></div>
-   <p class="muted small">İlk 3 gol tam, 4. ve 5. gol ×0,6, 6. golden sonrası ×0,3 sayılır. Penaltı golü normal golün yarısıdır. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 12 gol varsa ×1, 16 gol ×0,75 (en az ×0,7), 10 gol ×1,15 (en fazla). Kartı forvet olmayıp alternatif mevkisi forvet olan oyuncuda gol ve asistin etkisi ×0,7'dir.</p></section>
+   <p class="muted small">İlk 3 gol tam, 4. ve 5. gol ×0,6, 6. golden sonrası ×0,3 sayılır. Penaltı golü normal golün yarısıdır. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 12 gol varsa ×1, 16 gol ×0,75 (en az ×0,7), 10 gol ×1,15 (en fazla).</p></section>
   <section class="card"><h2>Yenilen gol</h2><p class="muted small">Grubun maç başı gol ortalamasına göre bakılır (şu an <b>${fN(gyOrt())}</b>). Ortalamanın altında gol yiyen savunma artı alır, üstünde yiyen eksi.</p><div class="scroll-x"><table class="tbl"><thead><tr><th>Ortalamaya göre</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
    ${n.savunma.map(([lim,v],i)=>`<tr><td>${i===0?Math.abs(lim)+"+ az":i===n.savunma.length-1?(n.savunma[i-1][0]+1)+"+ fazla":(()=>{const a=n.savunma[i-1][0]+1,b=lim;const t=x=>x<0?Math.abs(x)+" az":x>0?x+" fazla":"aynı";return a===b?t(a):t(a)+" – "+t(b)})()}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`).join("")}</tbody></table></div><p class="muted small">Kalecinin yediği penaltı golleri yarım gol sayılır.</p></section>
   <section class="card"><h2>Maç değerlendirmesi</h2><p class="muted small">Maç sonunda yönetici oyuncuları değerlendirir. Sınır yok; seçilmeyen oyuncu orta sayılır. Kurtarış sayısı tutulmadığı için kalecide değerlendirme daha ağır sayılır.</p>
