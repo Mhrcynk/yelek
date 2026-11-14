@@ -677,7 +677,7 @@ const hkSc=m=>`${hkCr(m,"A")}<b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}
 // skor tabelası: iki kaptanın fotoğrafı, takım adı ve skor (kaptan yoksa arma)
 const hkCap=(m,k)=>{const id=k==="A"?m.cap_a:m.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
   return `<div class="hksc"><div class="hkcp${ok?"":" cr"}">${ok?`<div class="hkcpi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</div>`:hkCr(m,k,40)}${ok?`<i>${hkCr(m,k,15)}</i>`:""}</div><b>${esc(TRU(nmOf(m,k)))}</b>${ok?`<small>KPT · ${esc(TRU(shortName(nameOf(id))))}</small>`:""}</div>`};
-const hkSB=m=>`<div class="hksb">${hkCap(m,"A")}<div class="hkss"><b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b></div>${hkCap(m,"B")}</div>`;
+const hkSB=(m,mid)=>`<div class="hksb">${hkCap(m,"A")}${mid||`<div class="hkss"><b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b></div>`}${hkCap(m,"B")}</div>`;
 const hkSt=L=>`<div class="hkst">${L.map(([v,l,c])=>`<div class="${c||""}"><strong>${v}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`;
 const hkNm=id=>{const a=ageOf(P(id));return `<b class="hknm">${esc(TRU(nameOf(id)))}${a!=null?`<span>(${a})</span>`:""}</b>`};
 const hkFt=r=>`<div class="hkft"><span>${IGLOGO}${IGH}</span><span>${esc(TRU(r||""))}</span></div>`;
@@ -734,7 +734,8 @@ function hkGoal(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.gol;if(!id)ret
 const hkNext=()=>S.matches.filter(m=>m.state!=="bitti"&&!isExt(m)&&(m.team_a||[]).length&&(m.team_b||[]).length).sort((a,b)=>matchTs(a)-matchTs(b))[0];
 const hkWhen=m=>igDate(m.date)+(m.time?" · "+String(m.time).slice(0,5):"");
 function hkPreLine(m){const col=k=>hkCol(`${hkCr(m,k,14)}<b>${esc(TRU(nmOf(m,k)))}</b><small>${esc(formLabel(formOf(m,k),posArr(m,k)))}</small>`,lineRows(m,k).map(([id,ep])=>[ep,esc(shortName(nameOf(id))),P(id)?.guest?"MİS":String(ovrOf(id)),"hkov"]));
-  const html=hkPost({hd:"Kadrolar açıklandı",max:34,chip:`${hkCr(m,"A")}<span>${esc(TRU(hkWhen(m)))}</span>${hkCr(m,"B")}`,chipC:"top sm",body:`<div class="hkkw">${col("A")}${col("B")}</div>`,ft:"Maç günü"});
+  const mid=`<div class="hkwhen"><b>${esc(TRU(igDate(m.date)))}</b>${m.time?`<strong>${esc(String(m.time).slice(0,5))}</strong>`:""}<small>${esc(TRU(GUNLER[parseYmd(m.date).getDay()]+(S.settings.field_name?" · "+S.settings.field_name:"")))}</small></div>`;
+  const html=hkPost({hd:"Kadrolar açıklandı",max:34,body:hkSB(m,mid)+`<div class="hkkw sb">${col("A")}${col("B")}</div>`,ft:"Maç günü"});
   const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
   return{html,cap:`Kadrolar belli oldu! ${hkWhen(m)} 📣\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\nSizce kim kazanır? 👇\n#abilerkardeslerfc #halısaha`,name:"kadrolar-aciklandi-"+m.date}}
 const hkForm5=id=>{const H=(S.stats[id]?.hist||[]).filter(h=>h.r).slice(-5);return H.length?H.reduce((a,h)=>a+h.r.pts,0)/H.length:null};
