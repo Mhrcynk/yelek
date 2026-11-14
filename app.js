@@ -130,6 +130,7 @@ const selYr=()=>S.yr??curYr();
 const yrList=()=>[...seasonsAll()].reverse().concat(seasonsAll().length?[]:[1]);
 const inYr=m=>{const y=selYr();return y==="all"||yrOf(m)===y};
 const reigningChamp=()=>{const L=seasonsAll().filter(seasonDone);if(!L.length)return null;const n=L[L.length-1];const T=ligTable(fin().filter(m=>+m.season===n));return T[0]?.id||null};
+const GKISA=["PAZ","PZT","SAL","ÇAR","PER","CUM","CMT"];
 const fmtDate=s=>{const d=parseYmd(s);return d.getDate()+" "+AYLAR[d.getMonth()]+" "+GUNLER[d.getDay()]};
 const fmtShort=s=>{const d=parseYmd(s);return d.getDate()+" "+AYLAR[d.getMonth()].slice(0,3)};
 const matchTs=m=>{const d=parseYmd(m.date);const[h,mi]=String(m.time||"21:00").split(":").map(Number);d.setHours(h||0,mi||0,0,0);return d.getTime()};
@@ -969,16 +970,25 @@ function viewGecmis(){
   // fikstür hikâye şeridi kaldırıldı; maç hikâyesi yalnızca maç detayında
   if(!F.length&&!openMatch())return h+`<section class="card"><div class="empty"><h3>İlk düdük bekleniyor</h3><p>İlk maçı gir, kartlar uyansın. Oynanan her maç burada birikir.</p></div></section>`;
   const om=openMatch();let cur="";h+=`<div class="glist">`;
-  if(om){const d=parseYmd(om.date);h+=`<div class="gm">Sıradaki maç</div><button class="grow next" data-act="tab" data-tab="mac"><span class="gd"><b>${d.getDate()}</b><small>${GUNLER[d.getDay()].slice(0,3)}</small></span><span class="gb"><b>${esc(TEAM.A)} – ${esc(TEAM.B)}</b><span class="muted small">${d.getDate()} ${AYLAR[d.getMonth()]} · ${esc(om.time||"")}${S.settings.field_name?" · "+esc(S.settings.field_name):""}</span><span class="small">${om.state==="kayit"?"Kadrolar henüz açıklanmadı":"Kadrolar belli"}</span></span><span class="muted">›</span></button>`}
+  if(om){const d=parseYmd(om.date);const t0=new Date();t0.setHours(0,0,0,0);const dd=Math.round((d-t0)/864e5);
+    const left=dd<=0?"Bugün":dd===1?"Yarın":dd+" gün kaldı";const wk=Math.min(seasonCount(curYr())+1,sLen());
+    const cap=k=>{const id=k==="A"?om.cap_a:om.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
+      return `<span class="btkt"><span class="btkc">${ok?(ph?`<img src="${esc(ph)}" alt="">`:`<i>${esc(initials(nameOf(id)))}</i>`):crest(nmOf(om,k),k,52,nmOf(om,k==="A"?"B":"A"))}</span><b>${esc(nmOf(om,k))}</b>${ok?`<small>KPT · ${esc(shortName(nameOf(id)))}</small>`:""}</span>`};
+    const side=om.state!=="kayit"&&S.me&&playSide(om,S.me);
+    const info=om.state==="kayit"?"Kadrolar henüz açıklanmadı":side?`Kadrolar belli · Takımın ${esc(nmOf(om,side))}`:"Kadrolar belli";
+    h+=`<div class="gm">Sıradaki maç</div><button class="bltk" data-act="tab" data-tab="mac"><span class="btkh"><span>Hafta ${wk}</span><span>${esc(S.settings.field_name||"")}</span></span>
+      <span class="btkm">${cap("A")}<span class="btkv"><small>${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].slice(0,3).toLocaleUpperCase("tr")}</small><b>${esc(String(om.time||"").slice(0,5))}</b></span>${cap("B")}</span>
+      <span class="btkf"><span>${info}</span><em>${left}</em></span></button>`}
   for(const m of F){const d=parseYmd(m.date);const mk=AYLAR[d.getMonth()]+" "+d.getFullYear();if(mk!==cur){h+=`<div class="gm">${mk}</div>`;cur=mk}
     const i=S.mInfo[m.id]||{};const sa=+m.score_a||0,sb=+m.score_b||0;const st=m.stats||{};const ext=isExt(m);
     const sc=k=>(k==="A"?m.team_a:m.team_b||[]).filter(id=>+st[id]?.g).map(id=>firstName(nameOf(id))+(+st[id].g>1?" ×"+st[id].g:"")).join(", ");
-    const me=S.me&&playSide(m,S.me);const myRes=!ext&&sa===sb?"B":me?((me==="A"?sa-sb:sb-sa)>0?"G":(me==="A"?sa-sb:sb-sa)<0?"M":"B"):"";
+    const me=S.me&&playSide(m,S.me);const myRes=me?((me==="A"?sa-sb:sb-sa)>0?"G":(me==="A"?sa-sb:sb-sa)<0?"M":"B"):"";
     const nA=ext?esc(S.settings.group_name):`<span class="bibdot"></span>${esc(nmOf(m,"A"))}`,nB=ext?esc(m.opponent||"Rakip"):`<span class="nobib"></span>${esc(nmOf(m,"B"))}`;
     const motm=ext?m.motm:i.motm;
-    h+=`<button class="grow${ext?" ext":""}" data-act="viewm" data-id="${esc(m.id)}"><span class="gd"><b>${d.getDate()}</b><small>${GUNLER[d.getDay()].slice(0,3)}</small></span>
-      <span class="gb">${ext?`<span class="xchip">Dış maç</span>`:""}<span class="gs1"><span class="gt a${sa>sb?" w":""}">${ext?"":crest(nmOf(m,"A"),"A",20,nmOf(m,"B"))}<span>${ext?esc(S.settings.group_name):esc(nmOf(m,"A"))}</span></span><b class="num"><span class="${sa>sb?"w":""}">${sa}</span> - <span class="${sb>sa?"w":""}">${sb}</span></b><span class="gt b${sb>sa?" w":""}"><span>${ext?esc(m.opponent||"Rakip"):esc(nmOf(m,"B"))}</span>${ext?"":crest(nmOf(m,"B"),"B",20,nmOf(m,"A"))}</span></span>
-</span>${myRes?`<span class="myr ${myRes}" aria-label="${{G:"Galibiyet",B:"Beraberlik",M:"Mağlubiyet"}[myRes]}">${myRes}</span>`:`<span class="myr none"></span>`}</button>`}
+    const nA2=ext?esc(S.settings.group_name):esc(nmOf(m,"A")),nB2=ext?esc(m.opponent||"Rakip"):esc(nmOf(m,"B"));
+    const tr=(k,n,v,w)=>`<span class="frr${w?" w":""}">${ext?(k==="A"?`<span class="frx">${IGLOGO}</span>`:`<span class="frx o"></span>`):crest(nmOf(m,k),k,20,nmOf(m,k==="A"?"B":"A"))}<span class="frn">${n}</span><b class="num">${v}</b></span>`;
+    h+=`<button class="frs ${myRes||"none"}${ext?" ext":""}" data-act="viewm" data-id="${esc(m.id)}"><span class="frd"><b>${d.getDate()}</b><small>${GKISA[d.getDay()]}</small></span>
+      <span class="frt">${ext?`<span class="xchip">Dış maç</span>`:""}${tr("A",nA2,sa,sa>=sb)}${tr("B",nB2,sb,sb>=sa)}</span>${myRes?`<span class="frp ${myRes}">${{G:"Galibiyet",B:"Berabere",M:"Mağlubiyet"}[myRes]}</span>`:`<span class="frp none" aria-hidden="true"></span>`}</button>`}
   return h+`</div>`}
 function sheetExt(){if(!S.admin)return"";const f=S.f.ext;if(!f)return"";const ps=[...S.players,...S.guests];const opps=[...new Set(extFin().map(m=>m.opponent).filter(Boolean))];
   const inT=id=>f.team.includes(id);const stp2=(id,k,l)=>{const v=(f.stats[id]||{})[k]||0;return `<span class="stp${v?" on":""}"><label>${l}</label><button data-act="extSt" data-p="${esc(id)}" data-k="${k}" data-d="-1" aria-label="${l} azalt">−</button><b>${v}</b><button data-act="extSt" data-p="${esc(id)}" data-k="${k}" data-d="1" aria-label="${l} artır">+</button></span>`};

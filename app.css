@@ -1983,3 +1983,34 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .hkwhen b{font:800 13px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em}
 .hkwhen strong{font:800 30px/1 "Barlow Condensed","Arial Narrow",sans-serif}
 .hkwhen small{font:700 6px/1 Inter,sans-serif;letter-spacing:.08em;color:rgba(255,255,255,.8)}
+/* fikstür: maç bileti + sonuç satırları */
+.bltk{position:relative;display:block;width:100%;margin:0 0 6px;padding:14px 16px 0;border:0;border-radius:22px;overflow:hidden;text-align:left;cursor:pointer;color:#fff;font:inherit;
+  background:radial-gradient(120% 90% at 100% 0,#5FD8F5 0,transparent 55%),linear-gradient(150deg,#7B3FF2,#3A0CA3 60%,#2A0830);box-shadow:0 14px 30px rgba(58,12,163,.28)}
+.bltk *{color:#fff}
+.btkh{display:flex;justify-content:space-between;font:800 .68rem/1 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.btkm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:6px;margin:14px 0}
+.btkt{display:grid;justify-items:center;gap:5px;text-align:center;min-width:0}
+.btkt b{max-width:100%;font:800 .95rem/1.1 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btkt small{font:600 .64rem/1 Inter,sans-serif;opacity:.78;white-space:nowrap}
+.btkc{width:56px;height:56px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,.18);box-shadow:0 0 0 3px #fff}
+.btkc img{width:100%;height:100%;object-fit:cover;object-position:center 15%}
+.btkc i{font:800 1rem/1 Inter,sans-serif;font-style:normal}
+.btkc:has(svg){background:none;box-shadow:none}
+.btkv{display:grid;justify-items:center;gap:4px}.btkv small{font:700 .68rem/1 Inter,sans-serif;letter-spacing:.06em;opacity:.85}
+.btkv b{font:900 2.2rem/1 var(--display);letter-spacing:-.02em}
+.btkf{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 -16px;padding:11px 16px;background:rgba(255,255,255,.12);border-top:2px dashed rgba(255,255,255,.35);font:700 .78rem/1.2 Inter,sans-serif}
+.btkf em{flex:none;font-style:normal;font-weight:800;background:#00FF85;color:#06200F!important;padding:5px 10px;border-radius:999px}
+.frs{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin:0 0 8px;padding:12px 14px 12px 16px;border:0;border-radius:16px;background:var(--card,#fff);box-shadow:0 2px 10px rgba(55,0,60,.06);overflow:hidden;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+.frs:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#E4DDEC}
+.frs.G:before{background:#0E8F4E}.frs.B:before{background:#E3A008}.frs.M:before{background:#D9334F}
+.frd{width:36px;flex:none;text-align:center}.frd b{display:block;font:900 1.3rem/1 var(--display)}.frd small{font:700 .64rem/1 Inter,sans-serif;color:var(--muted)}
+.frt{flex:1;min-width:0;display:grid;gap:6px}
+.frr{display:flex;align-items:center;gap:8px;font:600 .9rem/1.1 Inter,sans-serif;color:#9A8AA8}
+.frr.w{color:var(--ink);font-weight:800}
+.frn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frr b{font:900 1.15rem/1 var(--display);min-width:22px;text-align:right}
+.frx{width:20px;height:20px;flex:none;border-radius:50%;display:grid;place-items:center;background:#ECE6F2}.frx svg{width:16px;height:16px}.frx.o{background:#C9BFD6}
+.frp{flex:none;font:800 .68rem/1 Inter,sans-serif;padding:6px 8px;border-radius:8px}
+.frp.G{background:#E3F6EC;color:#0B5E35}.frp.B{background:#FFF4D6;color:#8A5A00}.frp.M{background:#FCE6EA;color:#B3213B}
+.frs .xchip{justify-self:start}
+.frp{min-width:78px;text-align:center}.frp.none{visibility:hidden}
