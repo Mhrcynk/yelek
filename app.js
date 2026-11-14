@@ -1929,7 +1929,7 @@ async function afterAuth(){
       if(S.mem.role==="yonetici"){S.admin=true;S.pin=S.pin||"";setTimeout(notesSync,1500)}
       if(!LS.get("y_hos")&&!S.sheet)S.sheet={type:"hos"}}
     if(S.sheet&&S.sheet.type==="login")S.sheet=null;
-    S.fol=false;if(TID>0&&!isMember()){try{S.follows=await rpc("my_follows",{});S.fol=(S.follows||[]).some(t=>t.id===TID)}catch(_){}}
+    S.fol=false;if(TID>0&&!isMember()){try{if(LS.get("y_folnext")===String(TID)){LS.del("y_folnext");await rpc("follow_set",{p_team:TID,p_on:true})}S.follows=await rpc("my_follows",{});S.fol=(S.follows||[]).some(t=>t.id===TID)}catch(_){}}
     if(!isMember()&&!S.fol&&(TID===0||!LS.get("y_team"))&&!(S.mem&&S.mem.status==="bekliyor")){try{S.myTeams=await rpc("my_teams",{})}catch(_){S.myTeams=null}
       const ok=(S.myTeams||[]).find(t=>t.status==="onayli")||(S.myTeams||[])[0];
       if(ok&&ok.id!==TID){teamGo(ok.id,ok.slug);return}
@@ -2014,11 +2014,26 @@ function adminMembers(){if(!S.admin)return"";if(!S.memList){memLoad();return `<d
 
 /* vitrin: giriş yapmamış ziyaretçiye görünen sayfa */
 async function vitrinLoad(){try{S.vit=await rpc("vitrin",{})}catch(_){S.vit=null}render(true)}
+async function tcardLoad(){try{S.tcard=await rpc("team_card",{})}catch(_){S.tcard=null}render(true)}
+function teamCardTop(sess){const c=S.tcard;if(c===undefined){S.tcard=null;tcardLoad()}
+  if(!c)return `<section class="lpinv"><div class="vskl"><i style="height:150px"></i></div></section>`;
+  const meta=[c.field,(GUNLER[+c.day]||"")+" "+String(c.time||"").slice(0,5),c.players+" oyuncu"].filter(x=>x&&x.trim()).map(esc).join(" · ");
+  if(!c.followable)return `<section class="lpinv"><span class="lpinvk">Takım</span><b>${esc(c.name)}</b><small class="lpmeta">${meta}</small>
+    <p>Bu takım sadece üyelere açık. Takımda oynuyorsan yöneticiden davet linkini iste.</p>
+    ${sess?`${myTeamsList()}<button class="lnk" data-act="signOut">Çıkış yap</button>`:`<button class="lnk lpalt" data-act="oauth" data-v="google">Zaten üyeysen giriş yap</button>`}</section>`;
+  const L=c.last;const top=c.top||[];
+  return `<section class="lpinv"><span class="lpinvk">Lig</span><b>${esc(c.name)}</b><small class="lpmeta">${meta}</small>
+    ${L?`<div class="tcl"><small>Son maç · ${esc(fmtShort(L.date))}</small><div class="tcs"><span>${esc(L.na)}</span><b class="num">${L.a}–${L.b}</b><span>${esc(L.nb)}</span></div></div>`:`<p>Sezonun ilk maçı henüz oynanmadı.</p>`}
+    ${top.length?`<div class="tct"><small>Puan durumu · ilk ${top.length}</small>${top.map((r,i)=>`<div class="tcr"><i>${i+1}</i><span>${esc(r.n)}</span><em>${r.o} maç</em><b class="num">${r.p}</b></div>`).join("")}</div>`:""}
+    ${sess?`<button class="btn lpgo" data-act="folJoin">${ICON_EYE}<span>Ligi takip et</span></button>`:`<button class="btn lpgo" data-act="folLogin">${G_SVG}<span>Giriş yap ve takip et</span></button>`}
+    <p class="lpnote">Maç bitince sonuç bildirim olarak gelir. Oyuncu kartları ve notlar sadece takım üyelerine açık.</p>
+    <button class="lnk lpalt" data-act="intSet" data-v="katil">Bu takımda oynuyor musun? Takıma katıl</button>${sess?`<button class="lnk" data-act="signOut">Çıkış yap</button>`:""}</section>`}
 function viewVitrin(){
   const sess=!!S.session;const tName=TID>0?(S.settings.group_name||""):"";const nm=(S.session?.user?.user_metadata?.full_name||"").split(" ")[0];
   const cta=`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Google ile başla</span></button>`;
   let top="";
-  if(TID>0)top=`<section class="lpinv"><span class="lpinvk">Davet</span><b>${esc(tName)}</b><p>Seni Yelek'teki takımına çağırıyor. ${sess?"Kartını seç, yönetici onaylayınca içeridesin.":"Google ile giriş yap, kendi kartını seç."}</p>${sess?memCard():`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Giriş yap ve katıl</span></button>`}</section>`;
+  if(TID>0&&(LS.get("y_int")||"takip")!=="katil")top=teamCardTop(sess);
+  else if(TID>0)top=`<section class="lpinv"><span class="lpinvk">Davet</span><b>${esc(tName)}</b><p>Seni Yelek'teki takımına çağırıyor. ${sess?"Kartını seç, yönetici onaylayınca içeridesin.":"Google ile giriş yap, kendi kartını seç."}</p>${sess?memCard():`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Giriş yap ve katıl</span></button>`}<button class="lnk lpalt" data-act="intSet" data-v="takip">Oynamıyorum, sadece takip etmek istiyorum</button></section>`;
   else if(sess){if(!S.teamList){S.teamList=[];rpc("team_list",{}).then(r=>{S.teamList=r||[];render(true)}).catch(()=>{})}
     const q=trq(S.f.tq||"");const TL=(S.teamList||[]).filter(t=>!q||trq(t.name).includes(q));
     top=`<section class="lpinv"><span class="lpinvk">Hoş geldin${nm?", "+esc(nm):""}</span><b>Takımını seç</b><p>Takımın Yelek'teyse listeden seç, kendi kartını işaretle; yönetici onaylayınca içeridesin.</p>
@@ -2128,8 +2143,8 @@ function audAgo(t){const d=(Date.now()-new Date(t))/6e4;return d<1?"şimdi":d<60
 function adminAudit(){if(!S.admin)return"";if(!S.audit){audLoad();return `<div class="vskl"><i style="height:240px"></i></div>`}
   if(!S.audit.length)return `<p class="snote">Henüz kayıt yok. Bundan sonra yöneticilerin yaptığı değişiklikler burada görünecek.</p>`;
   return `<section class="sgrp"><h3 class="mh3">Son değişiklikler<button class="mref" data-act="audLoad">Yenile</button></h3><div class="sbox">${S.audit.map(r=>`<div class="setr nolink aud"><span class="setx"><b>${esc(audText(r))}</b><small>${esc(r.who||"Yönetici")} · ${audAgo(r.at)}</small></span></div>`).join("")}</div></section><p class="snote">Son 60 değişiklik. Oyuncuların kendi işlemleri burada görünmez.</p>`}
-const SUBT={sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Takıma gönder",pin:"Yönetici girişi"};
-const teamLink=()=>location.origin+location.pathname+(TID!==1&&S.settings.slug?"?t="+S.settings.slug:"");
+const SUBT={sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
+const teamLink=j=>location.origin+location.pathname+(S.settings.slug?"?t="+S.settings.slug+(j?"&katil":""):"");
 function setSub(k){const url=teamLink();
   let h=`<button class="sback" data-act="setp" data-v="">${ICON.back} Ayarlar</button>`;
   if(k==="uyeler")h+=adminMembers();
@@ -2152,9 +2167,14 @@ function setSub(k){const url=teamLink();
   else if(k==="tel")h+=`<p class="snote" style="margin:0 4px 10px">Ana ekrana eklersen uygulama gibi tam ekran açılır.</p><div class="sbox">
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>iPhone · Safari</b><span>Alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</span></span></div>
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>Android · Chrome</b><span>Sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç.</span></span></div></div>`;
-  else if(k==="pay")h+=`<section class="card" style="display:grid;gap:12px"><p class="muted small" style="margin:0">Takımdan biri linki açınca Google ile giriş yapar, kendi kartını seçer; sen onaylayınca uygulama açılır.</p>
-    <div class="surl"><input type="text" readonly value="${esc(url.replace(/^https?:\/\//,""))}" id="shareUrl" aria-label="Uygulama linki"></div>
-    <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent("⚽ "+S.settings.group_name+" artık Yelek'te. Kartına ve kadroya buradan bak: "+url)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(url)}">${ICON.copy} Kopyala</button></div></section>`;
+  else if(k==="pay"){const ju=teamLink(1),gn=S.settings.group_name||"Takım";const fo=!!S.settings.followable;
+    const box=(u,id,wa)=>`<div class="surl"><input type="text" readonly value="${esc(u.replace(/^https?:\/\//,""))}" id="${id}" aria-label="Link"></div>
+      <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(wa)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(u)}">${ICON.copy} Kopyala</button></div>`;
+    h+=`<section class="card lnkc"><div class="eyebrow">Davet linki · oyuncular için</div><p class="muted small" style="margin:0">Takımda oynayanlara gönder. Açan kişi Google ile giriş yapar, kendi kartını seçer; yönetici onaylayınca içeride.</p>
+      ${box(ju,"joinUrl","⚽ "+gn+" Yelek'te. Kartını seçip takıma katılmak için: "+ju)}</section>
+    <section class="card lnkc"><div class="eyebrow">Takım linki · Instagram ve paylaşımlar için</div><p class="muted small" style="margin:0">${fo?"Açan kişi son skoru ve puan durumunu görür, ligi takip edebilir. Katılmak isteyen oyuncu da buradan istek atabilir.":"Takip kapalı. Bu linki açan kişi \"Bu takım sadece üyelere açık\" yazısını görür."}</p>
+      ${S.mem?.role==="yonetici"?`<div class="setr nolink lnks"><span class="setx"><b>Takip edilebilir</b><small>${fo?"Herkes fikstürü ve puan durumunu izleyebilir":"Sadece üyeler görür"}</small></span><button class="sw ${fo?"on":""}" data-act="folOpen" data-v="${fo?"0":"1"}" role="switch" aria-checked="${fo}" aria-label="Takip edilebilir"><i></i></button></div>`:""}
+      ${box(url,"shareUrl","⚽ "+gn+" ligini Yelek'te takip et: "+url)}</section>`}
   else if(k==="pin"){h+=`<section class="card"><form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`}
   return h}
 function viewAyarlar(){
@@ -2182,7 +2202,7 @@ function viewAyarlar(){
     pushRow(),
     srow("@rulesSheet",SI.kural,"Puanlama kuralları","Not, reyting ve yelek puanı nasıl hesaplanır"),
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
-    srow("pay",SI.pay,"Takıma gönder","WhatsApp ya da link"),
+    srow("pay",SI.pay,"Linkler","Davet linki ve takım linki"),
     !S.session?srow("@loginSheet",SI.kilit,"Giriş yap","Google hesabınla"):""]);
   if(S.session)h+=sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger")]);
   return h+verTxt()}
@@ -2195,6 +2215,9 @@ document.addEventListener("click",async e=>{
     case"tab":if(el.dataset.tab==="ayarlar")S.f.setp="";goTab(el.dataset.tab);break;
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"open":S.f.ptab="genel";S.sheet={type:"player",id};S.f.st=null;S.f.ed=null;S.f.delP=null;render(true);break;
+    case"intSet":LS.set("y_int",el.dataset.v);render(true);window.scrollTo(0,0);break;
+    case"folLogin":LS.set("y_folnext",String(TID));signIn("google");break;
+    case"folJoin":{try{const r=await rpc("follow_set",{p_team:TID,p_on:true});if(r&&r.ok){S.fol=true;S.follows=null;S.tab="lig";await load(true);toast("Takip ediyorsun")}else toast(r&&r.error==="kapali"?"Bu lig takibe kapalı":"Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"ligs":S.flist=null;S.sheet={type:"ligs"};render(true);break;
     case"folSet":{const on=el.dataset.v==="1";const tid=+id;try{const r=await rpc("follow_set",{p_team:tid,p_on:on});if(!r||!r.ok){toast(r&&r.error==="kapali"?"Bu lig takibe kapalı":"Yapılamadı");break}}catch(_){toast("Yapılamadı");break}
       toast(on?"Takip ediyorsun":"Takibi bıraktın");if(!on&&S.fol&&tid===TID){const mt=(S.myTeams||await rpc("my_teams",{}).catch(()=>[])||[]).find(t=>t.status==="onayli");teamGo(mt?mt.id:0,mt?mt.slug:"");break}
@@ -2664,7 +2687,7 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
 (async()=>{
   // takım linki (?t=slug): takımı bul, telefonda hatırla, adres çubuğundan temizle
   {const q=new URLSearchParams(location.search);const sl=q.get("t");
-    if(sl){try{const t=await rpc("team_by_slug",{p_slug:sl});if(t&&t.id){if(t.id!==TID){cacheClear();TID=t.id;LS.set("y_team",String(t.id));LS.del("y_me");S.me=""}}else S.badTeam=true}catch(_){}
+    if(sl){LS.set("y_int",q.has("katil")?"katil":"takip");q.delete("katil");try{const t=await rpc("team_by_slug",{p_slug:sl});if(t&&t.id){if(t.id!==TID){cacheClear();TID=t.id;LS.set("y_team",String(t.id));LS.del("y_me");S.me=""}}else S.badTeam=true}catch(_){}
       q.delete("t");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash)}}
   cacheLoad();
   render(true);
