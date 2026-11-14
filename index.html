@@ -1947,6 +1947,28 @@ body.gated .nav,body.gated .navfade,body.gated #pmBtn,body.gated #meBtn{display:
 .vskl{display:grid;gap:12px}.vskl i{display:block;height:120px;border-radius:20px;background:#ECE6F2;animation:pulse 1.2s ease-in-out infinite alternate}.vskl i:first-child{height:260px}
 @keyframes pulse{to{opacity:.55}}
 html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 24px)}
+/* ayarlar alt sayfaları */
+.sback{margin:0 0 10px;padding:8px 12px 8px 8px;border-radius:999px;background:#F3EDFF}
+.mreqs{display:grid;gap:10px}
+.mreq{display:grid;gap:12px;background:var(--card,#fff);border-radius:18px;padding:14px;box-shadow:0 2px 10px rgba(55,0,60,.06);border:1.5px solid #FFE3A3}
+.mrqh{display:flex;align-items:center;gap:12px}.mrqh .setx small{white-space:normal;word-break:break-all}
+.mav{width:40px;height:40px;border-radius:12px;font-size:.75rem}
+.mcl{margin:0;padding:10px 12px;border-radius:12px;background:#FFF7E0;color:#5A3A00;font-size:.84rem}
+.mrl{display:flex;align-items:center;gap:12px;width:100%;padding:0;border:0;background:none;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.mrl span{flex:1;display:grid;gap:2px}.mrl b{font:700 .9rem/1.2 Inter,sans-serif}.mrl small{color:var(--muted);font-size:.76rem}
+.mrl .sw{pointer-events:none}
+.btns2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.btns2 .btn{height:46px;display:flex;align-items:center;justify-content:center;gap:6px}.mreq .btn.ghost{border:1.5px solid #E2DAEA}
+.mh3{display:flex;align-items:center;justify-content:space-between}
+.mref{border:0;background:none;color:#7B3FF2;cursor:pointer;font:700 .72rem/1 Inter,sans-serif;letter-spacing:0;text-transform:none;padding:4px}.mref svg{width:16px;height:16px}
+.setr .mav{margin:0}.mme{font:700 .72rem/1 Inter,sans-serif;color:var(--muted);padding:6px 10px;border-radius:999px;background:#F3EDFF}
+.mdel{width:34px;height:34px;border-radius:10px;border:0;background:#F6F2FA;color:#9A8AA8;display:grid;place-items:center;cursor:pointer;flex:none}.mdel svg{width:16px;height:16px}
+.setr .btn.sm{flex:none}
+.snote{margin:4px 4px 0;color:var(--muted);font-size:.78rem;line-height:1.45}
+.szc{display:grid;gap:12px}.szh{display:grid;gap:4px}.szh b{font:900 1.6rem/1 var(--display)}.szh small{color:var(--muted);font-size:.82rem}
+.szd{display:flex;gap:5px}.szd i{flex:1;height:8px;border-radius:4px;background:#ECE6F2}.szd i.on{background:#7B3FF2}
+.szx{display:grid;gap:8px;margin-top:4px}.szx b{font:800 .95rem/1.2 Inter,sans-serif;color:#D9334F}
+.tels{align-items:flex-start}.tels .setx>span{display:block;margin-top:4px;font-size:.84rem;line-height:1.45;color:var(--ink)}.tels .setx>span b{display:inline;font:inherit;font-weight:700}
+.surl input{width:100%;font-size:.85rem;color:var(--muted);text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -2000,7 +2022,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261114100618";
+const APP_V="261114100837";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2398,7 +2420,7 @@ function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(
   return `<div class="sprog"><div class="sprt"><b>${done?"Sezon tamamlandı":`Hafta ${n}/${L}`}</b>${fin2?'<span class="sfin">Final haftaları</span>':""}</div><span class="sbar"><i style="width:${Math.min(100,Math.round((done?L:n)/L*100))}%"></i></span></div>`}
 const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Oyuncular",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
 function phdRender(){const el=$("#phd");if(!el)return;const t=S.tab;let c=PHD[t];
-  if(t==="gecmis"&&S.view)c=null;if(t==="ayarlar")c=[S.admin?"Ayarlar":"Yönetici girişi",0];
+  if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ayarlar")c=[S.f.setp&&SUBT[S.f.setp]?SUBT[S.f.setp]:S.admin?"Ayarlar":"Yönetici girişi",0];
   if(!S.loaded||!c){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout");$("#tt").textContent="";return}
   el.hidden=false;document.body.classList.add("hasphd");$("#tt").textContent=c[0];
   const me=null;
@@ -3342,7 +3364,7 @@ function _resultPanel(m){
   const tab=S.f.mtab==="deg"?"notlar":(S.f.mtab||"ozet");const T=k=>plOf(m,k);
   const avgN=k=>{const v=T(k).map(id=>inf.pts[id]?.pts).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
   const mt=Object.values(inf.pts).find(Boolean)?.mt||"";const dot2=k=>crest(k==="A"?TEAM.A:TEAM.B,k,15);
-  let h=`<section class="card mdet"><div class="mhd">
+  let h=`<section class="card mdet"><div class="mrqh">
     <div class="mhm"><span>${fmtDate(m.date)}${S.settings.field_name?" · "+esc(S.settings.field_name):""}</span>${S.admin?`<button class="btn sm" data-act="mngOpen" data-id="${M}">Yönet</button>`:""}</div>
     <div class="mhs"><div class="mtm${sa>sb?" win":""}">${crest(TEAM.A,"A",40)}<b>${esc(TEAM.A)}</b><small>Ort. not ${fN(avgN("A"))} · Kart ${sumAvg(T("A"))}</small></div>
       <div class="msc"><span class="mst">MS</span><b class="num">${sa} - ${sb}</b><small>${esc(mt)}</small></div>
@@ -3854,19 +3876,24 @@ function accountFoot(){return S.session?`<p class="muted small" style="text-alig
 
 /* yönetici: üyeler ve davetler */
 async function memLoad(){const a=await A("admin_members",{});S.memList=a?.rows||[];render(true)}
-function adminMembers(){if(!S.admin)return"";if(!S.memList){memLoad();return `<section class="card"><h2>Üyeler</h2><p class="muted small">Yükleniyor…</p></section>`}
-  const url=location.origin+location.pathname;const L=S.memList,pend=L.filter(m=>m.status==="bekliyor"),ok=L.filter(m=>m.status==="onayli");
+function adminMembers(){if(!S.admin)return"";if(!S.memList){memLoad();return `<div class="vskl"><i style="height:90px"></i><i style="height:180px"></i></div>`}
+  const L=S.memList,pend=L.filter(m=>m.status==="bekliyor"),ok=L.filter(m=>m.status==="onayli");const myId=S.session?.user?.id;
   const taken=new Set(ok.map(m=>m.player_id).filter(Boolean));
-  const opt=(sel,uid)=>`<option value="">Kart seç…</option>`+S.players.filter(p=>!taken.has(p.id)||p.id===sel).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(p=>`<option value="${esc(p.id)}"${p.id===sel?" selected":""}>${esc(p.name)}</option>`).join("");
-  const who=m=>`<span class="mav">${m.avatar?`<img src="${esc(m.avatar)}" alt="" referrerpolicy="no-referrer">`:esc(initials(m.name||m.email||"?"))}</span><span class="mwho"><b>${esc(m.name||"İsimsiz")}</b><small>${esc(m.email||"")}</small></span>`;
+  const opt=sel=>`<option value="">Kart seç…</option>`+S.players.filter(p=>!taken.has(p.id)||p.id===sel).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(p=>`<option value="${esc(p.id)}"${p.id===sel?" selected":""}>${esc(p.name)}</option>`).join("");
+  const av=m=>`<span class="mav">${m.avatar?`<img src="${esc(m.avatar)}" alt="" referrerpolicy="no-referrer">`:esc(initials(m.name||m.email||"?"))}</span>`;
   const f=S.f.mem||(S.f.mem={});
-  return `<section class="card"><div class="ch"><div><p class="muted small" style="margin:0">${ok.length} onaylı${pend.length?` · <b>${pend.length} bekleyen</b>`:""}</p></div><button class="btn sm ghost" data-act="memLoad">Yenile</button></div>
-    ${pend.map(m=>`<div class="mrow pend">${who(m)}${m.claim&&P(m.claim)?`<p class="mcl">Kendini <b>${esc(P(m.claim).name)}</b> olarak tanıttı</p>`:'<p class="mcl muted">Kart seçmedi</p>'}<div class="mact"><select data-bind="mem.p_${esc(m.user_id)}" aria-label="Bağlanacak kart">${opt(f["p_"+m.user_id]||m.claim||"",m.user_id)}</select>
-      <label class="mrole"><input type="checkbox" data-bind="mem.r_${esc(m.user_id)}" ${f["r_"+m.user_id]?"checked":""}> Yönetici</label>
-      <button class="btn primary sm" data-act="memOk" data-id="${esc(m.user_id)}">Onayla</button><button class="btn ghost sm" data-act="memNo" data-id="${esc(m.user_id)}">Reddet</button></div></div>`).join("")}
-    ${ok.map(m=>`<div class="mrow">${who(m)}<span class="mp">${m.player_id&&P(m.player_id)?esc(P(m.player_id).name):"Kart yok"}${m.role==="yonetici"?' <i class="mtag">Yönetici</i>':""}</span><button class="btn ghost sm" data-act="memNo" data-id="${esc(m.user_id)}" aria-label="Üyeliği kaldır">${ICON.x}</button></div>`).join("")}
-    ${!L.length?'<p class="muted small">Henüz kimse katılmadı.</p>':""}<p class="muted small" style="margin:8px 0 0">Uygulamayı açan kişi Google ile giriş yapıp kendi kartını seçer, isteği buraya düşer. Sen onaylamadan uygulamayı göremez.</p></section>
-`}
+  const pc=m=>{const cl=m.claim&&P(m.claim);const sel=f["p_"+m.user_id]||m.claim||"";const adm=!!f["r_"+m.user_id];
+    return `<div class="mreq"><div class="mrqh">${av(m)}<span class="setx"><b>${esc(m.name||"İsimsiz")}</b><small>${esc(m.email||"")}</small></span></div>
+      <p class="mcl">${cl?`Kendini <b>${esc(cl.name)}</b> olarak tanıttı`:"Kart seçmedi, aşağıdan sen bağla"}</p>
+      <label class="f">Bağlanacak kart<select data-bind="mem.p_${esc(m.user_id)}">${opt(sel)}</select></label>
+      <button class="mrl${adm?" on":""}" data-act="memRole" data-id="${esc(m.user_id)}" role="switch" aria-checked="${adm}"><span><b>Yönetici yap</b><small>Ayarları ve üyeleri yönetebilir</small></span><i class="sw ${adm?"on":""}"><i></i></i></button>
+      <div class="btns2"><button class="btn ghost" data-act="memNo" data-id="${esc(m.user_id)}">Reddet</button><button class="btn primary" data-act="memOk" data-id="${esc(m.user_id)}">Onayla</button></div></div>`};
+  const or=m=>{const pl=m.player_id&&P(m.player_id);const me=m.user_id===myId;const ask=S.f.memDel===m.user_id;
+    return `<div class="setr nolink">${av(m)}<span class="setx"><b>${esc(pl?pl.name:(m.name||m.email))}${m.role==="yonetici"?' <i class="mtag">Yönetici</i>':""}</b><small>${esc(m.email||"")}${pl?"":" · kart bağlı değil"}</small></span>
+      ${me?'<span class="mme">Sen</span>':ask?`<button class="btn sm danger" data-act="memNo" data-id="${esc(m.user_id)}">Kaldır</button><button class="btn sm ghost" data-act="memDel" data-id="">Vazgeç</button>`:`<button class="mdel" data-act="memDel" data-id="${esc(m.user_id)}" aria-label="Üyeliği kaldır">${ICON.x}</button>`}</div>`};
+  return `${pend.length?`<section class="sgrp"><h3>Bekleyen istekler · ${pend.length}</h3><div class="mreqs">${pend.map(pc).join("")}</div></section>`:""}
+    <section class="sgrp"><h3 class="mh3">Onaylı üyeler · ${ok.length}<button class="mref" data-act="memLoad" aria-label="Yenile">${ICON.refresh||"Yenile"}</button></h3><div class="sbox">${ok.map(or).join("")||'<p class="muted small" style="padding:14px;margin:0">Henüz onaylı üye yok.</p>'}</div></section>
+    <p class="snote">Linki açan kişi Google ile giriş yapıp kendi kartını seçer, isteği buraya düşer. Sen onaylamadan uygulamayı göremez.</p>`}
 
 /* vitrin: giriş yapmamış ziyaretçiye görünen sayfa */
 async function vitrinLoad(){try{S.vit=await rpc("vitrin",{})}catch(_){S.vit=null}render(true)}
@@ -3906,27 +3933,26 @@ const SI={
   cik:sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>')};
 const srow=(k,ic,t,sub,extra,cls)=>`<button class="setr ${cls||""}" data-act="${k.startsWith("@")?k.slice(1):"setp"}" ${k.startsWith("@")?"":`data-v="${k}"`}><span class="seti">${ic}</span><span class="setx"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span>${extra||""}<i class="setc" aria-hidden="true">›</i></button>`;
 const sgrp=(t,rows)=>rows.filter(Boolean).length?`<section class="sgrp">${t?`<h3>${t}</h3>`:""}<div class="sbox">${rows.filter(Boolean).join("")}</div></section>`:"";
+const SUBT={uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Takıma gönder",pin:"Yönetici girişi"};
 function setSub(k){const url=location.origin+location.pathname;
-  const T={uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Takıma gönder",pin:"Yönetici girişi"}[k]||"";
-  let h=`<div class="ssub"><button class="sback" data-act="setp" data-v="">${ICON.back} Ayarlar</button><h2>${T}</h2></div>`;
+  let h=`<button class="sback" data-act="setp" data-v="">${ICON.back} Ayarlar</button>`;
   if(k==="uyeler")h+=adminMembers();
   else if(k==="grup"&&S.admin){const s=S.f.set||(S.f.set={...S.settings});h+=`<section class="card"><form data-form="settings" style="display:grid;gap:12px">
       <label class="f" for="sGroup">Ekip adı<input id="sGroup" type="text" maxlength="40" data-bind="set.group_name" value="${esc(s.group_name)}"></label>
-
       <label class="f" for="sField">Halı saha adı<input id="sField" type="text" maxlength="60" data-bind="set.field_name" value="${esc(s.field_name)}" placeholder="Örn. Yıldız Halı Saha"></label>
       <div class="grid2"><label class="f" for="sDay">Maç günü<select id="sDay" data-bind="set.day">${GUNLER.map((g,i)=>`<option value="${i}"${+s.day===i?" selected":""}>${g}</option>`).join("")}</select></label>
       <label class="f" for="sTime">Maç saati${timeSel("sTime","set.time",s.time)}</label></div>
       <button class="btn primary block" type="submit">Kaydet</button></form></section>`}
-  else if(k==="sezon"&&S.admin)h+=`<section class="card" style="display:grid;gap:12px">
-      <p class="muted small" style="margin:0">Şu an Sezon ${curYr()} · ${seasonCount(curYr())}/${sLen()} maç${seasonDone(curYr())?" · tamamlandı, bir sonraki maç yeni sezonu başlatır":""}</p>
-      <label class="f" for="sLen">Bir sezondaki maç sayısı<select id="sLen" data-bind="sLen">${[4,5,6,7,8,9,10,12,14,16].map(n=>`<option value="${n}"${n===+(S.f.sLen||sLen())?" selected":""}>${n} maç</option>`).join("")}</select></label>
-      <button class="btn primary block" data-act="seasonSave">Kaydet</button>
-      ${seasonDone(curYr())||!seasonCount(curYr())?"":`<button class="btn ghost danger block" data-act="seasonClose">${S.f.sClose?"Emin misin? Sezon "+curYr()+" şimdi bitsin":"Sezonu şimdi bitir"}</button>`}</section>`;
-  else if(k==="tel")h+=`<section class="card"><ol class="steps-list">
-    <li><b>iPhone:</b> Safari'de bu sayfayı aç, alttaki Paylaş düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</li>
-    <li><b>Android:</b> Chrome'da sağ üstteki üç noktaya bas, <b>Ana ekrana ekle</b>'yi seç.</li></ol></section>`;
+  else if(k==="sezon"&&S.admin){const n=seasonCount(curYr()),L=sLen();h+=`<section class="card szc"><div class="szh"><span class="eyebrow">Şu an</span><b>Sezon ${curYr()}</b><small>${n}/${L} maç oynandı${seasonDone(curYr())?" · tamamlandı":""}</small></div>
+      <div class="szd">${Array.from({length:L},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("")}</div>${seasonDone(curYr())?'<p class="snote" style="margin:0">Bir sonraki maç yeni sezonu başlatır.</p>':""}</section>
+    <section class="card" style="display:grid;gap:12px"><label class="f" for="sLen">Bir sezondaki maç sayısı<select id="sLen" data-bind="sLen">${[4,5,6,7,8,9,10,12,14,16].map(n=>`<option value="${n}"${n===+(S.f.sLen||sLen())?" selected":""}>${n} maç</option>`).join("")}</select></label>
+      <button class="btn primary block" data-act="seasonSave">Kaydet</button></section>
+    ${seasonDone(curYr())||!n?"":`<section class="card szx"><b>Sezonu erken bitir</b><p class="snote" style="margin:0">Oynanan maçlarla sezon kapanır, şampiyon belli olur. Geri alınamaz.</p><button class="btn ghost danger block" data-act="seasonClose">${S.f.sClose?"Emin misin? Sezon "+curYr()+" şimdi bitsin":"Sezonu şimdi bitir"}</button></section>`}`}
+  else if(k==="tel")h+=`<p class="snote" style="margin:0 4px 10px">Ana ekrana eklersen uygulama gibi tam ekran açılır.</p><div class="sbox">
+    <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>iPhone · Safari</b><span>Alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</span></span></div>
+    <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>Android · Chrome</b><span>Sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç.</span></span></div></div>`;
   else if(k==="pay")h+=`<section class="card" style="display:grid;gap:12px"><p class="muted small" style="margin:0">Takımdan biri linki açınca Google ile giriş yapar, kendi kartını seçer; sen onaylayınca uygulama açılır.</p>
-    <input type="text" readonly value="${esc(url)}" id="shareUrl" aria-label="Uygulama linki">
+    <div class="surl"><input type="text" readonly value="${esc(url.replace(/^https?:\/\//,""))}" id="shareUrl" aria-label="Uygulama linki"></div>
     <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent("⚽ "+S.settings.group_name+" artık Yelek'te. Kartına ve kadroya buradan bak: "+url)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(url)}">${ICON.copy} Kopyala</button></div></section>`;
   else if(k==="pin"){h+=`<section class="card"><form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`}
   return h}
@@ -3977,9 +4003,11 @@ document.addEventListener("click",async e=>{
     case"joinReq":{const pid=S.f.claim||S.mem?.claim;if(!pid){toast("Önce kartını seç");break}try{const r=await rpc("request_join",{p_code:LS.get("y_davet")||null,p_player:pid});if(r&&r.ok){LS.del("y_davet");toast("İsteğin yöneticiye gönderildi");S.mem=await rpc("my_membership",{});S.f.claim="";render(true)}else toast("İstek gönderilemedi")}catch(_){toast("İstek gönderilemedi")}break}
     case"gateSet":{const on=el.dataset.v==="1";const r=await act("admin_set_gate",{p_pin:"",p_gate:on},on?"Uygulama kilitlendi":"Kilit kaldırıldı");if(r){S.gate=on;await load(true)}break}
     case"memLoad":S.memList=null;render(true);break;
+    case"memDel":S.f.memDel=id||"";render(true);break;
+    case"memRole":{const f=S.f.mem||(S.f.mem={});f["r_"+id]=!f["r_"+id];render(true);break}
     case"setp":S.f.setp=el.dataset.v||"";render(true);window.scrollTo(0,0);break;
     case"memOk":{const f=S.f.mem||{};const pid=f["p_"+id]||(S.memList||[]).find(m=>m.user_id===id)?.claim||null;if(!pid){toast("Önce bağlanacak kartı seç");break}const r=await A("admin_member_decide",{p_user:id,p_status:"onayli",p_player:pid,p_role:f["r_"+id]?"yonetici":"uye"},"Üye onaylandı");if(r&&r.error==="player_taken")toast("Bu kart başka bir hesaba bağlı");memLoad();break}
-    case"memNo":{const r=await A("admin_member_decide",{p_user:id,p_status:"reddedildi",p_player:null,p_role:null},"Üyelik kaldırıldı");memLoad();break}
+    case"memNo":{const r=await A("admin_member_decide",{p_user:id,p_status:"reddedildi",p_player:null,p_role:null},"Üyelik kaldırıldı");S.f.memDel="";memLoad();break}
     case"invNew":{const r=await A("admin_invite_create",{p_days:30},"Davet linki oluşturuldu");memLoad();break}
     case"invOff":{await A("admin_invite_revoke",{p_code:id},"Link iptal edildi");memLoad();break}
     case"invCopy":{const v=el.dataset.v;try{await navigator.clipboard.writeText(v);toast("Link kopyalandı")}catch(_){toast("Kopyalanamadı, linki elle seç")}break}
