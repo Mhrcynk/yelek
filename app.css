@@ -2055,3 +2055,4 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .bszg b{font:900 1.3rem/1 var(--display)}.bszg small{font:700 .6rem/1 Inter,sans-serif;color:var(--muted);white-space:nowrap}
 .bsn{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,#37003C,#5A1FB0);color:#fff;font:600 .78rem/1.2 Inter,sans-serif;cursor:pointer;text-align:left}
 .bsn b{font-weight:800;white-space:nowrap}
+.mres .mafb:empty{display:none}.mres .mafm{padding-bottom:16px}.mres .mafb{padding-top:0}
