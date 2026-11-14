@@ -415,8 +415,8 @@ function navInd(){const ind=$("#nind"),nav=ind&&ind.parentElement;if(!ind)return
   if(first){ind.dataset.on=1;void ind.offsetWidth;ind.style.transition=""}}
 addEventListener("resize",()=>navInd());
 /* sayfa değişimi: eski sayfa kayarak çekilirken yenisi aynı anda süzülür (View Transitions); boş kare yok */
-function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>TABS.findIndex(y=>y[0]===(x==="sezon"?"kartlar":x));
-  const dir=S.tab==="sezon"&&t==="kartlar"?"l":(idx(t)<0||idx(S.tab)<0)?"r":(idx(t)>=idx(S.tab)?"r":"l");
+function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>TABS.findIndex(y=>y[0]===(x==="sezon"?"lig":x));
+  const dir=S.tab==="sezon"&&t==="lig"?"r":S.tab==="lig"&&t==="sezon"?"r":(idx(t)<0||idx(S.tab)<0)?"r":(idx(t)>=idx(S.tab)?"r":"l");
   const run=()=>{window.scrollTo(0,0);S.tab=t;S.view=null;if(fromNav){LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab)}render(true)};
   if(RM||!document.startViewTransition){run();return}
   document.documentElement.dataset.pdir=dir;try{S._vt&&S._vt.skipTransition&&S._vt.skipTransition()}catch(_){}
@@ -439,7 +439,7 @@ function yrSel(){const y=selYr();const L=yrList();
   return `<label class="yrsel"><span>${y==="all"?"Tüm zamanlar":"Sezon "+y}</span><i>${CHVD}</i><select data-act-change="yr" aria-label="Sezon seç">${L.map(x=>`<option value="${x}"${x===y?" selected":""}>Sezon ${x}${seasonDone(x)?"":" (devam ediyor)"}</option>`).join("")}<option value="all"${y==="all"?" selected":""}>Tüm zamanlar</option></select></label>`}
 function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(y),L=sLen(),done=seasonDone(y);const fin2=!done&&n>=L-2;
   return `<div class="sprog"><div class="sprt"><b>${done?"Sezon tamamlandı":`Hafta ${n}/${L}`}</b>${fin2?'<span class="sfin">Final haftaları</span>':""}</div><span class="sbar"><i style="width:${Math.min(100,Math.round((done?L:n)/L*100))}%"></i></span></div>`}
-const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Oyuncular",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
+const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Lig",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
 function phdRender(){const el=$("#phd");if(!el)return;const t=S.tab;let c=PHD[t];
   if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ayarlar")c=[S.f.setp&&SUBT[S.f.setp]?SUBT[S.f.setp]:"Ayarlar",0];
   if(!S.loaded||!c){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout");$("#tt").textContent="";return}
@@ -631,7 +631,7 @@ function render(force){
   if(me){mb.className="meBtn";mb.innerHTML=`${avatar(me,"sm")}<span>${esc(firstName(me.name))}</span>`;mb.setAttribute("aria-label","Ben: "+me.name+". Değiştir")}
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
   {const ni=$("#navIn");if(!ni.firstChild)ni.innerHTML=TABS.map(([k,l,ic])=>`<button data-tab="${k}"><span class="ic">${ic==="lig"?LIG_SVG:ICON[ic]}</span><span class="tl">${l}</span></button>`).join("");
-    const cur=S.tab==="sezon"?"kartlar":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
+    const cur=S.tab==="sezon"?"lig":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
   document.body.classList.toggle("gated",gated());
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
   if(S.offline&&S.loaded)h+=`<button class="offl" data-act="retry">${SI.bulut}<span><b>İnternet yok</b> · son güncelleme ${new Date(S.offline).toDateString()===new Date().toDateString()?hhmm(S.offline):fmtShort(new Date(S.offline).toISOString().slice(0,10))+" "+hhmm(S.offline)}</span><i>Yenile</i></button>`;
@@ -639,7 +639,7 @@ function render(force){
   else if(S.loaded&&gated()&&!AUTH.ready&&LS.get("y_auth"))h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated())h+=viewVitrin();
   else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
-  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
+  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"lig":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});v.removeAttribute("aria-busy");phdRender();qkRender();
   if(chg&&!RM)reveal(v);
 
@@ -1538,7 +1538,7 @@ function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.se
   t+=`\nKadro ve kartlar: ${location.origin+location.pathname}`;return t}
 
 /* ================= Kartlar ================= */
-const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Oyuncular">${[["kartlar","Kartlar"],["sezon","İstatistikler"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
+const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Lig">${[["lig","Puan durumu"],["sezon","İstatistikler"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
 function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
   const kv=S.f.kv||LS.get("y_kv")||"list";
@@ -1546,7 +1546,7 @@ function viewKartlar(){
   let ps=S.players.filter(p=>(sq==="all"||(sq==="yedek"?!!p.yedek:!p.yedek))&&(flt==="all"||flt==="as"||flt==="yedek"||p.pos===flt||(altOf(p)&&GROUP_POS[EPOS[altOf(p)][0]]===flt)));
   ps=[...ps].sort((a,b)=>sort==="mv"?mvOf(b.id)-mvOf(a.id)||genOf(b.id)-genOf(a.id):sort==="isim"?a.name.localeCompare(b.name,"tr"):sort==="form"?(S.stats[b.id]?.form??-1)-(S.stats[a.id]?.form??-1)||(S.stats[b.id]?.lastD||0)-(S.stats[a.id]?.lastD||0)||genOf(b.id)-genOf(a.id):genOf(b.id)-genOf(a.id));
   const mi=(act,l,on,extra)=>`<button role="menuitem" data-act="${act}" ${extra||""}>${l}${on?"<i>✓</i>":""}</button>`;
-  let h=`${oyTabs("kartlar")}<div class="ktb"><div class="vtog sqt" role="group" aria-label="Kadro">${[["as","As",nAs],["yedek","Yedek",nYd],["all","Tümü",""]].map(([k,l,n])=>`<button data-act="sqf" data-v="${k}" class="${sq===k?"on":""}" aria-pressed="${sq===k}">${l}${n!==""?` <small>${n}</small>`:""}</button>`).join("")}</div>
+  let h=`<div class="ktb"><div class="vtog sqt" role="group" aria-label="Kadro">${[["as","As",nAs],["yedek","Yedek",nYd],["all","Tümü",""]].map(([k,l,n])=>`<button data-act="sqf" data-v="${k}" class="${sq===k?"on":""}" aria-pressed="${sq===k}">${l}${n!==""?` <small>${n}</small>`:""}</button>`).join("")}</div>
     <button class="kic" data-act="kview" data-v="${kv==="list"?"grid":"list"}" aria-label="${kv==="list"?"Kart görünümü":"Liste görünümü"}">${kv==="list"?ICON_GRID:ICON_LIST}</button>
     <span class="kmw"><button class="kic" data-act="kmenu" aria-label="Diğer" aria-haspopup="menu" aria-expanded="${!!S.f.kmenu}">${ICON_DOTS}</button>${S.f.kmenu?`<button class="kmx" data-act="kmenu" aria-label="Menüyü kapat" tabindex="-1"></button><div class="kmenu" role="menu"><span class="kml">Sırala</span><div class="kpills" role="group" aria-label="Sırala">${[["ovr","Reyting"],["mv","Değer"],["form","Form"],["isim","İsim"]].map(([k,l])=>`<button data-act="ksort" data-v="${k}" class="${sort===k?"on":""}" aria-pressed="${sort===k}">${l}</button>`).join("")}</div><hr>${mi("cmpOpen","Karşılaştır")}${S.admin?mi("addSheet","Oyuncu ekle")+mi("sqMode","As / yedek seç"):""}</div>`:""}</span></div>
     <div class="chips kchips" role="group" aria-label="Mevkiye göre">${[["all","Tümü"],...POS_KEYS.map(k=>[k,k])].map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${flt===k||(k==="all"&&(flt==="as"||flt==="yedek"))?"on":""}">${l}</button>`).join("")}</div>`;
@@ -1735,7 +1735,7 @@ function rivalOf(me){if(!me)return null;const t={};
     for(const id of plOf(m,sd==="A"?"B":"A")){const p=P(id);if(!p||p.guest||p.archived)continue;const o=t[id]||(t[id]={id,n:0,G:0,B:0,M:0});o.n++;o[r]++}}
   const L=Object.values(t).sort((x,y)=>y.n-x.n||y.M-x.M);return L[0]||null}
 function viewLig(){const avg=false;const F=fin().filter(inYr);const L=ligTable(F,avg);
-  let h=``;
+  let h=oyTabs("lig");
   if(!L.length)return h+`<section class="card"><div class="empty"><h3>Henüz biten maç yok</h3><p>İlk maç bitince puan durumu burada oluşur.</p></div></section>`+champWall();
   // geçen haftaya göre sıra değişimi: son maç günü hariç tablo
   const lastD=F.length?F[F.length-1].date:null;const PF=F.filter(m=>m.date!==lastD);const prev=PF.length?ligTable(PF,avg).map(o=>o.id):null;
