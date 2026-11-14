@@ -387,7 +387,19 @@ function cacheLoad(){try{const c=JSON.parse(localStorage.getItem("y_cache")||"nu
   return true}catch(_){return false}}
 function cacheClear(){LS.del("y_cache");LS.del("y_cph");LS.del("y_cpv");S.cacheAt=0}
 const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
-async function notesSync(){if(!S.admin||S._ns)return;S._ns=true;
+/* tek seferlik: fotoğrafları hizala (sunucuda hazırlanan dönüşüm, yönetici telefonunda uygulanır) */
+async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
+  try{const r=await rpc("admin_photo_fixes",{p_pin:S.pin||""});const L=(r&&r.rows)||[];let n=0;
+    for(const x of L){const src=S.photos[x.id];if(!src)continue;
+      const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+      const c=document.createElement("canvas");c.width=256;c.height=320;const g=c.getContext("2d");const m=x.m;
+      g.imageSmoothingQuality="high";g.setTransform(m[0],m[3],m[1],m[4],m[2],m[5]);g.drawImage(img,0,0,img.naturalWidth,img.naturalHeight);g.setTransform(1,0,0,1,0,0);
+      const gr=g.createLinearGradient(0,218,0,288);gr.addColorStop(0,"rgba(0,0,0,1)");gr.addColorStop(1,"rgba(0,0,0,0)");
+      g.globalCompositeOperation="destination-in";g.fillStyle=gr;g.fillRect(0,0,256,320);g.globalCompositeOperation="source-over";
+      let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");if(d.length>=250000)continue;
+      const w=await rpc("admin_set_photo",{p_pin:S.pin||"",p_id:x.id,p_data:d});if(w&&w.ok){S.photos[x.id]=d;await rpc("admin_photo_fix_done",{p_pin:S.pin||"",p_id:x.id});n++}}
+    if(n){toast(n+" fotoğraf hizalandı");render(true)}}catch(e){console.warn(e)}finally{S._pf=false}}
+async function notesSync(){setTimeout(photoFixRun,2500);if(!S.admin||S._ns)return;S._ns=true;
   try{for(const m of S.matches){if(m.state!=="bitti"||m.notes||m.kind==="ext")continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
     const n={};for(const[id,r]of Object.entries(inf.pts)){if(r&&isFinite(r.pts))n[id]={n:Math.round(r.pts*10)/10}}
     if(!Object.keys(n).length)continue;try{const r=await rpc("admin_set_notes",{p_pin:S.pin||"",p_id:m.id,p_notes:n});if(r&&r.ok)m.notes=n}catch(_){}}}
