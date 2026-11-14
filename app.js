@@ -696,8 +696,10 @@ const lineRows=(m,k)=>{const ps=posArr(m,k),L=lineupOf(m,k),T=plOf(m,k);const O=
 function hkScore(m){const inf=S.mInfo[m.id]||{pts:{}};const a=+m.score_a||0,b=+m.score_b||0;const nA=nmOf(m,"A"),nB=nmOf(m,"B");
   const sc=k=>plOf(m,k).map(id=>[id,+(m.stats||{})[id]?.g||0]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).map(([id,g])=>esc(shortName(nameOf(id)))+(g>1?" "+g:""));
   const hd=a===b?"Berabere":(Math.abs(a-b)>=4?(a>b?nA:nB)+" fark attı":(a>b?nA:nB)+" kazandı");const mo=inf.motm,r=mo&&inf.pts[mo];
-  const html=hkPost({hd,body:mo?hkPh(mo):"",chip:hkSc(m),chipC:"big",pnC:"tall",
-    pn:`<div class="hkvs"><div><b>${esc(TRU(nA))}</b><p>${sc("A").join(" · ")||"–"}</p></div><div><b>${esc(TRU(nB))}</b><p>${sc("B").join(" · ")||"–"}</p></div></div>${mo?`<div class="hkmini">★ Maçın adamı: ${esc(nameOf(mo))}${r?" · "+fN(r.pts):""}</div>`:""}`,ft:hkMatchFt(m)});
+  const cA=m.cap_a&&P(m.cap_a)?m.cap_a:null,cB=m.cap_b&&P(m.cap_b)?m.cap_b:null;
+  const body=cA&&cB?hkPh(cA,"duo l")+hkPh(cB,"duo r"):cA||cB?hkPh(cA||cB):mo?hkPh(mo):"";
+  const html=hkPost({hd,body,chip:hkSc(m),chipC:"big",pnC:"tall",
+    pn:`<div class="hkvs"><div><b>${esc(TRU(nA))}</b>${cA?`<small>KPT · ${esc(TRU(shortName(nameOf(cA))))}</small>`:""}<p>${sc("A").map(x=>`<span class="nw">${x}</span>`).join(" · ")||"–"}</p></div><div><b>${esc(TRU(nB))}</b>${cB?`<small>KPT · ${esc(TRU(shortName(nameOf(cB))))}</small>`:""}<p>${sc("B").map(x=>`<span class="nw">${x}</span>`).join(" · ")||"–"}</p></div></div>${mo?`<div class="hkmini">★ Maçın adamı: ${esc(nameOf(mo))}${r?" · "+fN(r.pts):""}</div>`:""}`,ft:hkMatchFt(m)});
   const gl=[...sc("A"),...sc("B")].join(" · ");
   const cap=`${igDate(m.date)} · ${nA} ${a}–${b} ${nB} ${a===b?"🤝":"🔥"}\n${mo?nameOf(mo)+" maçın adamı ⭐\n":""}${gl?"⚽ "+gl+"\n":""}#abilerkardeslerfc #halısaha #yelek`;
   return{html,cap,name:"mac-sonucu-"+m.date}}
@@ -710,10 +712,10 @@ function hkTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.
   return{html,cap,name:"haftanin-takimi-"+m.date}}
 function hkLineup(m){const inf=S.mInfo[m.id]||{pts:{}};
   const col=k=>hkCol(`${hkCr(m,k,14)}<b>${esc(TRU(nmOf(m,k)))}</b><small>${esc(formLabel(formOf(m,k),posArr(m,k)))}</small>`,lineRows(m,k).map(([id,ep])=>{const r=inf.pts[id];return[ep,esc(shortName(nameOf(id)))+(inf.motm===id?" ★":""),r?fN(r.pts):null,r?hkNoteCls(r.pts):""]}));
-  const html=hkPost({hd:"Kadrolar",body:hkSB(m)+`<div class="hkkw sb">${col("A")}${col("B")}</div>`,ft:hkMatchFt(m)});
+  const html=hkPost({hd:"Not karnesi",body:hkSB(m)+`<div class="hkkw sb">${col("A")}${col("B")}</div>`,ft:hkMatchFt(m)});
   const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
-  const cap=`${igDate(m.date)} kadroları 📋\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n#abilerkardeslerfc #halısaha`;
-  return{html,cap,name:"kadrolar-"+m.date}}
+  const cap=`${igDate(m.date)} not karnesi 📝\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n#abilerkardeslerfc #halısaha`;
+  return{html,cap,name:"not-karnesi-"+m.date}}
 const hkMG=(m,id)=>{const s=(m.stats||{})[id]||{};return{g:+s.g||0,a:+s.a||0}};
 const hkGA=(m,id)=>{const{g,a}=hkMG(m,id);return g?[g+" gol","Bu maçta"]:a?[a+" asist","Bu maçta"]:[TRU(ROLE_NAME[S.mInfo[m.id]?.pts[id]?.role]||""),"Mevki"]};
 function hkMotm(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.motm;if(!id)return null;const r=inf.pts[id];
@@ -727,10 +729,6 @@ function hkGoal(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.gol;if(!id)ret
   const as=[...new Set((m.links||[]).filter(x=>x&&x.g===id&&x.a&&P(x.a)).map(x=>x.a))];
   const html=hkPost({hd:"Haftanın golü",body:hkPh(id),chip:hkSc(m),pn:hkNm(id)+hkSt([[String(g||1),"Bu maçta gol"],[String(sg||g||1),"Sezonda gol"]])+(as.length?`<div class="hkmini">Asist: ${as.map(a=>esc(shortName(nameOf(a)))).join(", ")}</div>`:""),pnC:as.length?"tall":"",ft:hkMatchFt(m)});
   return{html,cap:`Haftanın golü ${nameOf(id)}'den ⚽🔥\n${igDate(m.date)}\n#abilerkardeslerfc #haftanıngolü #halısaha`,name:"haftanin-golu-"+m.date}}
-function hkNotes(m){const inf=S.mInfo[m.id]||{pts:{}};const L=Object.entries(inf.pts||{}).filter(([id,r])=>r&&P(id)).sort((a,b)=>b[1].pts-a[1].pts);if(!L.length)return null;
-  const h=Math.ceil(L.length/2);const col=(S2,o)=>hkCol("",S2.map(([id,r],i)=>[String(o+i+1),esc(shortName(nameOf(id)))+(inf.motm===id?" ★":""),fN(r.pts),hkNoteCls(r.pts)]));
-  const html=hkPost({hd:"Not karnesi",body:hkSB(m)+`<div class="hkkw nh sb">${col(L.slice(0,h),0)}${col(L.slice(h),h)}</div>`,ft:hkMatchFt(m)});
-  return{html,cap:`${igDate(m.date)} not karnesi 📝\n${L.slice(0,3).map(([id,r],i)=>(i+1)+". "+shortName(nameOf(id))+" "+fN(r.pts)).join("\n")}\n#abilerkardeslerfc #halısaha`,name:"not-karnesi-"+m.date}}
 
 /* --- maç önü --- */
 const hkNext=()=>S.matches.filter(m=>m.state!=="bitti"&&!isExt(m)&&(m.team_a||[]).length&&(m.team_b||[]).length).sort((a,b)=>matchTs(a)-matchTs(b))[0];
@@ -823,14 +821,14 @@ function hkFinal(){const n=[...seasonsAll()].reverse().find(x=>seasonDone(x));if
 
 const PM_ITEMS={
   once:[["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
-  mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["not","Not karnesi"],["kadro","Kadrolar"]],
+  mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["kadro","Not karnesi"]],
   oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"]],
   sezon:[["mvp","Zirve yarışı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["ikili","En iyi ikili"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yaris","Mevki yarışı"],["final","Sezon finali"]]};
 const PM_EMPTY={once:"Sıradaki maçın takımları henüz kurulmadı.",out:"Şu an sakat, hasta ya da izinli oyuncu yok.",seri:"Bu oyuncunun şu an süren bir serisi yok.",rozet:"Bu oyuncunun henüz rozeti yok.",kaptan:"Bu oyuncu henüz kaptanlık yapmadı.",durum:"Bu oyuncu şu an hazır görünüyor; durumu sakat, hasta ya da izinli yapılınca bu gönderi açılır.",h2h:"Karşılaştırmak için ikinci bir oyuncu seç.",karne:"Ara karne en az 3 maç oynandıktan sonra hazırlanır.",final:"Sezon finali, sezon bitince hazırlanır."};
 function pmPlayers(){return S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,"tr"))}
 function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));const m=S.matches.find(x=>x.id===f.mid&&x.state==="bitti")||ms[0];
   const k=f.item||PM_ITEMS[f.tab][0][0];
-  if(f.tab==="mac"){if(!m)return null;return({skor:hkScore,motm:hkMotm,totw:hkTotw,gol:hkGoal,fiy:hkFiy,not:hkNotes,kadro:hkLineup}[k]||hkScore)(m)}
+  if(f.tab==="mac"){if(!m)return null;return({skor:hkScore,motm:hkMotm,totw:hkTotw,gol:hkGoal,fiy:hkFiy,kadro:hkLineup}[k]||hkScore)(m)}
   if(f.tab==="once"){if(k==="out")return hkOut();const n=hkNext();if(!n)return null;return k==="duel"?hkDuel(n):hkPreLine(n)}
   if(f.tab==="oyuncu"){const p=P(f.pid||S.me)||pmPlayers()[0];if(!p)return null;
     if(k==="h2h"){const q=P(f.pid2)||pmPlayers().filter(x=>x.id!==p.id&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0];return hkH2H(p,q)}

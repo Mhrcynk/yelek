@@ -1977,3 +1977,5 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .hkkw.sb.nh .hkkr{height:25.5px}
 .hkkr b{text-align:left}
 .hkcp.cr{width:auto;height:auto}
+.hkvs small{display:block;margin-top:3px;font:700 6px/1 Inter,sans-serif;letter-spacing:.08em;color:#FFD24A}
+.hkvs p .nw{white-space:nowrap}
