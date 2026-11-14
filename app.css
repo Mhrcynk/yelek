@@ -2155,3 +2155,14 @@ html{font-size:clamp(13.5px,4.27vw,16px)}
 .sqt button{white-space:nowrap}
 .nmhint .btns2{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}.nmhint .btn{white-space:nowrap}
 .xsbc .crest{width:40px;height:40px}
+/* lig takibi */
+body.fol #pmBtn{display:none}
+.folb{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.folb .setx{flex:1;min-width:0}.folb .setx b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.folb .setx small{color:var(--muted)}
+.meBtn svg{flex:none}
+.ligl{margin-top:4px}.ligl .setr .btn{flex:none}
+.lpbig+.btn{margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+body.fol .nav .in{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.fol .nav{max-width:300px;transition:none}
+.folb .setx small{display:block;white-space:normal}
