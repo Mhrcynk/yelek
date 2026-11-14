@@ -1,7 +1,7 @@
 {
-  "name": "Yelek",
+  "name": "Yelek: Halı Saha Ligi",
   "short_name": "Yelek",
-  "description": "Halı saha kart ligi",
+  "description": "Kadro kur, skoru gir; reyting kartları ve puan durumu",
   "lang": "tr",
   "start_url": "./",
   "scope": "./",
