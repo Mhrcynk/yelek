@@ -1957,3 +1957,5 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .hcard{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:14px;border:1.5px solid #ECE6F2;background:#fff;cursor:pointer;text-align:left;font:inherit;color:inherit}.hcard .av{width:42px;height:42px;flex:none}.hcard>span:not(.av){flex:1;display:grid}.hcard small{color:var(--muted);font-size:.76rem}.hcard>i{font-style:normal;color:#C9BFD6;font-size:1.3rem}
 .aud .setx small{white-space:normal}.aud .setx b{font-weight:600;font-size:.88rem;line-height:1.3}
 .offl{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:10px 14px;border:0;border-radius:14px;background:#FFF4D6;color:#5A3A00;font:inherit;font-size:.84rem;text-align:left;cursor:pointer}.offl svg{width:18px;height:18px;flex:none}.offl span{flex:1}.offl i{font-style:normal;font-weight:800}
+/* ana ekrandan açılınca iPhone üst kenarı bulanıklaştırıyor: düğmeler bu bölgenin altında kalsın */
+@media (display-mode: standalone){.top{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}}
