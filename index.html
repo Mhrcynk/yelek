@@ -1969,6 +1969,7 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .szx{display:grid;gap:8px;margin-top:4px}.szx b{font:800 .95rem/1.2 Inter,sans-serif;color:#D9334F}
 .tels{align-items:flex-start}.tels .setx>span{display:block;margin-top:4px;font-size:.84rem;line-height:1.45;color:var(--ink)}.tels .setx>span b{display:inline;font:inherit;font-weight:700}
 .surl input{width:100%;font-size:.85rem;color:var(--muted);text-overflow:ellipsis}
+.pask{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.pask .setx small{white-space:normal}.pab{display:flex;gap:6px;align-items:center}.pab .btn.ghost{padding:0;width:34px;height:34px;display:grid;place-items:center}.pab svg{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -2022,7 +2023,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261114100837";
+const APP_V="261114103627";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2107,7 +2108,7 @@ const S={all:[],players:[],matches:[],settings:{...DEF_SET},seasonVotes:[],me:LS
   tab:"mac",sheet:null,guests:[],photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
 S.admin=!!S.pin;
 {const old={hafta:"mac",oyuncular:"kartlar",kurallar:"ayarlar"};let t=LS.get("y_tab");t=old[t]||t;if(TABS.some(x=>x[0]===t))S.tab=t;
- const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;}
+ const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;else if(hh==="uyeler"){S.tab="ayarlar";S.f=S.f||{};S.f.setp="uyeler"}}
 
 /* ================= Yardımcılar ================= */
 const $=s=>document.querySelector(s);
@@ -2616,7 +2617,7 @@ function render(force){
   if(!S.loaded&&!S.err)h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div><div class="skl"><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated()&&!AUTH.ready&&LS.get("y_auth"))h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated())h+=viewVitrin();
-  else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
+  else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});v.removeAttribute("aria-busy");phdRender();qkRender();
   if(chg&&!RM)reveal(v);
@@ -3922,6 +3923,37 @@ function viewVitrin(){const v=S.vit;if(!v){vitrinLoad();return `<div class="vskl
      ${L.length>10?`<p class="muted small vmore">+${L.length-10} oyuncu daha · tamamı takım içinde</p>`:""}</section>`:""}
    <p class="vfoot"><a href="gizlilik.html">Gizlilik</a><span>·</span><a href="https://instagram.com/abilerkardeslerfc" target="_blank" rel="noopener">${IGH}</a></p>`}
 
+
+/* bildirimler (web push) */
+const PUSH={st:"?"};
+const pushOk=()=>"serviceWorker"in navigator&&"PushManager"in window&&"Notification"in window;
+const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+async function pushInit(){if(!("serviceWorker"in navigator)){PUSH.st="yok";return}
+  try{PUSH.reg=await navigator.serviceWorker.register("sw.js")}catch(_){PUSH.st="yok";return}
+  await pushCheck()}
+async function pushCheck(){if(!pushOk()){PUSH.st=isIOS()&&!isStandalone()?"ios":"yok";return}
+  if(Notification.permission==="denied"){PUSH.st="red";return}
+  try{const r=PUSH.reg||await navigator.serviceWorker.ready;const sub=await r.pushManager.getSubscription();PUSH.st=sub?"acik":"kapali"}catch(_){PUSH.st="kapali"}}
+const b64u=s=>{s=s.replace(/-/g,"+").replace(/_/g,"/");const r=atob(s+"===".slice((s.length+3)%4));return Uint8Array.from(r,c=>c.charCodeAt(0))};
+async function pushOn(){if(PUSH.st==="ios"){S.f.setp="tel";S.tab="ayarlar";render(true);toast("Önce uygulamayı ana ekrana ekle");return}
+  if(!pushOk())return toast("Bu tarayıcı bildirim desteklemiyor");
+  PUSH.busy=true;render(true);
+  try{const perm=await Notification.requestPermission();if(perm!=="granted"){PUSH.st=perm==="denied"?"red":"kapali";toast(perm==="denied"?"Bildirim izni kapalı, telefon ayarlarından aç":"İzin verilmedi");return}
+    const reg=PUSH.reg||await navigator.serviceWorker.ready;const key=await rpc("push_public",{});
+    const sub=(await reg.pushManager.getSubscription())||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64u(key)});
+    const j=sub.toJSON();const r=await rpc("push_subscribe",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_on:true});
+    if(r&&r.error){toast("Bildirim açılamadı");return}PUSH.st="acik";LS.set("y_pushask","1");toast("Bildirimler açık")}
+  catch(e){console.warn(e);toast("Bildirim açılamadı")}finally{PUSH.busy=false;render(true)}}
+async function pushOff(){PUSH.busy=true;render(true);
+  try{const reg=PUSH.reg||await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();
+    if(sub){const j=sub.toJSON();try{await rpc("push_subscribe",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_on:false})}catch(_){}await sub.unsubscribe()}
+    PUSH.st="kapali";toast("Bildirimler kapandı")}catch(_){toast("Kapatılamadı")}finally{PUSH.busy=false;render(true)}}
+const pushSub=()=>({acik:"Takımlar, maç günü, sonuçlar"+(S.admin?", katılma istekleri":""),kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:"Bu tarayıcıda desteklenmiyor","?":"…"}[PUSH.st]||"");
+function pushRow(){if(!S.session||!isMember())return"";const on=PUSH.st==="acik",can=PUSH.st==="acik"||PUSH.st==="kapali"||PUSH.st==="ios";
+  return `<div class="setr nolink"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimler</b><small>${pushSub()}</small></span>${can?`<button class="sw ${on?"on":""}" data-act="${on?"pushOff":"pushOn"}" role="switch" aria-checked="${on}" aria-label="Bildirimler" ${PUSH.busy?"disabled":""}><i></i></button>`:""}</div>`}
+function pushAsk(){if(!S.session||!isMember()||LS.get("y_pushask")||!(PUSH.st==="kapali"||PUSH.st==="ios"))return"";
+  return `<section class="card pask"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimleri aç</b><small>${PUSH.st==="ios"?"iPhone'da önce ana ekrana ekle, sonra buradan aç.":"Takımlar belli olunca, maç günü ve sonuçta haber verelim."}</small></span><div class="pab"><button class="btn sm primary" data-act="pushOn">${PUSH.st==="ios"?"Nasıl?":"Aç"}</button><button class="btn sm ghost" data-act="pushNo" aria-label="Kapat">${ICON.x}</button></div></section>`}
 const SI={
   uye:sv('<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M16 4.5a3 3 0 0 1 0 6M18.5 14c1.5.7 2.4 2.4 2.5 5"/>'),
   kilit:sv('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
@@ -3930,6 +3962,7 @@ const SI={
   kural:ICON.kural,
   tel:sv('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
   pay:ICON.share||ICON.copy,
+  zil:sv('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
   cik:sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>')};
 const srow=(k,ic,t,sub,extra,cls)=>`<button class="setr ${cls||""}" data-act="${k.startsWith("@")?k.slice(1):"setp"}" ${k.startsWith("@")?"":`data-v="${k}"`}><span class="seti">${ic}</span><span class="setx"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span>${extra||""}<i class="setc" aria-hidden="true">›</i></button>`;
 const sgrp=(t,rows)=>rows.filter(Boolean).length?`<section class="sgrp">${t?`<h3>${t}</h3>`:""}<div class="sbox">${rows.filter(Boolean).join("")}</div></section>`:"";
@@ -3970,6 +4003,7 @@ function viewAyarlar(){
     srow("grup",SI.grup,"Ekip ve saha",`${esc(S.settings.group_name||"")} · ${GUNLER[+S.settings.day]||""} ${esc(S.settings.time||"")}`),
     srow("sezon",SI.sezon,"Sezon",`Sezon ${curYr()} · ${seasonCount(curYr())}/${sLen()} maç`)]);
   h+=sgrp("Uygulama",[
+    pushRow(),
     srow("@rulesSheet",SI.kural,"Puanlama kuralları","Not, reyting ve yelek puanı nasıl hesaplanır"),
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Takıma gönder","WhatsApp ya da link"),
@@ -4003,6 +4037,9 @@ document.addEventListener("click",async e=>{
     case"joinReq":{const pid=S.f.claim||S.mem?.claim;if(!pid){toast("Önce kartını seç");break}try{const r=await rpc("request_join",{p_code:LS.get("y_davet")||null,p_player:pid});if(r&&r.ok){LS.del("y_davet");toast("İsteğin yöneticiye gönderildi");S.mem=await rpc("my_membership",{});S.f.claim="";render(true)}else toast("İstek gönderilemedi")}catch(_){toast("İstek gönderilemedi")}break}
     case"gateSet":{const on=el.dataset.v==="1";const r=await act("admin_set_gate",{p_pin:"",p_gate:on},on?"Uygulama kilitlendi":"Kilit kaldırıldı");if(r){S.gate=on;await load(true)}break}
     case"memLoad":S.memList=null;render(true);break;
+    case"pushOn":pushOn();break;
+    case"pushOff":pushOff();break;
+    case"pushNo":LS.set("y_pushask","1");render(true);break;
     case"memDel":S.f.memDel=id||"";render(true);break;
     case"memRole":{const f=S.f.mem||(S.f.mem={});f["r_"+id]=!f["r_"+id];render(true);break}
     case"setp":S.f.setp=el.dataset.v||"";render(true);window.scrollTo(0,0);break;
@@ -4442,7 +4479,7 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
 render(true);
 newVer();
 load().then(async()=>{
-  await authInit();
+  await authInit();pushInit().then(()=>render(true));
   if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
   if(S.pin){try{const r=await rpc("admin_check",{p_pin:S.pin});if(!r||!r.ok){S.admin=false;S.pin="";LS.del("y_pin");render(true)}}catch(_){}}
 });
