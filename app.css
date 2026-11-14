@@ -2201,3 +2201,7 @@ body.fol .nav{max-width:300px;transition:none}
 .hube{margin:2px 0 0;font-size:.78rem}
 #hubR{display:grid;gap:6px}
 #hubQ{width:100%;min-height:44px;padding:10px 12px;border-radius:14px;border:1px solid var(--line2,#ddd);background:#fff;font:inherit}
+.lkt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:5px;margin-bottom:12px;border-radius:18px;background:#ECE6F5}
+.lkt button{display:grid;gap:2px;justify-items:center;padding:9px 4px;border:0;border-radius:14px;background:none;color:var(--muted);font:inherit;text-align:center}
+.lkt button b{font-size:.95rem;color:inherit}.lkt button small{font-size:.66rem;line-height:1.2;color:inherit;opacity:.85}
+.lkt button.on{background:#37003C;color:#fff;box-shadow:0 6px 16px rgba(55,0,60,.22)}.lkt button.on b,.lkt button.on small{color:#fff}

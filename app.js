@@ -2171,16 +2171,16 @@ function setSub(k){const url=teamLink();
   else if(k==="tel")h+=`<p class="snote" style="margin:0 4px 10px">Ana ekrana eklersen uygulama gibi tam ekran açılır.</p><div class="sbox">
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>iPhone · Safari</b><span>Alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</span></span></div>
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>Android · Chrome</b><span>Sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç.</span></span></div></div>`;
-  else if(k==="pay"){const ju=teamLink(1),gn=S.settings.group_name||"Takım";const fo=!!S.settings.followable;
-    const box=(u,id,wa)=>`<div class="surl"><input type="text" readonly value="${esc(u.replace(/^https?:\/\//,""))}" id="${id}" aria-label="Link"></div>
+  else if(k==="pay"){const ju=teamLink(1),gn=S.settings.group_name||"Takım";const fo=!!S.settings.followable;const lk=S.f.lk||"davet";
+    const box=(u,wa)=>`<div class="surl"><input type="text" readonly value="${esc(u.replace(/^https?:\/\//,""))}" id="shareUrl" aria-label="Link"></div>
       <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(wa)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(u)}">${ICON.copy} Kopyala</button></div>`;
-    h+=`<section class="card lnkc"><div class="eyebrow">Davet linki · oyuncular için</div><p class="muted small" style="margin:0">Takımda oynayanlara gönder. Açan kişi Google ile giriş yapar, kendi kartını seçer; yönetici onaylayınca içeride.</p>
-      ${box(ju,"joinUrl","⚽ "+gn+" Yelek'te. Kartını seçip takıma katılmak için: "+ju)}</section>
-    <section class="card lnkc"><div class="eyebrow">Takım linki · Instagram ve paylaşımlar için</div><p class="muted small" style="margin:0">${fo?"Açan kişi son skoru ve puan durumunu görür, ligi takip edebilir. Katılmak isteyen oyuncu da buradan istek atabilir.":"Takip kapalı. Bu linki açan kişi \"Bu takım sadece üyelere açık\" yazısını görür."}</p>
-      ${S.mem?.role==="yonetici"?`<div class="setr nolink lnks"><span class="setx"><b>Takip edilebilir</b><small>${fo?"Herkes fikstürü ve puan durumunu izleyebilir":"Sadece üyeler görür"}</small></span><button class="sw ${fo?"on":""}" data-act="folOpen" data-v="${fo?"0":"1"}" role="switch" aria-checked="${fo}" aria-label="Takip edilebilir"><i></i></button></div>`:""}
-      ${box(url,"shareUrl","⚽ "+gn+" ligini Yelek'te takip et: "+url)}</section>
-    <section class="card lnkc"><div class="eyebrow">Yelek linki · başka ekiplere öner</div><p class="muted small" style="margin:0">Takımı olmayan bir ekibe gönder. Açan kişi Yelek'in tanıtımını görür, kendi takımını kurmak için istek gönderebilir.</p>
-      ${box(APPL,"appUrl","⚽ Halı saha ekibiniz için reyting kartları, kadro ve lig tablosu: "+APPL)}</section>`}
+    const T={davet:["Davet","Oyuncular için","Takımda oynayanlara gönder. Açan kişi Google ile giriş yapar, kendi kartını seçer; yönetici onaylayınca içeride.",box(ju,"⚽ "+gn+" Yelek'te. Kartını seçip takıma katılmak için: "+ju)],
+      takip:["Takip","Instagram ve paylaşımlar",fo?"Açan kişi son skoru ve puan durumunu görür, ligi takip eder. Takımda oynayan biri buradan da katılma isteği atabilir.":"Takip kapalı. Bu linki açan kişi \"Bu takım sadece üyelere açık\" yazısını görür.",
+        (S.mem?.role==="yonetici"?`<div class="setr nolink lnks"><span class="setx"><b>Takip edilebilir</b><small>${fo?"Herkes fikstürü ve puan durumunu izleyebilir":"Sadece üyeler görür"}</small></span><button class="sw ${fo?"on":""}" data-act="folOpen" data-v="${fo?"0":"1"}" role="switch" aria-checked="${fo}" aria-label="Takip edilebilir"><i></i></button></div>`:"")+box(url,"⚽ "+gn+" ligini Yelek'te takip et: "+url)],
+      oner:["Öner","Başka ekiplere","Takımı olmayan bir ekibe gönder. Açan kişi Yelek'in tanıtımını görür, kendi takımını kurmak için istek gönderebilir.",box(APPL,"⚽ Halı saha ekibiniz için reyting kartları, kadro ve lig tablosu: "+APPL)]};
+    const c=T[lk]||T.davet;
+    h+=`<div class="lkt" role="tablist" aria-label="Linkler">${Object.entries(T).map(([key,v])=>`<button data-act="lkTab" data-v="${key}" role="tab" aria-selected="${lk===key}" class="${lk===key?"on":""}"><b>${v[0]}</b><small>${v[1]}</small></button>`).join("")}</div>
+    <section class="card lnkc"><p class="muted small" style="margin:0">${c[2]}</p>${c[3]}</section>`}
   else if(k==="pin"){h+=`<section class="card"><form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`}
   return h}
 function viewAyarlar(){
@@ -2255,6 +2255,7 @@ document.addEventListener("click",async e=>{
     case"platDel":{if(el.dataset.v==="1"){const r=await rpc("platform_team_delete",{p_id:+id});if(r&&r.ok){toast("Takım silindi");S.plat=null;S.myTeams=null}else toast("Silinemedi");S.f.platDel=null}else S.f.platDel=id?+id:null;render(true);break}
     case"teamDel":{const r=await rpc("team_delete",{p_pin:"",p_confirm:S.f.tdel||""});if(r&&r.ok){toast("Takım silindi");cacheClear();LS.set("y_team","0");location.href=location.pathname}else toast(r&&r.error==="confirm"?"Takım adını aynen yaz":"Silinemedi");break}
     case"platOk":{const r=await rpc("platform_team_approve",{p_id:+id,p_ok:el.dataset.v==="1"});if(r&&r.ok){toast(el.dataset.v==="1"?"Takım onaylandı":"İstek reddedildi");S.plat=null;render(true)}else toast("Yapılamadı");break}
+    case"lkTab":S.f.lk=el.dataset.v;render(true);break;
     case"platL":S.f.platL=id?+id:null;render(true);break;
     case"platAct":{const r=await rpc("platform_team_active",{p_id:+id,p_on:el.dataset.v==="1"});if(r&&r.ok){S.plat=null;render(true)}else toast("Değiştirilemedi");break}
     case"pushOn":pushOn();break;
