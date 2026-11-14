@@ -3787,7 +3787,7 @@ async function signIn(provider){const sb=await authStart();if(!sb)return;
 async function signOut(){if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;if(!S.pin)S.admin=false;LS.del("y_me");S.me="";render(true);load(true)}
 const G_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2-1.9 3.2-4.7 3.2-8.3z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 7l3.7 2.9C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
 const APPLE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9s-2-.9-3.2-.8a4.8 4.8 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7c-.1 0-2.3-.9-2.3-3.9zM14 5.4a4.3 4.3 0 0 0 1-3.1 4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3c1.1.1 2.2-.5 2.9-1.4z"/></svg>';
-function loginBtns(){return `<div class="lgb"><button class="btn block lgg" data-act="oauth" data-v="google">${G_SVG} Google ile devam et</button><button class="btn block lga" data-act="oauth" data-v="apple">${APPLE_SVG} Apple ile devam et</button></div>`}
+function loginBtns(){return `<div class="lgb"><button class="btn block lgg" data-act="oauth" data-v="google">${G_SVG} Google ile devam et</button></div>`}
 function sheetLogin(){const inv=!!LS.get("y_davet");
   return `<div class="ch"><div><div class="eyebrow">${IGH}</div><h2>${inv?"Takıma katıl":"Giriş yap"}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
    <p class="muted" style="margin:0 0 14px">${inv?"Davet linkiyle geldin. Hesabınla giriş yap; yönetici onaylayınca kartın hesabına bağlanır.":"Takımdaysan hesabınla giriş yap. Takımda değilsen yöneticiden davet linki iste."}</p>${loginBtns()}
@@ -3816,7 +3816,7 @@ function adminMembers(){if(!S.admin)return"";if(!S.memList){memLoad();return `<s
     ${!L.length?'<p class="muted small">Henüz kimse katılmadı. Bir davet linki oluşturup takım grubuna gönder.</p>':""}</section>
    <section class="card"><div class="ch"><h2>Davet linkleri</h2><button class="btn primary sm" data-act="invNew">Yeni link</button></div>
     ${(S.invList||[]).map(i=>{const l=url+"?davet="+encodeURIComponent(i.code);return `<div class="irow"><input type="text" readonly value="${esc(l)}" aria-label="Davet linki"><button class="btn sm" data-act="invCopy" data-v="${esc(l)}">Kopyala</button><button class="btn ghost sm" data-act="invOff" data-id="${esc(i.code)}" aria-label="Linki iptal et">${ICON.x}</button><small class="muted">${i.uses} kullanım${i.expires_at?" · "+fmtShort(String(i.expires_at).slice(0,10))+"'e kadar":""}</small></div>`}).join("")||'<p class="muted small">Aktif link yok.</p>'}
-    <p class="muted small" style="margin:8px 0 0">Linke tıklayan kişi Google ya da Apple ile giriş yapar, isteği buraya düşer. Sen onaylamadan hiçbir şey göremez ve yapamaz.</p></section>`}
+    <p class="muted small" style="margin:8px 0 0">Linke tıklayan kişi Google ile giriş yapar, isteği buraya düşer. Sen onaylamadan hiçbir şey göremez ve yapamaz.</p></section>`}
 
 /* vitrin: giriş yapmamış ziyaretçiye görünen sayfa */
 async function vitrinLoad(){try{S.vit=await rpc("vitrin",{})}catch(_){S.vit=null}render(true)}
