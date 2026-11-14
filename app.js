@@ -674,6 +674,10 @@ const hkHd=(t,max)=>{const n=[...String(t)].length;const sz=Math.min(max||42,Mat
 const hkPh=(id,cls)=>{const ph=photoOf(id);return ph?`<img class="hkcut ${cls||""}" src="${esc(ph)}" alt="">`:`<div class="hkcut hknoph ${cls||""}"><span>${esc(initials(nameOf(id)))}</span></div>`};
 const hkCr=(m,k,sz)=>crest(nmOf(m,k),k,sz||20,nmOf(m,k==="A"?"B":"A"));
 const hkSc=m=>`${hkCr(m,"A")}<b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b>${hkCr(m,"B")}`;
+// skor tabelası: iki kaptanın fotoğrafı, takım adı ve skor (kaptan yoksa arma)
+const hkCap=(m,k)=>{const id=k==="A"?m.cap_a:m.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
+  return `<div class="hksc"><div class="hkcp${ok?"":" cr"}">${ok?`<div class="hkcpi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</div>`:hkCr(m,k,40)}${ok?`<i>${hkCr(m,k,15)}</i>`:""}</div><b>${esc(TRU(nmOf(m,k)))}</b>${ok?`<small>KPT · ${esc(TRU(shortName(nameOf(id))))}</small>`:""}</div>`};
+const hkSB=m=>`<div class="hksb">${hkCap(m,"A")}<div class="hkss"><b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b></div>${hkCap(m,"B")}</div>`;
 const hkSt=L=>`<div class="hkst">${L.map(([v,l,c])=>`<div class="${c||""}"><strong>${v}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`;
 const hkNm=id=>{const a=ageOf(P(id));return `<b class="hknm">${esc(TRU(nameOf(id)))}${a!=null?`<span>(${a})</span>`:""}</b>`};
 const hkFt=r=>`<div class="hkft"><span>${IGLOGO}${IGH}</span><span>${esc(TRU(r||""))}</span></div>`;
@@ -706,7 +710,7 @@ function hkTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.
   return{html,cap,name:"haftanin-takimi-"+m.date}}
 function hkLineup(m){const inf=S.mInfo[m.id]||{pts:{}};
   const col=k=>hkCol(`${hkCr(m,k,14)}<b>${esc(TRU(nmOf(m,k)))}</b><small>${esc(formLabel(formOf(m,k),posArr(m,k)))}</small>`,lineRows(m,k).map(([id,ep])=>{const r=inf.pts[id];return[ep,esc(shortName(nameOf(id)))+(inf.motm===id?" ★":""),r?fN(r.pts):null,r?hkNoteCls(r.pts):""]}));
-  const html=hkPost({hd:"Kadrolar",chip:hkSc(m),chipC:"top",body:`<div class="hkkw">${col("A")}${col("B")}</div>`,ft:hkMatchFt(m)});
+  const html=hkPost({hd:"Kadrolar",body:hkSB(m)+`<div class="hkkw sb">${col("A")}${col("B")}</div>`,ft:hkMatchFt(m)});
   const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
   const cap=`${igDate(m.date)} kadroları 📋\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n#abilerkardeslerfc #halısaha`;
   return{html,cap,name:"kadrolar-"+m.date}}
@@ -725,7 +729,7 @@ function hkGoal(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.gol;if(!id)ret
   return{html,cap:`Haftanın golü ${nameOf(id)}'den ⚽🔥\n${igDate(m.date)}\n#abilerkardeslerfc #haftanıngolü #halısaha`,name:"haftanin-golu-"+m.date}}
 function hkNotes(m){const inf=S.mInfo[m.id]||{pts:{}};const L=Object.entries(inf.pts||{}).filter(([id,r])=>r&&P(id)).sort((a,b)=>b[1].pts-a[1].pts);if(!L.length)return null;
   const h=Math.ceil(L.length/2);const col=(S2,o)=>hkCol("",S2.map(([id,r],i)=>[String(o+i+1),esc(shortName(nameOf(id)))+(inf.motm===id?" ★":""),fN(r.pts),hkNoteCls(r.pts)]));
-  const html=hkPost({hd:"Not karnesi",chip:hkSc(m),chipC:"top",body:`<div class="hkkw nh">${col(L.slice(0,h),0)}${col(L.slice(h),h)}</div>`,ft:hkMatchFt(m)});
+  const html=hkPost({hd:"Not karnesi",body:hkSB(m)+`<div class="hkkw nh sb">${col(L.slice(0,h),0)}${col(L.slice(h),h)}</div>`,ft:hkMatchFt(m)});
   return{html,cap:`${igDate(m.date)} not karnesi 📝\n${L.slice(0,3).map(([id,r],i)=>(i+1)+". "+shortName(nameOf(id))+" "+fN(r.pts)).join("\n")}\n#abilerkardeslerfc #halısaha`,name:"not-karnesi-"+m.date}}
 
 /* --- maç önü --- */
