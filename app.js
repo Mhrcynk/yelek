@@ -131,6 +131,8 @@ const yrList=()=>[...seasonsAll()].reverse().concat(seasonsAll().length?[]:[1]);
 const inYr=m=>{const y=selYr();return y==="all"||yrOf(m)===y};
 const reigningChamp=()=>{const L=seasonsAll().filter(seasonDone);if(!L.length)return null;const n=L[L.length-1];const T=ligTable(fin().filter(m=>+m.season===n));return T[0]?.id||null};
 const GKISA=["PAZ","PZT","SAL","ÇAR","PER","CUM","CMT"];
+// fotoğrafı olmayan oyuncu için sade silüet
+const SILH='<svg class="sil" viewBox="0 0 64 80" aria-hidden="true"><circle cx="32" cy="27" r="14" fill="currentColor"/><path d="M6 80c1-16 12-26 26-26s25 10 26 26z" fill="currentColor"/></svg>';
 const fmtDate=s=>{const d=parseYmd(s);return d.getDate()+" "+AYLAR[d.getMonth()]+" "+GUNLER[d.getDay()]};
 const fmtShort=s=>{const d=parseYmd(s);return d.getDate()+" "+AYLAR[d.getMonth()].slice(0,3)};
 const matchTs=m=>{const d=parseYmd(m.date);const[h,mi]=String(m.time||"21:00").split(":").map(Number);d.setHours(h||0,mi||0,0,0);return d.getTime()};
@@ -684,7 +686,7 @@ const igDate=d=>{const x=new Date(d+"T12:00:00");return x.getDate()+" "+["Ocak",
 /* ===== Paylaşım merkezi: haber kartı şablonları (300×375 gönderi, 300×533 hikâye) ===== */
 const TRU=s=>String(s||"").toLocaleUpperCase("tr");
 const hkHd=(t,max)=>{const n=[...String(t)].length;const sz=Math.min(max||42,Math.floor(540/Math.max(1,n)));return `<div class="hkhd" style="font-size:${sz}px">${esc(TRU(t))}</div>`};
-const hkPh=(id,cls)=>{const ph=photoOf(id);return ph?`<img class="hkcut ${cls||""}" src="${esc(ph)}" alt="">`:`<div class="hkcut hknoph ${cls||""}"><span>${esc(initials(nameOf(id)))}</span></div>`};
+const hkPh=(id,cls)=>{const ph=photoOf(id);return ph?`<img class="hkcut ${cls||""}" src="${esc(ph)}" alt="">`:`<div class="hkcut hknoph ${cls||""}">${SILH}</div>`};
 const hkCr=(m,k,sz)=>crest(nmOf(m,k),k,sz||20,nmOf(m,k==="A"?"B":"A"));
 const hkSc=m=>`${hkCr(m,"A")}<b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b>${hkCr(m,"B")}`;
 // skor tabelası: iki kaptanın fotoğrafı, takım adı ve skor (kaptan yoksa arma)
@@ -1210,7 +1212,7 @@ function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCas
   const p=P(id),o=ovrOf(id),ph=photoOf(id);
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
   const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;
-  const img=`<span class="pi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</span>`;
+  const img=`<span class="pi">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</span>`;
   const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
   const badge=`<b class="tov num">${ov}</b>`+nt;
   return `<button class="${cls} ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}${badge}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><i class="tps">${T.ep}</i></button>`}
@@ -1415,11 +1417,15 @@ function _resultPanel(m){
   const tab=S.f.mtab==="deg"?"notlar":(S.f.mtab||"ozet");const T=k=>plOf(m,k);
   const avgN=k=>{const v=T(k).map(id=>inf.pts[id]?.pts).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
   const mt=Object.values(inf.pts).find(Boolean)?.mt||"";const dot2=k=>crest(k==="A"?TEAM.A:TEAM.B,k,15);
-  let h=`<section class="card mdet"><div class="mrqh">
-    <div class="mhm"><span>${fmtDate(m.date)}${S.settings.field_name?" · "+esc(S.settings.field_name):""}</span>${S.admin?`<button class="btn sm" data-act="mngOpen" data-id="${M}">Yönet</button>`:""}</div>
-    <div class="mhs"><div class="mtm${sa>sb?" win":""}">${crest(TEAM.A,"A",40)}<b>${esc(TEAM.A)}</b><small>Ort. not ${fN(avgN("A"))} · Kart ${sumAvg(T("A"))}</small></div>
-      <div class="msc"><span class="mst">MS</span><b class="num">${sa} - ${sb}</b><small>${esc(mt)}</small></div>
-      <div class="mtm${sb>sa?" win":""}">${crest(TEAM.B,"B",40)}<b>${esc(TEAM.B)}</b><small>Ort. not ${fN(avgN("B"))} · Kart ${sumAvg(T("B"))}</small></div></div></div>
+  const d0=parseYmd(m.date);const capOf=k=>{const id=k==="A"?m.cap_a:m.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
+    return `<div class="maft${(k==="A"?sa>sb:sb>sa)?" win":""}"><span class="mafcap${ok?"":" cr"}">${ok?(ph?`<img src="${esc(ph)}" alt="">`:`<i>${esc(initials(nameOf(id)))}</i>`):crest(TEAM[k],k,64,TEAM[k==="A"?"B":"A"])}</span><b style="font-size:${mafFs(TEAM[k])}">${esc(TEAM[k])}</b><small>${ok?"KPT · "+esc(shortName(nameOf(id)))+" · ":""}ort. ${fN(avgN(k))}</small></div>`};
+  const gl=k=>T(k).filter(id=>+stt[id]?.g).sort((a,b)=>stt[b].g-stt[a].g).map(id=>`<span>${esc(shortName(nameOf(id)))}${+stt[id].g>1?" ×"+stt[id].g:""}</span>`).join("")||'<span class="muted">–</span>';
+  const mo=inf.motm;const mor=mo&&inf.pts[mo];
+  let h=`<section class="maf mres"><div class="mafh"><span>${GKISA[d0.getDay()]} ${d0.getDate()} ${AYLAR[d0.getMonth()].toLocaleUpperCase("tr")}${S.settings.field_name?" · "+esc(S.settings.field_name).toLocaleUpperCase("tr"):""}</span>${S.admin?`<button class="mafbtn" data-act="mngOpen" data-id="${M}">Yönet</button>`:`<span>MAÇ SONU</span>`}</div>
+    <div class="mafm">${capOf("A")}<div class="mafc"><span>${esc(mt||(sa===sb?"Beraberlik":"Maç sonu"))}</span><b class="num">${sa}<i>–</i>${sb}</b></div>${capOf("B")}</div>
+    <div class="mafb"><div class="mafgl"><div>${gl("A")}</div><div>${gl("B")}</div></div>
+    ${mo?`<div class="mafme"><span>★ Maçın adamı: ${esc(nameOf(mo))}</span>${mor?`<em>${fN(mor.pts)}</em>`:""}</div>`:""}</div></section>
+    <section class="card mdet">
     ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Maç ve kartlara etkisi tamamen silinir.</div>`:""}
     <div class="mtabs" role="tablist">${[["ozet","Özet"],["kadro","Kadro"],["notlar","Notlar"],["ist","İstatistik"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(tab==="ozet"){
@@ -1436,7 +1442,7 @@ function _resultPanel(m){
     const eA=evs("A"),eB=evs("B");
     if(eA||eB)h+=`<div class="evg"><div class="evc"><div class="evt">${dot2("A")}${esc(TEAM.A)}</div>${eA||'<span class="muted small">—</span>'}</div><div class="evc"><div class="evt">${dot2("B")}${esc(TEAM.B)}</div>${eB||'<span class="muted small">—</span>'}</div></div>
       ${(()=>{const L=[["Gol","⚽ gol"],["Penaltı golü",'<span class="pkb">⚽<b>P</b></span> penaltı golü'],["Asist","👟 asist"],["Çizgiden çıkardı","🛡️ çizgiden çıkarma"],["Penaltı kurtardı","🧤 penaltı kurtardı"],["Penaltı kaçırdı",'<span class="pkb">⚽<b>✕</b></span> penaltı kaçırdı'],["Penaltı yaptırdı",'<b class="evi p">P</b> penaltı yaptırdı'],["Kendi kalesine",'<b class="evi og">⚽</b> kendi kalesine']].filter(x=>used.has(x[0])&&!["Gol","Asist"].includes(x[0]));return L.length?`<div class="evleg">${L.map(x=>`<span>${x[1]}</span>`).join("")}</div>`:""})()}`;
-    if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı</div><div class="hscroll" style="margin-top:10px">${inf.totw.map(id=>P(id)?card(P(id)):"").join("")}</div></div>`;
+    if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı${inf.totw.form?" · "+esc(inf.totw.form):""}</div><div class="twg">${inf.totw.map(id=>{const p=P(id);if(!p)return"";const r=inf.pts[id];return `<button class="twc" data-act="open" data-id="${esc(id)}">${avatar(p)}<b>${esc(shortName(p.name))}</b>${r?`<i class="nt ${noteCls(r.pts)}">${inf.motm===id?"★":""}${fN(r.pts)}</i>`:""}<small>${esc((inf.totw.slot||{})[id]||"")}</small></button>`}).join("")}</div></div>`;
     h+=`<div class="report">${spiker(m,inf)}</div>`;
     if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
       h+=`<details><summary class="small">Ödülleri değiştir <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="grid2" style="margin-top:10px"><label class="f">⚽ Haftanın Golü<select data-act-change="awR" data-k="gol" data-m="${M}">${o(scorers,m.gol_id||"")}</select></label><label class="f">🙈 Haftanın Fiyaskosu<select data-act-change="awR" data-k="fiy" data-m="${M}">${o(pl,m.fiy_id||"")}</select></label></div></details>`}
@@ -1633,8 +1639,13 @@ function verTxt(){const v=APP_V;if(!/^\d{12}$/.test(v))return"";const d=new Date
 function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div class="empty"><h3>Kim olduğunu seç</h3><p>Kendi kartını, formunu ve maçlarını görmek için oyuncunu seç.</p><button class="btn primary" data-act="meSheet">Kimsin?</button></div></section>`;
   const s=S.stats[p.id]||{};const om=openMatch();
   let h=`<div class="mehd">${avatar(p)}<div><b>${esc(p.name)}</b><span>${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div>${isMember()&&!S.admin?"":`<button class="btn sm" data-act="meSheet">Değiştir</button>`}</div>`;
-  if(om){const v=(om.rsvp||{})[p.id];h+=`<section class="card"><div class="ch"><div><div class="eyebrow">Sıradaki maç</div><h2>${fmtDate(om.date)} · ${esc(om.time||"")}</h2></div></div>
-    ${om.state==="kayit"?`<p class="muted">Kadro henüz açıklanmadı. Açıklanınca bildirim gelir.</p>`:(()=>{const k=sideOf(om,p.id);return `<p>${k?`Takımın: <b>${esc(TEAM[k])}</b>`:"Bu maçın kadrosunda değilsin."}</p>`})()}</section>`}
+  {const yr=curYr();const F=fin().filter(m=>+m.season===+yr);let n=0,g=0,a=0,t=0;
+    for(const m of F){const r=S.mInfo[m.id]?.pts?.[p.id];if(!r)continue;n++;g+=r.g||0;a+=r.a||0;t+=r.pts}
+    const L=F.length?ligTable(F):[];const li=L.findIndex(o=>o.id===p.id);const rk=li<0?null:li+1;
+    const nx=om?(()=>{const d=parseYmd(om.date);const k=om.state!=="kayit"&&sideOf(om,p.id);return `<button class="bsn" data-act="tab" data-tab="mac"><span>Sıradaki maç · ${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].slice(0,3)} ${esc(String(om.time||"").slice(0,5))}</span><b>${om.state==="kayit"?"Kadro bekleniyor":k?"Takımın "+esc(TEAM[k]):"Kadroda değilsin"} ›</b></button>`})():"";
+    h+=`<section class="card bsz"><div class="eyebrow">Sezon ${yr} · senin</div><div class="bszg">
+      <div><b class="num">${n}</b><small>Maç</small></div><div><b class="num">${g}</b><small>Gol</small></div><div><b class="num">${a}</b><small>Asist</small></div>
+      <div><b class="num">${n?fN(t/n):"–"}</b><small>Ort. not</small></div><div><b class="num">${rk?rk+".":"–"}</b><small>Lig sırası</small></div></div>${nx}</section>`}
   if(!s.games)h+=`<section class="card"><div class="empty"><h3>Kartın uykuda</h3><p>İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikecek.</p></div></section>`;
   h+=`<section class="card benprof">${sheetPlayer(p.id,true)}</section>`;
   return h}
@@ -1710,7 +1721,7 @@ function sheetPlayer(pid,inline){
   let h=`<div class="pph pph${sd}">${inline?"":`<button class="pphx" data-act="close" aria-label="Kapat">${ICON.x}</button>`}
     <div class="pphl"><span class="pphpos">${reigningChamp()===p.id?'<em class="pchmp">🏆 Son şampiyon</em>':""}${EPOS[eposOf(p)][1]}${altOf(p)?" · "+EPOS[altOf(p)][1]:""}</span><h2>${first?`<small>${esc(first)}</small>`:""}${esc(last)}</h2>
       <div class="pphk"><span><b class="num">${ovrOf(p.id)}</b><small>Reyting</small></span><span><b class="num">${fN1(mvOf(p.id))}<i class="mvu">M€</i></b><small>Değer</small></span>${ageOf(p)!=null?`<span><b class="num">${ageOf(p)}</b><small>Yaş</small></span>`:`<span><b>${eposOf(p)}</b><small>Mevki</small></span>`}<span><b class="num">${s.games||0}</b><small>Maç</small></span></div></div>
-    <div class="pphp">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(p.name))}</span>`}</div></div>
+    <div class="pphp">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</div></div>
     <div class="ptabs" role="tablist" aria-label="Oyuncu">${[["genel","Genel"],["ist","İstatistik"],["mac","Maçlar"]].map(([k,l])=>`<button role="tab" data-act="ptab" data-v="${k}" aria-selected="${tab===k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</div>`;
   if(tab==="ist"){h+=pSeasonHtml(p)+attrRadar(p);return h}
   if(tab==="mac"){h+=`
@@ -2262,7 +2273,7 @@ document.addEventListener("click",async e=>{
 }
       const pl=new Set(plAll(m));const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>x.pk?{g:x.g,a:null,pk:true}:{g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null});
       const r=await A("admin_finish_match_v3",{p_id:id,p_score_a:sd.a,p_score_b:sd.b,p_stats:stats,p_motm:sd.motm||null,p_links:links});
-      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);if(!wasFin){window.scrollTo(0,0);confetti()}}break}
+      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);if(!wasFin){window.scrollTo(0,0);confetti();setTimeout(()=>{if(S.sheet)return;S.f.pm={tab:"mac",item:"skor",fmt:"post",mid:id};S.sheet={type:"pm"};render(true);toast("Maç sonucunu paylaş")},1800)}}break}
     case"reopen":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f.confReopen=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.f.stTab="gol";S.f.confirmFinish=null;S.sheet={type:"stats",mid:id};render(true);break}
     case"stType":S.f.st.type=el.dataset.v;render(true);break;
     case"saveStatus":{const p=P(S.sheet.id);const sf=S.f.st;await act("set_status",{p_player:p.id,p_type:sf.type,p_until:sf.type==="hazir"?null:(sf.until||null),p_note:sf.type==="hazir"?"":(sf.note||"")},"Durum güncellendi");S.f.st=null;render(true);break}

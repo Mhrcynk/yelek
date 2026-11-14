@@ -2032,3 +2032,26 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .mafs{display:flex;justify-content:space-between;gap:6px;font:700 .68rem/1.2 Inter,sans-serif}.mafs span{color:#E8C8FF}
 .mafme{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.1);border-radius:12px;padding:9px 10px;font:700 .78rem/1.2 Inter,sans-serif}
 .mafme em{flex:none;font-style:normal;font-weight:800;background:#00FF85;color:#06200F!important;padding:5px 9px;border-radius:999px}
+/* maç detayı: afiş dilinde skor */
+.mres .mafc b{display:flex;align-items:center;gap:6px;font-size:3rem}.mres .mafc b i{font-style:normal;opacity:.5;font-weight:700}
+.mres .maft:not(.win) b{opacity:.75}
+.mafbtn{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:5px 10px;font:800 .66rem/1 Inter,sans-serif;letter-spacing:.06em;cursor:pointer}
+.mafgl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mafgl div{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;font:700 .74rem/1.3 Inter,sans-serif;text-align:center}
+.mafgl span{white-space:nowrap}
+.sil{display:block;width:100%;height:100%;color:rgba(255,255,255,.35)}
+.field .pi .sil{position:absolute;right:0;bottom:0;width:100%;height:100%;color:rgba(255,255,255,.28)}
+.pphp .sil{width:70%;height:auto;margin:auto auto 0}
+.hknoph .sil{width:70%;height:auto;margin:auto auto 0}
+.twg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
+.twc{display:grid;justify-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--line);border-radius:14px;background:var(--card,#fff);cursor:pointer;font:inherit;color:inherit;min-width:0}
+.twc .av{width:46px;height:46px}
+.twc b{max-width:100%;font:700 .74rem/1.1 Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.twc small{font:800 .58rem/1 Inter,sans-serif;letter-spacing:.08em;color:var(--muted)}
+.twc .nt{font-style:normal}
+.bsz{display:grid;gap:10px}
+.bszg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.bszg div{display:grid;justify-items:center;gap:3px;padding:10px 2px;border-radius:12px;background:#F6F2FA}
+.bszg b{font:900 1.3rem/1 var(--display)}.bszg small{font:700 .6rem/1 Inter,sans-serif;color:var(--muted);white-space:nowrap}
+.bsn{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,#37003C,#5A1FB0);color:#fff;font:600 .78rem/1.2 Inter,sans-serif;cursor:pointer;text-align:left}
+.bsn b{font-weight:800;white-space:nowrap}
