@@ -59,7 +59,7 @@ const NOTE={base:6,esik:6.5,esikAdim:.12,kat:.25,katMax:.6,min:1,max:10,motm:.6,
   // yöneticinin maç değerlendirmesi (kontenjan yok, kalecide daha ağır) ve özel olaylar (forvetin o maçtaki gol değerine göre)
   penGol:.5,penKurtar:1,penKL:.5,perf:[null,[1.5,"Çok iyi"],[.6,"İyi"],[0,"Orta"],[-.8,"Kötü"]],perfKL:[null,2,.8,0,-1],perfQ:[3,4,4,3],cizgi:1,penalti:-.5,
   // skor farkına göre sonuç ve gol/asist değeri: [en fazla fark, kazanan, kaybeden, gol çarpanı (kazanan), gol çarpanı (kaybeden), ad]
-  fark:[[0,0,0,1,1,"Beraberlik"],[2,.3,-.3,1,1,"Çekişmeli maç"],[5,.45,-.45,1,1,"Net maç"],[999,.6,-.6,1,1,"Farklı maç"]],fiyKotu:.5,tavan:8.5,tavanK:.5,bantK:.25,
+  fark:[[0,0,0,1,1,"Beraberlik"],[2,.5,-.5,1,1,"Çekişmeli maç"],[5,.7,-.7,1,1,"Net maç"],[999,.9,-.9,1,1,"Farklı maç"]],fiyKotu:.5,tavan:8.5,tavanK:.5,bantK:.25,
   gol:{KL:2,DF:1,DOS:1,OS:.8,FV:.6},asist:{KL:1.2,DF:.7,DOS:.6,OS:.5,FV:.4},tamGol:3,
   // yenilen gol, grubun maç başı ortalamasına göre: [ortalamadan en fazla şu kadar fazla, puanlar]
   savunma:[[-3,{KL:1.6,DF:1.3,DOS:.8}],[-1,{KL:1,DF:.8,DOS:.5}],[1,{KL:.3,DF:.2,DOS:.1}],[3,{KL:-.3,DF:-.3,DOS:-.1}],[999,{KL:-.8,DF:-.7,DOS:-.4}]],gyOrt:7,gyOnc:4,bos:{OS:-.3,FV:-.7},
