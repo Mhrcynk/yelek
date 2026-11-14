@@ -1,6 +1,6 @@
 # Yelek
 
-Halı saha ekibi için FIFA tarzı oyuncu kartları ve maç takibi.
+Halı saha ekibi için oyuncu reyting kartları ve maç takibi.
 
 - Oyuncu kartları: hız, şut, pas, top sürme, savunma, fizik (kaleciler için plonjon, elle oyun, ayakla oyun, refleks, hız, pozisyon alma)
 - Her maç sonunda girilen gol, asist ve skora göre kart reytingi artar ya da düşer

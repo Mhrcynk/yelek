@@ -32,7 +32,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
     if(u.includes("/rpc/"))return r.fulfill({status:200,contentType:"application/json",body:u.includes("player_ages")?"[]":"{}"});
     const k=Object.keys(DB).find(k=>u.includes("/rest/v1/"+k+"?"));return r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(k?DB[k]:[])})});
   const pg=await ctx.newPage();const errs=[];pg.on("pageerror",e=>errs.push(e.message));
-  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1")});
+  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team","1")});
   await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1500);
   const fails=[];
   const check=async name=>{const r=await pg.evaluate(()=>({len:(document.getElementById("view").innerText||"").trim().length,ov:document.documentElement.scrollWidth>innerWidth+1}));
