@@ -2205,3 +2205,5 @@ body.fol .nav{max-width:300px;transition:none}
 .lkt button{display:grid;gap:2px;justify-items:center;padding:9px 4px;border:0;border-radius:14px;background:none;color:var(--muted);font:inherit;text-align:center}
 .lkt button b{font-size:.95rem;color:inherit}.lkt button small{font-size:.66rem;line-height:1.2;color:inherit;opacity:.85}
 .lkt button.on{background:#37003C;color:#fff;box-shadow:0 6px 16px rgba(55,0,60,.22)}.lkt button.on b,.lkt button.on small{color:#fff}
+.lnkd{color:#C2003F!important;font-size:.8rem}
+.dacl{display:grid;gap:8px}.dacl p{margin:0}.dacl ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:.88rem;color:var(--muted)}

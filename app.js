@@ -910,7 +910,7 @@ function _sheetHtml(){const t=S.sheet.type;if(t==="eval"){const m=S.matches.find
   if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&(m.state==="takim"||m.state==="bitti")?inM(m,()=>statEntry(m)):""}
   if(t==="rules")return `<div class="ch"><h2>Puanlama</h2><button class="btn sm" data-act="close">Kapat</button></div>`+viewKurallar(true);
   if(t==="share")return sheetShare();if(t==="pm")return sheetPM();
-  return t==="ligs"||t==="hub"?sheetHub():t==="teamNew"?sheetTeamNew():t==="hos"?sheetHos():t==="login"?sheetLogin():t==="player"?sheetPlayer():t==="me"?(isMember()&&!S.admin?"":sheetMe()):t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="ext"?sheetExt():""}
+  return t==="delAcc"?sheetDelAcc():t==="ligs"||t==="hub"?sheetHub():t==="teamNew"?sheetTeamNew():t==="hos"?sheetHos():t==="login"?sheetLogin():t==="player"?sheetPlayer():t==="me"?(isMember()&&!S.admin?"":sheetMe()):t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="ext"?sheetExt():""}
 
 /* ================= Parçalar ================= */
 const SIL=`<svg viewBox="0 0 100 104" aria-hidden="true"><circle cx="50" cy="33" r="21" fill="currentColor"/><path d="M8 104c2-27 19-42 42-42s40 15 42 42z" fill="currentColor"/></svg>`;
@@ -1975,9 +1975,17 @@ function hubBody(){if(!S.hub){hubLoad();return `<div class="vskl"><i style="heig
     <div id="hubR">${hubResults()}</div><p class="muted small hube">Takibe açık liglerin fikstürünü ve puan durumunu izlersin. Bir takıma katılmak için yöneticisinden davet linkini iste.</p></div>
     <div class="orsep"><span>takımın yok mu?</span></div>
     <button class="btn primary block lpbig" data-act="teamNew">${ICON.plus} Kendi takımını kur</button>`}
-function sheetHub(){return `<div class="ch"><div><div class="eyebrow">Yelek</div><h2>Takımlar</h2></div><button class="btn sm" data-act="close">Kapat</button></div>${S.session?hubBody()+(S.fol||TID===0?`<button class="lnk" data-act="signOut">Çıkış yap</button>`:""):`<p class="muted">Takım aramak ve takip etmek için Google ile giriş yap.</p>${loginBtns()}`}`}
+function sheetHub(){return `<div class="ch"><div><div class="eyebrow">Yelek</div><h2>Takımlar</h2></div><button class="btn sm" data-act="close">Kapat</button></div>${S.session?hubBody()+(S.fol||TID===0?`<button class="lnk" data-act="signOut">Çıkış yap</button><button class="lnk lnkd" data-act="delAcc">Hesabımı sil</button>`:""):`<p class="muted">Takım aramak ve takip etmek için Google ile giriş yap.</p>${loginBtns()}`}`}
 function platLinks(t){const b=APPL+"?t="+encodeURIComponent(t.slug);const r=(l,u)=>`<div class="plr"><small>${l}</small><span>${esc(u.replace(/^https?:\/\//,""))}</span><button class="btn sm" data-act="copy" data-txt="${esc(u)}">${ICON.copy} Kopyala</button></div>`;
   return `<div class="plx">${r("Davet linki · oyuncular",b+"&katil")}${r("Takım linki · takip"+(t.followable?"":" (kapalı)"),b)}<button class="lnk" data-act="platL" data-id="">Gizle</button></div>`}
+function sheetDelAcc(){const hd=`<div class="ch"><div><div class="eyebrow">Hesap</div><h2>Hesabımı sil</h2></div><button class="btn sm" data-act="close">Kapat</button></div>`;
+  if(!S.session)return "";const c=S.f.dac;if(c===undefined){S.f.dac=null;rpc("my_account_check",{}).then(r=>{S.f.dac=r||{solo_admin:[]};render(true)}).catch(()=>{S.f.dac={solo_admin:[]};render(true)})}
+  if(!c)return hd+`<div class="vskl"><i style="height:120px"></i></div>`;
+  const solo=c.solo_admin||[];
+  if(solo.length)return hd+`<p class="muted">${solo.map(esc).join(", ")} takımının tek yöneticisisin. Hesabını silmeden önce Üyeler'den başka birini yönetici yap ya da takımı sil.</p><button class="btn block" data-act="close">Tamam</button>`;
+  return hd+`<div class="dacl"><p><b>${esc(S.session.user?.email||"")}</b> hesabı silinir:</p><ul><li>Giriş hesabın ve takım üyeliklerin kaldırılır</li><li>Takip ettiğin ligler ve bildirim ayarların silinir</li><li>Oyuncu kartın ve maç istatistiklerin takımda kalır; kart artık hesabına bağlı olmaz</li></ul><p class="muted small">Bu işlem geri alınamaz. Onaylamak için aşağıya <b>SİL</b> yaz.</p></div>
+    <input type="text" data-bind="dacT" value="${esc(S.f.dacT||"")}" placeholder="SİL" autocomplete="off" autocapitalize="characters" aria-label="Onay">
+    <button class="btn danger block" data-act="delAccGo" ${S.f.dacBusy?"disabled":""}>${S.f.dacBusy?"Siliniyor…":"Hesabımı kalıcı olarak sil"}</button>`}
 function sheetTeamNew(){if(S.f.tnSent)return `<div class="ch"><div><div class="eyebrow">Yelek</div><h2>İsteğin gönderildi</h2></div><button class="btn sm" data-act="close">Kapat</button></div><p class="muted"><b>${esc(S.f.tnSent)}</b> için takım kurma isteğin alındı. Onaylanınca bildirim gelecek ve takımın Takımlarım listesinde açılacak.</p><button class="btn primary block" data-act="close">Tamam</button>`;const f=S.f.tn||(S.f.tn={name:"",field:"",day:1,time:"21:00",ig:""});
   if(!S.session)return `<div class="ch"><div><h2>Takım kur</h2></div><button class="btn sm" data-act="close">Kapat</button></div><p class="muted">Takım kurmak için önce Google ile giriş yap.</p>${loginBtns()}`;
   return `<div class="ch"><div><div class="eyebrow">Yelek</div><h2>Yeni takım kur</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
@@ -2043,7 +2051,7 @@ function viewVitrin(){
   let top="";
   if(TID>0&&(LS.get("y_int")||"takip")!=="katil")top=teamCardTop(sess);
   else if(TID>0)top=`<section class="lpinv"><span class="lpinvk">Davet</span><b>${esc(tName)}</b><p>Seni Yelek'teki takımına çağırıyor. ${sess?"Kartını seç, yönetici onaylayınca içeridesin.":"Google ile giriş yap, kendi kartını seç."}</p>${sess?memCard():`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Giriş yap ve katıl</span></button>`}<button class="lnk lpalt" data-act="intSet" data-v="takip">Oynamıyorum, sadece takip etmek istiyorum</button></section>`;
-  else if(sess)top=`<section class="lpinv"><span class="lpinvk">Hoş geldin${nm?", "+esc(nm):""}</span><b>Takımlar</b>${hubBody()}<button class="lnk" data-act="signOut">Çıkış yap</button></section>`;
+  else if(sess)top=`<section class="lpinv"><span class="lpinvk">Hoş geldin${nm?", "+esc(nm):""}</span><b>Takımlar</b>${hubBody()}<button class="lnk" data-act="signOut">Çıkış yap</button><button class="lnk lnkd" data-act="delAcc">Hesabımı sil</button></section>`;
   const feat=[["kart","Reyting kartları","Herkesin kendi reyting kartı olur. Hız, şut, pas… Her maçtan sonra değerler kendiliğinden güncellenir."],
     ["not","Maç sonu notları","Skoru ve golleri gir; gol, asist, sonuç ve performansa göre herkese 1–10 arası not çıkar."],
     ["lig","Lig ve istatistik","Puan durumu, gol krallığı, haftanın takımı, sezonun oyuncusu. Tartışmalar artık rakamlarla."],
@@ -2209,7 +2217,7 @@ function viewAyarlar(){
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Linkler","Davet linki ve takım linki"),
     !S.session?srow("@loginSheet",SI.kilit,"Giriş yap","Google hesabınla"):""]);
-  if(S.session)h+=sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger")]);
+  if(S.session)h+=sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),srow("@delAcc",SI.cik,"Hesabımı sil","Giriş hesabın ve üyeliklerin kalıcı olarak silinir","","danger")]);
   return h+verTxt()}
 
 /* ================= Olaylar ================= */
@@ -2255,6 +2263,10 @@ document.addEventListener("click",async e=>{
     case"platDel":{if(el.dataset.v==="1"){const r=await rpc("platform_team_delete",{p_id:+id});if(r&&r.ok){toast("Takım silindi");S.plat=null;S.myTeams=null}else toast("Silinemedi");S.f.platDel=null}else S.f.platDel=id?+id:null;render(true);break}
     case"teamDel":{const r=await rpc("team_delete",{p_pin:"",p_confirm:S.f.tdel||""});if(r&&r.ok){toast("Takım silindi");cacheClear();LS.set("y_team","0");location.href=location.pathname}else toast(r&&r.error==="confirm"?"Takım adını aynen yaz":"Silinemedi");break}
     case"platOk":{const r=await rpc("platform_team_approve",{p_id:+id,p_ok:el.dataset.v==="1"});if(r&&r.ok){toast(el.dataset.v==="1"?"Takım onaylandı":"İstek reddedildi");S.plat=null;render(true)}else toast("Yapılamadı");break}
+    case"delAcc":S.f.dac=undefined;S.f.dacT="";S.sheet={type:"delAcc"};render(true);break;
+    case"delAccGo":{const v=String(S.f.dacT||"").trim().toLocaleUpperCase("tr");if(v!=="SİL"&&v!=="SIL"){toast("Onay için SİL yaz");break}if(S.f.dacBusy)break;S.f.dacBusy=true;render(true);
+      try{const r=await rpc("delete_my_account",{p_confirm:v});if(r&&r.ok){S.sheet=null;cacheClear();LS.del("y_me");LS.set("y_team","0");LS.del("y_int");try{if(AUTH.sb)await AUTH.sb.auth.signOut()}catch(_){}try{localStorage.removeItem("y_auth")}catch(_){}toast("Hesabın silindi");setTimeout(()=>location.replace(location.pathname),900)}
+        else toast(r&&r.error==="tek_yonetici"?"Önce başka bir yönetici seç":r&&r.error==="sahip"?"Platform sahibinin hesabı buradan silinmez":"Silinemedi")}catch(_){toast("Silinemedi")}finally{S.f.dacBusy=false;render(true)}break}
     case"lkTab":S.f.lk=el.dataset.v;render(true);break;
     case"platL":S.f.platL=id?+id:null;render(true);break;
     case"platAct":{const r=await rpc("platform_team_active",{p_id:+id,p_on:el.dataset.v==="1"});if(r&&r.ok){S.plat=null;render(true)}else toast("Değiştirilemedi");break}
