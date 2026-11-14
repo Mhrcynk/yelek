@@ -2183,3 +2183,9 @@ body.fol .nav{max-width:300px;transition:none}
 .lpalt{justify-self:center;font-size:.84rem}
 .lnkc{display:grid;gap:10px}.lnks{padding:0;border:0;background:none}
 .lpinv>.lnk{justify-self:center}
+.plnk{display:block;margin:-4px 0 6px 58px;font-size:.8rem}
+.plx{display:grid;gap:8px;margin:0 12px 10px 58px;padding:10px;border-radius:14px;background:#F6F2FC}
+.plr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;align-items:center}
+.plr small{grid-column:1/-1;font:800 .64rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#7B3FF2}
+.plr span{font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.plx>.lnk{justify-self:start;font-size:.8rem}
