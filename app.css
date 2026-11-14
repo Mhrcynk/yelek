@@ -2056,3 +2056,9 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .bsn{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:linear-gradient(135deg,#37003C,#5A1FB0);color:#fff;font:600 .78rem/1.2 Inter,sans-serif;cursor:pointer;text-align:left}
 .bsn b{font-weight:800;white-space:nowrap}
 .mres .mafb:empty{display:none}.mres .mafm{padding-bottom:16px}.mres .mafb{padding-top:0}
+/* çok takım */
+.orsep{display:flex;align-items:center;gap:10px;color:var(--muted);font:700 .72rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}.orsep:before,.orsep:after{content:"";flex:1;height:1px;background:var(--line)}
+.tnew{height:46px;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800}.tnew svg{width:18px;height:18px}
+.mtl{display:grid;gap:6px}.mtl small{font:800 .66rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.mtr{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card,#fff);font:inherit;color:inherit;cursor:pointer;text-align:left}
+.mtr b{font-weight:800}.mtr span{font-size:.78rem;color:var(--muted);white-space:nowrap}
