@@ -2023,7 +2023,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261114103627";
+const APP_V="261114103935";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -3949,11 +3949,11 @@ async function pushOff(){PUSH.busy=true;render(true);
   try{const reg=PUSH.reg||await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();
     if(sub){const j=sub.toJSON();try{await rpc("push_subscribe",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_on:false})}catch(_){}await sub.unsubscribe()}
     PUSH.st="kapali";toast("Bildirimler kapandı")}catch(_){toast("Kapatılamadı")}finally{PUSH.busy=false;render(true)}}
-const pushSub=()=>({acik:"Takımlar, maç günü, sonuçlar"+(S.admin?", katılma istekleri":""),kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:"Bu tarayıcıda desteklenmiyor","?":"…"}[PUSH.st]||"");
+const pushSub=()=>({acik:"Takımlar ve maç sonuçları"+(S.admin?", katılma istekleri":""),kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:"Bu tarayıcıda desteklenmiyor","?":"…"}[PUSH.st]||"");
 function pushRow(){if(!S.session||!isMember())return"";const on=PUSH.st==="acik",can=PUSH.st==="acik"||PUSH.st==="kapali"||PUSH.st==="ios";
   return `<div class="setr nolink"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimler</b><small>${pushSub()}</small></span>${can?`<button class="sw ${on?"on":""}" data-act="${on?"pushOff":"pushOn"}" role="switch" aria-checked="${on}" aria-label="Bildirimler" ${PUSH.busy?"disabled":""}><i></i></button>`:""}</div>`}
 function pushAsk(){if(!S.session||!isMember()||LS.get("y_pushask")||!(PUSH.st==="kapali"||PUSH.st==="ios"))return"";
-  return `<section class="card pask"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimleri aç</b><small>${PUSH.st==="ios"?"iPhone'da önce ana ekrana ekle, sonra buradan aç.":"Takımlar belli olunca, maç günü ve sonuçta haber verelim."}</small></span><div class="pab"><button class="btn sm primary" data-act="pushOn">${PUSH.st==="ios"?"Nasıl?":"Aç"}</button><button class="btn sm ghost" data-act="pushNo" aria-label="Kapat">${ICON.x}</button></div></section>`}
+  return `<section class="card pask"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimleri aç</b><small>${PUSH.st==="ios"?"iPhone'da önce ana ekrana ekle, sonra buradan aç.":"Takımlar belli olunca ve maç sonucunda haber verelim."}</small></span><div class="pab"><button class="btn sm primary" data-act="pushOn">${PUSH.st==="ios"?"Nasıl?":"Aç"}</button><button class="btn sm ghost" data-act="pushNo" aria-label="Kapat">${ICON.x}</button></div></section>`}
 const SI={
   uye:sv('<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><path d="M16 4.5a3 3 0 0 1 0 6M18.5 14c1.5.7 2.4 2.4 2.5 5"/>'),
   kilit:sv('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
