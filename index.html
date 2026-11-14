@@ -1884,6 +1884,22 @@ body.phout .brand .t{opacity:0;transform:translateY(-6px);pointer-events:none}
 .pabd b{display:block;font:800 .82rem/1.15 Inter,sans-serif}.pabd small{display:block;margin-top:2px;font:600 .68rem/1 Inter,sans-serif;color:var(--muted)}
 .benprof{padding-top:14px}.benprof .pph{margin-top:0}
 .vtog.pmr{margin-bottom:10px}
+/* giriş, üyelik, vitrin */
+.lgb{display:grid;gap:10px}.lgb .btn{display:flex;align-items:center;justify-content:center;gap:10px;height:48px;font-weight:700}.lgb svg{width:20px;height:20px}
+.lga{background:#000!important;color:#fff!important;border-color:#000!important}
+.mcard{display:flex;align-items:center;gap:12px;justify-content:space-between}.mcard p{margin:3px 0 0}.mcard.wait{border:1.5px solid #E3C33C}
+.mrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #ECE6F2;flex-wrap:wrap}
+.mav{width:34px;height:34px;border-radius:10px;overflow:hidden;flex:none;display:grid;place-items:center;background:#ECE6F2;font:800 .7rem/1 Inter,sans-serif}.mav img{width:100%;height:100%;object-fit:cover}
+.mwho{flex:1;min-width:140px}.mwho b{display:block;font-size:.9rem}.mwho small{color:var(--muted);font-size:.74rem;word-break:break-all}
+.mact{display:flex;gap:6px;flex-wrap:wrap;align-items:center;width:100%}.mact select{flex:1;min-width:150px}
+.mrole{display:flex;align-items:center;gap:4px;font-size:.8rem}.mp{font-weight:700;font-size:.85rem}.mtag{font-style:normal;font-size:.68rem;background:#F3EDFF;color:#7B3FF2;padding:2px 6px;border-radius:5px}
+.irow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center;margin-top:8px}.irow input{min-width:0;font-size:.78rem}.irow small{grid-column:1/-1}
+.vhero{text-align:center;padding:24px 16px 8px;display:grid;justify-items:center;gap:10px}.vhero h1{margin:0;font:900 1.8rem/1.05 var(--display)}.vhero p{margin:0;color:var(--muted);max-width:34ch}
+.vlogo svg{width:56px;height:56px}.vbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.vbtns .btn{display:inline-flex;align-items:center;gap:6px}.vbtns svg{width:18px;height:18px}
+.vsc{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;text-align:center;margin-top:8px}.vsc b{display:block}.vsc small{display:block;color:var(--muted);font-size:.74rem;margin-top:4px}.vsc span{font:900 2rem/1 var(--display)}
+.vnext{display:flex;justify-content:space-between;align-items:center}
+.vtab{width:100%;border-collapse:collapse;font-size:.85rem}.vtab th{font-size:.66rem;color:var(--muted);text-align:left;padding:4px}.vtab td{padding:7px 4px;border-top:1px solid #ECE6F2}.vtab td:nth-child(n+3),.vtab th:nth-child(n+3){text-align:center}
+body.gated .nav,body.gated .navfade,body.gated #pmBtn,body.gated #meBtn{display:none}
 </style>
 </head>
 <body>
@@ -1917,9 +1933,9 @@ body.phout .brand .t{opacity:0;transform:translateY(-6px);pointer-events:none}
 /* ================= Bağlantı ================= */
 const SB_URL="https://tnjpxwxfqbhfxsphbqhq.supabase.co";
 const SB_KEY="sb_publishable_ATJ8lPaPBzZEj-4k7Z5Ztw_YGevQCS3";
-async function sbGet(path){const r=await fetch(SB_URL+"/rest/v1/"+path,{headers:{apikey:SB_KEY,Accept:"application/json"}});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+async function sbGet(path){const r=await fetch(SB_URL+"/rest/v1/"+path,{headers:{apikey:SB_KEY,Accept:"application/json",...authHdr()}});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 async function rpc(fn,args){
-  const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(args||{})});
+  const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Accept:"application/json",...authHdr()},body:JSON.stringify(args||{})});
   let body=null;try{body=await r.json()}catch(_){}
   if(!r.ok)throw new Error((body&&body.message)||("HTTP "+r.status));return body;
 }
@@ -2277,7 +2293,7 @@ async function load(force){
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr),rpc("player_ages",{}).catch(()=>[])]);
     {const am={};(Array.isArray(ag)?ag:[]).forEach(r=>am[r.id]=r.age);pl.forEach(p=>{if(am[p.id]!=null)p.age=am[p.id]})}
     const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&sig===S.sig;S.sig=sig;
-    S.settings={...DEF_SET,...(st[0]||{})};TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+    S.settings={...DEF_SET,...(st[0]||{})};S.gate=!!S.settings.gate;TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
     {const om=openMatch();if(om){if(cleanName(om.name_a||""))TEAM.A=cleanName(om.name_a);if(cleanName(om.name_b||""))TEAM.B=cleanName(om.name_b)}}
     const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
     // arka plan yenilemesinde veri değişmediyse ekranı yeniden çizme (açık bölümler kapanmasın)
@@ -2526,8 +2542,10 @@ function render(force){
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
   {const ni=$("#navIn");if(!ni.firstChild)ni.innerHTML=TABS.map(([k,l,ic])=>`<button data-tab="${k}"><span class="ic">${ic==="lig"?LIG_SVG:ICON[ic]}</span><span class="tl">${l}</span></button>`).join("");
     const cur=S.tab==="sezon"?"kartlar":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
+  document.body.classList.toggle("gated",gated());
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
   if(!S.loaded&&!S.err)h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div><div class="skl"><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
+  else if(S.loaded&&gated())h+=viewVitrin();
   else if(S.loaded)h+=({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"kartlar":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});v.removeAttribute("aria-busy");phdRender();qkRender();
@@ -2773,7 +2791,7 @@ function _sheetHtml(){const t=S.sheet.type;if(t==="eval"){const m=S.matches.find
   if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&(m.state==="takim"||m.state==="bitti")?inM(m,()=>statEntry(m)):""}
   if(t==="rules")return `<div class="ch"><h2>Puanlama</h2><button class="btn sm" data-act="close">Kapat</button></div>`+viewKurallar(true);
   if(t==="share")return sheetShare();if(t==="pm")return sheetPM();
-  return t==="player"?sheetPlayer():t==="me"?sheetMe():t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="ext"?sheetExt():""}
+  return t==="login"?sheetLogin():t==="player"?sheetPlayer():t==="me"?(isMember()&&!S.admin?"":sheetMe()):t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="ext"?sheetExt():""}
 
 /* ================= Parçalar ================= */
 const SIL=`<svg viewBox="0 0 100 104" aria-hidden="true"><circle cx="50" cy="33" r="21" fill="currentColor"/><path d="M8 104c2-27 19-42 42-42s40 15 42 42z" fill="currentColor"/></svg>`;
@@ -3489,11 +3507,11 @@ function sheetAdd(){
 }
 const LIG_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3M12 13v4M8 20h8M9.5 17h5"/></svg>`;
 const LOCK_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
-function viewBen(){return _viewBen()+(S.admin?`<button class="btn block ghost" data-act="tab" data-tab="ayarlar">${ICON.ayar} Ayarlar</button>`:`<button class="btn block" data-act="tab" data-tab="ayarlar">${LOCK_SVG} Yönetici girişi</button>`)+verTxt()}
+function viewBen(){return memCard()+_viewBen()+accountFoot()+(S.admin?`<button class="btn block ghost" data-act="tab" data-tab="ayarlar">${ICON.ayar} Ayarlar</button>`:`<button class="btn block" data-act="tab" data-tab="ayarlar">${LOCK_SVG} Yönetici girişi</button>`)+verTxt()}
 function verTxt(){const v=APP_V;if(!/^\d{12}$/.test(v))return"";const d=new Date(Date.UTC(2000+ +v.slice(0,2),+v.slice(2,4)-1,+v.slice(4,6),+v.slice(6,8),+v.slice(8,10)));const p=n=>String(n).padStart(2,"0");return `<p class="vtx">Sürüm ${p(d.getDate())}.${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}</p>`}
 function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div class="empty"><h3>Kim olduğunu seç</h3><p>Kendi kartını, formunu ve maçlarını görmek için oyuncunu seç.</p><button class="btn primary" data-act="meSheet">Kimsin?</button></div></section>`;
   const s=S.stats[p.id]||{};const om=openMatch();
-  let h=`<div class="mehd">${avatar(p)}<div><b>${esc(p.name)}</b><span>${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div><button class="btn sm" data-act="meSheet">Değiştir</button></div>`;
+  let h=`<div class="mehd">${avatar(p)}<div><b>${esc(p.name)}</b><span>${eposOf(p)} · ${EPOS[eposOf(p)][1]}${p.yedek?" · Yedek kadro":""}</span></div>${isMember()&&!S.admin?"":`<button class="btn sm" data-act="meSheet">Değiştir</button>`}</div>`;
   if(om){const v=(om.rsvp||{})[p.id];h+=`<section class="card"><div class="ch"><div><div class="eyebrow">Sıradaki maç</div><h2>${fmtDate(om.date)} · ${esc(om.time||"")}</h2></div></div>
     ${om.state==="kayit"?`<div class="row" style="justify-content:space-between"><span>${v==="g"?"Geliyorsun ✓":v==="y"?"Yedektesin":v==="n"?"Gelemiyorsun":"Henüz cevap vermedin"}</span>${ms(om,p.id,v)}</div>`:(()=>{const k=sideOf(om,p.id);return `<p>${k?`Takımın: <b>${esc(TEAM[k])}</b>`:"Bu maçın kadrosunda değilsin."}</p>`})()}</section>`}
   if(!s.games)h+=`<section class="card"><div class="empty"><h3>Kartın uykuda</h3><p>İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikecek.</p></div></section>`;
@@ -3733,9 +3751,91 @@ function viewKurallar(inSheet){
 }
 
 /* ================= Ayarlar ================= */
+/* ===== Giriş, takım üyeliği ve vitrin ===== */
+const AUTH={sb:null,ready:false,lib:null};
+const authHdr=()=>S.session?.access_token?{Authorization:"Bearer "+S.session.access_token}:{};
+const SBJS="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+const authLib=()=>AUTH.lib||(AUTH.lib=new Promise((ok,no)=>{if(window.supabase)return ok(window.supabase);const s=document.createElement("script");s.src=SBJS;s.onload=()=>ok(window.supabase);s.onerror=()=>{AUTH.lib=null;no(new Error("lib"))};document.head.appendChild(s)}));
+const isMember=()=>S.mem&&S.mem.status==="onayli";
+const gated=()=>!!S.gate&&!isMember();
+async function authInit(){
+  {const q=new URLSearchParams(location.search);const d=q.get("davet");if(d){LS.set("y_davet",d);q.delete("davet");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash);if(!LS.get("y_auth"))S.sheet={type:"login"}}}
+  const need=LS.get("y_auth")||LS.get("y_davet")||/[?&]code=/.test(location.search)||S.gate;
+  if(!need){AUTH.ready=true;return}
+  await authStart()}
+async function authStart(){
+  if(AUTH.sb)return AUTH.sb;
+  let lib;try{lib=await authLib()}catch(_){toast("Giriş servisi yüklenemedi, bağlantını kontrol et");return null}
+  AUTH.sb=lib.createClient(SB_URL,SB_KEY,{auth:{flowType:"pkce",detectSessionInUrl:true,persistSession:true,autoRefreshToken:true,storageKey:"y_auth"}});
+  try{const{data}=await AUTH.sb.auth.getSession();S.session=data.session||null}catch(_){S.session=null}
+  AUTH.sb.auth.onAuthStateChange((ev,ses)=>{const was=S.session?.user?.id;S.session=ses||null;if((ses?.user?.id||null)!==(was||null))afterAuth()});
+  if(/[?&]code=/.test(location.search))history.replaceState(null,"",location.pathname+location.hash);
+  await afterAuth();AUTH.ready=true;return AUTH.sb}
+async function afterAuth(){
+  S.mem=null;
+  if(S.session){const inv=LS.get("y_davet");
+    if(inv){try{const r=await rpc("request_join",{p_code:inv});if(r&&r.ok===false&&r.error==="invite")toast("Davet linkinin süresi dolmuş, yöneticiden yeni link iste")}catch(_){}LS.del("y_davet")}
+    try{S.mem=await rpc("my_membership",{})}catch(_){S.mem=null}
+    if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}
+      if(S.mem.role==="yonetici"){S.admin=true;S.pin=S.pin||""}}
+    if(S.sheet&&S.sheet.type==="login"&&S.mem&&S.mem.status!=="yok")S.sheet=null}
+  else if(!S.pin)S.admin=false;
+  await load(true);render(true)}
+async function signIn(provider){const sb=await authStart();if(!sb)return;
+  const{error}=await sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}});
+  if(error)toast(provider==="apple"?"Apple ile giriş şu an açık değil":"Google ile giriş şu an açık değil")}
+async function signOut(){if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;if(!S.pin)S.admin=false;LS.del("y_me");S.me="";render(true);load(true)}
+const G_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2-1.9 3.2-4.7 3.2-8.3z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 7l3.7 2.9C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
+const APPLE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9s-2-.9-3.2-.8a4.8 4.8 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7c-.1 0-2.3-.9-2.3-3.9zM14 5.4a4.3 4.3 0 0 0 1-3.1 4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3c1.1.1 2.2-.5 2.9-1.4z"/></svg>';
+function loginBtns(){return `<div class="lgb"><button class="btn block lgg" data-act="oauth" data-v="google">${G_SVG} Google ile devam et</button><button class="btn block lga" data-act="oauth" data-v="apple">${APPLE_SVG} Apple ile devam et</button></div>`}
+function sheetLogin(){const inv=!!LS.get("y_davet");
+  return `<div class="ch"><div><div class="eyebrow">${IGH}</div><h2>${inv?"Takıma katıl":"Giriş yap"}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
+   <p class="muted" style="margin:0 0 14px">${inv?"Davet linkiyle geldin. Hesabınla giriş yap; yönetici onaylayınca kartın hesabına bağlanır.":"Takımdaysan hesabınla giriş yap. Takımda değilsen yöneticiden davet linki iste."}</p>${loginBtns()}
+   <p class="muted small" style="margin:14px 0 0">Yalnızca adın, e-postan ve profil fotoğrafın yöneticiye görünür. Şifre tutulmaz.</p>`}
+function memCard(){if(!S.session)return `<section class="card mcard"><div><b>Hesabınla giriş yap</b><p class="muted small">Kartın hesabına bağlanır, başkası senin adına işlem yapamaz.</p></div><button class="btn primary sm" data-act="loginSheet">Giriş yap</button></section>`;
+  const st=S.mem?.status||"yok";const em=esc(S.session.user?.email||"");
+  if(st==="bekliyor")return `<section class="card mcard wait"><div><b>Onay bekleniyor</b><p class="muted small">${em} hesabıyla katılma isteğin yöneticiye iletildi. Onaylanınca kartın otomatik bağlanır.</p></div><button class="btn ghost sm" data-act="signOut">Çıkış</button></section>`;
+  if(st==="reddedildi")return `<section class="card mcard"><div><b>İsteğin onaylanmadı</b><p class="muted small">Bir yanlışlık olduysa yöneticiyle konuş.</p></div><button class="btn ghost sm" data-act="signOut">Çıkış</button></section>`;
+  if(st==="yok")return `<section class="card mcard"><div><b>Takıma kayıtlı değilsin</b><p class="muted small">${em} ile giriş yaptın. Katılmak için yöneticiden davet linki iste.</p></div><button class="btn ghost sm" data-act="signOut">Çıkış</button></section>`;
+  return ""}
+function accountFoot(){return S.session?`<p class="muted small" style="text-align:center;margin:6px 0 0">${esc(S.session.user?.email||"")} · ${S.mem?.role==="yonetici"?"Yönetici · ":""}<button class="lnk" data-act="signOut">Çıkış yap</button></p>`:""}
+
+/* yönetici: üyeler ve davetler */
+async function memLoad(){const[a,b]=await Promise.all([A("admin_members",{}),A("admin_invites",{})]);S.memList=a?.rows||[];S.invList=b?.rows||[];render(true)}
+function adminMembers(){if(!S.admin)return"";if(!S.memList){memLoad();return `<section class="card"><h2>Üyeler</h2><p class="muted small">Yükleniyor…</p></section>`}
+  const url=location.origin+location.pathname;const L=S.memList,pend=L.filter(m=>m.status==="bekliyor"),ok=L.filter(m=>m.status==="onayli");
+  const taken=new Set(ok.map(m=>m.player_id).filter(Boolean));
+  const opt=(sel,uid)=>`<option value="">Kart seç…</option>`+S.players.filter(p=>!taken.has(p.id)||p.id===sel).sort((a,b)=>a.name.localeCompare(b.name,"tr")).map(p=>`<option value="${esc(p.id)}"${p.id===sel?" selected":""}>${esc(p.name)}</option>`).join("");
+  const who=m=>`<span class="mav">${m.avatar?`<img src="${esc(m.avatar)}" alt="" referrerpolicy="no-referrer">`:esc(initials(m.name||m.email||"?"))}</span><span class="mwho"><b>${esc(m.name||"İsimsiz")}</b><small>${esc(m.email||"")}</small></span>`;
+  const f=S.f.mem||(S.f.mem={});
+  return `<section class="card"><div class="ch"><div><h2>Üyeler</h2><p class="muted small" style="margin:2px 0 0">${ok.length} onaylı${pend.length?` · <b>${pend.length} bekleyen</b>`:""}</p></div><button class="btn sm ghost" data-act="memLoad">Yenile</button></div>
+    ${pend.map(m=>`<div class="mrow pend">${who(m)}<div class="mact"><select data-bind="mem.p_${esc(m.user_id)}" aria-label="Bağlanacak kart">${opt(f["p_"+m.user_id]||"",m.user_id)}</select>
+      <label class="mrole"><input type="checkbox" data-bind="mem.r_${esc(m.user_id)}" ${f["r_"+m.user_id]?"checked":""}> Yönetici</label>
+      <button class="btn primary sm" data-act="memOk" data-id="${esc(m.user_id)}">Onayla</button><button class="btn ghost sm" data-act="memNo" data-id="${esc(m.user_id)}">Reddet</button></div></div>`).join("")}
+    ${ok.map(m=>`<div class="mrow">${who(m)}<span class="mp">${m.player_id&&P(m.player_id)?esc(P(m.player_id).name):"Kart yok"}${m.role==="yonetici"?' <i class="mtag">Yönetici</i>':""}</span><button class="btn ghost sm" data-act="memNo" data-id="${esc(m.user_id)}" aria-label="Üyeliği kaldır">${ICON.x}</button></div>`).join("")}
+    ${!L.length?'<p class="muted small">Henüz kimse katılmadı. Bir davet linki oluşturup takım grubuna gönder.</p>':""}</section>
+   <section class="card"><div class="ch"><h2>Davet linkleri</h2><button class="btn primary sm" data-act="invNew">Yeni link</button></div>
+    ${(S.invList||[]).map(i=>{const l=url+"?davet="+encodeURIComponent(i.code);return `<div class="irow"><input type="text" readonly value="${esc(l)}" aria-label="Davet linki"><button class="btn sm" data-act="invCopy" data-v="${esc(l)}">Kopyala</button><button class="btn ghost sm" data-act="invOff" data-id="${esc(i.code)}" aria-label="Linki iptal et">${ICON.x}</button><small class="muted">${i.uses} kullanım${i.expires_at?" · "+fmtShort(String(i.expires_at).slice(0,10))+"'e kadar":""}</small></div>`}).join("")||'<p class="muted small">Aktif link yok.</p>'}
+    <p class="muted small" style="margin:8px 0 0">Linke tıklayan kişi Google ya da Apple ile giriş yapar, isteği buraya düşer. Sen onaylamadan hiçbir şey göremez ve yapamaz.</p></section>`}
+
+/* vitrin: giriş yapmamış ziyaretçiye görünen sayfa */
+async function vitrinLoad(){try{S.vit=await rpc("vitrin",{})}catch(_){S.vit=null}render(true)}
+function viewVitrin(){const v=S.vit;if(!v){vitrinLoad();return `<section class="card"><p class="muted">Yükleniyor…</p></section>`}
+  const N={};(v.players||[]).forEach(p=>N[p.id]=p.n);const M=v.matches||[];const last=M[M.length-1];
+  const t={};M.forEach(m=>{for(const[k,ids]of[["a",m.ta||[]],["b",m.tb||[]]]){const my=k==="a"?m.a:m.b,op=k==="a"?m.b:m.a;const r=my>op?"G":my<op?"M":"B";ids.forEach(id=>{if(!N[id])return;const o=t[id]||(t[id]={id,G:0,B:0,M:0,av:0});o[r]++;o.av+=my-op})}});
+  const L=Object.values(t).map(o=>({...o,n:o.G+o.B+o.M,p:o.G*3+o.B})).sort((x,y)=>y.p-x.p||y.G-x.G||y.av-x.av||x.n-y.n).slice(0,10);
+  const sc=(m,k)=>Object.entries(m.g||{}).filter(([id])=>((k==="a"?m.ta:m.tb)||[]).includes(id)&&N[id]).sort((a,b)=>b[1]-a[1]).map(([id,g])=>esc(N[id])+(g>1?" "+g:"")).join(" · ")||"–";
+  const nx=v.next;
+  return `<section class="vhero"><div class="vlogo">${IGLOGO}</div><h1>Abiler Kardeşler FC</h1><p>Her hafta halı sahada iki takım. Maçlar, kartlar ve sezon yarışı bu uygulamada.</p>
+     <div class="vbtns"><a class="btn" href="https://instagram.com/abilerkardeslerfc" target="_blank" rel="noopener">${IG_SVG} Instagram</a><button class="btn primary" data-act="loginSheet">Takımdaysan giriş yap</button></div></section>
+   ${last?`<section class="card vlast"><div class="eyebrow">Son maç · ${fmtShort(last.date)}</div><div class="vsc"><div><b>${esc(last.na||TEAM.A)}</b><small>${sc(last,"a")}</small></div><span class="num">${last.a} – ${last.b}</span><div><b>${esc(last.nb||TEAM.B)}</b><small>${sc(last,"b")}</small></div></div></section>`:""}
+   ${nx?`<section class="card vnext"><span class="eyebrow">Sıradaki maç</span><b>${fmtDate(nx.date)}${nx.time?" · "+esc(nx.time):""}</b></section>`:""}
+   ${L.length?`<section class="card"><div class="ch"><h2>Sezon ${v.season} · Lig</h2><span class="muted small">${M.length} maç</span></div><table class="vtab"><thead><tr><th>#</th><th>Oyuncu</th><th>O</th><th>G</th><th>B</th><th>M</th><th>P</th></tr></thead><tbody>${L.map((o,i)=>`<tr><td>${i+1}</td><td>${esc(N[o.id])}</td><td>${o.n}</td><td>${o.G}</td><td>${o.B}</td><td>${o.M}</td><td><b>${o.p}</b></td></tr>`).join("")}</tbody></table></section>`:""}
+   ${S.session?memCard():""}`}
+
 function viewAyarlar(){
   const url=location.origin+location.pathname;
-  let h="";
+  let h=adminMembers();
   if(!S.admin)h+=`<section class="card">
     <form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`;
   h+=`
@@ -3773,7 +3873,7 @@ document.addEventListener("click",async e=>{
     case"tab":goTab(el.dataset.tab);break;
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"open":S.f.ptab="genel";S.sheet={type:"player",id};S.f.st=null;S.f.ed=null;S.f.delP=null;render(true);break;
-    case"meSheet":if(S.me&&P(S.me)&&S.tab!=="ben"&&el.id==="meBtn"){S.tab="ben";S.view=null;render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
+    case"meSheet":if(isMember()&&!S.admin){S.tab="ben";S.view=null;render(true);break}if(S.me&&P(S.me)&&S.tab!=="ben"&&el.id==="meBtn"){S.tab="ben";S.view=null;render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":S.f[el.dataset.k]=!S.f[el.dataset.k];render(true);break;
     case"setNames":{const m=S.matches.find(x=>x.id===id);const w=S.f["nm_"+id]||{};const a=cleanName(w.a??m.name_a??""),b=cleanName(w.b??m.name_b??"");if(!a||!b){toast("İki takımın adını da yaz");break}
       const r=await A("admin_set_names",{p_id:id,p_a:a,p_b:b},"Takım isimleri kaydedildi");if(r){delete S.f["nm_"+id];await load(true)}break}
@@ -3784,6 +3884,15 @@ document.addEventListener("click",async e=>{
     case"addSheet":S.sheet={type:"add"};render(true);break;
     case"pickMe":if(!id&&S.me)LS.set("y_me_last",S.me);S.me=id||"";if(S.me){LS.set("y_me",S.me);LS.set("y_me_last",S.me)}if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
     case"close":case"closeBg":S.sheet=null;render(true);break;
+    case"oauth":signIn(el.dataset.v);break;
+    case"loginSheet":S.sheet={type:"login"};render(true);break;
+    case"signOut":signOut();break;
+    case"memLoad":S.memList=null;render(true);break;
+    case"memOk":{const f=S.f.mem||{};const pid=f["p_"+id]||null;if(!pid){toast("Önce bağlanacak kartı seç");break}const r=await A("admin_member_decide",{p_user:id,p_status:"onayli",p_player:pid,p_role:f["r_"+id]?"yonetici":"uye"},"Üye onaylandı");if(r&&r.error==="player_taken")toast("Bu kart başka bir hesaba bağlı");memLoad();break}
+    case"memNo":{const r=await A("admin_member_decide",{p_user:id,p_status:"reddedildi",p_player:null,p_role:null},"Üyelik kaldırıldı");memLoad();break}
+    case"invNew":{const r=await A("admin_invite_create",{p_days:30},"Davet linki oluşturuldu");memLoad();break}
+    case"invOff":{await A("admin_invite_revoke",{p_code:id},"Link iptal edildi");memLoad();break}
+    case"invCopy":{const v=el.dataset.v;try{await navigator.clipboard.writeText(v);toast("Link kopyalandı")}catch(_){toast("Kopyalanamadı, linki elle seç")}break}
     case"pmOpen":S.f.pm=S.f.pm||{tab:"mac",fmt:"post"};S.sheet={type:"pm"};render(true);break;
     case"pmTab":S.f.pm.tab=el.dataset.v;S.f.pm.item=null;render(true);break;
     case"pmItem":S.f.pm.item=el.dataset.v;render(true);break;
@@ -4215,7 +4324,8 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
 render(true);
 newVer();
 load().then(async()=>{
-  if(S.loaded&&!S.me&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
+  await authInit();
+  if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
   if(S.pin){try{const r=await rpc("admin_check",{p_pin:S.pin});if(!r||!r.ok){S.admin=false;S.pin="";LS.del("y_pin");render(true)}}catch(_){}}
 });
 })();
