@@ -13,6 +13,22 @@ Halı saha ekibi için FIFA tarzı oyuncu kartları ve maç takibi.
 
 ## Nasıl çalışır
 
-Tek bir `index.html` dosyası. Veriler Supabase'te tutulur. Herkes linkle girip katılım bildirebilir, durumunu güncelleyebilir ve oy verebilir. Maç açma, kadro kurma ve istatistik girme yönetici şifresi ister; şifre sayfanın Ayarlar sekmesinden girilir ve değiştirilir.
+Veriler Supabase'te tutulur. Giriş Google hesabıyla yapılır; takıma katılmak isteyen kendi kartını seçer, yönetici onaylar. Uygulama kilitliyken giriş yapmamış ziyaretçiler sadece vitrin sayfasını görür. Yöneticilik Google hesabına bağlıdır, şifre yoktur.
 
 Sayfa GitHub Pages üzerinden yayınlanır.
+
+## Dosyalar
+
+- `index.html`: sayfa iskeleti ve sürüm numarası (`APP_V`)
+- `app.css`: bütün görünüm
+- `app.js`: bütün uygulama kodu
+- `sw.js`: bildirimler ve internet yokken açılış
+- `gizlilik.html`: gizlilik metni
+- `tests/smoke.js`: her ekranın hatasız açıldığını kontrol eden test
+- `tools/surum.sh`: yeni sürüm numarası verir
+
+## Değişiklik yaparken
+
+1. Değişikliği yap.
+2. `node tests/smoke.js` ile kontrol et (Playwright gerekir). Test uydurma verilerle çalışır, gerçek veriye dokunmaz.
+3. `tools/surum.sh` ile sürümü artır; telefonlar yeni sürümü bu sayede alır.
