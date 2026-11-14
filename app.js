@@ -978,7 +978,7 @@ function extPanel(m){const st=m.stats||{};const T=m.team_a||[];const us=+m.score
 function viewGecmis(){
   const F=[...fin(),...extFin()].filter(inYr).sort((a,b)=>matchTs(b)-matchTs(a));const E=extFin();
   if(S.view){const vm=F.find(m=>m.id===S.view);if(vm){const i=F.indexOf(vm);
-    return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="back">${ICON.back} Fikstür</button><span class="row" style="gap:6px">${F[i+1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i+1].id)}" aria-label="Önceki maç">‹ Önceki</button>`:""}${F[i-1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i-1].id)}" aria-label="Sonraki maç">Sonraki ›</button>`:""}</span></div>`+(isExt(vm)?"":`<button class="stbtn" data-act="story" data-id="${esc(vm.id)}"><span class="sr0"><span class="sr1">${ICON_PLAY}</span></span><span><b>Maç hikâyesi</b><small>Skor, Maçın Adamı, Haftanın Takımı</small></span><i>${CHV}</i></button>`)+(isExt(vm)?extPanel(vm):resultPanel(vm))}}
+    return `<div class="row" style="justify-content:space-between"><button class="btn ghost sm" data-act="back">${ICON.back} Fikstür</button><span class="row" style="gap:6px">${F[i+1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i+1].id)}" aria-label="Önceki maç">‹ Önceki</button>`:""}${F[i-1]?`<button class="btn sm" data-act="viewm" data-id="${esc(F[i-1].id)}" aria-label="Sonraki maç">Sonraki ›</button>`:""}</span></div>`+(isExt(vm)?extPanel(vm):resultPanel(vm))}}
   let h=`${S.admin?`<div class="ph kph"><button class="btn sm primary" data-act="extNew" style="margin-left:auto">${ICON.plus} Dış maç</button></div>`:""}`;
   h+=rivalCard(E);
   // fikstür hikâye şeridi kaldırıldı; maç hikâyesi yalnızca maç detayında
