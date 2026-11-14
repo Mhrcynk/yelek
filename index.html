@@ -1976,6 +1976,7 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .hstep>div{flex:1;min-width:0;display:grid;gap:6px}.hstep b{font:800 .95rem/1.2 Inter,sans-serif}.hstep p{margin:0;font-size:.86rem;line-height:1.45;color:var(--muted)}.hstep p b{font:inherit;font-weight:700;color:var(--ink)}.hstep p.ok{color:#0B5E35}.hstep .btn{justify-self:start}
 .hcard{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:14px;border:1.5px solid #ECE6F2;background:#fff;cursor:pointer;text-align:left;font:inherit;color:inherit}.hcard .av{width:42px;height:42px;flex:none}.hcard>span:not(.av){flex:1;display:grid}.hcard small{color:var(--muted);font-size:.76rem}.hcard>i{font-style:normal;color:#C9BFD6;font-size:1.3rem}
 .aud .setx small{white-space:normal}.aud .setx b{font-weight:600;font-size:.88rem;line-height:1.3}
+.offl{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:10px 14px;border:0;border-radius:14px;background:#FFF4D6;color:#5A3A00;font:inherit;font-size:.84rem;text-align:left;cursor:pointer}.offl svg{width:18px;height:18px;flex:none}.offl span{flex:1}.offl i{font-style:normal;font-weight:800}
 </style>
 </head>
 <body>
@@ -2029,7 +2030,7 @@ const byPos=(a,b)=>{const pa=P(a),pb=P(b);return (POS_ORDER[eposOf(pa)]??99)-(PO
 const GROUP_POS={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
 const DEF_EPOS={"Kaleci":"KL","Defans":"STP","Orta saha":"MO","Forvet":"SNT"};
 const ROLE_NAME={KL:"Kaleci",DF:"Defans",OS:"Orta saha",FV:"Forvet"};
-const APP_V="261114110117";
+const APP_V="261114112419";
 const ATTR_OUT=[["hiz","HIZ","Hız",[["acc","Hızlanma"],["spr","Sprint hızı"]]],["sut","ŞUT","Şut",[["bit","Bitiricilik"],["guc","Şut gücü"],["poz","Pozisyon alma"]]],
   ["pas","PAS","Pas",[["kis","Kısa pas"],["uzn","Uzun pas"],["viz","Vizyon"]]],["dri","DRİ","Top sürme",[["kon","Top kontrolü"],["sur","Top sürme"],["cev","Çeviklik"]]],
   ["def","DEF","Savunma",[["kes","Top kesme"],["bil","Savunma bilinci"],["mud","Ayakta müdahale"]]],["fiz","FİZ","Fizik",[["day","Dayanıklılık"],["guc","Güç"],["agr","Agresiflik"]]]];
@@ -2368,15 +2369,30 @@ async function load(force){
     const[st,pl,ms,sv2,ag]=await Promise.all([sbGet("settings?id=eq.1&select=*"),sbGet("players?select=id,name,pos,no,attrs,status,status_log,created_at,archived,photo_v,guest,epos,alt_pos,yedek&order=created_at.asc"),
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr),rpc("player_ages",{}).catch(()=>[])]);
     {const am={};(Array.isArray(ag)?ag:[]).forEach(r=>am[r.id]=r.age);pl.forEach(p=>{if(am[p.id]!=null)p.age=am[p.id]})}
-    const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&sig===S.sig;S.sig=sig;
-    S.settings={...DEF_SET,...(st[0]||{})};S.gate=!!S.settings.gate;TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
-    {const om=openMatch();if(om){if(cleanName(om.name_a||""))TEAM.A=cleanName(om.name_a);if(cleanName(om.name_b||""))TEAM.B=cleanName(om.name_b)}}
+    const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&!S.offline&&sig===S.sig;S.sig=sig;
+    applyData(st,pl,ms,sv2);S.offline=0;
     const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
+    cacheSave(st,pl,ms,sv2);
     // arka plan yenilemesinde veri değişmediyse ekranı yeniden çizme (açık bölümler kapanmasın)
     if(same&&!force)return;
-  }catch(e){console.error(e);if(!force&&S.loaded)return;S.err="Verilere ulaşılamadı. İnternet bağlantını kontrol edip sayfayı yenile."}
+  }catch(e){console.error(e);if(S.loaded){if(!S.offline&&S.cacheAt)S.offline=S.cacheAt;if(!force){render(true);return}}else S.err="Verilere ulaşılamadı. İnternet bağlantını kontrol edip sayfayı yenile."}
   render();setTimeout(notesSync,800);
 }
+/* son veriyi telefonda sakla: zayıf internette uygulama yine açılsın */
+function applyData(st,pl,ms,sv2){S.settings={...DEF_SET,...(st[0]||{})};S.gate=!!S.settings.gate;TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+  {const om=openMatch();if(om){if(cleanName(om.name_a||""))TEAM.A=cleanName(om.name_a);if(cleanName(om.name_b||""))TEAM.B=cleanName(om.name_b)}}}
+function cacheSave(st,pl,ms,sv2){
+  if(!pl.length){LS.del("y_cache");LS.del("y_cph");return}// kilitli ve üye değil: hiçbir şey saklama
+  const at=Date.now();S.cacheAt=at;
+  try{localStorage.setItem("y_cache",JSON.stringify({v:1,at,st,pl,ms,sv2,mem:S.mem||null}))}catch(_){LS.del("y_cache")}
+  try{if(S.pv&&LS.get("y_cpv")!==S.pv){localStorage.setItem("y_cph",JSON.stringify(S.photos));LS.set("y_cpv",S.pv)}}catch(_){LS.del("y_cph");LS.del("y_cpv")}}
+function cacheLoad(){try{const c=JSON.parse(localStorage.getItem("y_cache")||"null");if(!c||c.v!==1||!c.pl||!c.pl.length)return false;
+  applyData(c.st,c.pl,c.ms,c.sv2);S.cacheAt=c.at;S.sig=JSON.stringify([c.st,c.pl,c.ms,c.sv2]);
+  if(c.mem&&!S.mem)S.mem=c.mem;if(S.mem&&S.mem.role==="yonetici"&&S.mem.status==="onayli")S.admin=true;
+  try{const ph=JSON.parse(localStorage.getItem("y_cph")||"null");if(ph){S.photos=ph;S.pv=LS.get("y_cpv")}}catch(_){}
+  return true}catch(_){return false}}
+function cacheClear(){LS.del("y_cache");LS.del("y_cph");LS.del("y_cpv");S.cacheAt=0}
+const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
 async function notesSync(){if(!S.admin||S._ns)return;S._ns=true;
   try{for(const m of S.matches){if(m.state!=="bitti"||m.notes||m.kind==="ext")continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
     const n={};for(const[id,r]of Object.entries(inf.pts)){if(r&&isFinite(r.pts))n[id]={n:Math.round(r.pts*10)/10}}
@@ -2625,6 +2641,7 @@ function render(force){
     const cur=S.tab==="sezon"?"kartlar":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
   document.body.classList.toggle("gated",gated());
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
+  if(S.offline&&S.loaded)h+=`<button class="offl" data-act="retry">${SI.bulut}<span><b>İnternet yok</b> · son güncelleme ${new Date(S.offline).toDateString()===new Date().toDateString()?hhmm(S.offline):fmtShort(new Date(S.offline).toISOString().slice(0,10))+" "+hhmm(S.offline)}</span><i>Yenile</i></button>`;
   if(!S.loaded&&!S.err)h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div><div class="skl"><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated()&&!AUTH.ready&&LS.get("y_auth"))h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated())h+=viewVitrin();
@@ -3854,10 +3871,10 @@ async function authStart(){
   if(/[?&]code=/.test(location.search))history.replaceState(null,"",location.pathname+location.hash);
   await afterAuth();AUTH.ready=true;return AUTH.sb}
 async function afterAuth(){
-  S.mem=null;
+  const prevMem=S.mem;S.mem=null;
   if(S.session){const inv=LS.get("y_davet");
     if(inv){try{const r=await rpc("request_join",{p_code:inv});if(r&&r.ok===false&&r.error==="invite")toast("Davet linkinin süresi dolmuş, yöneticiden yeni link iste")}catch(_){}LS.del("y_davet")}
-    try{S.mem=await rpc("my_membership",{})}catch(_){S.mem=null}
+    try{S.mem=await rpc("my_membership",{});try{const c=JSON.parse(localStorage.getItem("y_cache")||"null");if(c){c.mem=S.mem;localStorage.setItem("y_cache",JSON.stringify(c))}}catch(_){}}catch(_){S.mem=prevMem}
     if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}
       if(S.mem.role==="yonetici"){S.admin=true;S.pin=S.pin||"";setTimeout(notesSync,1500)}
       if(!LS.get("y_hos")&&!S.sheet)S.sheet={type:"hos"}}
@@ -3867,7 +3884,7 @@ async function afterAuth(){
 async function signIn(provider){const sb=await authStart();if(!sb)return;
   const{error}=await sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}});
   if(error)toast(provider==="apple"?"Apple ile giriş şu an açık değil":"Google ile giriş şu an açık değil")}
-async function signOut(){if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;S.admin=false;LS.del("y_me");S.me="";render(true);load(true)}
+async function signOut(){if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;S.admin=false;cacheClear();LS.del("y_me");S.me="";render(true);load(true)}
 const G_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2-1.9 3.2-4.7 3.2-8.3z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 7l3.7 2.9C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
 const APPLE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9s-2-.9-3.2-.8a4.8 4.8 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7c-.1 0-2.3-.9-2.3-3.9zM14 5.4a4.3 4.3 0 0 0 1-3.1 4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3c1.1.1 2.2-.5 2.9-1.4z"/></svg>';
 function loginBtns(){return `<div class="lgb"><button class="btn block lgg" data-act="oauth" data-v="google">${G_SVG} Google ile devam et</button></div>`}
@@ -3978,6 +3995,7 @@ const SI={
   tel:sv('<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/>'),
   pay:ICON.share||ICON.copy,
   gecmis:sv('<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'),
+  bulut:sv('<path d="M7 18a4 4 0 0 1-.6-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/><path d="M4 4l16 16"/>'),
   zil:sv('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
   cik:sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>')};
 const srow=(k,ic,t,sub,extra,cls)=>`<button class="setr ${cls||""}" data-act="${k.startsWith("@")?k.slice(1):"setp"}" ${k.startsWith("@")?"":`data-v="${k}"`}><span class="seti">${ic}</span><span class="setx"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span>${extra||""}<i class="setc" aria-hidden="true">›</i></button>`;
@@ -4080,6 +4098,7 @@ document.addEventListener("click",async e=>{
     case"joinReq":{const pid=S.f.claim||S.mem?.claim;if(!pid){toast("Önce kartını seç");break}try{const r=await rpc("request_join",{p_code:LS.get("y_davet")||null,p_player:pid});if(r&&r.ok){LS.del("y_davet");toast("İsteğin yöneticiye gönderildi");S.mem=await rpc("my_membership",{});S.f.claim="";render(true)}else toast("İstek gönderilemedi")}catch(_){toast("İstek gönderilemedi")}break}
     case"gateSet":{const on=el.dataset.v==="1";const r=await act("admin_set_gate",{p_pin:"",p_gate:on},on?"Uygulama kilitlendi":"Kilit kaldırıldı");if(r){S.gate=on;await load(true)}break}
     case"memLoad":S.memList=null;render(true);break;
+    case"retry":load(true);break;
     case"pushOn":pushOn();break;
     case"pushOff":pushOff();break;
     case"pushNo":LS.set("y_pushask","1");render(true);break;
@@ -4519,6 +4538,7 @@ function stopTimer(){clearInterval(S.tick);S.tick=null}
 function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);d.turn=d.turn==="A"?"B":"A";d.deadline=Date.now()+20000;
   const m=S.matches.find(x=>x.id===d.mid);if(!rsvpLists(m).kadro.some(p=>!d.A.includes(p.id)&&!d.B.includes(p.id)))stopTimer();render(true)}
 
+cacheLoad();
 render(true);
 newVer();
 load().then(async()=>{
