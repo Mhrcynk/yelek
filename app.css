@@ -2014,3 +2014,21 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .frp.G{background:#E3F6EC;color:#0B5E35}.frp.B{background:#FFF4D6;color:#8A5A00}.frp.M{background:#FCE6EA;color:#B3213B}
 .frs .xchip{justify-self:start}
 .frp{min-width:78px;text-align:center}.frp.none{visibility:hidden}
+/* maç sekmesi: maç günü afişi */
+.maf{border-radius:24px;overflow:hidden;color:#fff;margin-bottom:12px;background:radial-gradient(90% 60% at 50% 0,rgba(255,62,165,.35),transparent 60%),linear-gradient(170deg,#37003C,#1B0640);box-shadow:0 16px 34px rgba(42,8,48,.3)}
+.maf *{color:#fff}
+.mafh{display:flex;justify-content:space-between;gap:8px;padding:14px 16px 0;font:800 .68rem/1 Inter,sans-serif;letter-spacing:.12em}.mafh span{color:#E8C8FF}
+.mafm{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:4px;padding:10px 10px 0}
+.maft{display:grid;justify-items:center;gap:4px;text-align:center;min-width:0}
+.maft b{max-width:100%;font-family:var(--display);font-weight:900;line-height:1.05;letter-spacing:-.01em;overflow-wrap:anywhere}
+.maft small{font:600 .64rem/1 Inter,sans-serif;color:#E8C8FF!important;white-space:nowrap}
+.mafcap{width:84px;height:84px;border-radius:50%;overflow:hidden;border:3px solid #fff;background:linear-gradient(#d9ccf2,#8e78c4);display:grid;place-items:center;margin-bottom:4px}
+.mafcap img{width:100%;height:100%;object-fit:cover;object-position:center 12%}.mafcap i{font:900 1.4rem/1 Inter,sans-serif;font-style:normal}
+.mafcap.cr{border:0;background:none;width:auto;height:auto}
+.mafc{display:grid;justify-items:center;gap:4px;padding-bottom:26px}.mafc span{font:800 .66rem/1 Inter,sans-serif;letter-spacing:.1em;color:#00FF85!important;white-space:nowrap}
+.mafc b{font:900 2.6rem/1 var(--display);letter-spacing:-.02em}
+.mafb{display:grid;gap:8px;padding:14px 16px 16px}
+.mafbar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:rgba(255,255,255,.15)}.mafbar i{display:block}.mafbar i:first-child{background:#fff}.mafbar i:last-child{flex:1;background:#8F5BFF}
+.mafs{display:flex;justify-content:space-between;gap:6px;font:700 .68rem/1.2 Inter,sans-serif}.mafs span{color:#E8C8FF}
+.mafme{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.1);border-radius:12px;padding:9px 10px;font:700 .78rem/1.2 Inter,sans-serif}
+.mafme em{flex:none;font-style:normal;font-weight:800;background:#00FF85;color:#06200F!important;padding:5px 9px;border-radius:999px}

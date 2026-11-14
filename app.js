@@ -1036,16 +1036,25 @@ function bhWhen(date,time,extra){const d=parseYmd(date);const fld=S.settings.fie
   <div class="bh-chips">${extra||""}<span>${d.getDate()} ${AYLAR[d.getMonth()]}</span>${fld?`<span>${esc(fld)}</span>`:""}</div>`}
 const bhTeam=k=>`<div class="bh-t ${k.toLowerCase()}"><span class="bh-c" aria-hidden="true">${esc((TEAM[k]||"?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><b>${esc(TEAM[k])}</b></div>`;
 const sbFs=t=>{const w=Math.max(...String(t||"").split(/\s+/).map(x=>x.length));return w<=5?"2.4rem":w<=7?"1.95rem":w<=9?"1.6rem":"1.3rem"};
+const mafFs=t=>{const n=String(t||"").length;return n<=8?"1.35rem":n<=12?"1.15rem":"1rem"};
 function hero(om){
   const A=om.team_a||[],B=om.team_b||[];const has=A.length&&B.length;const d=parseYmd(om.date);const fld=S.settings.field_name;const dw=dayWord(om.date);
   const avA=has?sumAvg(A):0,avB=has?sumAvg(B):0;const pA=has?Math.round(100/(1+Math.pow(10,-(avA-avB)/15))):50;
   const me=S.me&&(A.includes(S.me)?"A":B.includes(S.me)?"B":"");let meRow="";
   if(me){const L=pad7(lineupOf(om,me),me==="A"?A:B),PS=posArr(om,me);const i=L.indexOf(S.me);const ep=i<0?"":i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]);
     meRow=`<div class="sbme">${crest(TEAM[me],me,30)}<span><b>Takımın: ${esc(TEAM[me])}</b><small>${i<0?"Yedek":esc(EPOS[ep]?.[1]||ep)}${(me==="A"?om.cap_a:om.cap_b)===S.me?" · Kaptan":""}</small></span></div>`}
-  const actH=om.state==="kayit"?`<p class="bh-note">Kadrolar henüz açıklanmadı.</p>`:"";
-  return `<section class="sbd"><div class="sbt"><span>${dw?dw+" · ":""}${GUNLER[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()]}${fld?" · "+esc(fld):""}</span>${cdClock(om)}</div>
-    <div class="sbm"><div class="sbn">${crest(TEAM.A,"A",34)}<b style="font-size:${sbFs(TEAM.A)}">${esc(TEAM.A)}</b></div><b class="sbtm num">${esc(om.time||"")}</b><div class="sbn r">${crest(TEAM.B,"B",34)}<b style="font-size:${sbFs(TEAM.B)}">${esc(TEAM.B)}</b></div></div>
-    ${has?`<div class="sbp"><div class="sbbar" role="img" aria-label="Kazanma ihtimali ${esc(TEAM.A)} yüzde ${pA}, ${esc(TEAM.B)} yüzde ${100-pA}"><i style="width:${pA}%"></i><i></i></div><div class="sbl"><span>Güç ${avA} · %${pA}</span><span>%${100-pA} · Güç ${avB}</span></div></div>`:""}${actH}</section>`;
+  const t0=new Date();t0.setHours(0,0,0,0);const dd=Math.round((d-t0)/864e5);const left=dd<0?"":dd===0?"BUGÜN":dd===1?"YARIN":dd+" GÜN KALDI";
+  const wk=Math.min(seasonCount(curYr())+1,sLen());const fav=has&&pA!==50?(pA>50?TEAM.A:TEAM.B):"";
+  const cap=k=>{const id=k==="A"?om.cap_a:om.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
+    return `<div class="maft"><span class="mafcap${ok?"":" cr"}">${ok?(ph?`<img src="${esc(ph)}" alt="">`:`<i>${esc(initials(nameOf(id)))}</i>`):crest(TEAM[k],k,64,TEAM[k==="A"?"B":"A"])}</span><b style="font-size:${mafFs(TEAM[k])}">${esc(TEAM[k])}</b>${ok?`<small>KPT · ${esc(shortName(nameOf(id)))}</small>`:""}</div>`};
+  const meTxt=me?(()=>{const L=pad7(lineupOf(om,me),me==="A"?A:B),PS=posArr(om,me);const i=L.indexOf(S.me);const ep=i<0?"":i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]);
+    return `Takımın ${esc(TEAM[me])} · ${i<0?"Yedek":esc(EPOS[ep]?.[1]||ep)}${(me==="A"?om.cap_a:om.cap_b)===S.me?" · Kaptan":""}`})():"";
+  const st=om.state==="kayit"?"Kadro bekleniyor":"Kadro belli";
+  return `<section class="maf"><div class="mafh"><span>${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].toLocaleUpperCase("tr")}${fld?" · "+esc(fld).toLocaleUpperCase("tr"):""}</span><span>HAFTA ${wk}</span></div>
+    <div class="mafm">${cap("A")}<div class="mafc">${left?`<span>${left}</span>`:""}<b class="num">${esc(String(om.time||"").slice(0,5))}</b></div>${cap("B")}</div>
+    <div class="mafb">${has?`<div class="mafbar" role="img" aria-label="Kazanma ihtimali ${esc(TEAM.A)} yüzde ${pA}, ${esc(TEAM.B)} yüzde ${100-pA}"><i style="width:${pA}%"></i><i></i></div>
+      <div class="mafs"><span>Güç ${avA} · %${pA}</span><span>${fav?"Favori: "+esc(fav):"Denk maç"}</span><span>%${100-pA} · Güç ${avB}</span></div>`:""}
+      <div class="mafme"><span>${meTxt||(om.state==="kayit"?"Kadrolar henüz açıklanmadı":"Bu hafta kadroda değilsin")}</span><em>${st}</em></div></div></section>`;
 }
 function pairList(m,notes){const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);
   const rows=k=>{const PS=k==="A"?pa:pb,L=k==="A"?la:lb;return L.map((id,i)=>({id,ep:i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]),y:i===0?-99:PS[i][1]})).filter(x=>x.id).sort((a,b)=>b.y-a.y)};
