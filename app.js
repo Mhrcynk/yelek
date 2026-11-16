@@ -22,6 +22,11 @@ function logErr(msg,src,stack){try{msg=String(msg||"").slice(0,300);if(!msg||ERR
 window.addEventListener("error",e=>logErr(e.message,String(e.filename||"").split("/").pop()+":"+e.lineno+":"+e.colno,e.error&&e.error.stack));
 window.addEventListener("unhandledrejection",e=>{const r=e.reason;logErr((r&&r.message)||String(r),"promise",r&&r.stack)});
 
+/* görünüm: açık / koyu / sistem */
+const THEME=()=>LS.get("y_theme")||"acik";
+function themeApply(){const t=THEME();const dk=t==="koyu"||(t==="sis"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dk",dk)}
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(THEME()==="sis")themeApply()})}catch(_){}
+
 /* ================= Sabitler ================= */
 const STATUS={hazir:{label:"Hazır",cls:"ok"},sakat:{label:"Sakat",cls:"bad",flag:"SAKAT"},hasta:{label:"Hasta",cls:"bad",flag:"HASTA"},
   izinli:{label:"İzinde / şehir dışı",cls:"info",flag:"İZİNDE"},yogun:{label:"İş yoğun",cls:"warn",flag:"YOĞUN"},belirsiz:{label:"Belirsiz",cls:"muted",flag:"?"}};
@@ -1018,6 +1023,7 @@ function fmtRec(ts){const d=new Date(ts),n=new Date();const dd=Math.round((new D
   const hh=String(d.getHours()).padStart(2,"0")+":00";return "tamamen düzelir: "+(dd<=0?"bugün "+hh:dd===1?"yarın "+hh:GUNLER[d.getDay()]+" "+hh)}
 const kondBar=(id,cls)=>{const c=kondOf(id);return c?`<span class="kbar k${c.lv}${cls?" "+cls:""}" title="Kondisyon %${c.k}" aria-label="Kondisyon yüzde ${c.k}, ${c.l}"><i style="width:${c.k}%"></i></span>`:""};
 const kondChip=id=>{const c=kondOf(id);return c?`<span class="kchip k${c.lv}" title="Kondisyon">${ICON_BOLT}%${c.k}</span>`:""};
+const ICON_MOON='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
 const ICON_BOLT='<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M13.2 2 4.5 13.4h6.1L9.8 22l8.7-11.4h-6.1z"/></svg>';
 function kondCard(p){const c=kondOf(p.id);if(!c)return"";const f=x=>"−"+Math.round(x);
   return `<div class="kcard k${c.lv}"><div class="kch">${ICON_BOLT}<span>Kondisyon</span><b class="num">%${c.k}</b><em>${c.l}</em></div><span class="kbar k${c.lv} big"><i style="width:${c.k}%"></i></span>
@@ -1110,10 +1116,22 @@ function mafEmpty(date,time,nA,nB,label,sub){const d=parseYmd(date);const fld=S.
 function noMatchHero(){const d=nextDay(+S.settings.day);return mafEmpty(d,S.settings.time,TEAM.A,TEAM.B,"SIRADAKİ MAÇ","Yönetici maçı açınca kadrolar burada görünür")}
 const NAMEP=[["Kırmızılar","Maviler"],["Beyazlar","Siyahlar"],["Kartallar","Aslanlar"],["Şimşekler","Yıldızlar"],["Kuzey","Güney"],["Turuncular","Yeşiller"],["Fırtına","Yıldırım"],["Atmacalar","Şahinler"],["Doğu","Batı"],["Gece","Gündüz"]];
 const sugg=()=>{if(!S.f.sugg)S.f.sugg=NAMEP[Math.floor(Math.random()*NAMEP.length)];return S.f.sugg};
+/* yeni takım rehberi: maç oynanana kadar Maç sekmesinde, adım adım */
+function setupGuide(){if(!S.admin||fin().length||extFin().length||LS.get("y_gd_"+TID))return"";
+  const np=S.players.length,sh=!!LS.get("y_shr_"+TID);
+  const st=[["Ekip ve saha","Saha adı, maç günü ve saati",!!(S.settings.field_name&&S.settings.time),`<button class="btn sm" data-act="setpGo" data-v="grup">Düzenle</button>`],
+    ["Oyuncuları ekle",np>=8?np+" oyuncu eklendi":`${np}/8 oyuncu · kadro kurmak için en az 8`,np>=8,`<button class="btn sm" data-act="tab" data-tab="kartlar">${ICON.plus} Ekle</button>`],
+    ["Davet linkini gönder","Oyuncular kendi kartını seçip katılsın",sh,`<button class="btn sm" data-act="gdLink" data-v="davet">Linkler</button>`],
+    ["Ligi takibe aç","İsteğe bağlı · arkadaşlar skorları izlesin",!!S.settings.followable,`<button class="btn sm" data-act="gdLink" data-v="takip">Aç</button>`],
+    ["İlk maçı aç","Aşağıdan tarih ve takım adlarını seç",false,""]];
+  const done=st.filter(x=>x[2]).length;const nx=st.findIndex(x=>!x[2]);
+  return `<section class="card gd"><div class="gdh"><div><div class="eyebrow">Kurulum · ${done}/${st.length}</div><h2>Takımını hazırla</h2></div><button class="lnk" data-act="gdHide">Gizle</button></div>
+    <span class="gdbar"><i style="width:${Math.round(done/st.length*100)}%"></i></span>
+    <ol class="gdl">${st.map(([t,d,ok,b],i)=>`<li class="${ok?"ok":i===nx?"now":""}"><span class="gdc">${ok?ICON.check:i+1}</span><span class="gdt"><b>${t}</b><small>${d}</small></span>${ok?"":b}</li>`).join("")}</ol></section>`}
 function createHero(){const d=S.f.newDate||nextDay(+S.settings.day);const tm=S.f.newTime||S.settings.time;
   const sg=sugg();const nA=cleanName(S.f.newNameA||"")||sg[0],nB=cleanName(S.f.newNameB||"")||sg[1];const few=S.players.length<6;
   return `${mafEmpty(d,tm,nA,nB,"YENİ MAÇ","Tarihi ve takım adlarını seç, maçı aç")}
-    ${few?`<section class="card nmhint"><b>Önce oyuncularını ekle</b><p class="muted small">Takımda ${S.players.length} oyuncu var. Kadro kurmak için en az 6–8 oyuncu ekle, sonra davet linkini paylaş.</p><div class="btns2"><button class="btn" data-act="tab" data-tab="kartlar">${ICON.plus} Oyuncu ekle</button><button class="btn" data-act="setpGo" data-v="pay">Davet linki</button></div></section>`:""}
+    ${setupGuide()}
     <section class="card nmf"><div class="eyebrow">Maçı aç</div>
     <div class="grid2"><label class="f" for="nmDate">Tarih<input type="date" id="nmDate" data-bind="newDate" value="${esc(d)}"></label>
     <label class="f" for="nmTime">Saat${timeSel("nmTime","newTime",tm)}</label></div>
@@ -2292,6 +2310,7 @@ function viewAyarlar(){
   h+=sgrp("Uygulama",[
     pushRow(),
     srow("@rulesSheet",SI.kural,"Puanlama kuralları","Not, reyting ve yelek puanı nasıl hesaplanır"),
+    `<div class="setr nolink thr"><span class="seti">${ICON_MOON}</span><span class="setx"><b>Görünüm</b><small>Bu telefonda geçerli</small></span><div class="vtog" role="group" aria-label="Görünüm">${[["acik","Açık"],["koyu","Koyu"],["sis","Sistem"]].map(([k,l])=>`<button data-act="theme" data-v="${k}" class="${THEME()===k?"on":""}" aria-pressed="${THEME()===k}">${l}</button>`).join("")}</div></div>`,
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Linkler","Davet linki ve takım linki"),
     !S.session?srow("@loginSheet",SI.kilit,"Giriş yap","Google hesabınla"):""]);
@@ -2302,6 +2321,7 @@ function viewAyarlar(){
 document.addEventListener("click",async e=>{
   const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}goTab(tb.dataset.tab,true);return}
   if(e.target.closest(".top .brand")&&S.session){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);return}
+  if(S.f&&S.f.setp==="pay"&&(S.f.lk||"davet")==="davet"&&e.target.closest(".lnkc .btn"))LS.set("y_shr_"+TID,"1");
   const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;if(S.fol&&FBLOCK.includes(a))return;const id=el.dataset.id;const t=S.teams;
   switch(a){
     case"tab":if(el.dataset.tab==="ayarlar")S.f.setp="";goTab(el.dataset.tab);break;
@@ -2335,6 +2355,9 @@ document.addEventListener("click",async e=>{
     case"gateSet":{const on=el.dataset.v==="1";const r=await act("admin_set_gate",{p_pin:"",p_gate:on},on?"Uygulama kilitlendi":"Kilit kaldırıldı");if(r){S.gate=on;await load(true)}break}
     case"memLoad":S.memList=null;render(true);break;
     case"retry":load(true);break;
+    case"theme":LS.set("y_theme",el.dataset.v);themeApply();render(true);break;
+    case"gdHide":LS.set("y_gd_"+TID,"1");render(true);break;
+    case"gdLink":S.f.lk=el.dataset.v;S.f.setp="pay";goTab("ayarlar");render(true);window.scrollTo(0,0);break;
     case"setpGo":S.f.setp=el.dataset.v;goTab("ayarlar");render(true);break;
     case"teamNew":S.f.tn=null;S.sheet={type:"teamNew"};render(true);break;
     case"teamGo":teamGo(+id,el.dataset.v);break;

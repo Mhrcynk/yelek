@@ -2243,3 +2243,52 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 .mafc .mafcd.live{color:#FF5A6E}
 @media (prefers-reduced-motion:no-preference){.mafc .mafcd.live{animation:cdp 1.4s ease-in-out infinite}}
 @keyframes cdp{50%{opacity:.45}}
+/* yeni takım rehberi */
+.gd{display:grid;gap:12px}.gdh{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.gdh h2{margin:2px 0 0}
+.gdbar{display:block;height:6px;border-radius:9px;background:#ECE6F5;overflow:hidden}.gdbar i{display:block;height:100%;background:linear-gradient(90deg,#7B3FF2,#2BD46A);border-radius:inherit}
+.gdl{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.gdl li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;min-width:0}
+.gdl li.now{background:#F3EEFF;box-shadow:inset 0 0 0 1.5px #D6C6F7}
+.gdc{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:800 .78rem/1 Inter,sans-serif;background:#ECE6F5;color:#6B5A85}
+.gdl li.ok .gdc{background:#1FA855;color:#fff}.gdl li.ok .gdc svg{width:14px;height:14px}.gdl li.now .gdc{background:#7B3FF2;color:#fff}
+.gdt{flex:1;min-width:0;display:grid}.gdt b{font-size:.9rem}.gdt small{font-size:.76rem;color:var(--muted)}
+.gdl li.ok .gdt b{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.gdl .btn{flex:none}
+
+/* ================= Koyu tema (Ayarlar → Görünüm) ================= */
+html.dk{--pl:#EDE4FF;--plb:#8F5BFF;--bg:#0F0A1A;--bg2:#171024;--card:#1A1229;--card2:#1A1229;--card3:#231834;--line:#2B2040;--line2:#3A2C55;
+ --ink:#F1EAFB;--muted:#A99BBF;--dim:#8A7BA3;--acc:#8F5BFF;--glass:#1A1229;--gline:#2B2040;color-scheme:dark}
+html.dk body{background:var(--bg)}
+html.dk .card,html.dk .lrow,html.dk .grow,html.dk .mhd,html.dk .slide,html.dk .report,html.dk .psh>div,html.dk .pwl2,html.dk .pmini>div,html.dk .glist2,html.dk .bh-vs,html.dk .sbd,html.dk .mehd,html.dk .kdme,html.dk .frs,html.dk .sbox,html.dk .sacc,html.dk .mreq,html.dk .rs,html.dk .twc,html.dk .bszg div,html.dk .hcard,html.dk .prc{background:var(--card)!important;border-color:var(--line)!important;color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.03),0 10px 26px rgba(0,0,0,.35)!important}
+html.dk .card .card{background:#20162F!important}
+html.dk .btn:not(.primary):not(.ghost):not(.danger):not(.wa):not(.turf):not(.light):not(.gbtn){background:#231834;border-color:var(--line2);color:var(--ink)}
+html.dk .chips button{background:#1A1229;border-color:var(--line2);color:var(--ink)}
+html.dk .chips button.on{background:#8F5BFF;border-color:#8F5BFF}
+html.dk .seg3,html.dk .vtog,html.dk .mtabs,html.dk .oyt2{background:#1F1630!important;border-color:var(--line)!important}
+html.dk .seg3 button.on,html.dk .vtog button.on,html.dk .mtabs button.on{background:#2E2246!important;color:#fff!important}
+html.dk .nav .in,html.dk .nav{background:rgba(26,18,41,.92)!important;border-color:var(--line)!important}
+html.dk .nav button{color:#A99BBF!important}
+html.dk .nav button[aria-current]{color:#fff!important}
+html.dk .field{background:linear-gradient(#1B2A22,#14201A)!important}
+html.dk .frr.w,html.dk .frd b,html.dk .frr b{color:var(--ink)}
+html.dk .frr{color:#7E6F97}
+html.dk .frp.G{background:#103A26;color:#7CE3AE}
+html.dk .frp.B{background:#3A2E0E;color:#F2C85B}
+html.dk .frp.M{background:#3E1420;color:#FF8FA6}
+html.dk h1,html.dk h2,html.dk h3,html.dk b,html.dk strong{color:inherit}
+html.dk .lt b,html.dk .ltr b{color:var(--ink)}
+.thr{flex-wrap:wrap}.thr .vtog{margin-left:auto}.thr .vtog button{padding:6px 10px;font-size:.8rem}
+html.dk .sheet{background:var(--bg2)!important;color:var(--ink)}
+html.dk .lgr.me{background:#2A1D44!important}html.dk .lgr.me *{color:var(--ink)}
+html.dk .ptabs button{color:var(--muted)}html.dk .ptabs button.on{color:#fff}
+html.dk .chip{background:#231834;border-color:var(--line2)}
+html.dk input,html.dk select,html.dk textarea{background:#140E20;border-color:var(--line2);color:var(--ink)}
+html.dk .kcard,html.dk .hrow,html.dk .plx{background:#20162F}html.dk .hrow.cur{background:#2A1D44}
+html.dk .gdl li.now{background:#2A1D44;box-shadow:inset 0 0 0 1.5px #4A3670}html.dk .gdbar,html.dk .gdc{background:#2B2040}
+html.dk .lkt{background:#1F1630}html.dk .lkt button.on{background:#8F5BFF}
+html.dk .kchip.khi{color:#7CE3AE;background:#103A26}html.dk .kchip.kmd{color:#F2C85B;background:#3A2E0E}html.dk .kchip.klo{color:#FF8FA6;background:#3E1420}
+html.dk .bkl code,html.dk .htag{background:#2A1D44;color:#D9C8FF}
+.gd .gdh>div{text-align:left}.gd .gdh h2{text-align:left}
+.gdt small{text-transform:none;letter-spacing:0;font-weight:500;font-family:var(--body)}
+.brand .bsub{letter-spacing:.06em;font-size:.52rem}
+.card.gd{justify-items:stretch;text-align:left}
