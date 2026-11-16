@@ -1282,9 +1282,10 @@ function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCas
   const r=notes&&notes.pts[id];const nt=r?`<i class="nt ${noteCls(r.pts)}${notes.motm===id?" motm":""}" aria-label="Maç notu ${fN(r.pts)}">${notes.motm===id?"★":""}${fN(r.pts)}</i>`:"";
   const cap=caps&&caps[T.k]===id?'<i class="cap" aria-label="Kaptan">C</i>':"";const ov=p?.guest?"MİS":o;
   const img=`<span class="pi">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</span>`;
-  const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}"`;
+  const lab=`aria-label="${esc(nameOf(id))}, ${EPOS[T.ep][1]}, reyting ${ov}${r?", not "+fN(r.pts):""}${p&&!p.guest&&kondOf(id)?", kondisyon yüzde "+kondOf(id).k:""}"`;
   const badge=`<b class="tov num">${ov}</b>`+nt;
-  return `<button class="${cls} ${kc}${xc}" style="${st}" ${act} ${lab}><span class="pa">${img}${cap}${badge}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><i class="tps">${T.ep}</i></button>`}
+  const kc2=p&&!p.guest?kondOf(id):null;const kd=kc2?`<i class="tk" aria-hidden="true">${ICON_BOLT}<b>${kc2.k}</b></i>`:"";
+  return `<button class="${cls} ${kc}${xc}${kc2?" kk k"+kc2.lv:""}" style="${st}${kc2?";--k:"+kc2.k:""}" ${act} ${lab}><span class="pa">${img}${cap}${badge}${kd}</span><span class="tnm">${esc(shortName(nameOf(id)))}</span><i class="tps">${T.ep}</i></button>`}
 function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
   return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
 }
