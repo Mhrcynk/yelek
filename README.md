@@ -49,5 +49,6 @@ ANAHTAR, GitHub'daki `YELEK_YEDEK_ANAHTAR` gizli değeridir; kaybolursa yedekler
 ```
 node tests/smoke.js    # her ekran hatasız açılıyor mu
 node tests/clicks.js   # ana akışlar: pencereler, geri sayım, kondisyon, linkler, platform, görünüm, takımlar, rehber, takip modu
+node tests/paylasim.js # 30 paylaşım şablonu: üst üste binme ve taşma kontrolü (--shots klasör ile ekran görüntüsü)
 node tests/acilis.js   # açılışta veri gecikmesi ve oturum (geçerli / süresi dolmuş)
 ```

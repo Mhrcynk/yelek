@@ -716,6 +716,7 @@ function renderSheet(){
   let body=$("#sheetBody");
   if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><button class="grab" data-act="close" aria-label="Kapat"></button><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
   keepOpen(body,()=>{body.innerHTML=html});
+  if(S.sheet&&S.sheet.type==="pm")ypZoom();
 }
 /* ================= Paylaşım merkezi ================= */
 let IGH="@abilerkardeslerfc";
@@ -728,184 +729,294 @@ const igWeek=m=>{if(!m||m.season==null)return"";const L=fin().filter(x=>+x.seaso
 const igWm=t=>`<div class="igwm"><span>${IGLOGO}${IGH}</span><span>${esc(t||"")}</span></div>`;
 const igAv=(id,cls="")=>{const ph=photoOf(id);const p=P(id);return `<span class="igav ${tierOf(ovrOf(id))} ${cls}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p?p.name:"?"))}</span>`};
 const igDate=d=>{const x=new Date(d+"T12:00:00");return x.getDate()+" "+["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][x.getMonth()]};
-/* ===== Paylaşım merkezi: haber kartı şablonları (300×375 gönderi, 300×533 hikâye) ===== */
-const TRU=s=>String(s||"").toLocaleUpperCase("tr");
-const hkHd=(t,max)=>{const n=[...String(t)].length;const sz=Math.min(max||42,Math.floor(540/Math.max(1,n)));return `<div class="hkhd" style="font-size:${sz}px">${esc(TRU(t))}</div>`};
-const hkPh=(id,cls)=>{const ph=photoOf(id);return ph?`<img class="hkcut ${cls||""}" src="${esc(ph)}" alt="">`:`<div class="hkcut hknoph ${cls||""}">${SILH}</div>`};
-const hkCr=(m,k,sz)=>crest(nmOf(m,k),k,sz||20,nmOf(m,k==="A"?"B":"A"));
-const hkSc=m=>`${hkCr(m,"A")}<b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b>${hkCr(m,"B")}`;
-// skor tabelası: iki kaptanın fotoğrafı, takım adı ve skor (kaptan yoksa arma)
-const hkCap=(m,k)=>{const id=k==="A"?m.cap_a:m.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
-  return `<div class="hksc"><div class="hkcp${ok?"":" crw"}">${ok?`<div class="hkcpi">${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(id)))}</span>`}</div>`:hkCr(m,k,40)}${ok?`<i>${hkCr(m,k,15)}</i>`:""}</div><b>${esc(TRU(nmOf(m,k)))}</b>${ok?`<small>KPT · ${esc(TRU(shortName(nameOf(id))))}</small>`:""}</div>`};
-const hkSB=(m,mid)=>`<div class="hksb">${hkCap(m,"A")}${mid||`<div class="hkss"><b>${+m.score_a||0}</b><em></em><b>${+m.score_b||0}</b></div>`}${hkCap(m,"B")}</div>`;
-const hkSt=L=>`<div class="hkst">${L.map(([v,l,c])=>`<div class="${c||""}"><strong>${v}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`;
-const hkNm=id=>{const a=ageOf(P(id));return `<b class="hknm">${esc(TRU(nameOf(id)))}${a!=null?`<span>(${a})</span>`:""}</b>`};
-const hkFt=r=>`<div class="hkft"><span>${IGLOGO}${IGH}</span><span>${esc(TRU(r||""))}</span></div>`;
-const HKR='<div class="hkrays"><i></i><i></i><i></i><i></i></div>';
-function hkPost(o){return `<div class="hk ${o.c||""}${/tall/.test(o.pnC||"")?" pt":""}">${HKR}${o.tag?`<div class="hktag">${esc(o.tag)}</div>`:""}${hkHd(o.hd,o.max)}${o.body||""}${o.chip?`<div class="hkchip ${o.chipC||""}">${o.chip}</div>`:""}${o.pn?`<div class="hkpn ${o.pnC||""}">${o.pn}</div>`:""}${hkFt(o.ft)}</div>`}
+/* ===== Paylaşım paketi: 540×675 gönderi (hikâyede 540×960 çerçeve), 2 kat büyütülüp 1080 px kaydedilir =====
+   Kural: içerik blokları (data-b) asla üst üste binmez; metinler kutusuna sığacak puntoya küçülür.
+   Görsel kaydedilirken SVG'ler resim olarak çizildiği için SVG içinde CSS değişkeni ya da sınıf rengi kullanılmaz. */
+const TRU=s=>String(s??"").toLocaleUpperCase("tr");
 const hkSeason=()=>{const yr=curYr();return{yr,F:fin().filter(m=>+m.season===+yr).sort((a,b)=>matchTs(a)-matchTs(b))}};
-const hkNoteCls=v=>"hk"+noteCls(v);
-const hkMatchFt=m=>igDate(m.date)+(igWeek(m)?" · "+igWeek(m):"");
-const hkMates=(L,cls)=>`<div class="hktw ${cls||""}">${L.map(r=>`<div class="hktr">${r.map(x=>`<div class="hktp"><div class="hktph">${photoOf(x.id)?`<img src="${esc(photoOf(x.id))}" alt="">`:`<span>${esc(initials(nameOf(x.id)))}</span>`}</div>${x.v!=null?`<em class="${x.c||""}">${x.v}</em>`:""}<b>${esc(TRU(shortName(nameOf(x.id))))}</b></div>`).join("")}</div>`).join("")}</div>`;
-const hkCol=(head,rows)=>`<div class="hkkc"><div class="hkkh">${head}</div>${rows.map(([p,n,v,c])=>`<div class="hkkr"><i>${esc(p)}</i><b>${n}</b>${v!=null?`<em class="${c||""}">${v}</em>`:""}</div>`).join("")}</div>`;
-const lineRows=(m,k)=>{const ps=posArr(m,k),L=lineupOf(m,k),T=plOf(m,k);const O={KL:0,DF:1,OS:2,FV:3};
-  const r=L.length?L.map((id,i)=>id?[id,i===0?"KL":slotPos(ps[i][0],ps[i][1],ps[i][2])]:null).filter(Boolean):T.map(id=>[id,eposOf(P(id))||""]);
-  return r.sort((x,y)=>(O[EPOS[x[1]]?.[0]]??9)-(O[EPOS[y[1]]?.[0]]??9))};
-
-/* --- maç --- */
-function hkScore(m){const inf=S.mInfo[m.id]||{pts:{}};const a=+m.score_a||0,b=+m.score_b||0;const nA=nmOf(m,"A"),nB=nmOf(m,"B");
-  const sc=k=>plOf(m,k).map(id=>[id,+(m.stats||{})[id]?.g||0]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]).map(([id,g])=>esc(shortName(nameOf(id)))+(g>1?" "+g:""));
-  const hd=a===b?"Berabere":(Math.abs(a-b)>=4?(a>b?nA:nB)+" fark attı":(a>b?nA:nB)+" kazandı");const mo=inf.motm,r=mo&&inf.pts[mo];
-  const cA=m.cap_a&&P(m.cap_a)?m.cap_a:null,cB=m.cap_b&&P(m.cap_b)?m.cap_b:null;
-  const body=cA&&cB?hkPh(cA,"duo l")+hkPh(cB,"duo r"):cA||cB?hkPh(cA||cB):mo?hkPh(mo):"";
-  const html=hkPost({hd,body,chip:hkSc(m),chipC:"big",pnC:"tall",
-    pn:`<div class="hkvs"><div><b>${esc(TRU(nA))}</b>${cA?`<small>KPT · ${esc(TRU(shortName(nameOf(cA))))}</small>`:""}<p>${sc("A").map(x=>`<span class="nw">${x}</span>`).join(" · ")||"–"}</p></div><div><b>${esc(TRU(nB))}</b>${cB?`<small>KPT · ${esc(TRU(shortName(nameOf(cB))))}</small>`:""}<p>${sc("B").map(x=>`<span class="nw">${x}</span>`).join(" · ")||"–"}</p></div></div>${mo?`<div class="hkmini">★ Maçın adamı: ${esc(nameOf(mo))}${r?" · "+fN(r.pts):""}</div>`:""}`,ft:hkMatchFt(m)});
-  const gl=[...sc("A"),...sc("B")].join(" · ");
-  const cap=`${igDate(m.date)} · ${nA} ${a}–${b} ${nB} ${a===b?"🤝":"🔥"}\n${mo?nameOf(mo)+" maçın adamı ⭐\n":""}${gl?"⚽ "+gl+"\n":""}${HT()} #halısaha #yelek`;
-  return{html,cap,name:"mac-sonucu-"+m.date}}
-function hkTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.length)return null;const fk=T.form||"2-3-1",sl=T.slot||{};
-  const row=r=>T.filter(id=>(sl[id]||inf.pts[id]?.role)===r).map(id=>{const v=inf.pts[id]?.pts;return{id,v:(inf.motm===id?"★":"")+fN(v),c:inf.motm===id?"s":v<6.5?"o":""}});
-  const rows=["FV","OS","DF","KL"].map(row).filter(r=>r.length);
-  const html=hkPost({hd:"Haftanın takımı",body:hkMates(rows),ft:fk+" · "+hkMatchFt(m)});
-  const by=r=>T.filter(id=>(sl[id]||inf.pts[id]?.role)===r).map(id=>shortName(nameOf(id))+" "+fN(inf.pts[id].pts)).join(", ");
-  const cap=`Haftanın takımı · ${igDate(m.date)} · ${fk} 🟩\n🧤 ${by("KL")}\n🛡️ ${by("DF")}\n🎯 ${by("OS")}\n⚡ ${by("FV")}\n${HT()} #haftanıntakımı #halısaha`;
-  return{html,cap,name:"haftanin-takimi-"+m.date}}
-function hkLineup(m){const inf=S.mInfo[m.id]||{pts:{}};
-  const col=k=>hkCol(`${hkCr(m,k,14)}<b>${esc(TRU(nmOf(m,k)))}</b><small>${esc(formLabel(formOf(m,k),posArr(m,k)))}</small>`,lineRows(m,k).map(([id,ep])=>{const r=inf.pts[id];return[ep,esc(shortName(nameOf(id)))+(inf.motm===id?" ★":""),r?fN(r.pts):null,r?hkNoteCls(r.pts):""]}));
-  const html=hkPost({hd:"Not karnesi",body:hkSB(m)+`<div class="hkkw sb">${col("A")}${col("B")}</div>`,ft:hkMatchFt(m)});
-  const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
-  const cap=`${igDate(m.date)} not karnesi 📝\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n${HT()} #halısaha`;
-  return{html,cap,name:"not-karnesi-"+m.date}}
-const hkMG=(m,id)=>{const s=(m.stats||{})[id]||{};return{g:+s.g||0,a:+s.a||0}};
-const hkGA=(m,id)=>{const{g,a}=hkMG(m,id);return g?[g+" gol","Bu maçta"]:a?[a+" asist","Bu maçta"]:[TRU(ROLE_NAME[S.mInfo[m.id]?.pts[id]?.role]||""),"Mevki"]};
-function hkMotm(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.motm;if(!id)return null;const r=inf.pts[id];
-  const html=hkPost({hd:"Maçın adamı",body:hkPh(id),chip:hkSc(m),pn:hkNm(id)+hkSt([hkGA(m,id),[r?fN(r.pts):"–","Maç notu"]]),ft:hkMatchFt(m)});
-  return{html,cap:`Maçın adamı: ${nameOf(id)} ⭐\n${igDate(m.date)} · ${nmOf(m,"A")} ${m.score_a}–${m.score_b} ${nmOf(m,"B")}${r?" · not "+fN(r.pts):""}\n${HT()} #maçınadamı #halısaha`,name:"macin-adami-"+m.date}}
-function hkFiy(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.fiy;if(!id)return null;const r=inf.pts[id];
-  const html=hkPost({c:"fy",hd:"Haftanın fiyaskosu",max:34,body:hkPh(id),chip:hkSc(m),pn:hkNm(id)+hkSt([[r?fN(r.pts):"–","Maç notu"],[String((S.stats[id]?.fiy)||1),"Fiyasko sayısı"]]),ft:hkMatchFt(m)});
-  return{html,cap:`Haftanın fiyaskosu… ${nameOf(id)} 🙈\nGelecek hafta rövanş var!\n${HT()} #fiyasko #halısaha`,name:"fiyasko-"+m.date}}
-function hkGoal(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.gol;if(!id)return null;const{g}=hkMG(m,id);
-  const yr=+m.season;let sg=0;fin().filter(x=>+x.season===yr).forEach(x=>sg+=+(x.stats||{})[id]?.g||0);
-  const as=[...new Set((m.links||[]).filter(x=>x&&x.g===id&&x.a&&P(x.a)).map(x=>x.a))];
-  const html=hkPost({hd:"Haftanın golü",body:hkPh(id),chip:hkSc(m),pn:hkNm(id)+hkSt([[String(g||1),"Bu maçta gol"],[String(sg||g||1),"Sezonda gol"]])+(as.length?`<div class="hkmini">Asist: ${as.map(a=>esc(shortName(nameOf(a)))).join(", ")}</div>`:""),pnC:as.length?"tall":"",ft:hkMatchFt(m)});
-  return{html,cap:`Haftanın golü ${nameOf(id)}'den ⚽🔥\n${igDate(m.date)}\n${HT()} #haftanıngolü #halısaha`,name:"haftanin-golu-"+m.date}}
-
-/* --- maç önü --- */
 const hkNext=()=>S.matches.filter(m=>m.state!=="bitti"&&!isExt(m)&&(m.team_a||[]).length&&(m.team_b||[]).length).sort((a,b)=>matchTs(a)-matchTs(b))[0];
+const hkNextAny=()=>S.matches.filter(m=>m.state!=="bitti"&&!isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b))[0];
 const hkWhen=m=>igDate(m.date)+(m.time?" · "+String(m.time).slice(0,5):"");
-function hkPreLine(m){const col=k=>hkCol(`${hkCr(m,k,14)}<b>${esc(TRU(nmOf(m,k)))}</b><small>${esc(formLabel(formOf(m,k),posArr(m,k)))}</small>`,lineRows(m,k).map(([id,ep])=>[ep,esc(shortName(nameOf(id))),P(id)?.guest?"MİS":String(ovrOf(id)),"hkov"]));
-  const mid=`<div class="hkwhen"><b>${esc(TRU(igDate(m.date)))}</b>${m.time?`<strong>${esc(String(m.time).slice(0,5))}</strong>`:""}<small>${esc(TRU(GUNLER[parseYmd(m.date).getDay()]+(S.settings.field_name?" · "+S.settings.field_name:"")))}</small></div>`;
-  const html=hkPost({hd:"Kadrolar açıklandı",max:34,body:hkSB(m,mid)+`<div class="hkkw sb">${col("A")}${col("B")}</div>`,ft:"Maç günü"});
-  const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
-  return{html,cap:`Kadrolar belli oldu! ${hkWhen(m)} 📣\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\nSizce kim kazanır? 👇\n${HT()} #halısaha`,name:"kadrolar-aciklandi-"+m.date}}
 const hkForm5=id=>{const H=(S.stats[id]?.hist||[]).filter(h=>h.r).slice(-5);return H.length?H.reduce((a,h)=>a+h.r.pts,0)/H.length:null};
-function hkDuel(m){const best=k=>plOf(m,k).filter(id=>P(id)&&!P(id).guest).sort((a,b)=>ovrOf(b)-ovrOf(a))[0];const a=best("A"),b=best("B");if(!a||!b)return null;
-  const col=(id,k)=>`<div><b>${esc(TRU(shortName(nameOf(id))))}</b><p>${ovrOf(id)} reyting · ${fM(mvOf(id))}<br>Son 5 maç ort. ${fN(hkForm5(id))}</p></div>`;
-  const html=hkPost({hd:"Kritik eşleşme",max:38,body:hkPh(a,"duo l")+hkPh(b,"duo r"),chip:`${hkCr(m,"A")}<span>VS</span>${hkCr(m,"B")}`,pnC:"tall",pn:`<div class="hkvs">${col(a,"A")}${col(b,"B")}</div>`,ft:hkWhen(m)});
+const hkMatchFt=m=>igDate(m.date)+(igWeek(m)?" · "+igWeek(m):"");
+const BC='"Barlow Condensed","Arial Narrow",sans-serif',INF="Inter,system-ui,sans-serif";
+const YAC={"":"#FF3EA5",g:"#00FF85",gd:"#FFC93C",r:"#FF4D6D"};
+let _ypc=null;
+// metnin piksel genişliği (harf aralığı dahil)
+const ypW=(t,px,w,fam,ls)=>{t=String(t??"");let v;try{_ypc=_ypc||document.createElement("canvas").getContext("2d");_ypc.font=`${w||800} ${px}px ${fam||BC}`;v=_ypc.measureText(t).width}catch(_){v=t.length*px*.5}return v+t.length*px*(ls||0)};
+// verilen genişliğe sığan en büyük punto
+const ypFit=(t,max,wd,o={})=>{let px=max;while(px>(o.min||8)&&ypW(t,px,o.w,o.fam,o.ls)>wd*.93)px-=.5;return px};
+const ypTx=(t,max,wd,o={})=>{const s=TRU(t);return `<span style="font-size:${ypFit(s,max,wd,o)}px">${esc(s)}</span>`};
+const YP_SIL='<svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><circle cx="20" cy="15" r="7" fill="#ffffff" fill-opacity=".62"/><path d="M6 40c0-9 6-14 14-14s14 5 14 14z" fill="#ffffff" fill-opacity=".62"/></svg>';
+const ypSilBig=(st)=>`<svg class="yp-cut" viewBox="0 0 256 320" width="256" height="320"${st?` style="${st}"`:""} data-b aria-hidden="true"><defs><linearGradient id="ypsg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="320"><stop offset=".55" stop-color="#ffffff" stop-opacity=".3"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient></defs><circle cx="128" cy="100" r="56" fill="url(#ypsg)"/><path d="M14 320c0-82 51-128 114-128s114 46 114 128z" fill="url(#ypsg)"/></svg>`;
+const ypAv=(id,cls,st)=>{const ph=id&&photoOf(id);cls=String(cls||"").split(" ").filter(Boolean).map(c=>"yp-"+c).join(" ");return `<div class="yp-av ${cls}"${st?` style="${st}"`:""} data-b>${ph?`<img src="${esc(ph)}" alt="">`:YP_SIL}</div>`};
+const ypCut=(id,st)=>{const ph=id&&photoOf(id);return ph?`<img class="yp-cut" src="${esc(ph)}" alt=""${st?` style="${st}"`:""} data-b>`:ypSilBig(st)};
+const YP_RAYS='<div class="yp-rays"><i></i><i></i><i></i><i></i></div>';
+const YP_NET='<svg class="yp-net" width="540" height="675" viewBox="0 0 540 675" aria-hidden="true"><defs><pattern id="ypnet" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0H26M0 0V26" stroke="#ffffff" stroke-opacity=".09" stroke-width="2" fill="none"/></pattern></defs><rect width="540" height="675" fill="url(#ypnet)"/></svg>';
+const ypCr=(m,k,sz)=>crest(nmOf(m,k),k,sz,nmOf(m,k==="A"?"B":"A")).replace(/var\(--tA\)/g,"#1F2430").replace(/var\(--tB\)/g,"#7B5CFF");
+const ypScW=m=>{const a=String(+m.score_a||0),b=String(+m.score_b||0);return{wkH:`<div class="yp-wk yp-scw" data-b>${ypCr(m,"A",22)}<b>${a}</b><i>–</i><b>${b}</b>${ypCr(m,"B",22)}</div>`,wkW:44+28+ypW(a+b+"–",22)+18}};
+const ypWkN=m=>{if(!m)return"";if(m.state==="bitti")return igWeek(m);if(m.season==null)return"";return"HAFTA "+(fin().filter(x=>+x.season===+m.season).length+1)};
+const ypSG=(id,F,f)=>F.reduce((s,m)=>s+(+(m.stats||{})[id]?.[f||"g"]||0),0);
+const ypDay=()=>{const n=hkNextAny();return n?GUNLER[parseYmd(n.date).getDay()]:"–"};
+const ypSn=id=>shortName(nameOf(id));
+const ypGhostNone="";
+
+// çerçeve: üst bilgi, içerik alanı (hero), alt panel (pn), alt satır
+function ypPost(o){const wk=o.wkH||(o.wk?`<div class="yp-wk" data-b>${esc(TRU(o.wk))}</div>`:"");
+  const wkW=o.wkH?o.wkW:o.wk?ypW(TRU(o.wk),15,800,BC,.08)+22:0;const tw=476-(wkW?wkW+16:0);
+  const ti=TRU(o.ti),ey=TRU(o.ey||"");const ft=TRU(o.ft||""),ig=TRU(IGH);
+  const fw=476-12-ypW(ig,11,700,INF,.16);
+  return `<div class="yp${o.c?" yp-"+o.c:""}" lang="tr">${o.rays===false?"":YP_RAYS}${o.bg||""}
+<div class="yp-hd" data-b><div class="yp-hdl"><div class="yp-ey" style="font-size:${ypFit(ey,12,tw,{w:700,fam:INF,ls:.22})}px">${esc(ey)}</div><div class="yp-ti" style="font-size:${ypFit(ti,o.tiMax||54,tw,{ls:.01})}px">${esc(ti)}</div></div>${wk}</div>
+<div class="yp-hero${o.hc?" yp-"+o.hc:""}">${o.hero||""}</div>${o.pn?`<div class="yp-pn" data-b>${o.pn}</div>`:""}
+<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div></div>`}
+const ypBdg=(b,ic)=>`<div class="yp-bdg" data-b>${ic||`<strong style="font-size:${ypFit(TRU(b[0]),42,72)}px">${esc(TRU(b[0]))}</strong>`}<small style="font-size:${ypFit(TRU(b[1]),13,80,{ls:.1})}px">${esc(TRU(b[1]))}</small></div>`;
+const ypSts=L=>{const w=(476-10*(L.length-1))/L.length-24;return `<div class="yp-sts">${L.map(([v,l,on])=>`<div class="${on?"yp-on":""}"><strong style="font-size:${ypFit(TRU(v),32,w)}px">${esc(TRU(v))}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`};
+const ypBig=(nm,age)=>{nm=TRU(nm);return `<div class="yp-big" style="font-size:${ypFit(nm+(age!=null?"    ("+age+")":""),44,476,{ls:.01})}px">${esc(nm)}${age!=null?`<span>(${age})</span>`:""}</div>`};
+const ypTag=(t,wd)=>`<span class="yp-tag" style="font-size:${ypFit(TRU(t),14,(wd||476)-18,{ls:.1})}px">${esc(TRU(t))}</span>`;
+// tek oyuncu: büyük fotoğraf, sağ üstte rozet, altta isim ve üç kutu
+function ypPerson(o){const age=o.age===undefined?ageOf(P(o.id)):o.age;
+  return ypPost({...o.f,hero:(o.heroPre||"")+ypCut(o.id)+(o.bdg?ypBdg(o.bdg,o.bdgIc):""),pn:(o.pre||"")+ypBig(o.name||nameOf(o.id),age)+(o.sts?ypSts(o.sts):"")+(o.post||"")})}
+const ypRing=(pct,big,small,col,sz)=>{sz=sz||120;const r=sz/2-8,c=2*Math.PI*r,d=Math.max(0,Math.min(1,pct))*c;
+  return `<div class="yp-ring" style="width:${sz}px;height:${sz}px" data-b><svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" aria-hidden="true"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="#0A0232" fill-opacity=".6" stroke="#ffffff" stroke-opacity=".14" stroke-width="11"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="11" stroke-linecap="round" stroke-dasharray="${d.toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${sz/2} ${sz/2})"/></svg><div><b style="font-size:${ypFit(big,sz*.28,sz-34)}px">${esc(big)}</b><small>${esc(TRU(small))}</small></div></div>`};
+const ypSpark=(V,w,h,col)=>{if(!V||V.length<2)return"";const mn=Math.min(...V),mx=Math.max(...V),rg=mx-mn||1;const pts=V.map((v,i)=>[6+i*(w-12)/(V.length-1),h-8-(v-mn)/rg*(h-16)]);const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");const e=pts[pts.length-1];
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${d} L${e[0].toFixed(1)} ${h} L6 ${h}Z" fill="${col}" fill-opacity=".15"/><path d="${d}" fill="none" stroke="${col}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="7" fill="${col}" stroke="#140552" stroke-width="3"/></svg>`};
+// karşılaştırma çubukları: [etiket, sol yazı, sağ yazı, sol sayı, sağ sayı]
+const ypCmp=(nA,nB,rows)=>`<div class="yp-cmp"><div class="yp-cmh"><span>${ypTx(nA,24,220,{ls:.06})}</span><span>${ypTx(nB,24,220,{ls:.06})}</span></div>${rows.map(([l,a,b,va,vb])=>{va=va===undefined?+a:va;vb=vb===undefined?+b:vb;const A=isFinite(va)?va:0,B=isFinite(vb)?vb:0;const mx=Math.max(Math.abs(A),Math.abs(B))||1;const w=A>B?1:B>A?-1:0;
+  return `<div class="yp-cr2"><b style="font-size:${ypFit(String(a),21,64)}px">${esc(a)}</b><div class="yp-bar yp-l"><i class="${w>0?"yp-w":""}" style="width:${Math.max(6,Math.round(A/mx*100))}%"></i></div><span>${esc(TRU(l))}</span><div class="yp-bar"><i class="${w<0?"yp-w":""}" style="width:${Math.max(6,Math.round(B/mx*100))}%"></i></div><b style="font-size:${ypFit(String(b),21,64)}px">${esc(b)}</b></div>`}).join("")}</div>`;
+// podyum: L sıralı (1., 2., 3.); her biri {id,v,l}
+function ypPod(L){const col=(x,i)=>{if(!x)return"";const nm=TRU(ypSn(x.id));return `<div class="yp-p${i+1}"><div class="yp-podt" data-b>${ypAv(x.id,i===0?"XL":"L")}<div class="yp-nm" style="font-size:${ypFit(nm,18,148,{ls:.05})}px">${esc(nm)}</div></div><div class="yp-st" data-b><strong style="font-size:${ypFit(TRU(x.v),38,128)}px">${esc(TRU(x.v))}</strong><small style="font-size:${ypFit(TRU(x.l),10,132,{w:700,fam:INF,ls:.16})}px">${esc(TRU(x.l))}</small></div></div>`};
+  return `<div class="yp-pod">${col(L[1],1)}${col(L[0],0)}${col(L[2],2)}</div>`}
+
+/* --- saha: oyuncu kutuları birbirine ve etiketlere değmesin --- */
+function ypPlace(T,W,bw,bh,obs){const gap=6;
+  const hit=(A,B,w,h)=>[w+gap-Math.abs(A.x-B.x),h+gap-Math.abs(A.y-B.y)];
+  const pass=xOnly=>{let mv=false;
+    for(let a=0;a<T.length;a++){const A=T[a];
+      for(let b=a+1;b<T.length;b++){const B=T[b];const[ox,oy]=hit(A,B,bw,bh);if(ox<=0||oy<=0)continue;mv=true;
+        if(xOnly||ox/bw<oy/bh){const d=(A.x>B.x||(A.x===B.x&&a%2)?1:-1)*(ox/2+.3);A.x+=d;B.x-=d}else{const d=(A.y>B.y||(A.y===B.y&&a%2)?1:-1)*(oy/2+.3);A.y+=d;B.y-=d}}
+      for(const o of obs||[]){const ox=(bw+o.w)/2+gap-Math.abs(A.x-o.x),oy=(bh+o.h)/2+gap-Math.abs(A.y-o.y);if(ox<=0||oy<=0)continue;mv=true;
+        if(xOnly||ox/bw<oy/bh)A.x+=(A.x>=o.x?1:-1)*(ox+.3);else A.y+=(A.y>=o.y?1:-1)*(oy+.3)}}
+    T.forEach(t=>{t.x=clamp(t.x,bw/2,W-bw/2);t.y=clamp(t.y,t.y0+bh/2,t.y1-bh/2)});return mv};
+  for(let it=0;it<500;it++)if(!pass(false))break;
+  for(let it=0;it<500;it++)if(!pass(it%3===0))break;
+  return T}
+// kalan çakışma var mı (kutular + engeller)
+const ypClash=(T,bw,bh,obs)=>T.some((A,a)=>T.some((B,b)=>b>a&&Math.abs(A.x-B.x)<bw+2&&Math.abs(A.y-B.y)<bh+2)||(obs||[]).some(o=>Math.abs(A.x-o.x)<(bw+o.w)/2+2&&Math.abs(A.y-o.y)<(bh+o.h)/2+2));
+const ypTok=(t,z)=>{const nm=TRU(t.n);return `<div class="yp-pl${t.cap?" yp-cap":""}" style="left:${(t.x-z.w/2).toFixed(1)}px;top:${(t.y-z.h/2).toFixed(1)}px;width:${z.w}px;height:${z.h}px" data-b>${ypAv(t.id,t.t,`width:${z.av}px;height:${z.av}px`)}${t.c!=null?`<span class="yp-nt${t.cc?" yp-"+t.cc:""}">${esc(t.c)}</span>`:""}<div class="yp-nm" style="font-size:${ypFit(nm,z.nm,z.w,{ls:.05})}px">${esc(nm)}${t.sub?`<small style="font-size:${ypFit(TRU(t.sub),9,z.w,{w:700,fam:INF,ls:.12})}px">${esc(TRU(t.sub))}</small>`:""}</div></div>`};
+const YP_H=506,YZ1={w:104,h:94,av:64,nm:17};
+const ypPitch=(H,both)=>{const W=476,m=H/2,a='fill="none" stroke="#ffffff" stroke-opacity=".3" stroke-width="2"';
+  return `<svg class="yp-pitch" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><rect x="1" y="1" width="${W-2}" height="${H-2}" rx="10" fill="#0A0232" fill-opacity=".35" stroke="#ffffff" stroke-opacity=".3" stroke-width="2"/>`+
+  (both?`<line x1="1" y1="${m}" x2="${W-1}" y2="${m}" ${a}/><circle cx="${W/2}" cy="${m}" r="44" ${a}/><rect x="138" y="1" width="200" height="64" ${a}/><rect x="188" y="1" width="100" height="26" ${a}/><rect x="138" y="${H-65}" width="200" height="64" ${a}/><rect x="188" y="${H-27}" width="100" height="26" ${a}/>`
+  :`<circle cx="${W/2}" cy="1" r="56" ${a}/><rect x="128" y="${H-90}" width="220" height="89" ${a}/><rect x="186" y="${H-36}" width="104" height="35" ${a}/><path d="M190 ${H-90}a48 48 0 0 0 96 0" ${a}/>`)+`</svg>`};
+// bir takımın dizilişi: kaleci üstte (top) ya da altta; y0–y1 takımın yarı sahası
+function ypTeamToks(m,k,y0,y1,top,chip,z){const T=(k==="A"?m.team_a:m.team_b)||[];const L=lineupOf(m,k);const ids=L.some(x=>x&&T.includes(x))?pad7(L,T):T.slice(0,TEAM_SIZE);const ps=posArr(m,k);const cap=k==="A"?m.cap_a:m.cap_b;const out=[];
+  ps.forEach(([x,y],i)=>{const id=ids[i];if(!id||!P(id))return;const fy=(clamp(y,7,85)-7)/78;const span=y1-y0-z.h;
+    out.push({id,x:z.w/2+4+x/100*(476-z.w-8),y:top?y0+z.h/2+span*fy:y1-z.h/2-span*fy,y0,y1,t:k==="A"?"ta":"tb",n:ypSn(id),cap:cap===id,...chip(id)})});return out}
+function ypSide(m,k,left,y){const nm=TRU(nmOf(m,k));const px=ypFit(nm,16,150,{ls:.08});const w=Math.ceil(ypW(nm,px,800,BC,.08)+22);
+  return{html:`<div class="yp-side ${k==="A"?"yp-ta":"yp-tb"} ${left?"yp-l":"yp-r"}" style="top:${y-13}px;width:${w}px;font-size:${px}px" data-b>${esc(nm)}</div>`,o:{x:left?w/2:476-w/2,y,w,h:26}}}
+// sığmazsa kutular küçülür; en küçük boyutta bile çakışma kalırsa o boy kullanılır (test bunu yakalar)
+const YZ2S=[{w:84,h:70,av:44,nm:14},{w:80,h:66,av:42,nm:13.5},{w:76,h:62,av:38,nm:13},{w:72,h:58,av:34,nm:12}];
+function ypField(m,chip){const H=YP_H,mid=H/2;const LB=ypSide(m,"B",true,mid-22),LA=ypSide(m,"A",false,mid+22);let T,z;
+  for(z of YZ2S){T=ypPlace([...ypTeamToks(m,"B",0,mid,true,chip,z),...ypTeamToks(m,"A",mid,H,false,chip,z)],476,z.w,z.h,[LB.o,LA.o]);if(!ypClash(T,z.w,z.h,[LB.o,LA.o]))break}
+  return ypPitch(H,true)+LB.html+LA.html+T.map(t=>ypTok(t,z)).join("")}
+
+/* ================= maç önü ================= */
+function ypMatchDay(){const n=hkNextAny();if(!n)return null;const R=rsvpLists(n);const ts=matchTs(n);const now=new Date();const d0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();const dd=Math.round((parseYmd(n.date).getTime()-d0)/864e5);
+  const ti=dd===0?(+(String(n.time||"21").split(":")[0])>=17?"Bu akşam maç var":"Bugün maç var"):dd===1?"Yarın maç var":GUNLER[parseYmd(n.date).getDay()]+" maç var";
+  const big=n.time?String(n.time).slice(0,5):TRU(igDate(n.date));const G=R.kadro.slice(0,8);const more=R.kadro.length-G.length;
+  const hero=`<div class="yp-col yp-c"><div class="yp-time" data-b style="font-size:${ypFit(big,176,476)}px">${esc(big)}</div>${G.length?`<div class="yp-row1" data-b>${G.map(p=>ypAv(p.id,"","width:46px;height:46px")).join("")}${more>0?ypTag("+"+more):""}</div>`:""}</div>`;
+  const html=ypPost({ey:igDate(n.date)+(S.settings.field_name?" · "+S.settings.field_name:""),ti,wk:ypWkN(n),hc:"mid",hero,pn:ypSts([[String(R.kadro.length),"Geliyor",1],[String(R.bos.length),"Cevap vermedi"],[String(Math.max(0,CAP-R.kadro.length)),"Boş yer"]]),ft:"Gelemeyen haber versin"});
+  return{html,cap:`${ti}! ${hkWhen(n)}${S.settings.field_name?" · "+S.settings.field_name:""} ⚽\n${R.kadro.length} kişi geliyor${CAP-R.kadro.length>0?", "+(CAP-R.kadro.length)+" yer boş":""}.\nGelemeyen haber versin 👇\n${HT()} #halısaha`,name:"mac-gunu-"+n.date}}
+function ypKadro(m,notes){const inf=S.mInfo[m.id]||{pts:{}};
+  const chip=id=>{if(notes){const r=inf.pts[id];if(!r)return{};const mo=inf.motm===id;return{c:(mo?"★ ":"")+fN(r.pts),cc:mo?"st":r.pts>=8?"hi":r.pts<6.5?"lo":""}}return{c:P(id)?.guest?"MİS":String(ovrOf(id))}};
+  const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
+  if(notes){const html=ypPost({ey:igDate(m.date)+" · Herkesin notu",ti:"Not karnesi",...ypScW(m),hc:"top",hero:ypField(m,chip),ft:igWeek(m)||"#halısaha"});
+    return{html,cap:`${igDate(m.date)} not karnesi 📝\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n${HT()} #halısaha`,name:"not-karnesi-"+m.date}}
+  const html=ypPost({ey:hkWhen(m)+(S.settings.field_name?" · "+S.settings.field_name:""),ti:"Kadrolar açıklandı",wk:ypWkN(m),hc:"top",hero:ypField(m,chip),ft:formLabel(formOf(m,"B"),posArr(m,"B"))+" – "+formLabel(formOf(m,"A"),posArr(m,"A"))});
+  return{html,cap:`Kadrolar belli oldu! ${hkWhen(m)} 📣\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\nSizce kim kazanır? 👇\n${HT()} #halısaha`,name:"kadrolar-aciklandi-"+m.date}}
+function ypDuel(m){const best=k=>plOf(m,k).filter(id=>P(id)&&!P(id).guest).sort((a,b)=>ovrOf(b)-ovrOf(a))[0];const a=best("A"),b=best("B");if(!a||!b)return null;const{F}=hkSeason();
+  const fa=hkForm5(a),fb=hkForm5(b),ga=ypSG(a,F),gb=ypSG(b,F);
+  const html=ypPost({ey:hkWhen(m)+" · Sizce kim fark yaratır?",ti:"Kritik eşleşme",wk:ypWkN(m),hero:`<div class="yp-duo">${ypCut(a)}<div class="yp-vs" data-b>VS</div>${ypCut(b)}</div>`,
+    pn:ypCmp(ypSn(a),ypSn(b),[["Reyting",String(ovrOf(a)),String(ovrOf(b))],["Değer",fM(mvOf(a)),fM(mvOf(b)),mvOf(a),mvOf(b)],["Son 5 maç",fN(fa),fN(fb),fa??0,fb??0],["Sezon golü",String(ga),String(gb)]]),ft:nmOf(m,"A")+" – "+nmOf(m,"B")});
   return{html,cap:`Kritik eşleşme ⚔️ ${nameOf(a)} vs ${nameOf(b)}\n${hkWhen(m)} · Sizce kim fark yaratır?\n${HT()} #halısaha`,name:"kritik-esleme-"+m.date}}
-function hkOut(){const L=S.players.filter(p=>!p.guest&&!p.archived&&UNAVAIL.includes(stOf(p)));if(!L.length)return null;
-  const rows=[];for(let i=0;i<Math.min(L.length,8);i+=4)rows.push(L.slice(i,i+4).map(p=>({id:p.id,v:STATUS[stOf(p)].flag,c:"o"})));
-  const html=hkPost({c:"inj",hd:"Kadro dışı",body:L.length===1?hkPh(L[0].id):L.length===2?hkPh(L[0].id,"duo l")+hkPh(L[1].id,"duo r"):hkMates(rows,"mid"),pn:`<div class="hkmini big">${L.map(p=>esc(shortName(p.name))+" · "+esc(STATUS[stOf(p)].label)+(p.status?.until?" · "+fmtShort(p.status.until)+"'e kadar":"")).join("<br>")}</div>`,ft:"Bu hafta"});
+function ypOut(){const L=S.players.filter(p=>!p.guest&&!p.archived&&UNAVAIL.includes(stOf(p)));if(!L.length)return null;const sh=L.slice(0,6),n=sh.length,big=n<=3,cw=(476-20)/Math.min(n,3);
+  const ready=S.players.filter(p=>!p.guest&&!p.archived&&!UNAVAIL.includes(stOf(p))).length;
+  const cell=p=>{const X=STATUS[stOf(p)];const u=p.status?.until;const d=u?"Dönüş "+fmtShort(u):["izinli","yogun"].includes(stOf(p))?"Bu hafta yok":"Dönüş belirsiz";const nm=TRU(shortName(p.name));
+    return `<div data-b>${ypAv(p.id,big?"XL":"L")}<div class="yp-nm" style="margin-top:10px;font-size:${ypFit(nm,big?24:20,cw-8,{ls:.05})}px">${esc(nm)}</div><div style="margin-top:8px">${ypTag(X.label,cw)}</div><div class="yp-lbl" style="margin-top:8px;font-size:${ypFit(TRU(d),11,cw-8,{w:700,fam:INF,ls:.16})}px">${esc(TRU(d))}</div></div>`};
+  const html=ypPost({c:"r",ey:"Bu hafta kenarda",ti:"Kadro dışı",wk:ypWkN(hkNextAny()),hc:"mid",hero:`<div class="yp-grid" style="--n:${Math.min(n,3)}">${sh.map(cell).join("")}</div>`,
+    pn:ypSts([[String(L.length),"Oyuncu kenarda",1],[String(ready),"Hazır oyuncu"],[ypDay(),"Sıradaki maç"]]),ft:"Geçmiş olsun"});
   return{html,cap:`Bu hafta kadroda olmayanlar 🚑\n${L.map(p=>p.name+" ("+STATUS[stOf(p)].label.toLowerCase()+")").join("\n")}\nGeçmiş olsun! 💜\n${HT()} #halısaha`,name:"kadro-disi"}}
 
-/* --- oyuncu --- */
-function hkCard(p){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const{yr,F}=hkSeason();let g=0,a=0,n=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[p.id];if(r){n++;g+=r.g||0;a+=r.a||0}});
-  const lt=ligTable(F);const li=lt.findIndex(x=>x.id===p.id);const age=ageOf(p);
-  const html=hkPost({hd:p.name,max:38,body:hkPh(p.id),chip:`<b>${o}</b><span class="hkps">${esc(eposOf(p))}</span>`,chipC:"big",pnC:"tall",
-    pn:hkSt([[fM(mvOf(p.id)),"Piyasa değeri"],[age!=null?String(age):"–","Yaş"],[li>=0?(li+1)+".":"–","Ligde"]])+`<div class="hkmini">Sezon ${yr} · ${n} maç${g?" · "+g+" gol":""}${a?" · "+a+" asist":""}</div>`,ft:"Sezon "+yr});
-  return{html,cap:`Kartını tanı: ${p.name} 🃏\n${o} reyting · ${fM(mvOf(p.id))}\n${HT()} #halısaha #yelek`,name:"kart-"+p.name}}
-function hkValue(p){const m=mvInfo(p.id);if(!m)return null;const d=m.prev!=null?Math.round((m.v-m.prev)*10)/10:0;
-  const up=d>0,dn=d<0;const html=hkPost({c:up?"up":dn?"inj":"",hd:up?"Değeri arttı":dn?"Değeri düştü":"Piyasa değeri",body:hkPh(p.id),chip:d?`${up?"▲":"▼"} ${fM(Math.abs(d))}`:fM(m.v),pn:hkNm(p.id)+hkSt([[fM(m.v),"Piyasa değeri"],[String(ovrOf(p.id)),"Reyting"]]),ft:igWeek(lastFinM())});
-  return{html,cap:`${p.name} · ${fM(m.v)}${d?` (${up?"▲":"▼"} ${fM(Math.abs(d))})`:""} 📈\n${HT()} #transfer #halısaha`,name:"deger-"+p.name}}
-function hkStreak(p){const st=S.stats[p.id]?.streak;if(!st)return null;const s=S.stats[p.id]||{};
-  const html=hkPost({c:st.hot?"":"cold",hd:st.hot?"Seri sürüyor":"Kötü seri",body:hkPh(p.id),chip:esc(TRU(st.t)),chipC:"sm",pn:hkNm(p.id)+hkSt([[fN(hkForm5(p.id)),"Son 5 maç ort."],[String(ovrOf(p.id)),"Reyting"]]),ft:igWeek(lastFinM())});
-  return{html,cap:`${p.name}: ${st.t} ${st.hot?"🔥":"🥶"}\n${HT()} #halısaha`,name:"seri-"+p.name}}
-function hkBadges(p){const B=(S.stats[p.id]?.badges||[]).filter(b=>!b.shame);if(!B.length)return null;
-  const html=hkPost({hd:"Rozetler",body:hkPh(p.id),chip:B.length+" rozet",pnC:"tall",pn:hkNm(p.id)+`<div class="hkbd">${B.slice(0,4).map(b=>`<span><i>${esc(b.i)}</i><b>${esc(b.t)}</b><small>${esc(b.d)}</small></span>`).join("")}</div>`,ft:"Sezon "+curYr()});
-  return{html,cap:`${p.name}'in rozetleri 🏅\n${B.map(b=>b.t+" ("+b.d+")").join("\n")}\n${HT()} #halısaha`,name:"rozetler-"+p.name}}
-function hkCaptain(p){const L=fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id);if(!L.length)return null;const o={G:0,B:0,M:0};
-  L.forEach(m=>{const k=m.cap_a===p.id?"A":"B";const my=k==="A"?+m.score_a:+m.score_b,op=k==="A"?+m.score_b:+m.score_a;o[my>op?"G":my<op?"M":"B"]++});
-  const html=hkPost({hd:"Kaptan",body:hkPh(p.id),chip:"© "+L.length+" maç",pn:hkNm(p.id)+hkSt([[String(o.G),"Galibiyet"],[String(o.B),"Beraberlik"],[String(o.M),"Mağlubiyet"]]),ft:"Kaptanlık karnesi"});
-  return{html,cap:`Kaptan ${p.name} © ${L.length} maçta ${o.G}G ${o.B}B ${o.M}M\n${HT()} #halısaha`,name:"kaptan-"+p.name}}
-function hkStatus(p){const st=stOf(p);if(st==="hazir"||st==="belirsiz")return null;const X=STATUS[st];const hd={sakat:"Sakatlandı",hasta:"Hasta",izinli:"İzinde",yogun:"İş yoğun"}[st]||X.label;
-  const html=hkPost({c:"inj",hd,body:hkPh(p.id),chip:`✚ ${esc(TRU(X.label))}`,pn:hkNm(p.id)+hkSt([[fM(mvOf(p.id)),"Piyasa değeri"],[p.status?.until?fmtShort(p.status.until):"Belirsiz","Dönüş"]]),ft:"Kadro haberi"});
-  return{html,cap:`${p.name} · ${X.label.toLowerCase()}${p.status?.until?", "+fmtShort(p.status.until)+"'e kadar yok":""} 🚑\nGeçmiş olsun! 💜\n${HT()} #halısaha`,name:"durum-"+p.name}}
-function hkH2H(p,q){if(!q||q.id===p.id)return null;const{F}=hkSeason();
-  const agg=id=>{let n=0,g=0,a=0,s=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[id];if(r){n++;g+=r.g||0;a+=r.a||0;s+=r.pts}});return{n,g,a,av:n?s/n:null}};const A=agg(p.id),B=agg(q.id);
-  const rw=(l,x,y,w)=>`<div class="hkcr2"><b class="${w>0?"w":""}">${x}</b><span>${esc(TRU(l))}</span><b class="${w<0?"w":""}">${y}</b></div>`;const cmp=(x,y)=>(x??-1)-(y??-1);
-  const html=hkPost({hd:"Kafa kafaya",body:hkPh(p.id,"duo l")+hkPh(q.id,"duo r"),chip:"<span>VS</span>",pnC:"cmp",
-    pn:`<div class="hkcrh"><b>${esc(TRU(shortName(p.name)))}</b><b>${esc(TRU(shortName(q.name)))}</b></div>${rw("Reyting",ovrOf(p.id),ovrOf(q.id),cmp(ovrOf(p.id),ovrOf(q.id)))}${rw("Değer",fM(mvOf(p.id)),fM(mvOf(q.id)),cmp(mvOf(p.id),mvOf(q.id)))}${rw("Gol",A.g,B.g,cmp(A.g,B.g))}${rw("Asist",A.a,B.a,cmp(A.a,B.a))}${rw("Not ort.",fN(A.av),fN(B.av),cmp(A.av,B.av))}`,ft:"Sezon "+curYr()});
-  return{html,cap:`Kafa kafaya ⚔️ ${p.name} mi ${q.name} mi?\nYorumlara yaz 👇\n${HT()} #halısaha`,name:"kafa-kafaya"}}
+/* ================= maç ================= */
+function ypScore(m){const inf=S.mInfo[m.id]||{pts:{}};const a=+m.score_a||0,b=+m.score_b||0;const nA=nmOf(m,"A"),nB=nmOf(m,"B");
+  const tm=k=>{const cid=k==="A"?m.cap_a:m.cap_b;const ok=cid&&P(cid);const nm=TRU(nmOf(m,k));const kp="KPT · "+TRU(ypSn(cid));
+    return `<div class="yp-tm" data-b>${ok?ypAv(cid,"XL "+(k==="A"?"ta":"tb")):`<div class="yp-crw">${ypCr(m,k,100)}</div>`}<b style="font-size:${ypFit(nm,20,150,{ls:.07})}px">${esc(nm)}</b>${ok?`<small style="font-size:${ypFit(kp,10,150,{w:700,fam:INF,ls:.14})}px">${esc(kp)}</small>`:""}</div>`};
+  let sp=112;while(sp>40&&ypW(String(a),sp)+ypW(String(b),sp)+44>150)sp-=2;
+  const sc=k=>plOf(m,k).map(id=>[id,+(m.stats||{})[id]?.g||0]).filter(x=>x[1]>0).sort((x,y)=>y[1]-x[1]);
+  const chips=L=>`<div class="yp-chips">${L.slice(0,5).map(([id,g])=>{const t=TRU(ypSn(id));return `<span style="font-size:${ypFit(t+(g>1?" ×"+g:""),14,210,{ls:.06})}px">${esc(t)}${g>1?`<i>×${g}</i>`:""}</span>`}).join("")}${L.length>5?`<span>+${L.length-5}</span>`:""}${L.length?"":"<span>–</span>"}</div>`;
+  const hd=a===b?"Berabere":(Math.abs(a-b)>=4?(a>b?nA:nB)+" fark attı":(a>b?nA:nB)+" kazandı");const mo=inf.motm,r=mo&&inf.pts[mo];
+  const lb=k=>`<div class="yp-lbl" style="font-size:${ypFit(TRU(nmOf(m,k))+" GOL",11,226,{w:700,fam:INF,ls:.16})}px">${esc(TRU(nmOf(m,k)))} GOL</div>`;
+  const mt=mo?"MAÇIN ADAMI · "+TRU(ypSn(mo))+(r?" · "+fN(r.pts):""):"";
+  const pn=`<div class="yp-two"><div>${lb("A")}${chips(sc("A"))}</div><div>${lb("B")}${chips(sc("B"))}</div></div>${mo?`<div class="yp-mini"><i>★</i><span style="font-size:${ypFit(mt,15,430,{ls:.06})}px">${esc(mt)}</span></div>`:""}`;
+  const html=ypPost({ey:igDate(m.date)+" · Maç sonucu",ti:hd,wk:igWeek(m),hc:"mid",hero:`<div class="yp-sb">${tm("A")}<div class="yp-sc" data-b style="font-size:${sp}px"><span>${a}</span><em></em><span>${b}</span></div>${tm("B")}</div>`,pn,ft:S.settings.field_name||"#halısaha"});
+  const gl=[...sc("A"),...sc("B")].map(([id,g])=>shortName(nameOf(id))+(g>1?" "+g:"")).join(" · ");
+  return{html,cap:`${igDate(m.date)} · ${nA} ${a}–${b} ${nB} ${a===b?"🤝":"🔥"}\n${mo?nameOf(mo)+" maçın adamı ⭐\n":""}${gl?"⚽ "+gl+"\n":""}${HT()} #halısaha #yelek`,name:"mac-sonucu-"+m.date}}
+const ypMG=(m,id)=>{const s=(m.stats||{})[id]||{};return{g:+s.g||0,a:+s.a||0}};
+function ypMotm(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.motm;if(!id)return null;const r=inf.pts[id];const{g,a}=ypMG(m,id);
+  const html=ypPerson({id,f:{ey:hkMatchFt(m),ti:"Maçın adamı",...ypScW(m),ft:"#maçınadamı"},bdg:[r?fN(r.pts):"–","Not"],sts:[[String(g),"Gol",1],[String(a),"Asist"],[eposOf(P(id)),"Mevki"]]});
+  return{html,cap:`Maçın adamı: ${nameOf(id)} ⭐\n${igDate(m.date)} · ${nmOf(m,"A")} ${m.score_a}–${m.score_b} ${nmOf(m,"B")}${r?" · not "+fN(r.pts):""}\n${HT()} #maçınadamı #halısaha`,name:"macin-adami-"+m.date}}
+function ypTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.length)return null;const fk=T.form||"2-3-1",sl=T.slot||{};const z=YZ1,H=YP_H;
+  const rows={KL:[],DF:[],OS:[],FV:[]};T.forEach(id=>{const r=sl[id]||inf.pts[id]?.role||"OS";(rows[r]||rows.OS).push(id)});const Y={KL:7,DF:30,OS:56,FV:83};const toks=[];
+  for(const r of["KL","DF","OS","FV"])rows[r].forEach((id,i,L)=>{const x=(i+1)/(L.length+1)*100,fy=(Y[r]-7)/78,k=plOf(m,"A").includes(id)?"A":"B";const v=inf.pts[id]?.pts;const mo=inf.motm===id;
+    toks.push({id,x:z.w/2+4+x/100*(476-z.w-8),y:H-z.h/2-(H-z.h)*fy,y0:0,y1:H,t:k==="A"?"ta":"tb",n:ypSn(id),cap:mo,c:(mo?"★ ":"")+fN(v),cc:mo?"st":v>=8?"hi":v<6.5?"lo":""})});
+  ypPlace(toks,476,z.w,z.h,[]);
+  const html=ypPost({ey:igDate(m.date)+" · En iyi yedi",ti:"Haftanın takımı",wk:fk,hc:"top",hero:ypPitch(H,false)+toks.map(t=>ypTok(t,z)).join(""),ft:igWeek(m)||"#haftanıntakımı"});
+  const by=r=>rows[r].map(id=>shortName(nameOf(id))+" "+fN(inf.pts[id]?.pts)).join(", ");
+  return{html,cap:`Haftanın takımı · ${igDate(m.date)} · ${fk} 🟩\n🧤 ${by("KL")}\n🛡️ ${by("DF")}\n🎯 ${by("OS")}\n⚡ ${by("FV")}\n${HT()} #haftanıntakımı #halısaha`,name:"haftanin-takimi-"+m.date}}
+function ypGoal(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.gol;if(!id)return null;const{g}=ypMG(m,id);const F=fin().filter(x=>+x.season===+m.season);const sg=ypSG(id,F);
+  const as=[...new Set((m.links||[]).filter(x=>x&&x.g===id&&x.a&&P(x.a)).map(x=>x.a))];
+  const html=ypPerson({id,f:{ey:hkMatchFt(m),ti:"Haftanın golü",...ypScW(m),bg:YP_NET,ft:"#haftanıngolü"},bdg:[String(sg||g||1),"Sezonda"],sts:[[String(g||1),"Bu maçta gol",1],[String(sg||g||1),"Sezonda gol"],[as.length?ypSn(as[0]):"–","Asist"]]});
+  return{html,cap:`Haftanın golü ${nameOf(id)}'den ⚽🔥\n${igDate(m.date)}${as.length?"\nAsist: "+as.map(nameOf).join(", "):""}\n${HT()} #haftanıngolü #halısaha`,name:"haftanin-golu-"+m.date}}
+function ypFiy(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.fiy;if(!id)return null;const r=inf.pts[id];
+  const html=ypPerson({id,f:{c:"r",ey:hkMatchFt(m),ti:"Haftanın fiyaskosu",...ypScW(m),ft:"Gelecek hafta telafi"},bdg:[r?fN(r.pts):"–","Not"],sts:[[r?fN(r.pts):"–","Maç notu",1],[String(S.stats[id]?.fiy||1)+".","Fiyaskosu"],[ypDay(),"Rövanş"]]});
+  return{html,cap:`Haftanın fiyaskosu… ${nameOf(id)} 🙈\nGelecek hafta rövanş var!\n${HT()} #fiyasko #halısaha`,name:"fiyasko-"+m.date}}
 
-/* --- sezon --- */
-function hkMvp(){const{yr,F}=hkSeason();const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return null;const t=L.slice(0,3);
-  const html=hkPost({hd:F.length>=sLen()?"Sezonun oyuncusu":"Zirve yarışı",max:38,body:(t[1]?hkPh(t[1].id,"side l"):"")+(t[2]?hkPh(t[2].id,"side r"):"")+hkPh(t[0].id),chip:"Sezonun oyuncusu yarışı",chipC:"sm",
-    pn:`<div class="hkst3">${[1,0,2].filter(i=>t[i]).map(i=>`<div class="${i===0?"ld":""}"><strong>${fP(t[i].tot)}</strong><small>${i+1} · ${esc(TRU(shortName(nameOf(t[i].id))))}</small></div>`).join("")}</div>`,ft:"Hafta "+F.length+"/"+sLen()});
+/* ================= oyuncu ================= */
+const ypFc=(p,tag)=>{const ph=photoOf(p.id);const nm=TRU(p.name);return `<div class="yp-fc" data-b><div class="yp-o">${p.guest?"MİS":ovrOf(p.id)}</div><div class="yp-m">${esc(eposOf(p))}</div>${tag?ypTag(tag,90):""}<div class="yp-ph">${ph?`<img src="${esc(ph)}" alt="">`:`<svg viewBox="0 0 256 320" width="146" height="182" aria-hidden="true"><circle cx="128" cy="100" r="56" fill="#ffffff" fill-opacity=".5"/><path d="M14 320c0-82 51-128 114-128s114 46 114 128z" fill="#ffffff" fill-opacity=".5"/></svg>`}</div><div class="yp-b" style="font-size:${ypFit(nm,28,226,{ls:.06})}px">${esc(nm)}</div></div>`};
+function ypCard(p){const{yr,F}=hkSeason();let g=0,a=0,n=0,mo=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[p.id];if(r){n++;g+=r.g||0;a+=r.a||0}if(S.mInfo[m.id]?.motm===p.id)mo++});
+  const lt=ligTable(F);const li=lt.findIndex(x=>x.id===p.id);const age=ageOf(p);
+  const ch=[n+" maç",g?g+" gol":"",a?a+" asist":"",mo?mo+" kez maçın adamı":""].filter(Boolean);
+  const html=ypPost({ey:"Sezon "+yr,ti:"Kartını tanı",hc:"mid",hero:ypFc(p),pn:ypSts([[fM(mvOf(p.id)),"Piyasa değeri",1],[age!=null?String(age):"–","Yaş"],[li>=0?(li+1)+".":"–","Ligde"]])+`<div class="yp-chips">${ch.map(t=>`<span>${esc(TRU(t))}</span>`).join("")}</div>`,ft:"#yelek"});
+  return{html,cap:`Kartını tanı: ${p.name} 🃏\n${ovrOf(p.id)} reyting · ${fM(mvOf(p.id))}\n${HT()} #halısaha #yelek`,name:"kart-"+p.name}}
+function ypValue(p){const m=mvInfo(p.id);if(!m)return null;const d=m.prev!=null?Math.round((m.v-m.prev)*10)/10:0;const up=d>0,dn=d<0;const c=up?"g":dn?"r":"";
+  const V=(S.stats[p.id]?.series||[]).slice(-10);const sp=ypSpark(V,230,120,YAC[c]);
+  const right=`<div class="yp-side2" data-b>${d?ypTag((up?"▲ ":"▼ ")+fM(Math.abs(d)),230):ypTag(fM(m.v),230)}${sp?`<div style="margin-top:12px">${sp}</div><div class="yp-lbl" style="margin-top:6px">REYTİNG · SON ${V.length} MAÇ</div>`:""}</div>`;
+  const html=ypPost({c,ey:"Transfer piyasası",ti:up?"Değeri arttı":dn?"Değeri düştü":"Piyasa değeri",wk:igWeek(lastFinM()),hero:`<div class="yp-row">${ypCut(p.id,"max-height:280px")}${right}</div>`,
+    pn:ypBig(p.name,ageOf(p))+ypSts([[fM(m.v),"Piyasa değeri",1],[d?(up?"+":"−")+fM(Math.abs(d)):"–","Son değişim"],[String(ovrOf(p.id)),"Reyting"]]),ft:"#transfer"});
+  return{html,cap:`${p.name} · ${fM(m.v)}${d?` (${up?"▲":"▼"} ${fM(Math.abs(d))})`:""} 📈\n${HT()} #transfer #halısaha`,name:"deger-"+p.name}}
+function ypStreak(p){const st=S.stats[p.id]?.streak;if(!st)return null;const num=(String(st.t).match(/\d+/)||[])[0];
+  const H=(S.stats[p.id]?.hist||[]).filter(h=>h.r).slice(-5);
+  const frm=H.length?`<div class="yp-lbl" style="margin-top:14px">SON ${H.length} MAÇ NOTU</div><div class="yp-frm">${H.map(h=>`<div class="${h.r.pts>=8?"yp-hi":h.r.pts<6.5?"yp-lo":""}">${fN(h.r.pts)}</div>`).join("")}</div>`:"";
+  const html=ypPerson({id:p.id,f:{c:st.hot?"":"r",ey:"Form grafiği",ti:st.hot?"Seri sürüyor":"Kötü seri",wk:igWeek(lastFinM()),ft:"#halısaha"},bdg:num?[num,"Maçtır"]:[String(ovrOf(p.id)),"Reyting"],pre:`<div class="yp-pre">${ypTag(st.t)}</div>`,post:frm});
+  return{html,cap:`${p.name}: ${st.t} ${st.hot?"🔥":"🥶"}\n${HT()} #halısaha`,name:"seri-"+p.name}}
+function ypBadges(p){const B=(S.stats[p.id]?.badges||[]).filter(b=>!b.shame);if(!B.length)return null;const b4=B.slice(0,4);const cw=(476-10)/2-24-46-12;
+  const meds=`<div class="yp-meds">${b4.map(b=>`<div class="yp-med"><i>${esc(b.i)}</i><div><b style="font-size:${ypFit(TRU(b.t),18,cw,{ls:.04})}px">${esc(TRU(b.t))}</b><small>${esc(b.d)}</small></div></div>`).join("")}</div>`;
+  const html=ypPost({ey:"Sezon "+curYr(),ti:"Rozetler",wk:B.length+" rozet",hero:ypCut(p.id),pn:ypBig(p.name,ageOf(p))+meds,ft:"#halısaha"});
+  return{html,cap:`${p.name}'in rozetleri 🏅\n${B.map(b=>b.t+" ("+b.d+")").join("\n")}\n${HT()} #halısaha`,name:"rozetler-"+p.name}}
+function ypCaptain(p){const L=fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id);if(!L.length)return null;const o={G:0,B:0,M:0};
+  L.forEach(m=>{const k=m.cap_a===p.id?"A":"B";const my=k==="A"?+m.score_a:+m.score_b,op=k==="A"?+m.score_b:+m.score_a;o[my>op?"G":my<op?"M":"B"]++});
+  const html=ypPerson({id:p.id,f:{ey:"Kaptanlık karnesi",ti:"Kaptan",wk:L.length+" maç",ft:"#kaptan"},heroPre:`<div class="yp-tl">${ypRing(o.G/L.length,"%"+Math.round(o.G/L.length*100),"Galibiyet",YAC[""],110)}</div>`,bdg:["C","Kaptan"],sts:[[String(o.G),"Galibiyet",1],[String(o.B),"Beraberlik"],[String(o.M),"Mağlubiyet"]]});
+  return{html,cap:`Kaptan ${p.name} © ${L.length} maçta ${o.G}G ${o.B}B ${o.M}M\n${HT()} #halısaha`,name:"kaptan-"+p.name}}
+function ypStatus(p){const st=stOf(p);if(st==="hazir"||st==="belirsiz")return null;const X=STATUS[st];const hd={sakat:"Sakatlandı",hasta:"Hasta",izinli:"İzinde",yogun:"İş yoğun"}[st]||X.label;
+  const ic=["sakat","hasta"].includes(st)?`<svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true" style="display:block;margin:0 auto 4px"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#ffffff"/></svg>`:`<svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true" style="display:block;margin:0 auto 4px"><circle cx="12" cy="12" r="9" fill="none" stroke="#ffffff" stroke-width="2.4"/><path d="M12 7v5l3 3" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+  const html=ypPerson({id:p.id,f:{c:"r",ey:"Kadro haberi",ti:hd,ft:"Geçmiş olsun"},bdg:[" ",X.flag||X.label],bdgIc:ic,sts:[[p.status?.until?fmtShort(p.status.until):"Belirsiz","Dönüş",1],[String(ovrOf(p.id)),"Reyting"],[fM(mvOf(p.id)),"Piyasa değeri"]]});
+  return{html,cap:`${p.name} · ${X.label.toLowerCase()}${p.status?.until?", "+fmtShort(p.status.until)+"'e kadar yok":""} 🚑\nGeçmiş olsun! 💜\n${HT()} #halısaha`,name:"durum-"+p.name}}
+function ypH2H(p,q){if(!q||q.id===p.id)return null;const{yr,F}=hkSeason();
+  const agg=id=>{let n=0,g=0,a=0,s=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[id];if(r){n++;g+=r.g||0;a+=r.a||0;s+=r.pts}});return{n,g,a,av:n?s/n:null}};const A=agg(p.id),B=agg(q.id);
+  const html=ypPost({ey:"Sezon "+yr+" · Kim daha iyi?",ti:"Kafa kafaya",hero:`<div class="yp-duo">${ypCut(p.id)}<div class="yp-vs" data-b>VS</div>${ypCut(q.id)}</div>`,
+    pn:ypCmp(ypSn(p.id),ypSn(q.id),[["Reyting",String(ovrOf(p.id)),String(ovrOf(q.id))],["Değer",fM(mvOf(p.id)),fM(mvOf(q.id)),mvOf(p.id),mvOf(q.id)],["Gol",String(A.g),String(B.g)],["Asist",String(A.a),String(B.a)],["Not ort.",fN(A.av),fN(B.av),A.av??0,B.av??0]]),ft:"Yorumlara yaz"});
+  return{html,cap:`Kafa kafaya ⚔️ ${p.name} mi ${q.name} mi?\nYorumlara yaz 👇\n${HT()} #halısaha`,name:"kafa-kafaya"}}
+function ypNew(p){const n=S.players.filter(x=>!x.guest&&!x.archived).length;
+  const html=ypPost({ey:"Yeni transfer · Hoş geldin",ti:"Aramıza katıldı",hc:"mid",hero:ypFc(p,"Yeni"),pn:ypSts([[eposOf(p),"Mevki",1],[ageOf(p)!=null?String(ageOf(p)):"–","Yaş"],[fM(mvOf(p.id)),"Başlangıç değeri"]]),ft:"Kadro "+n+" kişi oldu"});
+  return{html,cap:`Aramıza hoş geldin ${p.name}! 🤝\n${eposOf(p)} · ${ovrOf(p.id)} reyting\n${HT()} #halısaha #yelek`,name:"yeni-"+p.name}}
+function ypBday(p){const{F}=hkSeason();const t=new Date();const age=ageOf(p);
+  const html=ypPerson({id:p.id,age:null,f:{c:"gd",ey:t.getDate()+" "+AYLAR[t.getMonth()],ti:"İyi ki doğdun",ft:"Nice gollere"},bdg:age!=null?[String(age),"Yaşında"]:null,sts:[[String(ovrOf(p.id)),"Reyting",1],[String(ypSG(p.id,F)),"Bu sezon gol"],[String(S.stats[p.id]?.games||0),"Toplam maç"]]});
+  return{html,cap:`İyi ki doğdun ${p.name}! 🎂${age!=null?" "+age+" yaşın kutlu olsun.":""}\nNice gollere ⚽\n${HT()} #halısaha`,name:"dogum-gunu-"+p.name}}
+const YP_MS={mac:[10,25,50,75,100,150,200,250,300],gol:[10,25,50,75,100,150,200],asist:[10,25,50,75,100]};
+function ypMile(p){let c={mac:0,gol:0,asist:0},last=null;
+  fin().forEach((m,i)=>{if(!plAll(m).includes(p.id))return;const{g,a}=ypMG(m,p.id);const b={...c};c.mac++;c.gol+=g;c.asist+=a;
+    for(const t of["mac","asist","gol"])for(const v of YP_MS[t])if(b[t]<v&&c[t]>=v)last={t,v,m}});
+  if(!last)return null;const lb={mac:"maç",gol:"gol",asist:"asist"}[last.t];
+  const html=ypPerson({id:p.id,f:{ey:"Kilometre taşı",ti:last.v+". "+lb,wk:igWeek(last.m),ft:igDate(last.m.date)},bdg:[String(last.v),lb],sts:[[String(c.mac),"Maç",last.t==="mac"],[String(c.gol),"Gol",last.t==="gol"],[String(c.asist),"Asist",last.t==="asist"]]});
+  return{html,cap:`${p.name} ${last.v}. ${lb}ına ulaştı! 🎉\n${c.mac} maç · ${c.gol} gol · ${c.asist} asist\n${HT()} #halısaha`,name:"kilometre-"+p.name}}
+
+/* ================= sezon ================= */
+const ypHw=F=>"HAFTA "+F.length+"/"+sLen();
+function ypMvp(){const{F}=hkSeason();const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return null;const t=L.slice(0,3);
+  const html=ypPost({ey:"Sezonun oyuncusu yarışı",ti:F.length>=sLen()?"Sezonun oyuncusu":"Zirve yarışı",wk:ypHw(F),hero:ypPod(t.map((o,i)=>({id:o.id,v:fP(o.tot),l:(i+1)+". · Puan"}))),ft:t[1]?"Fark "+fP(t[0].tot-t[1].tot)+" puan":"#halısaha"});
   return{html,cap:`Sezonun oyuncusu yarışı · Hafta ${F.length} 🏆\n${t.map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+fP(o.tot)).join("\n")}\n${HT()} #halısaha`,name:"zirve-yarisi"}}
-function hkMarket(){const L=S.players.filter(p=>!p.guest&&!p.archived).map(p=>{const m=mvInfo(p.id);return m&&m.prev!=null?{p,v:m.v,d:Math.round((m.v-m.prev)*10)/10}:null}).filter(x=>x&&x.d>0).sort((a,b)=>b.d-a.d).slice(0,3);
+function ypMarket(){const L=S.players.filter(p=>!p.guest&&!p.archived).map(p=>{const m=mvInfo(p.id);return m&&m.prev!=null?{p,v:m.v,d:Math.round((m.v-m.prev)*10)/10}:null}).filter(x=>x&&x.d>0).sort((a,b)=>b.d-a.d).slice(0,3);
   if(!L.length)return null;const tot=S.players.filter(p=>!p.guest&&!p.archived).reduce((a,p)=>a+mvOf(p.id),0);
-  const html=hkPost({c:"up",hd:"Değeri artanlar",max:38,body:hkPh(L[0].p.id),chip:`▲ ${fM(L[0].d)}`,pnC:"tall",
-    pn:`<div class="hkls">${L.map((x,i)=>`<div><b>${i+1} · ${esc(TRU(x.p.name))}</b><span>${fM(x.v)} <em>▲ ${fN1(x.d)}</em></span></div>`).join("")}</div><div class="hkmini">Kadronun toplam değeri ${fM(tot)}</div>`,ft:igWeek(lastFinM())});
+  const html=ypPost({c:"g",ey:"Transfer piyasası",ti:"Değeri artanlar",wk:igWeek(lastFinM()),hero:ypPod(L.map(x=>({id:x.p.id,v:"▲ "+fN1(x.d),l:fM(x.v)}))),ft:"Kadro değeri "+fM(tot)});
   return{html,cap:`Transfer piyasası 📈\n${L.map(x=>x.p.name+" "+fM(x.v)+" (▲ "+fM(x.d)+")").join("\n")}\n${HT()} #transfer #halısaha`,name:"transfer-piyasasi"}}
-function hkRiser(){const L=S.players.filter(p=>!p.guest&&!p.archived).map(p=>{const s=S.stats[p.id];const b=s?.series?.[0];return b!=null?{p,b:Math.round(b),o:ovrOf(p.id)}:null}).filter(x=>x&&x.o-x.b>0).sort((a,b)=>(b.o-b.b)-(a.o-a.b)||b.o-a.o);if(!L.length)return null;const x=L[0];
-  const html=hkPost({c:"up",hd:"Yükselen yıldız",max:38,body:hkPh(x.p.id),chip:`<b>${x.b}</b><span class="hkar">→</span><b>${x.o}</b>`,chipC:"big",pn:hkNm(x.p.id)+hkSt([["+"+(x.o-x.b),"Reyting artışı"],[String(S.stats[x.p.id]?.games||0),"Maç"]]),ft:"Sezon "+curYr()});
+function ypRiser(){const L=S.players.filter(p=>!p.guest&&!p.archived).map(p=>{const s=S.stats[p.id];const b=s?.series?.[0];return b!=null?{p,b:Math.round(b),o:ovrOf(p.id)}:null}).filter(x=>x&&x.o-x.b>0).sort((a,b)=>(b.o-b.b)-(a.o-a.b)||b.o-a.o);if(!L.length)return null;const x=L[0];
+  const V=(S.stats[x.p.id]?.series||[]).slice(-12);const nb=String(x.b),no=String(x.o);let px=92;while(px>40&&ypW(nb+no,px)+64>214)px-=2;
+  const right=`<div class="yp-side2" data-b><div class="yp-arw" style="font-size:${px}px"><span>${nb}</span><svg width="40" height="30" viewBox="0 0 40 30" aria-hidden="true"><path d="M2 15h32M24 4l12 11-12 11" fill="none" stroke="#00FF85" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><b>${no}</b></div>${V.length>1?`<div style="margin-top:12px">${ypSpark(V,230,100,YAC.g)}</div><div class="yp-lbl" style="margin-top:6px">REYTİNG · ${V.length} MAÇ</div>`:""}</div>`;
+  const html=ypPost({c:"g",ey:"Sezon "+curYr(),ti:"Yükselen yıldız",hero:`<div class="yp-row">${ypCut(x.p.id,"max-height:280px")}${right}</div>`,pn:ypBig(x.p.name,ageOf(x.p))+ypSts([["+"+(x.o-x.b),"Reyting artışı",1],[String(S.stats[x.p.id]?.games||0),"Maç"],[eposOf(x.p),"Mevki"]]),ft:"#halısaha"});
   return{html,cap:`Yükselen yıldız: ${x.p.name} ⬆️ ${x.b} → ${x.o}\n${HT()} #halısaha`,name:"yukselen-yildiz"}}
-function hkMonth(){const lm=lastFinM();if(!lm)return null;const k=lm.date.slice(0,7);const F=fin().filter(m=>m.date.slice(0,7)===k).sort((a,b)=>matchTs(a)-matchTs(b));const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return null;
-  const o=L[0];const ay=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"][+k.slice(5,7)-1];let g=0,a=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[o.id];if(r){g+=r.g||0;a+=r.a||0}});
-  const html=hkPost({hd:ay+" ayının oyuncusu",max:36,body:hkPh(o.id),chip:F.length+" maç · "+fP(o.tot)+" puan",chipC:"sm",pn:hkNm(o.id)+hkSt([[String(g),"Gol"],[String(a),"Asist"],[String(o.n),"Maç"]]),ft:ay+" "+k.slice(0,4)});
+function ypMonth(){const lm=lastFinM();if(!lm)return null;const k=lm.date.slice(0,7);const F=fin().filter(m=>m.date.slice(0,7)===k);const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return null;
+  const o=L[0];const ay=AYLAR[+k.slice(5,7)-1];let g=0,a=0;F.forEach(m=>{const r=S.mInfo[m.id]?.pts?.[o.id];if(r){g+=r.g||0;a+=r.a||0}});
+  const html=ypPerson({id:o.id,f:{ey:ay+" "+k.slice(0,4)+" · "+F.length+" maç",ti:ay+" ayının oyuncusu",ft:"#ayınoyuncusu"},bdg:[fP(o.tot),"Puan"],sts:[[String(g),"Gol",1],[String(a),"Asist"],[String(o.n),"Maç"]]});
   return{html,cap:`${ay} ayının oyuncusu: ${nameOf(o.id)} 🌟\n${HT()} #ayınoyuncusu #halısaha`,name:"ayin-oyuncusu-"+k}}
-function hkDuo(){const{F}=hkSeason();const ids=S.players.filter(p=>!p.guest&&!p.archived).map(p=>p.id);let best=null;
+function ypDuo(){const{yr,F}=hkSeason();const ids=S.players.filter(p=>!p.guest&&!p.archived).map(p=>p.id);let best=null;
   for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){let n=0,W=0,D=0;F.forEach(m=>{for(const k of["A","B"]){const T=plOf(m,k);if(T.includes(ids[i])&&T.includes(ids[j])){n++;const my=k==="A"?+m.score_a:+m.score_b,op=k==="A"?+m.score_b:+m.score_a;if(my>op)W++;else if(my===op)D++}}});
     if(n>=2){const sc=(W+D*.5)/n;if(!best||sc>best.sc||(sc===best.sc&&n>best.n))best={a:ids[i],b:ids[j],n,W,D,L:n-W-D,sc}}}
-  if(!best)return null;const du=Object.entries(S.duo||{}).filter(([k])=>k.split(">").every(id=>P(id)&&!P(id).guest)).sort((x,y)=>y[1]-x[1])[0];
-  const html=hkPost({hd:"En iyi ikili",body:hkPh(best.a,"duo l")+hkPh(best.b,"duo r"),chip:`%${Math.round(best.W/best.n*100)} galibiyet`,chipC:"sm",pnC:du?"tall":"",
-    pn:`<b class="hknm">${esc(TRU(shortName(nameOf(best.a))))} + ${esc(TRU(shortName(nameOf(best.b))))}</b>${hkSt([[String(best.n),"Birlikte maç"],[best.W+"-"+best.D+"-"+best.L,"G-B-M"]])}${du?`<div class="hkmini">En golcü ikili: ${esc(shortName(nameOf(du[0].split(">")[0])))} → ${esc(shortName(nameOf(du[0].split(">")[1])))} · ${du[1]} gol</div>`:""}`,ft:"Sezon "+curYr()});
+  if(!best)return null;const du=Object.entries(S.duo||{}).filter(([k])=>k.split(">").every(id=>P(id)&&!P(id).guest)).sort((x,y)=>y[1]-x[1])[0];const pct=best.W/best.n;
+  const nm=ypSn(best.a)+" + "+ypSn(best.b);
+  const html=ypPost({ey:"Sezon "+yr+" · Aynı takımda",ti:"En iyi ikili",hero:`<div class="yp-duo yp-sm">${ypCut(best.a)}${ypRing(pct,"%"+Math.round(pct*100),"Galibiyet",YAC[""],110)}${ypCut(best.b)}</div>`,
+    pn:ypBig(nm,null)+ypSts([[String(best.n),"Birlikte maç",1],[best.W+"-"+best.D+"-"+best.L,"G-B-M"],du?[String(du[1]),"Gol: "+ypSn(du[0].split(">")[0])+" → "+ypSn(du[0].split(">")[1])]:["–","En golcü ikili"]]),ft:"#halısaha"});
   return{html,cap:`En iyi ikili 🤝 ${nameOf(best.a)} & ${nameOf(best.b)}\nBirlikte ${best.n} maç, ${best.W} galibiyet\n${HT()} #halısaha`,name:"en-iyi-ikili"}}
-function hkLoyal(){const{F}=hkSeason();if(!F.length)return null;const c={};F.forEach(m=>plAll(m).forEach(id=>{if(P(id)&&!P(id).guest&&!P(id).archived)c[id]=(c[id]||0)+1}));
-  const E=Object.entries(c).sort((a,b)=>b[1]-a[1]);const full=E.filter(x=>x[1]===F.length);const L=(full.length?full:E.slice(0,4)).slice(0,8);
-  const rows=[];for(let i=0;i<L.length;i+=4)rows.push(L.slice(i,i+4).map(([id,n])=>({id,v:n+"/"+F.length})));
-  const html=hkPost({hd:full.length?"Hiç kaçırmadı":"En istikrarlılar",body:hkMates(rows,"mid"),pn:`<div class="hkmini big">${full.length?F.length+" maçın hepsine gelen "+full.length+" oyuncu":"Sezonun en çok gelenleri"}${(full.length?full:[]).length>8?"<br>"+full.slice(8).map(([id])=>esc(shortName(nameOf(id)))).join(", ")+" de her maçtaydı":""}</div>`,ft:"Hafta "+F.length+"/"+sLen()});
+function ypLoyal(){const{F}=hkSeason();if(!F.length)return null;const act=S.players.filter(p=>!p.guest&&!p.archived);const c={};F.forEach(m=>plAll(m).forEach(id=>{if(P(id)&&!P(id).guest&&!P(id).archived)c[id]=(c[id]||0)+1}));
+  const E=Object.entries(c).sort((a,b)=>b[1]-a[1]);if(!E.length)return null;const full=E.filter(x=>x[1]===F.length);const L=(full.length?full:E.slice(0,4)).slice(0,8);
+  const avg=act.length?Math.round(act.reduce((s,p)=>s+(c[p.id]||0),0)/(act.length*F.length)*100):0;
+  const cell=([id,n])=>{const nm=TRU(ypSn(id));const r=38,ci=2*Math.PI*r,d=n/F.length*ci;
+    return `<div data-b><div class="yp-rav"><svg width="88" height="88" viewBox="0 0 88 88" aria-hidden="true"><circle cx="44" cy="44" r="${r}" fill="none" stroke="#ffffff" stroke-opacity=".14" stroke-width="5"/><circle cx="44" cy="44" r="${r}" fill="none" stroke="#FF3EA5" stroke-width="5" stroke-linecap="round" stroke-dasharray="${d.toFixed(1)} ${ci.toFixed(1)}" transform="rotate(-90 44 44)"/></svg>${ypAv(id,"","width:64px;height:64px")}</div><div class="yp-nm" style="margin-top:6px;font-size:${ypFit(nm,16,108,{ls:.05})}px">${esc(nm)}<small>${n}/${F.length}</small></div></div>`};
+  const html=ypPost({ey:"Sezon "+curYr()+" · "+F.length+" maç",ti:full.length?"Hiç kaçırmadı":"En istikrarlılar",wk:F.length+"/"+F.length,hc:"mid",hero:`<div class="yp-grid" style="--n:${Math.min(4,L.length)}">${L.map(cell).join("")}</div>`,
+    pn:ypSts([[String(full.length),"Her maçta",1],["%"+avg,"Ortalama katılım"],[String(act.length),"Kadro"]]),ft:full.length>8?"+"+(full.length-8)+" oyuncu daha":"Demir adamlar"});
   return{html,cap:`${full.length?"Hiç maç kaçırmayanlar":"En istikrarlılar"} 💪\n${L.map(([id])=>nameOf(id)).join(", ")}\n${HT()} #halısaha`,name:"devamlilik"}}
-function hkMid(){const{yr,F}=hkSeason();if(F.length<3)return null;const lt=ligTable(F);const ag=yrAgg(F);const mv=yelekAll(F).filter(o=>o.tot>0)[0];
+const ypTiles=(rows,cols,sz)=>`<div class="yp-grid" style="--n:${cols}">${rows.map(([l,id,v])=>{const nm=TRU(ypSn(id));const cw=(476-10*(cols-1))/cols-20;return `<div class="yp-tile" data-b>${ypAv(id,sz||"L")}<div class="yp-ey" style="font-size:${ypFit(TRU(l),10,cw,{w:700,fam:INF,ls:.14})}px">${esc(TRU(l))}</div><b style="font-size:${ypFit(nm,sz?20:24,cw,{ls:.04})}px">${esc(nm)}</b><small>${esc(TRU(v))}</small></div>`}).join("")}</div>`;
+function ypMid(){const{yr,F}=hkSeason();if(F.length<3)return null;const lt=ligTable(F);const ag=yrAgg(F);const mv=yelekAll(F).filter(o=>o.tot>0)[0];
   const rows=[["Lider",lt[0]&&lt[0].id,lt[0]?lt[0].p+" puan":""],["Gol kralı",ag.g?.id,ag.g?ag.g.v+" gol":""],["Asist kralı",ag.a?.id,ag.a?ag.a.v+" asist":""],["Sezonun oyuncusu",mv?.id,mv?fP(mv.tot)+" puan":""]].filter(r=>r[1]);
-  const html=hkPost({hd:"Ara karne",body:mv?hkPh(mv.id):"",pnC:"tall",pn:`<div class="hkls">${rows.map(([l,id,v])=>`<div><b>${esc(TRU(l))} · ${esc(TRU(shortName(nameOf(id))))}</b><span>${esc(v)}</span></div>`).join("")}</div>`,ft:"Sezon "+yr+" · Hafta "+F.length+"/"+sLen()});
+  const pr=Math.min(1,F.length/sLen());
+  const hero=`<div class="yp-col"><div class="yp-prog" data-b><div><span>HAFTA ${F.length}</span><span>${sLen()}</span></div><div class="yp-bar yp-bb"><i class="yp-w" style="width:${Math.round(pr*100)}%"></i></div></div>${ypTiles(rows,2)}</div>`;
+  const html=ypPost({ey:"Sezon "+yr+" · Yarı yol",ti:"Ara karne",hc:"top",hero,ft:"#halısaha"});
   return{html,cap:`Sezon ${yr} ara karnesi 📊\n${rows.map(([l,id,v])=>l+": "+nameOf(id)+" ("+v+")").join("\n")}\n${HT()} #halısaha`,name:"ara-karne"}}
-function hkPosRace(k){const{F}=hkSeason();const R=yelekRace(F)[k]||[];const L=R.filter(o=>o.tot>0).slice(0,3);if(!L.length)return null;const aw=POS_AW.find(x=>x[0]===k);
+function ypPosRace(k){const{F}=hkSeason();const R=yelekRace(F)[k]||[];const L=R.filter(o=>o.tot>0).slice(0,3);if(!L.length)return null;const aw=POS_AW.find(x=>x[0]===k);
   const hd={FV:"Sezonun forveti",OS:"Sezonun orta sahası",DF:"Sezonun defansı",KL:"Altın eldiven"}[k];
-  const html=hkPost({hd,max:38,body:(L[1]?hkPh(L[1].id,"side l"):"")+(L[2]?hkPh(L[2].id,"side r"):"")+hkPh(L[0].id),chip:esc(TRU(aw[3]))+" yarışı",chipC:"sm",
-    pn:`<div class="hkst3">${[1,0,2].filter(i=>L[i]).map(i=>`<div class="${i===0?"ld":""}"><strong>${fP(L[i].tot)}</strong><small>${i+1} · ${esc(TRU(shortName(nameOf(L[i].id))))}</small></div>`).join("")}</div>`,ft:"Hafta "+F.length+"/"+sLen()});
-  return{html,cap:`${hd} yarışı ${aw[2]}\n${L.map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+fP(o.tot)).join("\n")}\n${HT()} #halısaha`,name:"yaris-"+k}}
-function hkFinal(){const n=[...seasonsAll()].reverse().find(x=>seasonDone(x));if(n==null)return null;const w=seasonAwards(n);if(!w||!w.champ)return null;
-  const rows=[["Gol kralı",w.g?.id,w.g?w.g.v+" gol":""],["Asist kralı",w.a?.id,w.a?w.a.v+" asist":""],["Sezonun oyuncusu",w.mvp?.id,w.mvp?fP(w.mvp.tot)+" puan":""],["Altın eldiven",w.pos?.KL?.id,w.pos?.KL?fP(w.pos.KL.tot)+" puan":""]].filter(r=>r[1]);
-  const html=hkPost({hd:"Şampiyon",body:hkPh(w.champ.id),chip:`🏆 Sezon ${n} · ${w.champ.p} puan`,chipC:"sm",pnC:"tall",pn:hkNm(w.champ.id)+`<div class="hkls">${rows.map(([l,id,v])=>`<div><b>${esc(TRU(l))} · ${esc(TRU(shortName(nameOf(id))))}</b><span>${esc(v)}</span></div>`).join("")}</div>`,ft:"Sezon "+n+" finali"});
-  return{html,cap:`Sezon ${n} şampiyonu: ${nameOf(w.champ.id)} 🏆\n${rows.map(([l,id,v])=>l+": "+nameOf(id)).join("\n")}\n${HT()} #şampiyon #halısaha`,name:"sezon-"+n+"-finali"}}
+  const html=ypPost({ey:"Mevki yarışı · "+ROLE_NAME[k],ti:hd,wk:ypHw(F),hero:ypPod(L.map((o,i)=>({id:o.id,v:fP(o.tot),l:(i+1)+". · Puan"}))),ft:"#halısaha"});
+  return{html,cap:`${hd} yarışı ${aw?aw[2]:""}\n${L.map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+fP(o.tot)).join("\n")}\n${HT()} #halısaha`,name:"yaris-"+k}}
+function ypKing(f){const{yr,F}=hkSeason();const t={};F.forEach(m=>Object.entries(m.stats||{}).forEach(([id,s])=>{if(!P(id)||P(id).guest)return;t[id]=t[id]||{g:0,a:0};t[id].g+=+s.g||0;t[id].a+=+s.a||0}));
+  const o=f==="g"?"a":"g";const L=Object.entries(t).filter(([,v])=>v[f]>0).sort((x,y)=>y[1][f]-x[1][f]||x[1][o]-y[1][o]).slice(0,3);if(!L.length)return null;
+  const lb=f==="g"?"Gol":"Asist",ob=f==="g"?"asist":"gol";
+  const html=ypPost({ey:"Sezon "+yr+" · "+lb+" yarışı",ti:lb+" krallığı",wk:ypHw(F),hero:ypPod(L.map(([id,v])=>({id,v:String(v[f]),l:lb+" · "+v[o]+" "+ob}))),ft:f==="g"?"#golkralı":"#asistkralı"});
+  return{html,cap:`${lb} krallığı yarışı ⚽\n${L.map(([id,v],i)=>(i+1)+". "+nameOf(id)+" "+v[f]).join("\n")}\n${HT()} #halısaha`,name:(f==="g"?"gol":"asist")+"-kralligi"}}
+function ypFinal(){const n=[...seasonsAll()].reverse().find(x=>seasonDone(x));if(n==null)return null;const w=seasonAwards(n);if(!w||!w.champ)return null;
+  const rows=[["Gol kralı",w.g?.id,w.g?w.g.v+" gol":""],["Asist kralı",w.a?.id,w.a?w.a.v+" asist":""],["Altın eldiven",w.pos?.KL?.id,w.pos?.KL?fP(w.pos.KL.tot)+" puan":""],["Sezonun oyuncusu",w.mvp?.id,w.mvp?fP(w.mvp.tot)+" puan":""]].filter(r=>r[1]).slice(0,3);
+  const ic=`<svg width="44" height="44" viewBox="0 0 24 24" aria-hidden="true" style="display:block;margin:0 auto 4px"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M9 17h6" fill="none" stroke="#140552" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const html=ypPost({c:"gd",ey:"Sezon "+n+" finali",ti:"Şampiyon",wk:w.champ.p+" puan",hero:ypCut(w.champ.id)+ypBdg(["","Kupa"],ic),pn:`<div class="yp-cen">${ypBig(nameOf(w.champ.id),null)}</div>`+(rows.length?`<div style="margin-top:12px">${ypTiles(rows,rows.length,"S")}</div>`:""),ft:"#şampiyon"});
+  return{html,cap:`Sezon ${n} şampiyonu: ${nameOf(w.champ.id)} 🏆\n${rows.map(([l,id])=>l+": "+nameOf(id)).join("\n")}\n${HT()} #şampiyon #halısaha`,name:"sezon-"+n+"-finali"}}
 
 const PM_ITEMS={
-  once:[["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
+  once:[["gun","Maç günü"],["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
   mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["kadro","Not karnesi"]],
-  oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"]],
-  sezon:[["mvp","Zirve yarışı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["ikili","En iyi ikili"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yaris","Mevki yarışı"],["final","Sezon finali"]]};
-const PM_EMPTY={once:"Sıradaki maçın takımları henüz kurulmadı.",out:"Şu an sakat, hasta ya da izinli oyuncu yok.",seri:"Bu oyuncunun şu an süren bir serisi yok.",rozet:"Bu oyuncunun henüz rozeti yok.",kaptan:"Bu oyuncu henüz kaptanlık yapmadı.",durum:"Bu oyuncu şu an hazır görünüyor; durumu sakat, hasta ya da izinli yapılınca bu gönderi açılır.",h2h:"Karşılaştırmak için ikinci bir oyuncu seç.",karne:"Ara karne en az 3 maç oynandıktan sonra hazırlanır.",final:"Sezon finali, sezon bitince hazırlanır."};
+  oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"],["yeni","Aramıza katıldı"],["dogum","Doğum günü"],["km","Kilometre taşı"]],
+  sezon:[["mvp","Zirve yarışı"],["golk","Gol krallığı"],["asistk","Asist krallığı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["ikili","En iyi ikili"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yaris","Mevki yarışı"],["final","Sezon finali"]]};
+const PM_EMPTY={once:"Sıradaki maçın takımları henüz kurulmadı.",gun:"Planlanmış bir maç yok.",out:"Şu an sakat, hasta ya da izinli oyuncu yok.",seri:"Bu oyuncunun şu an süren bir serisi yok.",rozet:"Bu oyuncunun henüz rozeti yok.",kaptan:"Bu oyuncu henüz kaptanlık yapmadı.",durum:"Bu oyuncu şu an hazır görünüyor; durumu sakat, hasta ya da izinli yapılınca bu gönderi açılır.",h2h:"Karşılaştırmak için ikinci bir oyuncu seç.",km:"Bu oyuncu henüz 10 maça, 10 gole ya da 10 asiste ulaşmadı.",golk:"Bu sezon henüz gol yok.",asistk:"Bu sezon henüz asist yok.",karne:"Ara karne en az 3 maç oynandıktan sonra hazırlanır.",final:"Sezon finali, sezon bitince hazırlanır."};
 function pmPlayers(){return S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,"tr"))}
+const pmNewest=()=>S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0];
+const pmPid=(f,it)=>f.pid||(it==="yeni"?pmNewest()?.id:null)||S.me||pmPlayers()[0]?.id;
 function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));const m=S.matches.find(x=>x.id===f.mid&&x.state==="bitti")||ms[0];
   const k=f.item||PM_ITEMS[f.tab][0][0];
-  if(f.tab==="mac"){if(!m)return null;return({skor:hkScore,motm:hkMotm,totw:hkTotw,gol:hkGoal,fiy:hkFiy,kadro:hkLineup}[k]||hkScore)(m)}
-  if(f.tab==="once"){if(k==="out")return hkOut();const n=hkNext();if(!n)return null;return k==="duel"?hkDuel(n):hkPreLine(n)}
-  if(f.tab==="oyuncu"){const p=P(f.pid||S.me)||pmPlayers()[0];if(!p)return null;
-    if(k==="h2h"){const q=P(f.pid2)||pmPlayers().filter(x=>x.id!==p.id&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0];return hkH2H(p,q)}
-    return({kart:hkCard,deger:hkValue,seri:hkStreak,rozet:hkBadges,kaptan:hkCaptain,durum:hkStatus}[k]||hkCard)(p)}
-  if(f.tab==="sezon"){if(k==="yaris")return hkPosRace(f.race||"FV");return({mvp:hkMvp,piyasa:hkMarket,yildiz:hkRiser,ay:hkMonth,ikili:hkDuo,sadik:hkLoyal,karne:hkMid,final:hkFinal}[k]||hkMvp)()}
+  if(f.tab==="mac"){if(!m)return null;return({skor:ypScore,motm:ypMotm,totw:ypTotw,gol:ypGoal,fiy:ypFiy,kadro:mm=>ypKadro(mm,true)}[k]||ypScore)(m)}
+  if(f.tab==="once"){if(k==="gun")return ypMatchDay();if(k==="out")return ypOut();const n=hkNext();if(!n)return null;return k==="duel"?ypDuel(n):ypKadro(n,false)}
+  if(f.tab==="oyuncu"){const p=P(pmPid(f,k))||pmPlayers()[0];if(!p)return null;
+    if(k==="h2h"){const q=P(f.pid2)||pmPlayers().filter(x=>x.id!==p.id&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0];return ypH2H(p,q)}
+    return({kart:ypCard,deger:ypValue,seri:ypStreak,rozet:ypBadges,kaptan:ypCaptain,durum:ypStatus,yeni:ypNew,dogum:ypBday,km:ypMile}[k]||ypCard)(p)}
+  if(f.tab==="sezon"){if(k==="yaris")return ypPosRace(f.race||"FV");if(k==="golk")return ypKing("g");if(k==="asistk")return ypKing("a");return({mvp:ypMvp,piyasa:ypMarket,yildiz:ypRiser,ay:ypMonth,ikili:ypDuo,sadik:ypLoyal,karne:ypMid,final:ypFinal}[k]||ypMvp)()}
   return null}
-const igFrame=(x,fmt)=>fmt==="story"?`<div class="hkstory"><div class="hksth">${IGLOGO}<b>ABİLER KARDEŞLER FC</b></div>${x.html}</div>`:x.html;
+const igFrame=(x,fmt)=>fmt==="story"?`<div class="yp-story"><div class="yp-sth">${IGLOGO}<span style="font-size:${ypFit(TRU(S.settings.group_name||"Yelek"),24,420,{ls:.12})}px">${esc(TRU(S.settings.group_name||"Yelek"))}</span></div>${x.html}</div>`:x.html;
+// önizleme ekrana sığsın
+function ypZoom(){const b=$("#pmPrev");if(!b)return;const el=b.firstElementChild;if(!el)return;const w=b.clientWidth-16;el.style.zoom=Math.min(1,w/540).toFixed(3)}
 function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});if(!PM_ITEMS[f.tab])f.tab="mac";const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));
   const tabs=[["once","Maç önü"],["mac","Maç"],["oyuncu","Oyuncu"],["sezon","Sezon"]];const items=PM_ITEMS[f.tab];
   const it=f.item&&items.some(x=>x[0]===f.item)?f.item:items[0][0];f.item=it;
   const pOpt=(sel,ex)=>pmPlayers().filter(p=>p.id!==ex).map(p=>`<option value="${esc(p.id)}"${p.id===sel?" selected":""}>${esc(p.name)}</option>`).join("");
   let sel="";if(f.tab==="mac"){const mid=f.mid||(ms[0]&&ms[0].id);sel=`<select class="pmsel" data-bind="pm.mid" aria-label="Maç">${ms.map(m=>`<option value="${esc(m.id)}"${m.id===mid?" selected":""}>${fmtShort(m.date)} · ${esc(nmOf(m,"A"))} ${m.score_a}–${m.score_b} ${esc(nmOf(m,"B"))}</option>`).join("")}</select>`}
-  if(f.tab==="oyuncu"){const pid=f.pid||S.me||pmPlayers()[0]?.id;sel=`<select class="pmsel" data-bind="pm.pid" aria-label="Oyuncu">${pOpt(pid)}</select>`;
+  if(f.tab==="oyuncu"){const pid=pmPid(f,it);sel=`<select class="pmsel" data-bind="pm.pid" aria-label="Oyuncu">${pOpt(pid)}</select>`;
     if(it==="h2h"){const p=P(pid);const q2=f.pid2||pmPlayers().filter(x=>x.id!==pid&&p&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0]?.id;sel+=`<select class="pmsel" data-bind="pm.pid2" aria-label="Rakip oyuncu">${pOpt(q2,pid)}</select>`}}
   if(f.tab==="sezon"&&it==="yaris")sel=`<div class="vtog pmr">${[["FV","Forvet"],["OS","Orta saha"],["DF","Defans"],["KL","Kaleci"]].map(([k,l])=>`<button data-act="pmRace" data-v="${k}" class="${(f.race||"FV")===k?"on":""}">${l}</button>`).join("")}</div>`;
-  if(f.tab==="once"){const n=hkNext();sel=n?`<p class="muted small" style="margin:0 0 10px">Sıradaki maç: ${fmtShort(n.date)} · ${esc(nmOf(n,"A"))} – ${esc(nmOf(n,"B"))}</p>`:""}
+  if(f.tab==="once"){const n=it==="gun"||it==="out"?hkNextAny():hkNext();sel=n?`<p class="muted small" style="margin:0 0 10px">Sıradaki maç: ${fmtShort(n.date)}${n.time?" · "+esc(String(n.time).slice(0,5)):""}${(n.team_a||[]).length?" · "+esc(nmOf(n,"A"))+" – "+esc(nmOf(n,"B")):""}</p>`:""}
   const x=igBuild();const emp=PM_EMPTY[it]||(f.tab==="once"&&it!=="out"?PM_EMPTY.once:"Bunun için henüz yeterli veri yok.");
   return `<div class="ch"><div><div class="eyebrow">${IGH}</div><h2>Paylaşım merkezi</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
    <div class="vtog pmt">${tabs.map(([k,l])=>`<button data-act="pmTab" data-v="${k}" class="${f.tab===k?"on":""}">${l}</button>`).join("")}</div>${sel}
@@ -915,13 +1026,14 @@ function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"
    <div class="pmcap"><div class="pmch"><span>AÇIKLAMA</span><button class="btn sm ghost" data-act="pmCopy">Kopyala</button></div><textarea id="pmCap" rows="4" readonly>${esc(x.cap)}</textarea></div>
    <div class="row" style="gap:8px"><button class="btn block" data-act="pmGo" data-v="save">Kaydet</button><button class="btn primary block" data-act="pmGo" data-v="share">${IG_SVG} Paylaş</button></div>`
    :`<p class="muted small pmemp">${esc(emp)}</p>`}`}
-let _h2c=null;const h2c=()=>_h2c||(_h2c=new Promise((ok,no)=>{if(window.html2canvas)return ok(window.html2canvas);const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";s.onload=()=>ok(window.html2canvas);s.onerror=()=>{_h2c=null;no(new Error("yüklenemedi"))};document.head.appendChild(s)}));
+let _h2c=null;const h2c=()=>_h2c||(_h2c=new Promise((ok,no)=>{if(window.html2canvas)return ok(window.html2canvas);const s=document.createElement("script");s.src="vendor/html2canvas-1.4.1.min.js";s.onload=()=>ok(window.html2canvas);s.onerror=()=>{_h2c=null;no(new Error("yüklenemedi"))};document.head.appendChild(s)}));
 function trUp(root){const L=[...root.querySelectorAll("*")].filter(e=>getComputedStyle(e).textTransform==="uppercase");L.forEach(e=>{for(const n of e.childNodes)if(n.nodeType===3)n.nodeValue=n.nodeValue.toLocaleUpperCase("tr")});L.forEach(e=>e.style.textTransform="none")}
-async function pmGo(mode){const x=igBuild();if(!x)return;const f=S.f.pm;toast("Görsel hazırlanıyor…");
+const ypFonts=()=>Promise.race([Promise.all([document.fonts.load('800 40px "Barlow Condensed"'),document.fonts.load('700 12px Inter'),document.fonts.load('600 11px Inter')]),new Promise(r=>setTimeout(r,2500))]).catch(()=>{});
+async function pmGo(mode){toast("Görsel hazırlanıyor…");await ypFonts();const x=igBuild();if(!x)return;const f=S.f.pm;
   let h;try{h=await h2c()}catch(_){toast("Görsel aracı yüklenemedi, bağlantını kontrol et");return}
   const box=document.createElement("div");box.className="igrender";box.innerHTML=igFrame(x,f.fmt);document.body.appendChild(box);
-  try{await document.fonts?.ready;const el=box.firstElementChild;trUp(el);const c=await h(el,{scale:1080/el.offsetWidth,backgroundColor:null,useCORS:true,logging:false});
-    const fn="abilerkardeslerfc-"+x.name+(f.fmt==="story"?"-hikaye":"")+".png";
+  try{await document.fonts?.ready;const el=box.firstElementChild;trUp(el);el.style.zoom="";const c=await h(el,{scale:1080/el.offsetWidth,backgroundColor:null,useCORS:true,logging:false});
+    const fn=(String(S.settings.ig||S.settings.group_name||"yelek").toLocaleLowerCase("tr").replace(/[^a-z0-9çğıöşü]+/g,"")||"yelek")+"-"+x.name+(f.fmt==="story"?"-hikaye":"")+".png";
     if(mode==="save"){c.toBlob(b=>{if(!b){toast("Görsel oluşturulamadı");return}const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);toast("Görsel kaydedildi")},"image/png")}
     else shareCanvas(c,fn,S.settings.group_name||"Yelek")}catch(e){toast("Görsel oluşturulamadı")}finally{box.remove()}}
 
@@ -2401,7 +2513,7 @@ document.addEventListener("click",async e=>{
     case"memOk":{const f=S.f.mem||{};const pid=f["p_"+id]||(S.memList||[]).find(m=>m.user_id===id)?.claim||null;if(!pid){toast("Önce bağlanacak kartı seç");break}const r=await A("admin_member_decide",{p_user:id,p_status:"onayli",p_player:pid,p_role:f["r_"+id]?"yonetici":"uye"},"Üye onaylandı");if(r&&r.error==="player_taken")toast("Bu kart başka bir hesaba bağlı");memLoad();break}
     case"memNo":{const r=await A("admin_member_decide",{p_user:id,p_status:"reddedildi",p_player:null,p_role:null},"Üyelik kaldırıldı");S.f.memDel="";memLoad();break}
     case"invCopy":{const v=el.dataset.v;try{await navigator.clipboard.writeText(v);toast("Link kopyalandı")}catch(_){toast("Kopyalanamadı, linki elle seç")}break}
-    case"pmOpen":S.f.pm=S.f.pm||{tab:"mac",fmt:"post"};S.sheet={type:"pm"};render(true);break;
+    case"pmOpen":S.f.pm=S.f.pm||{tab:"mac",fmt:"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
     case"pmTab":S.f.pm.tab=el.dataset.v;S.f.pm.item=null;render(true);break;
     case"pmItem":S.f.pm.item=el.dataset.v;render(true);break;
     case"pmFmt":S.f.pm.fmt=el.dataset.v;render(true);break;
