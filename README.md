@@ -32,3 +32,14 @@ Sayfa GitHub Pages üzerinden yayınlanır.
 1. Değişikliği yap.
 2. `node tests/smoke.js` ile kontrol et (Playwright gerekir). Test uydurma verilerle çalışır, gerçek veriye dokunmaz.
 3. `tools/surum.sh` ile sürümü artır; telefonlar yeni sürümü bu sayede alır.
+
+## Dış yedek
+
+`.github/workflows/yedek.yml` her salı bütün veriyi Supabase dışına alır (Actions → "Haftalık dış yedek" → Artifacts, 90 gün).
+Dosya şifrelidir. Açmak için (Mac terminali):
+
+```
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in yelek-yedek-TARİH.json.gz.enc -out yedek.json.gz -pass pass:ANAHTAR && gunzip yedek.json.gz
+```
+
+ANAHTAR, GitHub'daki `YELEK_YEDEK_ANAHTAR` gizli değeridir; kaybolursa yedekler açılamaz, bir kopyasını şifre yöneticinde sakla.

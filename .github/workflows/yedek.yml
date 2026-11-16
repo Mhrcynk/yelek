@@ -1,0 +1,38 @@
+name: Haftalık dış yedek
+
+# Bütün veriyi (takımlar, oyuncular, maçlar, üyeler, fotoğraflar) Supabase dışına alır.
+# Dosya şifrelenir; depo herkese açık olsa da anahtar olmadan okunamaz. 90 gün saklanır.
+# Gerekli gizli değer: Settings → Secrets and variables → Actions → YELEK_YEDEK_ANAHTAR
+on:
+  schedule:
+    - cron: "37 7 * * 2"   # Salı 10:37 (Türkiye saati), veritabanı içi yedekten sonra
+  workflow_dispatch:
+
+jobs:
+  yedek:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veriyi indir
+        env:
+          K: ${{ secrets.YELEK_YEDEK_ANAHTAR }}
+        run: |
+          test -n "$K" || { echo "YELEK_YEDEK_ANAHTAR tanımlı değil"; exit 1; }
+          curl -sS --fail -m 120 -X POST \
+            "https://tnjpxwxfqbhfxsphbqhq.supabase.co/rest/v1/rpc/backup_export" \
+            -H "apikey: sb_publishable_ATJ8lPaPBzZEj-4k7Z5Ztw_YGevQCS3" \
+            -H "Content-Type: application/json" \
+            -d "{\"p_key\":\"$K\"}" -o yedek.json
+          python3 -c "import json;d=json.load(open('yedek.json'));assert d.get('ok') is True,'anahtar reddedildi';print('oyuncu',len(d['players']),'maç',len(d['matches']),'üye',len(d['members']),'foto',len(d['photos']))"
+      - name: Sıkıştır ve şifrele
+        env:
+          K: ${{ secrets.YELEK_YEDEK_ANAHTAR }}
+        run: |
+          gzip -9 yedek.json
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in yedek.json.gz -out "yelek-yedek-$(date -u +%Y-%m-%d).json.gz.enc" -pass env:K
+          rm -f yedek.json.gz
+          ls -la *.enc
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yelek-yedek-${{ github.run_number }}
+          path: "*.enc"
+          retention-days: 90

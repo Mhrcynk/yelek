@@ -2210,3 +2210,5 @@ body.fol .nav{max-width:300px;transition:none}
 .brand .bsub{display:block;margin-top:2px;font:800 .56rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.82)!important;white-space:nowrap}
 button.grab{display:block;border:0;padding:0;position:relative;cursor:pointer}
 button.grab::before{content:"";position:absolute;inset:-14px -40px}
+.perl{display:grid}.per{display:grid;gap:2px;padding:10px 14px;border-bottom:1px solid var(--line,#eee);min-width:0}.per:last-child{border-bottom:0}
+.per b{font-size:.84rem;overflow-wrap:anywhere;font-weight:700}.per small{font-size:.72rem;color:var(--muted);overflow-wrap:anywhere}
