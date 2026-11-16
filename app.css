@@ -2266,6 +2266,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2498,6 +2500,7 @@ html.dk .kcard.klo .kch svg{color:#E45367}
 html.dk .gdbar{background:#292036}
 html.dk .gdl li.now{background:#221443;box-shadow:inset 0 0 0 1.5px #3A2C55}
 html.dk .gdc{background:#292036;color:#9282AB}
+html.dk .iab{background:#271A3D}
 /* KOYU-OTO:bitti */
 /* ================= Koyu tema (Ayarlar → Görünüm) ================= */
 html.dk{--pl:#EDE4FF;--plb:#8F5BFF;--bg:#0F0A1A;--bg2:#171024;--card:#1A1229;--card2:#1A1229;--card3:#231834;--line:#2B2040;--line2:#3A2C55;
@@ -2680,3 +2683,7 @@ html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!imp
 .yp-sth svg{width:40px;height:40px;flex:none}
 .yp-story .yp{box-shadow:0 20px 50px rgba(0,0,0,.45)}
 .pmprev{overflow:hidden}
+.iab{display:grid;gap:8px;margin-top:14px;padding:12px;border-radius:14px;background:#F8F5FD;font-size:.86rem}
+.iab>b{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.iabw{border:2px solid #FF3EA5}
+.hbt{display:flex;gap:6px;flex:none}

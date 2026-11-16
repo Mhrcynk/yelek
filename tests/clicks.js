@@ -81,7 +81,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     await click(pg,'#modal [data-act="close"]')});
 
   await T("Ayarlar: Linkler",async()=>{await E(pg,`S.f.setp="pay";S.tab="ayarlar";render(true)`);await pg.waitForTimeout(300);
-    for(const[k,want]of[["takip","?t=test"],["oner","/"],["davet","&katil"]]){await click(pg,`.lkt [data-v="${k}"]`);const u=await pg.evaluate(()=>document.querySelector("#shareUrl")?.value||"");ok(u.includes(want),"Linkler "+k+" yanlış ("+u+")")}});
+    const u=await pg.evaluate(()=>document.querySelector("#shareUrl")?.value||"");ok(u&&!u.includes("?t="),"Tek link yanlış ("+u+")");ok(await pg.locator(".lkt").count()===0,"Eski link sekmeleri duruyor")});
 
   await T("Ayarlar: Platform",async()=>{await E(pg,`S.f.setp="";render(true)`);await click(pg,'[data-act="setp"][data-v="platform"]');await pg.waitForTimeout(400);
     await click(pg,'[data-act="platL"]');ok(await pg.locator(".plx").count()===1,"Platform → Linkler açılmadı");
