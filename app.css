@@ -2260,6 +2260,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2537,3 +2538,6 @@ html.dk .pmprev{background:#140E20!important}
 /* koyu: alt bar arkası koyu zemine erisin, logo iki temada aynı kalsın */
 html.dk .navfade{background:linear-gradient(180deg,rgba(15,10,26,0),rgba(15,10,26,.92) 45%,#0F0A1A)!important}
 html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!important}html.dk .logo .lgy{stroke:#fff!important}html.dk .logo .lgd{fill:#00FF85!important}
+.btkf em.tkcd{font-variant-numeric:tabular-nums;letter-spacing:.04em;min-width:5.6em;text-align:center}
+.btkf em.tkcd.live{background:#FF4D64;color:#fff}
+@media (prefers-reduced-motion:no-preference){.btkf em.tkcd.live{animation:cdp 1.4s ease-in-out infinite}}

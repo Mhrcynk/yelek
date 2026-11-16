@@ -65,9 +65,10 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     await click(pg,'#modal .ch [data-act="close"]');ok(!(await sheetOpen(pg)),"Sen kimsin Kapat ile kapanmadı");
     await E(pg,`S.sheet={type:"me"};render(true)`);await pg.waitForTimeout(300);await click(pg,'#modal .grab');ok(!(await sheetOpen(pg)),"Tutamaca dokununca kapanmadı")});
 
-  await T("Geri sayım",async()=>{await click(pg,'.nav [data-tab="mac"]');const t=await pg.evaluate(()=>document.querySelector(".mafcd")?.textContent||"");
+  await T("Geri sayım",async()=>{await click(pg,'.nav [data-tab="mac"]');ok(!(await pg.evaluate(()=>!!document.querySelector(".mafcd"))),"Maç sekmesinde geri sayım olmamalı");
+    await click(pg,'.nav [data-tab="gecmis"]');const t=await pg.evaluate(()=>document.querySelector(".btkf .tkcd")?.textContent||"");
     ok(/^\d\d:\d\d:\d\d$/.test(t),"24 saat içindeki maçta geri sayım yok ("+t+")");await pg.waitForTimeout(1200);
-    const t2=await pg.evaluate(()=>document.querySelector(".mafcd")?.textContent||"");ok(t2!==t,"geri sayım ilerlemiyor")});
+    const t2=await pg.evaluate(()=>document.querySelector(".btkf .tkcd")?.textContent||"");ok(t2!==t,"geri sayım ilerlemiyor");await click(pg,'.nav [data-tab="mac"]')});
 
   await T("Kondisyon",async()=>{ok(await pg.locator(".field .tk").count()>0,"sahada kondisyon rozeti yok");
     await click(pg,'.nav [data-tab="kartlar"]');ok(await pg.locator(".plist .kchip").count()>0,"listede kondisyon yok");

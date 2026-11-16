@@ -190,6 +190,8 @@ function cdClock(m){const ts=matchTs(m),i=cdText(ts);
 function tickCd(){const el=document.getElementById("cdClk");if(!el)return;const i=cdText(+el.dataset.ts);el.hidden=!i;if(!i)return;
   const b=el.querySelector("b");if(b.textContent!==i.t)b.textContent=i.t;el.classList.toggle("live",!!i.live);b.classList.toggle("day",!!i.day);el.querySelector(".eyebrow").textContent=i.live?"Canlı":"Maça kalan süre"}
 /* afiş etiketi: 24 saatten uzaksa gün, son 24 saatte canlı geri sayım, başlayınca CANLI */
+function tkCd(ts,dayTxt){const ms=ts-Date.now();if(ms<=0&&ms>-2*36e5)return `<em class="tkcd live" data-cd="${ts}">CANLI</em>`;
+  if(ms>0&&ms<=864e5)return `<em class="tkcd num" data-cd="${ts}" role="timer" aria-label="Maça kalan süre">${cdText(ts).t}</em>`;return `<em>${dayTxt}</em>`}
 function cdLabel(ts,dayTxt){const ms=ts-Date.now();if(ms<=0&&ms>-2*36e5)return `<span class="mafcd live" data-cd="${ts}">CANLI</span>`;
   if(ms>0&&ms<=864e5)return `<span class="mafcd num" data-cd="${ts}" role="timer" aria-label="Maça kalan süre">${cdText(ts).t}</span>`;return dayTxt?`<span>${dayTxt}</span>`:""}
 function tickCd2(){document.querySelectorAll("[data-cd]").forEach(el=>{const ts=+el.dataset.cd,ms=ts-Date.now();
@@ -1075,7 +1077,7 @@ function viewGecmis(){
     const info=om.state==="kayit"?"Kadrolar henüz açıklanmadı":side?`Kadrolar belli · Takımın ${esc(nmOf(om,side))}`:"Kadrolar belli";
     h+=`<div class="gm">Sıradaki maç</div><button class="bltk" data-act="tab" data-tab="mac"><span class="btkh"><span>Hafta ${wk}</span><span>${esc(S.settings.field_name||"")}</span></span>
       <span class="btkm">${cap("A")}<span class="btkv"><small>${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].slice(0,3).toLocaleUpperCase("tr")}</small><b>${esc(String(om.time||"").slice(0,5))}</b></span>${cap("B")}</span>
-      <span class="btkf"><span>${info}</span><em>${left}</em></span></button>`}
+      <span class="btkf"><span>${info}</span>${tkCd(matchTs(om),left)}</span></button>`}
   for(const m of F){const d=parseYmd(m.date);const mk=AYLAR[d.getMonth()]+" "+d.getFullYear();if(mk!==cur){h+=`<div class="gm">${mk}</div>`;cur=mk}
     const i=S.mInfo[m.id]||{};const sa=+m.score_a||0,sb=+m.score_b||0;const st=m.stats||{};const ext=isExt(m);
     const sc=k=>(k==="A"?m.team_a:m.team_b||[]).filter(id=>+st[id]?.g).map(id=>firstName(nameOf(id))+(+st[id].g>1?" ×"+st[id].g:"")).join(", ");
@@ -1113,7 +1115,7 @@ function heroWhen(date,time){const d=parseYmd(date);const fld=S.settings.field_n
 function mafEmpty(date,time,nA,nB,label,sub){const d=parseYmd(date);const fld=S.settings.field_name;const t0=new Date();t0.setHours(0,0,0,0);const dd=Math.round((d-t0)/864e5);
   const left=dd<0?"":dd===0?"BUGÜN":dd===1?"YARIN":dd+" GÜN SONRA";const side=(n,k)=>`<div class="maft"><span class="mafcap crw">${crest(n,k,64,k==="A"?nB:nA)}</span><b style="font-size:${mafFs(n)}">${esc(n)}</b></div>`;
   return `<section class="maf"><div class="mafh"><span>${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].toLocaleUpperCase("tr")}${fld?" · "+esc(fld).toLocaleUpperCase("tr"):""}</span><span>${label}</span></div>
-    <div class="mafm">${side(nA,"A")}<div class="mafc">${label==="YENİ MAÇ"?(left?`<span>${left}</span>`:""):cdLabel(matchTs({date,time}),left)}<b class="num">${esc(String(time||"").slice(0,5))}</b></div>${side(nB,"B")}</div>
+    <div class="mafm">${side(nA,"A")}<div class="mafc">${left?`<span>${left}</span>`:""}<b class="num">${esc(String(time||"").slice(0,5))}</b></div>${side(nB,"B")}</div>
     <div class="mafb"><div class="mafme"><span>${sub}</span><em>${label==="YENİ MAÇ"?"Taslak":"Bekleniyor"}</em></div></div></section>`}
 function noMatchHero(){const d=nextDay(+S.settings.day);return mafEmpty(d,S.settings.time,TEAM.A,TEAM.B,"SIRADAKİ MAÇ","Yönetici maçı açınca kadrolar burada görünür")}
 const NAMEP=[["Kırmızılar","Maviler"],["Beyazlar","Siyahlar"],["Kartallar","Aslanlar"],["Şimşekler","Yıldızlar"],["Kuzey","Güney"],["Turuncular","Yeşiller"],["Fırtına","Yıldırım"],["Atmacalar","Şahinler"],["Doğu","Batı"],["Gece","Gündüz"]];
@@ -1161,7 +1163,7 @@ function hero(om){
     return `Takımın ${esc(TEAM[me])} · ${i<0?"Yedek":esc(EPOS[ep]?.[1]||ep)}${(me==="A"?om.cap_a:om.cap_b)===S.me?" · Kaptan":""}`})():"";
   const st=om.state==="kayit"?"Kadro bekleniyor":"Kadro belli";
   return `<section class="maf"><div class="mafh"><span>${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].toLocaleUpperCase("tr")}${fld?" · "+esc(fld).toLocaleUpperCase("tr"):""}</span><span>HAFTA ${wk}</span></div>
-    <div class="mafm">${cap("A")}<div class="mafc">${cdLabel(matchTs(om),left)}<b class="num">${esc(String(om.time||"").slice(0,5))}</b></div>${cap("B")}</div>
+    <div class="mafm">${cap("A")}<div class="mafc">${left?`<span>${left}</span>`:""}<b class="num">${esc(String(om.time||"").slice(0,5))}</b></div>${cap("B")}</div>
     <div class="mafb">${has?`<div class="mafbar" role="img" aria-label="Kazanma ihtimali ${esc(TEAM.A)} yüzde ${pA}, ${esc(TEAM.B)} yüzde ${100-pA}"><i style="width:${pA}%"></i><i></i></div>
       <div class="mafs"><span>Güç ${avA} · %${pA}</span><span>${fav?"Favori: "+esc(fav):"Denk maç"}</span><span>%${100-pA} · Güç ${avB}</span></div>`:""}
       <div class="mafme"><span>${meTxt||(om.state==="kayit"?"Kadrolar henüz açıklanmadı":"Bu hafta kadroda değilsin")}</span><em>${st}</em></div></div></section>`;
