@@ -2255,6 +2255,238 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 .gdl li.ok .gdt b{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
 .gdl .btn{flex:none}
 
+
+/* KOYU-OTO:başla */
+html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
+html.dk .sr .bar.r i{background:#273028}
+html.dk .msb .r i{background:#273028}
+html.dk .gbtn.b{background:#293027;color:#66B386;border-color:#3A2C55}
+html.dk .up{color:#39E077}
+html.dk .down{color:#E65246}
+html.dk .badge i{color:#F4B425}
+html.dk .board li:first-child .rk{color:#F4B425}
+html.dk .rb.g.on{color:#39E082}
+html.dk .rb.n.on{color:#ED4077}
+html.dk .ms button.on.g{color:#39E082}
+html.dk .ms button.on.n{color:#ED4077}
+html.dk .tcb.silver{background:linear-gradient(160deg,#272C2F,#A4ADB3)}
+html.dk .btn.light{background:#1A1229;border-color:#3A2C55;color:#F1EAFB}
+html.dk .btn.turf{background:#1A1229;border-color:#3A2C55;color:#F1EAFB}
+html.dk .prcap{background:#1A1229;color:#F1EAFB}
+html.dk .lrk.g1 b,html.dk .lrk.g2 b,html.dk .lrk.g3 b{color:#7086BD}
+html.dk .lrk.g2 b{background:linear-gradient(145deg,#212936,#9AA3B1)}
+html.dk .card,html.dk .lrow,html.dk .grow,html.dk .mhd,html.dk .slide,html.dk .report,html.dk .psh>div,html.dk .pwl2,html.dk .pmini>div,html.dk .glist2,html.dk .bh-vs,html.dk .sbd,html.dk .mehd,html.dk .kdme{background:#1A1229}
+html.dk .card .card{background:#1A1229}
+html.dk .lrow.me,html.dk .grow.next{border-color:#412F6A}
+html.dk .chips button{background:#1A1229}
+html.dk .seg3,html.dk .vtog,html.dk .mtabs{background:#2C2631}
+html.dk .seg3 button.on,html.dk .vtog button.on,html.dk .mtabs button.on{background:#1A1229}
+html.dk input[type=text],html.dk input[type=password],html.dk input[type=number],html.dk input[type=date],html.dk input[type=time],html.dk select,html.dk textarea{background:#1A1229}
+html.dk .sheet{background:#1A1229}
+html.dk .stTop,html.dk .stBot{background:#1A1229}
+html.dk .lnk,html.dk .pk i,html.dk .act svg,html.dk .timer,html.dk .when .dt,html.dk .gl .gi u,html.dk .exp{color:#9C6FF5}
+html.dk .bh-ey{color:#9C6FF5}
+html.dk .bh-chips>span{background:#1A1229}
+html.dk .bh-x{background:#2A2532}
+html.dk .bh-st>div{background:#1A1229}
+html.dk .bh-st .mid{background:#221443;border-color:#3D2673}
+html.dk .bh-st .mid b{color:#9C6FF5}
+html.dk .sbbar{background:#2C2631}
+html.dk .pwb{background:#2C2631}
+html.dk .pwb::after{background:#1A1229}
+html.dk .myr.G{background:#1C3B2C;color:#25F499}
+html.dk .myr.M{background:#421526;color:#F53875}
+html.dk .myr.B{background:#433014;color:#F4A025}
+html.dk .v8{color:#25F499 !important}
+html.dk .v7{color:#6DD642 !important}
+html.dk .v6{color:#F4A025 !important}
+html.dk .v5{color:#F53875 !important}
+html.dk .psh b.n8{color:#25F499}
+html.dk .psh b.n7{color:#6DD642}
+html.dk .psh b.n6{color:#F4A025}
+html.dk .psh b.n5{color:#F53875}
+html.dk .delta.pos,html.dk .cr b.hi,html.dk .rank .mv.up,html.dk .pnt.hi{color:#25F499}
+html.dk .delta.neg,html.dk .rank .mv.down,html.dk .pnt.lo{color:#F53875}
+html.dk .nrow[open] summary,html.dk .nrb{background:#1A1229}
+html.dk .nrp span{background:#2A2532}
+html.dk .pt{background:#1A1229}
+html.dk .pt.on{background:#221443}
+html.dk .pk.on,html.dk .btn.on{background:#221443 !important}
+html.dk .pfs button{background:#1A1229}
+html.dk .shic{background:#2A2532}
+html.dk .note.warn{background:#433214;color:#F4A125}
+html.dk .lgr.me{background:#221443}
+html.dk .lav.pos{color:#25F499}
+html.dk .lav.neg{color:#F53875}
+html.dk .lmv.dn{color:#F5387B}
+html.dk .kdb{background:#2C2631}
+html.dk .kdf .av{border-color:#3A2C55}
+html.dk .fmc{background:#1A1229}
+html.dk .navfade{background:linear-gradient(180deg,rgba(245,243,248,0),rgba(245,243,248,.92) 45%,#2A2532)}
+html.dk .tsall{background:#2B2532}
+html.dk .tsb li+li{border-top:1px solid #3A2C55}
+html.dk .tsb li:active{background:#2A2334}
+html.dk .pchip.sqa{background:#1E392B !important;color:#25F49C !important}
+html.dk .pchip.sqc{background:#2B2531 !important;color:#B4A6C9 !important}
+html.dk .chy+.chy{border-top:1px solid #3A2C55}
+html.dk .chl{background:#1E392B;color:#25F49C}
+html.dk .chi{background:#2A2532}
+html.dk .stbtn{background:#1A1229}
+html.dk .stbars i b{background:#1A1229}
+html.dk .stgo{background:#1A1229}
+html.dk .stsh{background:#1A1229}
+html.dk .ptabs{border-bottom:1px solid #3A2C55}
+html.dk .pss .yrsel i{background:#2B2532}
+html.dk .pssg div{background:#1A1229}
+html.dk .cr2 .h{background:#2B2531}
+html.dk .qki i{background:#2B2235}
+html.dk .stgo,html.dk .stsh{background:#1A1229 !important;color:#E225F4 !important}
+html.dk .chip.warn{color:#F4A025}
+html.dk .logo .lgsh{fill:#E225F4 !important}
+html.dk .abr b i.dn{color:#E6517F}
+html.dk .abt{background:var(--card3,#2B2531)}
+html.dk .meBtn.ask{background:#1A1229 !important;color:#E225F4 !important}
+html.dk .sbar i{background:#1A1229}
+html.dk .sfb i{background:#1A1229;color:#E225F4}
+html.dk .chst{background:#2B2532;color:#E225F4}
+html.dk .sr0.gold{background:conic-gradient(from 200deg,#FFD45A,#FF9F1C,#FFD45A,#433B14,#FFD45A)}
+html.dk .ptr.loading .sh,html.dk .ptr.done .sh{fill:#E225F4}
+html.dk .ptr.loading .ptm::after{background:linear-gradient(110deg,transparent 35%,rgba(26,18,41,.7) 50%,transparent 65%)}
+html.dk .vtx{color:var(--muted,#B4A6C9)}
+html.dk .kmenu{background:#1A1229}
+html.dk .kmenu i{color:#9C6FF5}
+html.dk .sqbar{background:#261443}
+html.dk .mer.on{background:#251443}
+html.dk .mecur .btn{background:#1A1229 !important;color:#E225F4 !important}
+html.dk .ysr .on{background:#251443;color:#9570EF}
+html.dk .ysr .no{background:#2B2235}
+html.dk .ysr .zr{background:#2A1F37}
+html.dk .mvpb .tsb{background:linear-gradient(160deg,#1A1229,#261443);border:1px solid #412772}
+html.dk .mvc>b{color:#E225F4}
+html.dk .mvc.r1>b{color:#9C6FF5}
+html.dk .mvr{background:#251443;color:#9570EF}
+html.dk .mvd.up{background:#1D3A2A;color:#2BEEA8}
+html.dk .mvd.dn{background:#411525;color:#DA5D8B}
+html.dk .mvx summary{color:#A170E6}
+html.dk .mvt{color:#9570EF;background:#261443}
+html.dk .pmcap{background:#2A1F37}
+html.dk .igp{color:#E225F4;background:#1A1229}
+html.dk .igav.t4{background:linear-gradient(150deg,#291E39,#261E39);color:#E225F4}
+html.dk .igtr .igey{color:#2BEEA8}
+html.dk .igtr .igwm{color:#B4A6C9}
+html.dk .igit{border-bottom:1px solid #3A2C55}
+html.dk .igit small{color:#B4A6C9}
+html.dk .igv span{color:#2BEEA8}
+html.dk .igtot{background:#261443;color:#9570EF}
+html.dk .igkt .igey{color:#9C6FF5}
+html.dk .igkt .igwm{color:#B4A6C9}
+html.dk .igfc.t4{background:linear-gradient(150deg,#291E39,#261E39);color:#E225F4}
+html.dk .igfc .n{background:rgba(26,18,41,.92);color:#E225F4}
+html.dk .igst div{background:#2A2532;color:#B4A6C9}
+html.dk .igst div b{color:#E225F4}
+html.dk .igq{color:#E225F4}
+html.dk .ignum i{background:rgba(26,18,41,.7)}
+html.dk .pmemp{background:#2B2235}
+html.dk .paka{background:#2A2235}
+html.dk .pak4 div{background:#2A2235}
+html.dk .pant{border:1px solid #3A2C55}
+html.dk .paal em.up{color:#2EEB8C}
+html.dk .paal em.dn{color:#E0576E}
+html.dk .pasub{background:#2A2235}
+html.dk .pasub .hd{color:#9C6FF5}
+html.dk .padet summary{color:#9C6FF5}
+html.dk .patl::before{background:#2B2334}
+html.dk .patm.x::before{background:var(--card,#1A1229);border:2px solid #3A2C55}
+html.dk .patm .m i{background:#2A2235}
+html.dk .patm .m i.up{background:#1F3829;color:#2EEB8C}
+html.dk .patm .m i.dn{background:#40171E;color:#E0576E}
+html.dk .patm .m i.st{background:#433614;color:#F4AC25}
+html.dk .pamc{background:#2A2235}
+html.dk .pamc em{color:#2EEB8C}
+html.dk .paf em{background:#231443;color:#9C6FF5}
+html.dk .pabd>span{border:1px solid #3A2C55}
+html.dk .mrow{border-top:1px solid #3A2C55}
+html.dk .mav{background:#2B2334}
+html.dk .mtag{background:#231443;color:#9C6FF5}
+html.dk .sacc{background:var(--card,#1A1229)}
+html.dk .sacc img,html.dk .sacc .sav{background:#2B2334}
+html.dk .salert{background:#433614;color:#F4AA25}
+html.dk .sbox{background:var(--card,#1A1229)}
+html.dk .setr+.setr{border-top:1px solid #3A2C55}
+html.dk .seti{background:#231443;color:#9C6FF5}
+html.dk .sw{background:#2A2531}
+html.dk .sw i{background:#1A1229}
+html.dk .sback{color:#9C6FF5}
+html.dk .vgo{background:#1A1229;color:#F1EAFB;border:1.5px solid #3A2C55}
+html.dk .vmid i{background:#2B2631}
+html.dk .vgl{border-top:1px solid #3A2C55}
+html.dk .vtime em{color:#2EEB8C}
+html.dk .vrow{border-top:1px solid #3A2C55}
+html.dk .vrow.t2 i{background:#282630;color:#E225F4}
+html.dk .vrow.t3 i{background:#3E2B19;color:#F48725}
+html.dk .vskl i{background:#2B2334}
+html.dk .sback{background:#231443}
+html.dk .mreq{background:var(--card,#1A1229);border:1.5px solid #735B26}
+html.dk .mcl{background:#433714;color:#F4AA25}
+html.dk .mreq .btn.ghost{border:1.5px solid #3A2C55}
+html.dk .mref{color:#9C6FF5}
+html.dk .mme{background:#231443}
+html.dk .mdel{background:#2B2037}
+html.dk .szd i{background:#2B2334}
+html.dk .szx b{color:#E0576E}
+html.dk p.wpush{background:#231443}
+html.dk p.wpush.on{background:#1E392B;color:#32E78D}
+html.dk .hstep p.ok{color:#32E78D}
+html.dk .hcard{border:1.5px solid #3A2C55;background:#1A1229}
+html.dk .offl{background:#433614;color:#F4AA25}
+html.dk .frs{background:var(--card,#1A1229)}
+html.dk .frs:before{background:#2B2433}
+html.dk .frp.G{background:#1E392B;color:#32E78D}
+html.dk .frp.B{background:#433614;color:#F4AC25}
+html.dk .frp.M{background:#40171E;color:#E0576F}
+html.dk .twc{background:var(--card,#1A1229)}
+html.dk .bszg div{background:#2B2037}
+html.dk .mtr{background:var(--card,#1A1229)}
+html.dk .lpgo{background:#1A1229 !important;color:#F1EAFB !important}
+html.dk .lpgo span{color:#F1EAFB !important}
+html.dk .lpk{color:#9C6FF5}
+html.dk .lpf{background:var(--card,#1A1229)}
+html.dk .lpsbm i{border:3px solid #3A2C55}
+html.dk .lplg{background:var(--card,#1A1229)}
+html.dk .lplr.me{color:#9C6FF5}
+html.dk .lpst li{background:var(--card,#1A1229)}
+html.dk .lpfaq details{background:var(--card,#1A1229)}
+html.dk .lpinv{background:var(--card,#1A1229);border:2px solid #412F6A}
+html.dk .lpinvk{color:#9C6FF5}
+html.dk .mtr>span:last-child{color:#9C6FF5}
+html.dk .nmhint{border:2px dashed #412F6A}
+html.dk .tcr{border-bottom:1px solid var(--line,#3A2C55)}
+html.dk .tcr i{background:#221443;color:#9C6FF5}
+html.dk .plx{background:#281B3C}
+html.dk .plr small{color:#9C6FF5}
+html.dk .hrow{background:#271A3D}
+html.dk .hrow.cur{background:#241443;box-shadow:inset 0 0 0 1.5px #3A2C55}
+html.dk .hx{color:#F53875}
+html.dk .htag{color:#9C6FF5;background:#241443}
+html.dk .htag.off{background:#2B2432}
+html.dk #hubQ{border:1px solid var(--line2,#3A2C55);background:#1A1229}
+html.dk .lkt{background:#292036}
+html.dk .lnkd{color:#F53875 !important}
+html.dk .per{border-bottom:1px solid var(--line,#3A2C55)}
+html.dk .bkl b,html.dk .bkl code{color:var(--ink,#CB4CE1)}
+html.dk .bkl code{background:#241443}
+html.dk .kchip.khi{color:#38E07D;background:#1E3928}
+html.dk .kchip.kmd{color:#F4AB25;background:#433414}
+html.dk .kchip.klo{color:#EB4C65;background:#42151D}
+html.dk .kcard{background:var(--card2,#271A3D)}
+html.dk .kcard.khi .kch em{color:#38E07D}
+html.dk .kcard.kmd .kch em{color:#F4AB25}
+html.dk .kcard.klo .kch em{color:#EB4C65}
+html.dk .kcard.klo .kch svg{color:#E45367}
+html.dk .gdbar{background:#292036}
+html.dk .gdl li.now{background:#221443;box-shadow:inset 0 0 0 1.5px #3A2C55}
+html.dk .gdc{background:#292036;color:#9282AB}
+/* KOYU-OTO:bitti */
 /* ================= Koyu tema (Ayarlar → Görünüm) ================= */
 html.dk{--pl:#EDE4FF;--plb:#8F5BFF;--bg:#0F0A1A;--bg2:#171024;--card:#1A1229;--card2:#1A1229;--card3:#231834;--line:#2B2040;--line2:#3A2C55;
  --ink:#F1EAFB;--muted:#A99BBF;--dim:#8A7BA3;--acc:#8F5BFF;--glass:#1A1229;--gline:#2B2040;color-scheme:dark}
@@ -2292,3 +2524,7 @@ html.dk .bkl code,html.dk .htag{background:#2A1D44;color:#D9C8FF}
 .gdt small{text-transform:none;letter-spacing:0;font-weight:500;font-family:var(--body)}
 .brand .bsub{letter-spacing:.06em;font-size:.52rem}
 .card.gd{justify-items:stretch;text-align:left}
+/* koyu: açık temada koyu (ters) zeminli öğeler koyuda vurgu moruna döner */
+html.dk .chips button.on,html.dk .statuses button.on,html.dk .kpills button.on,html.dk .kmenu .kpills button.on:hover,html.dk .pmi button.on,html.dk .pabd i{background:#8F5BFF!important;color:#fff!important;border-color:#8F5BFF!important}
+html.dk .setr.danger .seti{background:#3E1420;color:#FF8FA6}html.dk .setr.danger b{color:#FF8FA6}
+html.dk .pmprev{background:#140E20!important}

@@ -992,8 +992,8 @@ function card(p,big){
 }
 /* Kondisyon (sadece bilgi; reytinge ve takım dengesine etkisi yok) üç parçadan oluşur:
    1) Maç temposu: son 8 haftadaki en çok 6 maça (iç + dış) çıkma oranı; yakın maç daha ağır. Sakatlık/hastalık dönüşü ve uzun ara düşürür.
-   2) Yaş: 30'dan sonra tavan biraz iner, maç yorgunluğu biraz artar.
-   3) Maç yorgunluğu: oynadığı maçtan sonra düşer, 3 günde yavaş yavaş tamamen düzelir. */
+   2) Yaş: tavanı düşürmez (her yaşta %100 olunabilir); 30'dan sonra maçta daha çok yorulur ve daha geç toparlanır.
+   3) Maç yorgunluğu: oynadığı maçtan sonra düşer, yavaş yavaş düzelir (30 yaş altı 3 gün, yaşla 5 güne kadar uzar). */
 const KW=[1,.85,.7,.55,.4,.3],KREC=72;
 function kondOf(id){const hb=Math.floor(Date.now()/9e5);S._kc=S._kc||{};if(S._kc.v!==S.matches||S._kc.h!==hb)S._kc={v:S.matches,h:hb};if(id in S._kc)return S._kc[id];
   const p=P(id);let r=null;
@@ -1006,15 +1006,16 @@ function kondOf(id){const hb=Math.floor(Date.now()/9e5);S._kc=S._kc||{};if(S._kc
       const lg=p.status_log||[];let back=null;for(let x=lg.length-1;x>=0;x--){if(lg[x].type==="sakat"||lg[x].type==="hasta"){const h=lg.slice(x+1).find(e=>e.type==="hazir");if(h)back={at:Date.parse(h.at),t:lg[x].type};break}}
       if(back&&stOf(p)==="hazir"&&now-back.at<=42*D){const after=M.filter(m=>matchTs(m)>=back.at&&inM(m)).length;const pen=after>=2?0:after===1?8:15;if(pen){tempo-=pen;parts.push([back.t==="sakat"?"Sakatlık dönüşü":"Hastalık dönüşü",after?"dönüşten sonra 1 maç oynadı":"dönüşten sonra henüz oynamadı",-pen])}}
       tempo=Math.max(30,Math.min(100,tempo));
-      const age=ageOf(p);const ap=age!=null&&age>30?Math.min(10,(age-30)*.6):0;if(ap>=.5)parts.push(["Yaş",age+" yaş",-ap]);
-      let k=60+.4*tempo-ap;
+      const age=ageOf(p);const old=age!=null&&age>30?age-30:0;
+      const rec=KREC+Math.min(48,old*8);// toparlanma süresi (saat)
+      let k=60+.4*tempo;
       // maç yorgunluğu
       const last=M.find(inM);let fat=0,ready=null;
-      if(last){const t=(now-matchTs(last))/H-1;if(t<KREC){
-        let d=22+(age!=null&&age>30?Math.min(12,(age-30)*.8):0)+(tempo<70?6:0);
+      if(last){const t=(now-matchTs(last))/H-1;if(t<rec){
+        let d=22+Math.min(14,old*1.2)+(tempo<70?6:0);
         const prev=M.filter(inM)[1];if(prev&&(matchTs(last)-matchTs(prev))/D<4)d+=6;
-        fat=d*Math.pow(Math.max(0,1-Math.max(0,t)/KREC),1.2);ready=matchTs(last)+(KREC+1)*H;
-        if(fat>=.5)parts.push(["Maç yorgunluğu",fmtRec(ready),-fat])}}
+        fat=d*Math.pow(Math.max(0,1-Math.max(0,t)/rec),1.2);ready=matchTs(last)+(rec+1)*H;
+        if(fat>=.5)parts.push(["Maç yorgunluğu",(old?age+" yaş, toparlanma "+(Math.round(rec/24*2)/2).toString().replace(".",",")+" gün · ":"")+fmtRec(ready),-fat])}}
       k-=fat;
       const st=stOf(p);if(st==="sakat"||st==="hasta"){k=Math.min(k,40);parts.push([STATUS[st].label,"şu an oynayamıyor",0])}
       k=Math.round(Math.max(20,Math.min(100,k)));
@@ -1962,7 +1963,7 @@ function viewKurallar(inSheet){
   const RL=[["KL","Kaleci"],["DF","Defans"],["DOS","Defansif orta saha"],["OS","Orta saha"],["FV","Forvet"]];
   return `
   <section class="card"><h2>Kondisyon</h2><p class="muted small">Maça ne kadar hazır olduğunu gösterir; reytinge ve takım dengesine etkisi yoktur. Üç şeyden oluşur:</p>
-   <div class="rules">${row("Maç temposu","son 8 haftadaki en çok 6 maça çıkma oranı (dış maçlar dahil), yakın maç daha ağır")}${row("Maç eksiği","hiç oynamayanın temposu %40'a iner")}${row("Sakatlık / hastalık dönüşü","tempo ilk maçta −15, ikinci maçta −8")}${row("Uzun ara","takım 3 haftadan uzun maç yapmazsa herkes düşer")}${row("Yaş","30'dan sonra her yaş için biraz düşer (en fazla −10)")}${row("Maç yorgunluğu","oynadığın maçtan sonra 22–40 puan düşer, 3 günde yavaş yavaş düzelir; yaş, düşük tempo ve 4 gün içinde ikinci maç yorgunluğu artırır")}${row("Seviye","%80+ zinde · %60–79 orta · altı düşük")}</div></section>
+   <div class="rules">${row("Maç temposu","son 8 haftadaki en çok 6 maça çıkma oranı (dış maçlar dahil), yakın maç daha ağır")}${row("Maç eksiği","hiç oynamayanın temposu %40'a iner")}${row("Sakatlık / hastalık dönüşü","tempo ilk maçta −15, ikinci maçta −8")}${row("Uzun ara","takım 3 haftadan uzun maç yapmazsa herkes düşer")}${row("Maç yorgunluğu","oynadığın maçtan sonra en az 22 puan düşer, yavaş yavaş düzelir; düşük tempo ve 4 gün içinde ikinci maç yorgunluğu artırır")}${row("Yaş","her yaşta %100 olunabilir; 30'dan sonra maçta daha çok yorulur (yaş başına +1,2, en fazla +14) ve daha geç toparlanır (30 altı 3 gün, her yaş +8 saat, en fazla 5 gün)")}${row("Seviye","%80+ zinde · %60–79 orta · altı düşük")}</div></section>
   <section class="card"><h2>Piyasa değeri</h2><p class="muted small">FC 27'deki oyuncu değerlerinden ayarlandı. Her maçtan sonra güncellenir.</p><div class="rules">${row("Reyting","her reytingin sabit değeri var: 65 = 5 M €, 70 = 9 M €, 75 = 16 M €, 80 = 30 M €, 85 = 47 M €, 90 = 62,6 M €, 100 = 90 M €")}${row("Kaleci","×0,85")}${row("Yaş","15 yaş ×1,2 · 22 yaş ×1,1 · 27 yaş ×1 · 31 yaş ×0,93 · 35+ ×0,85, aralar kademeli")}${row("Form","en az 3 maç oynayanlarda son 5 maçın not ortalaması 7'nin üstündeyse +, altındaysa −; en fazla ±%15")}${row("Devamlılık","en az 5 maç oynandıktan sonra, son 8 maçın katılımına göre en fazla ±%10; yedeklere uygulanmaz")}${row("Kupalar","son sezonun her kupası +%5, daha eskiler +%2")}${row("Taban","en düşük 1 M €")}</div></section>
   <section class="card"><h2>Maç notu</h2><p>Sahada yapılanlar (sonuç, gol, asist, yenilen gol, değerlendirme) toplanır. Sonra <b>maç dengesi</b> uygulanır: maçtaki ortadaki oyuncu ${fN(n.orta)} alacak şekilde herkesin notu aynı miktarda kaydırılır. Böylece notlar şişmez, kim maçın ortalamasının üstünde kim altında net görünür. Not ${fN(n.tavan)}'i geçerse aşan kısım yarı sayılır.</p>
    <p class="muted small">Değerlendirme notun aralığını belirler. Aralığın dışına taşan kısmın dörtte biri sayılır:</p>
