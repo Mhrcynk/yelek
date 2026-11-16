@@ -454,7 +454,7 @@ async function act(fn,args,okMsg){
       else toast({closed:"Bu işlem için süre doldu ya da maç kapandı.",not_played:"Bu maçta oynamadığın için oy veremezsin.",self:"Kendine oy veremezsin.",short:"Yeni şifre en az 6 karakter olmalı."}[r.error]||"İşlem yapılamadı.");
       await load(true);return null}
     if(okMsg)toast(okMsg);await load(true);return r||{ok:true};
-  }catch(e){console.error(e);toast("Kaydedilemedi. Bağlantını kontrol et.");return null}
+  }catch(e){console.error(e);const net=e&&(e.name==="TypeError"||!navigator.onLine);if(!net)logErr("act "+fn+": "+(e&&e.message),"act",e&&e.stack);toast(net?"Kaydedilemedi. Bağlantını kontrol et.":"Kaydedilemedi. Bir aksilik oldu, biraz sonra tekrar dene.");return null}
 }
 const A=(fn,args,ok)=>act(fn,{p_pin:S.pin,...args},ok);
 
