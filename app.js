@@ -803,7 +803,7 @@ function ypPlace(T,W,bw,bh,obs){const gap=6;
   return T}
 // kalan çakışma var mı (kutular + engeller)
 const ypClash=(T,bw,bh,obs)=>T.some((A,a)=>T.some((B,b)=>b>a&&Math.abs(A.x-B.x)<bw+2&&Math.abs(A.y-B.y)<bh+2)||(obs||[]).some(o=>Math.abs(A.x-o.x)<(bw+o.w)/2+2&&Math.abs(A.y-o.y)<(bh+o.h)/2+2));
-const ypTok=(t,z)=>{const nm=TRU(t.n);return `<div class="yp-pl${t.cap?" yp-cap":""}" style="left:${(t.x-z.w/2).toFixed(1)}px;top:${(t.y-z.h/2).toFixed(1)}px;width:${z.w}px;height:${z.h}px" data-b>${ypAv(t.id,t.t,`width:${z.av}px;height:${z.av}px`)}${t.c!=null?`<span class="yp-nt${t.cc?" yp-"+t.cc:""}">${esc(t.c)}</span>`:""}<div class="yp-nm" style="font-size:${ypFit(nm,z.nm,z.w,{ls:.05})}px">${esc(nm)}${t.sub?`<small style="font-size:${ypFit(TRU(t.sub),9,z.w,{w:700,fam:INF,ls:.12})}px">${esc(TRU(t.sub))}</small>`:""}</div></div>`};
+const ypTok=(t,z)=>{const nm=TRU(t.n);return `<div class="yp-pl${t.cap?" yp-cap":""}" style="left:${(t.x-z.w/2).toFixed(1)}px;top:${(t.y-z.h/2).toFixed(1)}px;width:${z.w}px;height:${z.h}px" data-b>${ypAv(t.id,t.t,`width:${z.av}px;height:${z.av}px`)}${t.c!=null?`<span class="yp-nt${t.cc?" yp-"+t.cc:""}">${t.cc==="mo"?'<svg width="10" height="10" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z" fill="#ffffff"/></svg>':""}${esc(t.c)}</span>`:""}<div class="yp-nm" style="font-size:${ypFit(nm,z.nm,z.w,{ls:.05})}px">${esc(nm)}${t.sub?`<small style="font-size:${ypFit(TRU(t.sub),9,z.w,{w:700,fam:INF,ls:.12})}px">${esc(TRU(t.sub))}</small>`:""}</div></div>`};
 const YP_H=506,YZ1={w:104,h:94,av:64,nm:17};
 const ypPitch=(H,both)=>{const W=476,m=H/2,a='fill="none" stroke="#ffffff" stroke-opacity=".3" stroke-width="2"';
   return `<svg class="yp-pitch" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><rect x="1" y="1" width="${W-2}" height="${H-2}" rx="10" fill="#0A0232" fill-opacity=".35" stroke="#ffffff" stroke-opacity=".3" stroke-width="2"/>`+
@@ -829,7 +829,7 @@ function ypMatchDay(){const n=hkNextAny();if(!n)return null;const R=rsvpLists(n)
   const html=ypPost({ey:igDate(n.date)+(S.settings.field_name?" · "+S.settings.field_name:""),ti,wk:ypWkN(n),hc:"mid",hero,pn:ypSts([[String(R.kadro.length),"Geliyor",1],[String(R.bos.length),"Cevap vermedi"],[String(Math.max(0,CAP-R.kadro.length)),"Boş yer"]]),ft:"Gelemeyen haber versin"});
   return{html,cap:`${ti}! ${hkWhen(n)}${S.settings.field_name?" · "+S.settings.field_name:""} ⚽\n${R.kadro.length} kişi geliyor${CAP-R.kadro.length>0?", "+(CAP-R.kadro.length)+" yer boş":""}.\nGelemeyen haber versin 👇\n${HT()} #halısaha`,name:"mac-gunu-"+n.date}}
 function ypKadro(m,notes){const inf=S.mInfo[m.id]||{pts:{}};
-  const chip=id=>{if(notes){const r=inf.pts[id];if(!r)return{};const mo=inf.motm===id;return{c:(mo?"★ ":"")+fN(r.pts),cc:mo?"st":r.pts>=8?"hi":r.pts<6.5?"lo":""}}return{c:P(id)?.guest?"MİS":String(ovrOf(id))}};
+  const chip=id=>{if(notes){const r=inf.pts[id];if(!r)return{};const mo=inf.motm===id;return{c:fN(r.pts),cc:mo?"mo":r.pts>=8?"hi":r.pts<6.5?"lo":""}}return{c:P(id)?.guest?"MİS":String(ovrOf(id))}};
   const ln=k=>plOf(m,k).map(id=>shortName(nameOf(id))).join(", ");
   if(notes){const html=ypPost({ey:igDate(m.date)+" · Herkesin notu",ti:"Not karnesi",...ypScW(m),hc:"top",hero:ypField(m,chip),ft:igWeek(m)||"#halısaha"});
     return{html,cap:`${igDate(m.date)} not karnesi 📝\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n${HT()} #halısaha`,name:"not-karnesi-"+m.date}}
@@ -869,7 +869,7 @@ function ypMotm(m){const inf=S.mInfo[m.id]||{pts:{}};const id=inf.motm;if(!id)re
 function ypTotw(m){const inf=S.mInfo[m.id]||{pts:{}};const T=inf.totw||[];if(!T.length)return null;const fk=T.form||"2-3-1",sl=T.slot||{};const z=YZ1,H=YP_H;
   const rows={KL:[],DF:[],OS:[],FV:[]};T.forEach(id=>{const r=sl[id]||inf.pts[id]?.role||"OS";(rows[r]||rows.OS).push(id)});const Y={KL:7,DF:30,OS:56,FV:83};const toks=[];
   for(const r of["KL","DF","OS","FV"])rows[r].forEach((id,i,L)=>{const x=(i+1)/(L.length+1)*100,fy=(Y[r]-7)/78,k=plOf(m,"A").includes(id)?"A":"B";const v=inf.pts[id]?.pts;const mo=inf.motm===id;
-    toks.push({id,x:z.w/2+4+x/100*(476-z.w-8),y:H-z.h/2-(H-z.h)*fy,y0:0,y1:H,t:k==="A"?"ta":"tb",n:ypSn(id),cap:mo,c:(mo?"★ ":"")+fN(v),cc:mo?"st":v>=8?"hi":v<6.5?"lo":""})});
+    toks.push({id,x:z.w/2+4+x/100*(476-z.w-8),y:H-z.h/2-(H-z.h)*fy,y0:0,y1:H,t:k==="A"?"ta":"tb",n:ypSn(id),cap:mo,c:fN(v),cc:mo?"mo":v>=8?"hi":v<6.5?"lo":""})});
   ypPlace(toks,476,z.w,z.h,[]);
   const html=ypPost({ey:igDate(m.date)+" · En iyi yedi",ti:"Haftanın takımı",wk:fk,hc:"top",hero:ypPitch(H,false)+toks.map(t=>ypTok(t,z)).join(""),ft:igWeek(m)||"#haftanıntakımı"});
   const by=r=>rows[r].map(id=>shortName(nameOf(id))+" "+fN(inf.pts[id]?.pts)).join(", ");
@@ -976,12 +976,16 @@ function ypPosRace(k){const{F}=hkSeason();const R=yelekRace(F)[k]||[];const L=R.
   const hd={FV:"Sezonun forveti",OS:"Sezonun orta sahası",DF:"Sezonun defansı",KL:"Altın eldiven"}[k];
   const html=ypPost({ey:"Mevki yarışı · "+ROLE_NAME[k],ti:hd,wk:ypHw(F),hero:ypPod(L.map((o,i)=>({id:o.id,v:fP(o.tot),l:(i+1)+". · Puan"}))),ft:"#halısaha"});
   return{html,cap:`${hd} yarışı ${aw?aw[2]:""}\n${L.map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+fP(o.tot)).join("\n")}\n${HT()} #halısaha`,name:"yaris-"+k}}
-function ypTable(){const{yr,F}=hkSeason();if(!F.length)return null;const L=ligTable(F);if(!L.length)return null;const T=L.slice(0,10);const rh=T.length>8?40:46;
-  const row=(o,i)=>{const nm=TRU(nameOf(o.id));const av=o.av>0?"+"+o.av:String(o.av);
-    return `<div class="yp-tr${i===0?" yp-lead":""}" style="height:${rh}px"><b class="yp-tn">${i+1}</b>${ypAv(o.id,"",`width:${rh-10}px;height:${rh-10}px`)}<span class="yp-tnm" style="font-size:${ypFit(nm,17,196,{ls:.04})}px">${esc(nm)}</span><span>${o.n}</span><span>${o.G}-${o.B}-${o.M}</span><span>${esc(av)}</span><b class="yp-tp">${o.p}</b></div>`};
-  const hero=`<div class="yp-tbl" data-b><div class="yp-th"><span>#</span><span></span><span>OYUNCU</span><span>O</span><span>G-B-M</span><span>AV</span><span>P</span></div>${T.map(row).join("")}</div>`;
-  const html=ypPost({ey:"Sezon "+yr+" · "+F.length+" maç",ti:"Puan durumu",wk:ypHw(F),hc:"top",hero,ft:L.length>10?"+"+(L.length-10)+" oyuncu daha":"#halısaha"});
-  return{html,cap:`Puan durumu · Sezon ${yr}, hafta ${F.length} 📊\n${T.slice(0,5).map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+o.p+" puan").join("\n")}\n${HT()} #halısaha`,name:"puan-durumu"}}
+function ypTable(){const{yr,F}=hkSeason();if(!F.length)return null;const L=ligTable(F);if(!L.length)return null;const n=L.length;
+  // herkes görünür: 12 kişiye kadar tek sütun, fazlasında iki sütun
+  const two=n>12,per=two?Math.ceil(n/2):n,rh=Math.max(two?24:30,Math.min(46,Math.floor((506-26)/per)-4)),avs=rh-(two?8:10),fs=Math.min(17,rh*.5);
+  const row=(o,i)=>{const nm=TRU(two?ypSn(o.id):nameOf(o.id));const av=o.av>0?"+"+o.av:String(o.av);const nw=two?96:196;
+    return `<div class="yp-tr${two?" yp-t2":""}${i===0?" yp-lead":""}" style="height:${rh}px;font-size:${fs}px"><b class="yp-tn">${i+1}</b>${ypAv(o.id,"",`width:${avs}px;height:${avs}px`)}<span class="yp-tnm" style="font-size:${ypFit(nm,fs,nw,{ls:.04})}px">${esc(nm)}</span><span>${o.n}</span>${two?"":`<span>${o.G}-${o.B}-${o.M}</span><span>${esc(av)}</span>`}<b class="yp-tp">${o.p}</b></div>`};
+  const head=two?`<div class="yp-th yp-t2"><span>#</span><span></span><span>OYUNCU</span><span>O</span><span>P</span></div>`:`<div class="yp-th"><span>#</span><span></span><span>OYUNCU</span><span>O</span><span>G-B-M</span><span>AV</span><span>P</span></div>`;
+  const col=(R,o)=>`<div class="yp-tbl" data-b>${head}${R.map((x,i)=>row(x,i+o)).join("")}</div>`;
+  const hero=two?`<div class="yp-tbl2">${col(L.slice(0,per),0)}${col(L.slice(per),per)}</div>`:col(L,0);
+  const html=ypPost({ey:"Sezon "+yr+" · "+F.length+" maç",ti:"Puan durumu",wk:ypHw(F),hc:"top",hero,ft:n+" oyuncu"});
+  return{html,cap:`Puan durumu · Sezon ${yr}, hafta ${F.length} 📊\n${L.slice(0,5).map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+o.p+" puan").join("\n")}\n${HT()} #halısaha`,name:"puan-durumu"}}
 function ypKing(f){const{yr,F}=hkSeason();const t={};F.forEach(m=>Object.entries(m.stats||{}).forEach(([id,s])=>{if(!P(id)||P(id).guest)return;t[id]=t[id]||{g:0,a:0};t[id].g+=+s.g||0;t[id].a+=+s.a||0}));
   const o=f==="g"?"a":"g";const L=Object.entries(t).filter(([,v])=>v[f]>0).sort((x,y)=>y[1][f]-x[1][f]||x[1][o]-y[1][o]).slice(0,3);if(!L.length)return null;
   const lb=f==="g"?"Gol":"Asist",ob=f==="g"?"asist":"gol";

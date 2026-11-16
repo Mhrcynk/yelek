@@ -2270,6 +2270,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2601,7 +2602,7 @@ html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!imp
 .yp-av.yp-L{width:76px;height:76px}.yp-av.yp-XL{width:100px;height:100px;border-width:3px}
 .yp-pl.yp-cap .yp-av{border-color:var(--ac);box-shadow:0 0 0 3px rgba(255,62,165,.4)}
 .yp-nt{position:absolute;top:0;right:0;min-width:28px;padding:3px 5px 2px;border-radius:9px;background:#fff;color:#140552;text-align:center;font:800 14px/1 "Barlow Condensed","Arial Narrow",sans-serif;border:1.5px solid #140552;white-space:nowrap}
-.yp-nt.yp-hi{background:#00FF85}.yp-nt.yp-lo{background:#FF4D6D;color:#fff}.yp-nt.yp-st{background:var(--ac);color:#fff}
+.yp-nt.yp-hi{background:#00FF85}.yp-nt.yp-lo{background:#FF4D6D;color:#fff}.yp-nt.yp-mo{background:var(--ac);color:#fff}
 .yp-nm{margin-top:3px;font:800 14px/1.1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.05em;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.6)}
 .yp-nm small{display:block;margin-top:2px;font:700 9px/1 Inter,sans-serif;letter-spacing:.12em;opacity:.8}
 .yp-pitch{position:absolute;left:0;top:0}
@@ -2705,3 +2706,9 @@ html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!imp
 .yp-tp{font-size:20px;color:var(--ac)}
 .yp-lead{background:var(--ac);border-color:var(--ac);color:var(--acI)}
 .yp-lead .yp-tn,.yp-lead .yp-tp{color:var(--acI)}.yp-lead>span:nth-child(n+4){opacity:1}
+.yp-nt.yp-mo{display:flex;align-items:center;gap:3px;padding:3px 6px 2px 5px;border-color:#fff;box-shadow:0 2px 8px rgba(255,62,165,.55)}
+.yp-nt svg{display:block;flex:none;margin-top:-1px}
+.yp-tbl2{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start}
+.yp-th.yp-t2,.yp-tr.yp-t2{grid-template-columns:18px auto minmax(0,1fr) 22px 28px;gap:5px;padding:0 7px}
+.yp-tr.yp-t2>span:nth-child(n+4){font-size:inherit}
+.yp-tr.yp-t2 .yp-tp{font-size:1.15em}
