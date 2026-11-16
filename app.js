@@ -678,7 +678,7 @@ function renderSheet(){
   const host=$("#modal");const html=S.sheet?sheetHtml():"";
   if(!html){S.sheet=null;if(host.firstChild){host.innerHTML="";document.body.classList.remove("lock")}return}
   let body=$("#sheetBody");
-  if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><div class="grab"></div><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
+  if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><button class="grab" data-act="close" aria-label="Kapat"></button><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
   keepOpen(body,()=>{body.innerHTML=html});
 }
 /* ================= Paylaşım merkezi ================= */
@@ -1671,11 +1671,11 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
 const trq=t=>String(t||"").toLocaleLowerCase("tr").replace(/[çğıöşü]/g,c=>({ç:"c",ğ:"g",ı:"i",ö:"o",ş:"s",ü:"u"})[c]);
 function sheetMe(){
   const ps=[...S.players].sort((a,b)=>a.name.localeCompare(b.name,"tr"));
-  if(!ps.length)return `<div class="ch"><div><h2>Sen kimsin?</h2></div></div><p class="muted">Henüz oyuncu eklenmemiş.</p><div class="row"><button class="btn sm" data-act="close">Kapat</button></div>`;
+  if(!ps.length)return `<div class="ch"><div><h2>Sen kimsin?</h2></div><button class="btn sm" data-act="close">Kapat</button></div><p class="muted">Henüz oyuncu eklenmemiş.</p>`;
   const om=openMatch(),rs=om?.rsvp||{};const lastId=S.me||LS.get("y_me_last")||"";const used=new Set();
   const row=p=>{used.add(p.id);return `<button class="mer${p.id===S.me?" on":""}" data-act="pickMe" data-id="${esc(p.id)}" data-q="${esc(trq(p.name))}">${avatar(p)}<span class="mern"><b>${esc(p.name)}</b><small>${esc(eposOf(p))}${p.yedek?" · yedek":""}</small></span><span class="o num">${ovrOf(p.id)}</span></button>`};
   const sec=(l,arr)=>arr.length?`<div class="mes"><div class="mel">${l}</div>${arr.map(row).join("")}</div>`:"";
-  let h=`<div class="ch"><div><h2>Sen kimsin?</h2></div></div><label class="mesr">${ICON_SRCH}<input id="meQ" type="search" placeholder="İsmini yaz" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="İsmini ara"></label><div id="meL">`;
+  let h=`<div class="ch"><div><h2>Sen kimsin?</h2></div><button class="btn sm" data-act="close">Kapat</button></div><label class="mesr">${ICON_SRCH}<input id="meQ" type="search" placeholder="İsmini yaz" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="İsmini ara"></label><div id="meL">`;
   const lp=lastId&&P(lastId);
   if(S.me&&lp){used.add(lp.id);h=h.replace('<label class="mesr">',`<div class="mecur">${avatar(lp)}<span><small>Şu an sen</small><b>${esc(lp.name)}</b></span><button class="btn sm" data-act="pickMe" data-id="">Çıkış</button></div><label class="mesr">`)}
   else if(lp)h+=sec("Bu cihazda son",[lp]);
