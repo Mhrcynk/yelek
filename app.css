@@ -2239,3 +2239,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 .tcard .tk{display:inline-flex;position:absolute;z-index:3;right:-12px;bottom:3px;align-items:center;gap:1px;padding:1px 5px 1px 3px;border-radius:99px;background:#0D0D10;color:var(--kc);font-style:normal;border:1px solid rgba(255,255,255,.18);box-shadow:0 2px 5px rgba(0,0,0,.4);pointer-events:none}
 .tcard .tk svg{width:10px;height:10px}.tcard .tk b{font:800 .62rem/1.3 Inter,sans-serif;color:#fff}
 .field.both .tcard .tk{right:-10px;padding:0 4px 0 2px}.field.both .tcard .tk svg{width:9px;height:9px}.field.both .tcard .tk b{font-size:.56rem}
+.mafc .mafcd{font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.mafc .mafcd.live{color:#FF5A6E}
+@media (prefers-reduced-motion:no-preference){.mafc .mafcd.live{animation:cdp 1.4s ease-in-out infinite}}
+@keyframes cdp{50%{opacity:.45}}
