@@ -383,11 +383,11 @@ async function load(force){
   if(S.fol){try{const d=await rpc("follow_data",{p_team:TID});if(d&&d.ok){applyData([d.settings],d.players||[],d.matches||[],[]);S.photos={};S.offline=0}else{S.fol=false;applyData([],[],[],[])}}catch(e){if(!S.loaded)S.err="Verilere ulaşılamadı. İnternet bağlantını kontrol edip sayfayı yenile."}setBrand();render();return}
   try{const yr=new Date().getFullYear();
     const[st,pl,ms,sv2,ag]=await Promise.all([sbGet("settings?id=eq."+TID+"&select=*"),sbGet("players?select=id,name,pos,no,attrs,status,status_log,created_at,archived,photo_v,guest,epos,alt_pos,yedek&order=created_at.asc"),
-      sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr),rpc("player_ages",{}).catch(()=>[])]);
+      sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr),rpc("player_ages",{}).catch(()=>[]),rpc("team_rev",{}).then(r=>{if(r)S.rev=r}).catch(()=>{})]);
     {const am={};(Array.isArray(ag)?ag:[]).forEach(r=>am[r.id]=r.age);pl.forEach(p=>{if(am[p.id]!=null)p.age=am[p.id]})}
     const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&!S.offline&&sig===S.sig;S.sig=sig;
     applyData(st,pl,ms,sv2);S.offline=0;setBrand();
-    const pv=pl.map(p=>p.id+":"+(p.photo_v||0)).join(",");if(pv!==S.pv&&pl.some(p=>p.photo_v)){try{const ph=await sbGet("player_photos?select=player_id,data");S.photos={};ph.forEach(r=>S.photos[r.player_id]=r.data);S.pv=pv}catch(_){}}
+    await photosSync(pl);
     cacheSave(st,pl,ms,sv2);
     // arka plan yenilemesinde veri değişmediyse ekranı yeniden çizme (açık bölümler kapanmasın)
     if(same&&!force)return;
@@ -401,13 +401,26 @@ function cacheSave(st,pl,ms,sv2){if(S.fol)return;
   if(!pl.length){LS.del("y_cache");LS.del("y_cph");return}// kilitli ve üye değil: hiçbir şey saklama
   const at=Date.now();S.cacheAt=at;
   try{localStorage.setItem("y_cache",JSON.stringify({v:1,at,st,pl,ms,sv2,mem:S.mem||null}))}catch(_){LS.del("y_cache")}
-  try{if(S.pv&&LS.get("y_cpv")!==S.pv){localStorage.setItem("y_cph",JSON.stringify(S.photos));LS.set("y_cpv",S.pv)}}catch(_){LS.del("y_cph");LS.del("y_cpv")}}
+}
 function cacheLoad(){try{const c=JSON.parse(localStorage.getItem("y_cache")||"null");if(!c||c.v!==1||!c.pl||!c.pl.length)return false;
   applyData(c.st,c.pl,c.ms,c.sv2);S.cacheAt=c.at;S.sig=JSON.stringify([c.st,c.pl,c.ms,c.sv2]);
   if(c.mem&&!S.mem)S.mem=c.mem;if(S.mem&&S.mem.role==="yonetici"&&S.mem.status==="onayli")S.admin=true;
-  try{const ph=JSON.parse(localStorage.getItem("y_cph")||"null");if(ph){S.photos=ph;S.pv=LS.get("y_cpv")}}catch(_){}
   return true}catch(_){return false}}
-function cacheClear(){LS.del("y_cache");LS.del("y_cph");LS.del("y_cpv");S.cacheAt=0}
+function cacheClear(){LS.del("y_cache");LS.del("y_cph");LS.del("y_cpv");S.cacheAt=0;S.photos={};S.phv={};S.rev=null;idbSet("ph","")}
+/* fotoğraflar: telefonda IndexedDB'de (localStorage'ın 5 MB sınırına takılmaz), sadece sürümü değişenler indirilir */
+const IDB={db:null};
+function idbOpen(){if(IDB.db)return Promise.resolve(IDB.db);return new Promise(res=>{try{const r=indexedDB.open("yelek",1);r.onupgradeneeded=()=>r.result.createObjectStore("kv");r.onsuccess=()=>res(IDB.db=r.result);r.onerror=()=>res(null)}catch(_){res(null)}})}
+async function idbGet(k){const db=await idbOpen();if(!db)return null;return new Promise(res=>{try{const q=db.transaction("kv").objectStore("kv").get(k+"_"+TID);q.onsuccess=()=>res(q.result??null);q.onerror=()=>res(null)}catch(_){res(null)}})}
+async function idbSet(k,v){const db=await idbOpen();if(!db)return;try{db.transaction("kv","readwrite").objectStore("kv").put(v,k+"_"+TID)}catch(_){}}
+async function photosLoadCache(){try{let c=await idbGet("ph");
+    if(!c){const old=JSON.parse(localStorage.getItem("y_cph")||"null");if(old){c={ph:old,v:{}};LS.del("y_cph");LS.del("y_cpv")}}
+    if(c&&c.ph&&!Object.keys(S.photos||{}).length){S.photos=c.ph;S.phv=c.v||{};render(true)}}catch(_){}}
+async function photosSync(pl){S.phv=S.phv||{};const want={};pl.forEach(p=>{if(p.photo_v)want[p.id]=p.photo_v});
+  let ch=false;for(const id of Object.keys(S.photos||{}))if(!want[id]){delete S.photos[id];delete S.phv[id];ch=true}
+  const need=Object.keys(want).filter(id=>S.phv[id]!==want[id]);
+  for(let i=0;i<need.length;i+=8){const part=need.slice(i,i+8);
+    try{const rows=await sbGet("player_photos?select=player_id,data&player_id=in.("+part.join(",")+")");rows.forEach(r=>{S.photos[r.player_id]=r.data;S.phv[r.player_id]=want[r.player_id]});part.forEach(id=>{if(!rows.some(r=>r.player_id===id)){delete S.photos[id];S.phv[id]=want[id]}});ch=true}catch(_){break}}
+  if(ch&&!S.fol)idbSet("ph",{ph:S.photos,v:S.phv})}
 const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
 /* tek seferlik: fotoğrafları hizala (sunucuda hazırlanan dönüşüm, yönetici telefonunda uygulanır) */
 async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
@@ -421,8 +434,8 @@ async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
       let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");if(d.length>=250000)continue;
       const w=await rpc("admin_set_photo",{p_pin:S.pin||"",p_id:x.id,p_data:d});if(w&&w.ok){S.photos[x.id]=d;await rpc("admin_photo_fix_done",{p_pin:S.pin||"",p_id:x.id});n++}}
     if(n){toast(n+" fotoğraf hizalandı");render(true)}}catch(e){console.warn(e)}finally{S._pf=false}}
-async function notesSync(){setTimeout(photoFixRun,2500);if(!S.admin||S._ns)return;S._ns=true;
-  try{for(const m of S.matches){if(m.state!=="bitti"||m.notes||isExt(m))continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
+async function notesSync(force){setTimeout(photoFixRun,2500);if(!S.admin||S._ns)return;S._ns=true;
+  try{for(const m of S.matches){if(m.state!=="bitti"||(m.notes&&m.id!==force)||isExt(m))continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
     const n={};for(const[id,r]of Object.entries(inf.pts)){if(r&&isFinite(r.pts))n[id]={n:Math.round(r.pts*10)/10}}
     if(!Object.keys(n).length)continue;try{const r=await rpc("admin_set_notes",{p_pin:S.pin||"",p_id:m.id,p_notes:n});if(r&&r.ok)m.notes=n}catch(_){}}}
   finally{S._ns=false}}
@@ -2318,7 +2331,7 @@ document.addEventListener("click",async e=>{
     case"oauth":signIn(el.dataset.v);break;
     case"loginSheet":S.sheet={type:"login"};render(true);break;
     case"signOut":signOut();break;
-    case"joinReq":{const pid=S.f.claim||S.mem?.claim;if(!pid){toast("Önce kartını seç");break}try{const r=await rpc("request_join",{p_player:pid});if(r&&r.ok){toast("İsteğin yöneticiye gönderildi");S.mem=await rpc("my_membership",{});S.f.claim="";render(true)}else toast("İstek gönderilemedi")}catch(_){toast("İstek gönderilemedi")}break}
+    case"joinReq":{const pid=S.f.claim||S.mem?.claim;if(!pid){toast("Önce kartını seç");break}try{const r=await rpc("request_join",{p_player:pid});if(r&&r.ok){toast("İsteğin yöneticiye gönderildi");S.mem=await rpc("my_membership",{});S.f.claim="";render(true)}else toast(r&&r.error==="reddedildi"?"İsteğin yakın zamanda reddedildi. Takımın yöneticisiyle konuş.":"İstek gönderilemedi")}catch(_){toast("İstek gönderilemedi")}break}
     case"gateSet":{const on=el.dataset.v==="1";const r=await act("admin_set_gate",{p_pin:"",p_gate:on},on?"Uygulama kilitlendi":"Kilit kaldırıldı");if(r){S.gate=on;await load(true)}break}
     case"memLoad":S.memList=null;render(true);break;
     case"retry":load(true);break;
@@ -2484,7 +2497,7 @@ document.addEventListener("click",async e=>{
 }
       const pl=new Set(plAll(m));const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>x.pk?{g:x.g,a:null,pk:true}:{g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null});
       const r=await A("admin_finish_match_v3",{p_id:id,p_score_a:sd.a,p_score_b:sd.b,p_stats:stats,p_motm:sd.motm||null,p_links:links});
-      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);if(!wasFin){window.scrollTo(0,0);confetti();setTimeout(()=>{if(S.sheet)return;S.f.pm={tab:"mac",item:"skor",fmt:"post",mid:id};S.sheet={type:"pm"};render(true);toast("Maç sonucunu paylaş")},1800)}}break}
+      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);compute();await notesSync(id);if(!wasFin){window.scrollTo(0,0);confetti();setTimeout(()=>{if(S.sheet)return;S.f.pm={tab:"mac",item:"skor",fmt:"post",mid:id};S.sheet={type:"pm"};render(true);toast("Maç sonucunu paylaş")},1800)}}break}
     case"reopen":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f.confReopen=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.f.stTab="gol";S.f.confirmFinish=null;S.sheet={type:"stats",mid:id};render(true);break}
     case"stType":S.f.st.type=el.dataset.v;render(true);break;
     case"saveStatus":{const p=P(S.sheet.id);const sf=S.f.st;await act("set_status",{p_player:p.id,p_type:sf.type,p_until:sf.type==="hazir"?null:(sf.until||null),p_note:sf.type==="hazir"?"":(sf.note||"")},"Durum güncellendi");S.f.st=null;render(true);break}
@@ -2567,8 +2580,11 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=nu
 async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
   const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
   if(v&&v!=="dev"&&APP_V!=="dev"&&v!==APP_V){location.replace(location.pathname+"?v="+v+location.hash);return true}}catch(_){}return false}
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){load();wakeSync()}})}});
-setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)load()},25000);
+/* değişiklik var mı? sunucudan tek bir sayı sorulur, değiştiyse veri indirilir */
+async function revCheck(force){if(TID===0||!S.loaded||S._rc)return;S._rc=true;
+  try{const r=await rpc("team_rev",{});if(!r){if(force)load();return}if(!S.rev||r.r!==S.rev.r||force){S.rev=r;await load()}}catch(_){}finally{S._rc=false}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){revCheck();wakeSync()}})}});
+setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)revCheck()},20000);
 
 /* Sahada sürükle-bırak */
 let DRAG=null,SUPPRESS=false;
@@ -2781,7 +2797,7 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
     if(sl){LS.set("y_int",q.has("katil")?"katil":"takip");q.delete("katil");try{const t=await rpc("team_by_slug",{p_slug:sl});if(t&&t.id){if(t.id!==TID){cacheClear();TID=t.id;LS.set("y_team",String(t.id));LS.del("y_me");S.me=""}}else S.badTeam=true}catch(_){}
       q.delete("t");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash)}}
   cacheLoad();
-  render(true);
+  render(true);photosLoadCache();
   newVer();
   await load();
   await authInit();pushInit().then(()=>render(true));
