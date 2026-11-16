@@ -2257,24 +2257,29 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
 html.dk .msb .r i{background:#273028}
-html.dk .gbtn.b{background:#293027;color:#66B386;border-color:#3A2C55}
+html.dk .fut .at .ad.dn{color:#D95D54}
+html.dk .gbtn.b{background:#293027;color:#F1EAFB;border-color:#3A2C55}
+html.dk .fut .face::after{background:linear-gradient(115deg,transparent 40%,rgba(26,18,41,.45) 50%,transparent 60%)}
 html.dk .up{color:#39E077}
 html.dk .down{color:#E65246}
-html.dk .badge i{color:#F4B425}
-html.dk .board li:first-child .rk{color:#F4B425}
-html.dk .rb.g.on{color:#39E082}
-html.dk .rb.n.on{color:#ED4077}
-html.dk .ms button.on.g{color:#39E082}
-html.dk .ms button.on.n{color:#ED4077}
-html.dk .tcb.silver{background:linear-gradient(160deg,#272C2F,#A4ADB3)}
+html.dk .badge i{color:#F1EAFB}
+html.dk .board li:first-child .rk{color:#F1EAFB}
+html.dk .rb.g.on{color:#F1EAFB}
+html.dk .rb.n.on{color:#F1EAFB}
+html.dk .ms button.on.g{color:#F1EAFB}
+html.dk .ms button.on.n{color:#F1EAFB}
+html.dk .tcb.silver,html.dk .tcard.silver{background:linear-gradient(160deg,#272C2F,#A4ADB3)}
 html.dk .btn.light{background:#1A1229;border-color:#3A2C55;color:#F1EAFB}
 html.dk .btn.turf{background:#1A1229;border-color:#3A2C55;color:#F1EAFB}
 html.dk .prcap{background:#1A1229;color:#F1EAFB}
-html.dk .lrk.g1 b,html.dk .lrk.g2 b,html.dk .lrk.g3 b{color:#7086BD}
+html.dk .lrk.g1 b,html.dk .lrk.g2 b,html.dk .lrk.g3 b{color:#F1EAFB}
 html.dk .lrk.g2 b{background:linear-gradient(145deg,#212936,#9AA3B1)}
 html.dk .card,html.dk .lrow,html.dk .grow,html.dk .mhd,html.dk .slide,html.dk .report,html.dk .psh>div,html.dk .pwl2,html.dk .pmini>div,html.dk .glist2,html.dk .bh-vs,html.dk .sbd,html.dk .mehd,html.dk .kdme{background:#1A1229}
 html.dk .card .card{background:#1A1229}
@@ -2316,14 +2321,12 @@ html.dk .pk.on,html.dk .btn.on{background:#221443 !important}
 html.dk .pfs button{background:#1A1229}
 html.dk .shic{background:#2A2532}
 html.dk .note.warn{background:#433214;color:#F4A125}
-html.dk .lgr.me{background:#221443}
 html.dk .lav.pos{color:#25F499}
 html.dk .lav.neg{color:#F53875}
 html.dk .lmv.dn{color:#F5387B}
 html.dk .kdb{background:#2C2631}
 html.dk .kdf .av{border-color:#3A2C55}
 html.dk .fmc{background:#1A1229}
-html.dk .navfade{background:linear-gradient(180deg,rgba(245,243,248,0),rgba(245,243,248,.92) 45%,#2A2532)}
 html.dk .tsall{background:#2B2532}
 html.dk .tsb li+li{border-top:1px solid #3A2C55}
 html.dk .tsb li:active{background:#2A2334}
@@ -2341,29 +2344,31 @@ html.dk .pss .yrsel i{background:#2B2532}
 html.dk .pssg div{background:#1A1229}
 html.dk .cr2 .h{background:#2B2531}
 html.dk .qki i{background:#2B2235}
-html.dk .stgo,html.dk .stsh{background:#1A1229 !important;color:#E225F4 !important}
+html.dk .stgo,html.dk .stsh{background:#1A1229 !important;color:#F1EAFB !important}
 html.dk .chip.warn{color:#F4A025}
-html.dk .logo .lgsh{fill:#E225F4 !important}
 html.dk .abr b i.dn{color:#E6517F}
 html.dk .abt{background:var(--card3,#2B2531)}
-html.dk .meBtn.ask{background:#1A1229 !important;color:#E225F4 !important}
 html.dk .sbar i{background:#1A1229}
-html.dk .sfb i{background:#1A1229;color:#E225F4}
-html.dk .chst{background:#2B2532;color:#E225F4}
+html.dk .sfb i{background:#1A1229;color:#F1EAFB}
+html.dk .chst{background:#2B2532;color:#F1EAFB}
 html.dk .sr0.gold{background:conic-gradient(from 200deg,#FFD45A,#FF9F1C,#FFD45A,#433B14,#FFD45A)}
-html.dk .ptr.loading .sh,html.dk .ptr.done .sh{fill:#E225F4}
+html.dk .fut.t4 .at .ad.up{color:#25F49C !important}
+html.dk .fut.t4 .at .ad.dn{color:#E84581 !important}
+html.dk .ptr.loading .sh,html.dk .ptr.done .sh{fill:#F1EAFB}
 html.dk .ptr.loading .ptm::after{background:linear-gradient(110deg,transparent 35%,rgba(26,18,41,.7) 50%,transparent 65%)}
+html.dk .fut.t1 .at .ad.up{color:#F1EAFB !important}
+html.dk .fut.t1 .at .ad.dn{color:#EE3F73 !important}
 html.dk .vtx{color:var(--muted,#B4A6C9)}
 html.dk .kmenu{background:#1A1229}
 html.dk .kmenu i{color:#9C6FF5}
 html.dk .sqbar{background:#261443}
 html.dk .mer.on{background:#251443}
-html.dk .mecur .btn{background:#1A1229 !important;color:#E225F4 !important}
+html.dk .mecur .btn{background:#1A1229 !important;color:#F1EAFB !important}
 html.dk .ysr .on{background:#251443;color:#9570EF}
 html.dk .ysr .no{background:#2B2235}
 html.dk .ysr .zr{background:#2A1F37}
 html.dk .mvpb .tsb{background:linear-gradient(160deg,#1A1229,#261443);border:1px solid #412772}
-html.dk .mvc>b{color:#E225F4}
+html.dk .mvc>b{color:#F1EAFB}
 html.dk .mvc.r1>b{color:#9C6FF5}
 html.dk .mvr{background:#251443;color:#9570EF}
 html.dk .mvd.up{background:#1D3A2A;color:#2BEEA8}
@@ -2371,8 +2376,8 @@ html.dk .mvd.dn{background:#411525;color:#DA5D8B}
 html.dk .mvx summary{color:#A170E6}
 html.dk .mvt{color:#9570EF;background:#261443}
 html.dk .pmcap{background:#2A1F37}
-html.dk .igp{color:#E225F4;background:#1A1229}
-html.dk .igav.t4{background:linear-gradient(150deg,#291E39,#261E39);color:#E225F4}
+html.dk .igp{color:#F1EAFB;background:#1A1229}
+html.dk .igav.t4{background:linear-gradient(150deg,#291E39,#261E39);color:#F1EAFB}
 html.dk .igtr .igey{color:#2BEEA8}
 html.dk .igtr .igwm{color:#B4A6C9}
 html.dk .igit{border-bottom:1px solid #3A2C55}
@@ -2381,11 +2386,11 @@ html.dk .igv span{color:#2BEEA8}
 html.dk .igtot{background:#261443;color:#9570EF}
 html.dk .igkt .igey{color:#9C6FF5}
 html.dk .igkt .igwm{color:#B4A6C9}
-html.dk .igfc.t4{background:linear-gradient(150deg,#291E39,#261E39);color:#E225F4}
-html.dk .igfc .n{background:rgba(26,18,41,.92);color:#E225F4}
+html.dk .igfc.t4{background:linear-gradient(150deg,#291E39,#261E39);color:#F1EAFB}
+html.dk .igfc .n{background:rgba(26,18,41,.92);color:#F1EAFB}
 html.dk .igst div{background:#2A2532;color:#B4A6C9}
-html.dk .igst div b{color:#E225F4}
-html.dk .igq{color:#E225F4}
+html.dk .igst div b{color:#F1EAFB}
+html.dk .igq{color:#F1EAFB}
 html.dk .ignum i{background:rgba(26,18,41,.7)}
 html.dk .pmemp{background:#2B2235}
 html.dk .paka{background:#2A2235}
@@ -2411,7 +2416,7 @@ html.dk .mav{background:#2B2334}
 html.dk .mtag{background:#231443;color:#9C6FF5}
 html.dk .sacc{background:var(--card,#1A1229)}
 html.dk .sacc img,html.dk .sacc .sav{background:#2B2334}
-html.dk .salert{background:#433614;color:#F4AA25}
+html.dk .salert{background:#433614;color:#F1EAFB}
 html.dk .sbox{background:var(--card,#1A1229)}
 html.dk .setr+.setr{border-top:1px solid #3A2C55}
 html.dk .seti{background:#231443;color:#9C6FF5}
@@ -2423,12 +2428,12 @@ html.dk .vmid i{background:#2B2631}
 html.dk .vgl{border-top:1px solid #3A2C55}
 html.dk .vtime em{color:#2EEB8C}
 html.dk .vrow{border-top:1px solid #3A2C55}
-html.dk .vrow.t2 i{background:#282630;color:#E225F4}
-html.dk .vrow.t3 i{background:#3E2B19;color:#F48725}
+html.dk .vrow.t2 i{background:#282630;color:#F1EAFB}
+html.dk .vrow.t3 i{background:#3E2B19;color:#F1EAFB}
 html.dk .vskl i{background:#2B2334}
 html.dk .sback{background:#231443}
 html.dk .mreq{background:var(--card,#1A1229);border:1.5px solid #735B26}
-html.dk .mcl{background:#433714;color:#F4AA25}
+html.dk .mcl{background:#433714;color:#F1EAFB}
 html.dk .mreq .btn.ghost{border:1.5px solid #3A2C55}
 html.dk .mref{color:#9C6FF5}
 html.dk .mme{background:#231443}
@@ -2436,13 +2441,13 @@ html.dk .mdel{background:#2B2037}
 html.dk .szd i{background:#2B2334}
 html.dk .szx b{color:#E0576E}
 html.dk p.wpush{background:#231443}
-html.dk p.wpush.on{background:#1E392B;color:#32E78D}
-html.dk .hstep p.ok{color:#32E78D}
+html.dk p.wpush.on{background:#1E392B;color:#F1EAFB}
+html.dk .hstep p.ok{color:#F1EAFB}
 html.dk .hcard{border:1.5px solid #3A2C55;background:#1A1229}
-html.dk .offl{background:#433614;color:#F4AA25}
+html.dk .offl{background:#433614;color:#F1EAFB}
 html.dk .frs{background:var(--card,#1A1229)}
 html.dk .frs:before{background:#2B2433}
-html.dk .frp.G{background:#1E392B;color:#32E78D}
+html.dk .frp.G{background:#1E392B;color:#F1EAFB}
 html.dk .frp.B{background:#433614;color:#F4AC25}
 html.dk .frp.M{background:#40171E;color:#E0576F}
 html.dk .twc{background:var(--card,#1A1229)}
@@ -2474,7 +2479,7 @@ html.dk #hubQ{border:1px solid var(--line2,#3A2C55);background:#1A1229}
 html.dk .lkt{background:#292036}
 html.dk .lnkd{color:#F53875 !important}
 html.dk .per{border-bottom:1px solid var(--line,#3A2C55)}
-html.dk .bkl b,html.dk .bkl code{color:var(--ink,#CB4CE1)}
+html.dk .bkl b,html.dk .bkl code{color:var(--ink,#F1EAFB)}
 html.dk .bkl code{background:#241443}
 html.dk .kchip.khi{color:#38E07D;background:#1E3928}
 html.dk .kchip.kmd{color:#F4AB25;background:#433414}
@@ -2529,3 +2534,6 @@ html.dk .bkl code,html.dk .htag{background:#2A1D44;color:#D9C8FF}
 html.dk .chips button.on,html.dk .statuses button.on,html.dk .kpills button.on,html.dk .kmenu .kpills button.on:hover,html.dk .pmi button.on,html.dk .pabd i{background:#8F5BFF!important;color:#fff!important;border-color:#8F5BFF!important}
 html.dk .setr.danger .seti{background:#3E1420;color:#FF8FA6}html.dk .setr.danger b{color:#FF8FA6}
 html.dk .pmprev{background:#140E20!important}
+/* koyu: alt bar arkası koyu zemine erisin, logo iki temada aynı kalsın */
+html.dk .navfade{background:linear-gradient(180deg,rgba(15,10,26,0),rgba(15,10,26,.92) 45%,#0F0A1A)!important}
+html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!important}html.dk .logo .lgy{stroke:#fff!important}html.dk .logo .lgd{fill:#00FF85!important}

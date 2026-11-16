@@ -10,7 +10,7 @@ S0,S1="/* KOYU-OTO:başla */","/* KOYU-OTO:bitti */"
 if S0 in css:css=css[:css.index(S0)]+css[css.index(S1)+len(S1):]
 src=css
 # iki temada aynı kalacak bileşenler (koyu tasarımlı ya da görsel/şablon)
-SKIP=re.compile(r"\.fut\b|\.tcard|\.tc\b|\.tok\b|\.maf|\.mres|\.field|\.hk|\.pmprev|\.pmcard|\.pmc\b|\.xsb|\.tcl\b|\.nt\.|\.nt\b|\.frx|\.crest|\.pph|\.lphero|\.lpcard|\.sb\b|\.bltk|\.fk\b|\.kbar|\.gdbar i|\.lkt button\.on|\.shirt|\.ovr|html\.dk|::selection|\.flag|\.lflag|\.trend|\.bib|\.fnts|\.pfc|\.chb|\.xi\b|\.sq\b|\.confetti|\.toast|\.brand|\.top\b|\.nav\b|\.nind|\.btn\.primary|\.primary|\.wa\b|\.danger|\.lgg|\.adm\b|\.capi|\.cap\b|\.tov|\.tps|\.lth|\.pa\b|\.pi\b|\.sbme|\.clk|\.lcs|\.mafcd|\.tk\b")
+SKIP=re.compile(r"\.meBtn|\.pmBtn|\.gearBtn|\.logo\b|\.lg[a-z]*\b|\.navfade|\.fut\b\.tcard|\.tc\b|\.tok\b|\.maf|\.mres|\.field|\.hk|\.pmprev|\.pmcard|\.pmc\b|\.xsb|\.tcl\b|\.nt\.|\.nt\b|\.frx|\.crest|\.pph|\.lphero|\.lpcard|\.sb\b|\.bltk|\.fk\b|\.kbar|\.gdbar i|\.lkt button\.on|\.shirt|\.ovr|html\.dk|::selection|\.flag|\.lflag|\.trend|\.bib|\.fnts|\.pfc|\.chb|\.xi\b|\.sq\b|\.confetti|\.toast|\.brand|\.top\b|\.nav\b|\.nind|\.btn\.primary|\.primary|\.wa\b|\.danger|\.lgg|\.adm\b|\.capi|\.cap\b|\.tov|\.tps|\.lth|\.pa\b|\.pi\b|\.sbme|\.clk|\.lcs|\.mafcd|\.tk\b")
 HEX=re.compile(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")
 def hx(h):
     h=h.lstrip("#");h="".join(c*2 for c in h) if len(h)==3 else h;return tuple(int(h[i:i+2],16)/255 for i in (0,2,4))
@@ -29,7 +29,8 @@ def cr(c):L=rl(*c);return (max(L,SURF)+.05)/(min(L,SURF)+.05)
 def ink_light(h):
     r,g,b=hx(h);hh,l,s=colorsys.rgb_to_hls(r,g,b)
     if cr((r,g,b))>=4.5:return None
-    if s<.15:return "#F1EAFB" if l<.25 else "#B4A6C9"
+    if l<.22:return "#F1EAFB"            # marka mürekkebi (#37003C vb.): nötr açık yazı
+    if s<.15:return "#B4A6C9"
     L=max(l,.55)
     while L<.95:
         c=colorsys.hls_to_rgb(hh,L,min(.9,s))
@@ -54,6 +55,12 @@ def conv(prop,val):
         return m.group(0)
     v2=HEX.sub(rep,val)
     if p in("background","background-color") and re.search(r"\b(white)\b",v2):v2=re.sub(r"\bwhite\b","#1A1229",v2);ch[0]=True
+    if p in("background","background-color","background-image"):
+        def rg(m):
+            r,g,b=(int(m.group(i)) for i in (1,2,3));a=m.group(4)
+            if (r+g+b)/3>225 and (a is None or float(a)>.3):ch[0]=True;return "rgba(26,18,41,%s)"%(a or "1")
+            return m.group(0)
+        v2=re.sub(r"rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9.]+)\s*)?\)",rg,v2)
     if p in("background","background-color"):
         m=re.search(r"rgba?\(\s*255\s*,\s*255\s*,\s*255\s*,\s*([0-9.]+)\s*\)",v2)
         if m and float(m.group(1))>.5:v2=re.sub(r"rgba?\(\s*255\s*,\s*255\s*,\s*255\s*,\s*([0-9.]+)\s*\)","rgba(26,18,41,\\1)",v2);ch[0]=True
