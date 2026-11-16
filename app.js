@@ -389,6 +389,7 @@ async function load(force){
   try{const yr=new Date().getFullYear();
     const[st,pl,ms,sv2,ag]=await Promise.all([sbGet("settings?id=eq."+TID+"&select=*"),sbGet("players?select=id,name,pos,no,attrs,status,status_log,created_at,archived,photo_v,guest,epos,alt_pos,yedek&order=created_at.asc"),
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr),rpc("player_ages",{}).catch(()=>[]),rpc("team_rev",{}).then(r=>{if(r)S.rev=r}).catch(()=>{})]);
+    if(!pl.length&&st[0]&&st[0].gate&&LS.get("y_auth")&&!S.session&&S.loaded&&S.players.length){S.offline=0;return}// giriş tamamlanınca yeniden yüklenecek
     {const am={};(Array.isArray(ag)?ag:[]).forEach(r=>am[r.id]=r.age);pl.forEach(p=>{if(am[p.id]!=null)p.age=am[p.id]})}
     const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&!S.offline&&sig===S.sig;S.sig=sig;
     applyData(st,pl,ms,sv2);S.offline=0;setBrand();
@@ -1991,8 +1992,12 @@ function viewKurallar(inSheet){
 /* ================= Ayarlar ================= */
 /* ===== Giriş, takım üyeliği ve vitrin ===== */
 const AUTH={sb:null,ready:false,lib:null};
+/* açılışta kayıtlı oturumu kütüphaneyi beklemeden kullan; ayrıca son iyi oturumun yedeğini tut */
+function storedSession(){try{const raw=localStorage.getItem("y_auth");if(!raw)return null;const j=JSON.parse(raw);const ses=j&&(j.currentSession||j);return ses&&ses.access_token?ses:null}catch(_){return null}}
+function sessionBackup(ses){try{if(ses&&ses.refresh_token)localStorage.setItem("y_auth_bk",JSON.stringify({access_token:ses.access_token,refresh_token:ses.refresh_token,user:ses.user,at:Date.now()}))}catch(_){}}
+{const ss=storedSession();if(ss&&ss.expires_at&&ss.expires_at*1000>Date.now()+60e3)S.session=ss;else if(ss)S.sessionStale=ss}
 const authHdr=()=>S.session?.access_token?{Authorization:"Bearer "+S.session.access_token}:{};
-const SBJS="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+const SBJS="vendor/supabase-2.117.3.js";
 const authLib=()=>AUTH.lib||(AUTH.lib=new Promise((ok,no)=>{if(window.supabase)return ok(window.supabase);const s=document.createElement("script");s.src=SBJS;s.onload=()=>ok(window.supabase);s.onerror=()=>{AUTH.lib=null;no(new Error("lib"))};document.head.appendChild(s)}));
 const isMember=()=>S.mem&&S.mem.status==="onayli";
 const gated=()=>TID===0||(!!S.gate&&!isMember()&&!S.fol);
@@ -2004,10 +2009,22 @@ async function authStart(){
   if(AUTH.sb)return AUTH.sb;
   let lib;try{lib=await authLib()}catch(_){toast("Giriş servisi yüklenemedi, bağlantını kontrol et");return null}
   AUTH.sb=lib.createClient(SB_URL,SB_KEY,{auth:{flowType:"pkce",detectSessionInUrl:true,persistSession:true,autoRefreshToken:true,storageKey:"y_auth"}});
-  try{const{data}=await AUTH.sb.auth.getSession();S.session=data.session||null}catch(_){S.session=null}
-  AUTH.sb.auth.onAuthStateChange((ev,ses)=>{const was=S.session?.user?.id;S.session=ses||null;if((ses?.user?.id||null)!==(was||null))afterAuth()});
+  try{const{data}=await AUTH.sb.auth.getSession();S.session=data.session||null}catch(_){S.session=S.session||null}
+  if(!S.session)await sessionRestore();
+  if(S.session)sessionBackup(S.session);
+  AUTH.sb.auth.onAuthStateChange(async(ev,ses)=>{
+    if(ses)sessionBackup(ses);
+    if(ev==="SIGNED_OUT"&&!AUTH.byUser&&await sessionRestore())return;// kullanıcı çıkmadıysa sessizce geri dön
+    const was=S.session?.user?.id;S.session=ses||null;if((ses?.user?.id||null)!==(was||null))afterAuth()});
   if(/[?&]code=/.test(location.search))history.replaceState(null,"",location.pathname+location.hash);
   await afterAuth();AUTH.ready=true;return AUTH.sb}
+async function sessionRestore(){if(AUTH.restoring)return false;let bk=null;try{bk=JSON.parse(localStorage.getItem("y_auth_bk")||"null")}catch(_){}
+  if(!bk||!bk.refresh_token||!AUTH.sb)return false;AUTH.restoring=true;
+  try{for(let i=0;i<3;i++){if(navigator.onLine===false)await new Promise(r=>{const f=()=>{removeEventListener("online",f);r()};addEventListener("online",f);setTimeout(f,15e3)});
+      const{data,error}=await AUTH.sb.auth.setSession({access_token:bk.access_token,refresh_token:bk.refresh_token});
+      if(data&&data.session){S.session=data.session;sessionBackup(data.session);return true}
+      if(error&&/invalid|revoked|not found|already used/i.test(error.message||"")){LS.del("y_auth_bk");return false}
+      await new Promise(r=>setTimeout(r,1500*(i+1)))}}catch(_){}finally{AUTH.restoring=false}return false}
 async function afterAuth(){
   const prevMem=S.mem;S.mem=null;
   if(S.session){
@@ -2028,7 +2045,7 @@ async function afterAuth(){
 async function signIn(provider){const sb=await authStart();if(!sb)return;
   const{error}=await sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}});
   if(error)toast(provider==="apple"?"Apple ile giriş şu an açık değil":"Google ile giriş şu an açık değil")}
-async function signOut(){if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;S.admin=false;cacheClear();LS.del("y_me");S.me="";render(true);load(true)}
+async function signOut(){AUTH.byUser=true;LS.del("y_auth_bk");if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;S.admin=false;cacheClear();LS.del("y_me");S.me="";render(true);load(true)}
 const G_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2-1.9 3.2-4.7 3.2-8.3z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 7l3.7 2.9C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
 const APPLE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9s-2-.9-3.2-.8a4.8 4.8 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7c-.1 0-2.3-.9-2.3-3.9zM14 5.4a4.3 4.3 0 0 0 1-3.1 4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3c1.1.1 2.2-.5 2.9-1.4z"/></svg>';
 function loginBtns(){return `<div class="lgb"><button class="btn block lgg" data-act="oauth" data-v="google">${G_SVG} Google ile devam et</button></div>`}
@@ -2294,7 +2311,7 @@ function viewAyarlar(){
   let h="";
   if(S.session){const u=S.session.user||{};const md=u.user_metadata||{};const p=S.me&&P(S.me);
     h+=`<section class="sacc">${md.avatar_url?`<img src="${esc(md.avatar_url)}" alt="" referrerpolicy="no-referrer">`:`<span class="sav">${esc(initials(md.full_name||u.email||"?"))}</span>`}<span class="setx"><b>${esc(md.full_name||md.name||u.email||"")}</b><small>${esc(u.email||"")}</small><small>${p?esc(p.name)+" kartına bağlı":"Kart bağlı değil"}${S.mem?.role==="yonetici"?' · <i class="mtag">Yönetici</i>':""}</small></span></section>`}
-  if(S.session){if(!S.myTeams)teamsLoad();const MT=S.myTeams||[];
+  if(S.session){if(!S.myTeams)teamsLoad();const MT=Array.isArray(S.myTeams)?S.myTeams:[];
     const nM=MT.filter(t=>t.status==="onayli").length,nF=(S.follows||[]).length;
     h+=sgrp("Takımlar",[srow("@hub",SI.grup,"Takımlar",`${nM} takım${nF?" · "+nF+" takip":""} · ara, takip et, takım kur`),
       S.session.user?.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273"?srow("platform",SI.platform,"Platform","Bütün takımlar"):""])}
@@ -2366,7 +2383,7 @@ document.addEventListener("click",async e=>{
     case"platOk":{const r=await rpc("platform_team_approve",{p_id:+id,p_ok:el.dataset.v==="1"});if(r&&r.ok){toast(el.dataset.v==="1"?"Takım onaylandı":"İstek reddedildi");S.plat=null;render(true)}else toast("Yapılamadı");break}
     case"delAcc":S.f.dac=undefined;S.f.dacT="";S.sheet={type:"delAcc"};render(true);break;
     case"delAccGo":{const v=String(S.f.dacT||"").trim().toLocaleUpperCase("tr");if(v!=="SİL"&&v!=="SIL"){toast("Onay için SİL yaz");break}if(S.f.dacBusy)break;S.f.dacBusy=true;render(true);
-      try{const r=await rpc("delete_my_account",{p_confirm:v});if(r&&r.ok){S.sheet=null;cacheClear();LS.del("y_me");LS.set("y_team","0");LS.del("y_int");try{if(AUTH.sb)await AUTH.sb.auth.signOut()}catch(_){}try{localStorage.removeItem("y_auth")}catch(_){}toast("Hesabın silindi");setTimeout(()=>location.replace(location.pathname),900)}
+      try{const r=await rpc("delete_my_account",{p_confirm:v});if(r&&r.ok){S.sheet=null;cacheClear();LS.del("y_me");LS.set("y_team","0");LS.del("y_int");AUTH.byUser=true;LS.del("y_auth_bk");try{if(AUTH.sb)await AUTH.sb.auth.signOut()}catch(_){}try{localStorage.removeItem("y_auth")}catch(_){}toast("Hesabın silindi");setTimeout(()=>location.replace(location.pathname),900)}
         else toast(r&&r.error==="tek_yonetici"?"Önce başka bir yönetici seç":r&&r.error==="sahip"?"Platform sahibinin hesabı buradan silinmez":"Silinemedi")}catch(_){toast("Silinemedi")}finally{S.f.dacBusy=false;render(true)}break}
     case"lkTab":S.f.lk=el.dataset.v;render(true);break;
     case"bkKey":{if(el.dataset.v!=="1"){S.sheet={type:"bkKey"};S.f.bk=null;render(true);break}
@@ -2822,8 +2839,9 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
   cacheLoad();
   render(true);photosLoadCache();
   newVer();
+  const ap=authInit();// giriş kütüphanesi veriyle aynı anda yüklensin
   await load();
-  await authInit();pushInit().then(()=>render(true));
+  await ap;pushInit().then(()=>render(true));
   if(S.badTeam)toast("Takım linki geçersiz ya da takım kapatılmış");
   if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
 })();

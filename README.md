@@ -43,3 +43,11 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in yelek-yedek-TARİH.json.gz.
 ```
 
 ANAHTAR, GitHub'daki `YELEK_YEDEK_ANAHTAR` gizli değeridir; kaybolursa yedekler açılamaz, bir kopyasını şifre yöneticinde sakla.
+
+## Testler
+
+```
+node tests/smoke.js    # her ekran hatasız açılıyor mu
+node tests/clicks.js   # ana akışlar: pencereler, geri sayım, kondisyon, linkler, platform, görünüm, takımlar, rehber, takip modu
+node tests/acilis.js   # açılışta veri gecikmesi ve oturum (geçerli / süresi dolmuş)
+```
