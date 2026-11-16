@@ -2229,3 +2229,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 .kbar.big{height:8px}
 .kcard small{color:var(--muted);font-size:.78rem}
 .pi>span{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+.kch svg{width:14px;height:14px;flex:none;align-self:center}.kcard.khi .kch svg{color:#1FA855}.kcard.kmd .kch svg{color:#E8A317}.kcard.klo .kch svg{color:#E0384F}
+.krows{display:grid;gap:6px;margin-top:2px}.krows>div{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:8px}
+.krows span{font-weight:700;font-size:.82rem}.krows small{color:var(--muted);font-size:.74rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.krows b{font-size:.84rem;font-variant-numeric:tabular-nums}
+.krows>div{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"a c" "b c";gap:0 8px;align-items:center}
+.krows span{grid-area:a}.krows small{grid-area:b;white-space:normal}.krows b{grid-area:c}
