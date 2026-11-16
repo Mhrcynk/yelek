@@ -976,6 +976,12 @@ function ypPosRace(k){const{F}=hkSeason();const R=yelekRace(F)[k]||[];const L=R.
   const hd={FV:"Sezonun forveti",OS:"Sezonun orta sahası",DF:"Sezonun defansı",KL:"Altın eldiven"}[k];
   const html=ypPost({ey:"Mevki yarışı · "+ROLE_NAME[k],ti:hd,wk:ypHw(F),hero:ypPod(L.map((o,i)=>({id:o.id,v:fP(o.tot),l:(i+1)+". · Puan"}))),ft:"#halısaha"});
   return{html,cap:`${hd} yarışı ${aw?aw[2]:""}\n${L.map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+fP(o.tot)).join("\n")}\n${HT()} #halısaha`,name:"yaris-"+k}}
+function ypTable(){const{yr,F}=hkSeason();if(!F.length)return null;const L=ligTable(F);if(!L.length)return null;const T=L.slice(0,10);const rh=T.length>8?40:46;
+  const row=(o,i)=>{const nm=TRU(nameOf(o.id));const av=o.av>0?"+"+o.av:String(o.av);
+    return `<div class="yp-tr${i===0?" yp-lead":""}" style="height:${rh}px"><b class="yp-tn">${i+1}</b>${ypAv(o.id,"",`width:${rh-10}px;height:${rh-10}px`)}<span class="yp-tnm" style="font-size:${ypFit(nm,17,196,{ls:.04})}px">${esc(nm)}</span><span>${o.n}</span><span>${o.G}-${o.B}-${o.M}</span><span>${esc(av)}</span><b class="yp-tp">${o.p}</b></div>`};
+  const hero=`<div class="yp-tbl" data-b><div class="yp-th"><span>#</span><span></span><span>OYUNCU</span><span>O</span><span>G-B-M</span><span>AV</span><span>P</span></div>${T.map(row).join("")}</div>`;
+  const html=ypPost({ey:"Sezon "+yr+" · "+F.length+" maç",ti:"Puan durumu",wk:ypHw(F),hc:"top",hero,ft:L.length>10?"+"+(L.length-10)+" oyuncu daha":"#halısaha"});
+  return{html,cap:`Puan durumu · Sezon ${yr}, hafta ${F.length} 📊\n${T.slice(0,5).map((o,i)=>(i+1)+". "+nameOf(o.id)+" "+o.p+" puan").join("\n")}\n${HT()} #halısaha`,name:"puan-durumu"}}
 function ypKing(f){const{yr,F}=hkSeason();const t={};F.forEach(m=>Object.entries(m.stats||{}).forEach(([id,s])=>{if(!P(id)||P(id).guest)return;t[id]=t[id]||{g:0,a:0};t[id].g+=+s.g||0;t[id].a+=+s.a||0}));
   const o=f==="g"?"a":"g";const L=Object.entries(t).filter(([,v])=>v[f]>0).sort((x,y)=>y[1][f]-x[1][f]||x[1][o]-y[1][o]).slice(0,3);if(!L.length)return null;
   const lb=f==="g"?"Gol":"Asist",ob=f==="g"?"asist":"gol";
@@ -991,7 +997,7 @@ const PM_ITEMS={
   once:[["gun","Maç günü"],["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
   mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["kadro","Not karnesi"]],
   oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"],["yeni","Aramıza katıldı"],["dogum","Doğum günü"],["km","Kilometre taşı"]],
-  sezon:[["mvp","Zirve yarışı"],["golk","Gol krallığı"],["asistk","Asist krallığı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["ikili","En iyi ikili"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yaris","Mevki yarışı"],["final","Sezon finali"]]};
+  sezon:[["tablo","Puan durumu"],["mvp","Zirve yarışı"],["golk","Gol krallığı"],["asistk","Asist krallığı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["ikili","En iyi ikili"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yaris","Mevki yarışı"],["final","Sezon finali"]]};
 const PM_EMPTY={once:"Sıradaki maçın takımları henüz kurulmadı.",gun:"Planlanmış bir maç yok.",out:"Şu an sakat, hasta ya da izinli oyuncu yok.",seri:"Bu oyuncunun şu an süren bir serisi yok.",rozet:"Bu oyuncunun henüz rozeti yok.",kaptan:"Bu oyuncu henüz kaptanlık yapmadı.",durum:"Bu oyuncu şu an hazır görünüyor; durumu sakat, hasta ya da izinli yapılınca bu gönderi açılır.",h2h:"Karşılaştırmak için ikinci bir oyuncu seç.",km:"Bu oyuncu henüz 10 maça, 10 gole ya da 10 asiste ulaşmadı.",golk:"Bu sezon henüz gol yok.",asistk:"Bu sezon henüz asist yok.",karne:"Ara karne en az 3 maç oynandıktan sonra hazırlanır.",final:"Sezon finali, sezon bitince hazırlanır."};
 function pmPlayers(){return S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,"tr"))}
 const pmNewest=()=>S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0];
@@ -1003,7 +1009,7 @@ function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin(
   if(f.tab==="oyuncu"){const p=P(pmPid(f,k))||pmPlayers()[0];if(!p)return null;
     if(k==="h2h"){const q=P(f.pid2)||pmPlayers().filter(x=>x.id!==p.id&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0];return ypH2H(p,q)}
     return({kart:ypCard,deger:ypValue,seri:ypStreak,rozet:ypBadges,kaptan:ypCaptain,durum:ypStatus,yeni:ypNew,dogum:ypBday,km:ypMile}[k]||ypCard)(p)}
-  if(f.tab==="sezon"){if(k==="yaris")return ypPosRace(f.race||"FV");if(k==="golk")return ypKing("g");if(k==="asistk")return ypKing("a");return({mvp:ypMvp,piyasa:ypMarket,yildiz:ypRiser,ay:ypMonth,ikili:ypDuo,sadik:ypLoyal,karne:ypMid,final:ypFinal}[k]||ypMvp)()}
+  if(f.tab==="sezon"){if(k==="yaris")return ypPosRace(f.race||"FV");if(k==="tablo")return ypTable();if(k==="golk")return ypKing("g");if(k==="asistk")return ypKing("a");return({mvp:ypMvp,piyasa:ypMarket,yildiz:ypRiser,ay:ypMonth,ikili:ypDuo,sadik:ypLoyal,karne:ypMid,final:ypFinal}[k]||ypMvp)()}
   return null}
 const igFrame=(x,fmt)=>fmt==="story"?`<div class="yp-story"><div class="yp-sth">${IGLOGO}<span style="font-size:${ypFit(TRU(S.settings.group_name||"Yelek"),24,420,{ls:.12})}px">${esc(TRU(S.settings.group_name||"Yelek"))}</span></div>${x.html}</div>`:x.html;
 // önizleme ekrana sığsın
@@ -2006,7 +2012,7 @@ function viewLig(){const avg=false;const F=fin().filter(inYr);const L=ligTable(F
   const sy=selYr();let champId=null;if(sy!=="all"&&!avg){const done=seasonDone(sy);const rem=done?0:Math.max(0,sLen()-seasonCount(sy));if(L.length>1&&(done||L.slice(1).every(r=>r.p+3*rem<L[0].p)))champId=L[0].id;
     if(done&&L[0]){const cp=P(L[0].id);h+=`<button class="card sfb" data-act="seasonStory" data-id="${sy}"><span class="sfbi">🏆</span><span><small>Sezon ${sy} şampiyonu</small><b>${esc(cp.name)}</b><span>Sezon özetini izle</span></span><i>${ICON_PLAY}</i></button>`}}
 
-  h+=`<section class="card lig"><div class="lgr lgh"><span>#</span><span>Oyuncu</span><span>O</span><span>G</span><span>B</span><span>M</span><span>AV</span><span>${avg?"P/M":"P"}</span><span class="r">Form</span></div>`+
+  h+=`<section class="card lig"><div class="lgr lgh"><span>#</span><span>OYUNCU</span><span>O</span><span>G</span><span>B</span><span>M</span><span>AV</span><span>${avg?"P/M":"P"}</span><span class="r">Form</span></div>`+
     L.map((o,i)=>{const p=P(o.id);let mv="";if(prev){const j=prev.indexOf(o.id);const d=j<0?0:j-i;mv=d>0?`<small class="lmv up">▲${d}</small>`:d<0?`<small class="lmv dn">▼${-d}</small>`:""}
       return `<button class="lgr${o.id===S.me?" me":""}${i===nb?" rl":""}${avg&&o.n<2?" few":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.p} puan, averaj ${o.av}"><span class="lrk${i<3?" "+MED[i]:""}"><b>${i+1}</b>${mv}</span><span class="lnm">${avatar(p)}<span>${esc(p.name.length>10?shortName(p.name):p.name)}${o.id===champId?'<em class="chmp" title="Şampiyon">🏆</em>':""}</span></span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num lav${o.av>0?" pos":o.av<0?" neg":""}">${o.av>0?"+":""}${o.av}</span><b class="num lp">${pt(o)}</b><span class="lfs">${fd(o.f)}</span></button>`}).join("")+`</section>`;
   const cw=champWall();
@@ -2302,7 +2308,7 @@ function viewVitrin(){
     <section class="lpsec"><span class="lpk">Neler var</span><h2>Bir maç, bütün hikâyesi</h2><div class="lpfg">${feat.map(([k,t,d])=>`<div class="lpf"><span class="lpfi">${sv(FI[k])}</span><b>${t}</b><p>${d}</p></div>`).join("")}</div></section>
     <section class="lpsec lpdemo"><span class="lpk">Maç günü</span><h2>Maçtan önce afiş, sonra skor</h2>
       <div class="lpsb"><div class="lpsbh"><span>PZT 21:00 · HALI SAHA</span><span>HAFTA 6</span></div><div class="lpsbm"><div><i class="a"></i><b>Kırmızılar</b></div><strong>6<em>–</em>4</strong><div><i class="b"></i><b>Maviler</b></div></div><div class="lpsbf"><span>★ Maçın adamı: Kerem A.</span><em>8,9</em></div></div>
-      <div class="lplg"><div class="lplh"><span>#</span><span>Oyuncu</span><span>O</span><span>P</span></div>${[["1","Kerem A.","6","15"],["2","Burak T.","6","13"],["3","Onur S.","5","12"],["4","Sen","6","11"]].map(r=>`<div class="lplr${r[1]==="Sen"?" me":""}"><span>${r[0]}</span><span>${r[1]}</span><span>${r[2]}</span><b>${r[3]}</b></div>`).join("")}</div></section>
+      <div class="lplg"><div class="lplh"><span>#</span><span>OYUNCU</span><span>O</span><span>P</span></div>${[["1","Kerem A.","6","15"],["2","Burak T.","6","13"],["3","Onur S.","5","12"],["4","Sen","6","11"]].map(r=>`<div class="lplr${r[1]==="Sen"?" me":""}"><span>${r[0]}</span><span>${r[1]}</span><span>${r[2]}</span><b>${r[3]}</b></div>`).join("")}</div></section>
     <section class="lpsec"><span class="lpk">Nasıl başlarsın</span><h2>3 adımda takımın hazır</h2><ol class="lpst">
       <li><b>Takımını kur</b><span>Takım adı, saha, maç günü. Kuran kişi yönetici olur.</span></li>
       <li><b>Oyuncularını ekle</b><span>Herkese bir kart aç, mevkisini ve değerlerini gir.</span></li>

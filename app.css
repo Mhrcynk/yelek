@@ -2269,6 +2269,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2692,3 +2693,15 @@ html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!imp
 .hbt{display:flex;gap:6px;flex:none}
 .mtk{display:grid;gap:4px;margin:2px 0 10px;padding:10px 12px;border-radius:12px;background:#FFF1F3;border:1px solid #FFC2CC;font-size:.84rem;line-height:1.35}
 .mtk>b{color:#B4233C}
+.yp-tbl{width:100%;display:flex;flex-direction:column;gap:4px}
+.yp-th,.yp-tr{display:grid;grid-template-columns:24px 36px minmax(0,1fr) 30px 62px 36px 40px;align-items:center;gap:6px;padding:0 10px}
+.yp-th{height:22px;font:700 10px/1 Inter,sans-serif;letter-spacing:.14em;color:rgba(255,255,255,.7)}
+.yp-th span:nth-child(n+4),.yp-tr>span:nth-child(n+4),.yp-tr .yp-tp{text-align:center}
+.yp-tr{border-radius:10px;background:rgba(10,2,50,.55);border:1px solid rgba(255,255,255,.1);font:800 17px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;white-space:nowrap}
+.yp-tr .yp-av{margin:0;border-width:1.5px;box-shadow:none}
+.yp-tr>span:nth-child(n+4){font-size:16px;opacity:.85}
+.yp-tn{color:rgba(255,255,255,.65)}
+.yp-tnm{overflow:hidden}
+.yp-tp{font-size:20px;color:var(--ac)}
+.yp-lead{background:var(--ac);border-color:var(--ac);color:var(--acI)}
+.yp-lead .yp-tn,.yp-lead .yp-tp{color:var(--acI)}.yp-lead>span:nth-child(n+4){opacity:1}
