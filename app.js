@@ -963,8 +963,28 @@ function card(p,big){
   const tw=lastTotw().includes(p.id);const chp=reigningChamp()===p.id;const cls=(s.lastO>0?" rise":s.lastO<0?" fall":"")+(tw?" totw":"")+(chp?" champ":"")+(!big&&S.me===p.id?" me":"")+(big?anim("fb_"+p.id)+(s.lastO>0&&!ANIM.has("pop_"+p.id)?(ANIM.add("pop_"+p.id)," pop"):""):"");
   return `<button class="fut ${tierOf(o)}${UNAVAIL.includes(st)?" out":""}${big?" big":""}${cls}" ${big?'tabindex="-1"':`data-act="open" data-id="${esc(p.id)}"`} aria-label="${esc(p.name)} kartı, reyting ${o}">
     <span class="face"><span class="tl"><span class="ovr num">${o}</span><span class="ps">${eposOf(p)}</span>${tr}${p.guest?"":p.yedek?'<span class="sq">YEDEK</span>':'<span class="sq as">AS</span>'}</span>
-    ${chp?'<span class="chb" title="Son şampiyon">🏆</span>':""}<span class="stripe"></span>${tw?'<span class="xi">XI</span>':""}<span class="pic">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><span class="nm">${esc(up(shortName(p.name)))}</span><span class="at">${at}</span>${BALL}</span>${flag}</button>`;
+    ${chp?'<span class="chb" title="Son şampiyon">🏆</span>':""}<span class="stripe"></span>${tw?'<span class="xi">XI</span>':""}<span class="pic">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><span class="nm">${esc(up(shortName(p.name)))}</span>${kondBar(p.id,"fk")}<span class="at">${at}</span>${BALL}</span>${flag}</button>`;
 }
+/* Kondisyon: maça hazırlık. Son 8 haftadaki en çok 6 maça (iç + dış) çıkıp çıkmadığına bakar; yakın maç daha ağır sayılır.
+   Sakatlık/hastalık dönüşünde ilk iki maç düşük başlar. Sadece bilgi: reytinge ve takım dengesine etkisi yok. */
+const KW=[1,.85,.7,.55,.4,.3];
+function kondOf(id){S._kc=S._kc||{};if(S._kc.v!==S.matches)S._kc={v:S.matches};if(id in S._kc)return S._kc[id];
+  const p=P(id);let r=null;
+  if(p&&!p.guest){const now=Date.now(),D=864e5,cr=p.created_at?Date.parse(p.created_at)-D:0;
+    const M=S.matches.filter(m=>m.state==="bitti"&&matchTs(m)<=now&&now-matchTs(m)<=56*D&&matchTs(m)>=cr).sort((a,b)=>matchTs(b)-matchTs(a)).slice(0,6);
+    if(M.length){const inM=m=>(m.team_a||[]).includes(id)||(!isExt(m)&&(m.team_b||[]).includes(id));let sw=0,pw=0,n=0;
+      M.forEach((m,i)=>{sw+=KW[i];if(inM(m)){pw+=KW[i];n++}});
+      let k=40+60*pw/sw,why=[];
+      const gap=(now-matchTs(M[0]))/D;if(gap>21){k-=Math.min(20,(gap-21)*.7);why.push("takım "+Math.round(gap/7)+" haftadır maç yapmadı")}
+      const lg=p.status_log||[];let back=null;for(let i=lg.length-1;i>=0;i--){if(lg[i].type==="sakat"||lg[i].type==="hasta"){const h=lg.slice(i+1).find(e=>e.type==="hazir");if(h)back={at:Date.parse(h.at),t:lg[i].type};break}}
+      if(back&&stOf(p)==="hazir"&&now-back.at<=42*D){const after=M.filter(m=>matchTs(m)>=back.at&&inM(m)).length;const pen=after>=2?0:after===1?8:15;if(pen){k-=pen;why.push((back.t==="sakat"?"sakatlıktan":"hastalıktan")+" yeni döndü")}}
+      k=Math.round(Math.max(30,Math.min(100,k)));r={k,n,of:M.length,why,lv:k>=80?"hi":k>=60?"md":"lo",l:k>=80?"Zinde":k>=60?"Orta":"Düşük"}}}
+  return S._kc[id]=r}
+const kondBar=(id,cls)=>{const c=kondOf(id);return c?`<span class="kbar k${c.lv}${cls?" "+cls:""}" title="Kondisyon %${c.k}" aria-label="Kondisyon yüzde ${c.k}, ${c.l}"><i style="width:${c.k}%"></i></span>`:""};
+const kondChip=id=>{const c=kondOf(id);return c?`<span class="kchip k${c.lv}" title="Kondisyon">${ICON_BAT}%${c.k}</span>`:""};
+const ICON_BAT='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="7" width="17" height="10" rx="2"/><path d="M22 11v2"/></svg>';
+function kondCard(p){const c=kondOf(p.id);if(!c)return"";
+  return `<div class="kcard k${c.lv}"><div class="kch"><span>Kondisyon</span><b class="num">%${c.k}</b><em>${c.l}</em></div><span class="kbar k${c.lv} big"><i style="width:${c.k}%"></i></span><small>${c.n?`Son ${c.of} maçta ${c.n} kez oynadı`:`Son ${c.of} maçta hiç oynamadı`}${c.why.length?" · "+c.why.join(" · "):""}.</small></div>`}
 function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];const u=p.status?.until?" · "+fmtShort(p.status.until)+"'e kadar":"";return`<span class="chip ${x.cls}"><span class="dot"></span>${x.label}${u}</span>`}
 
 /* ================= Maç sekmesi ================= */
@@ -1304,7 +1324,7 @@ function editorPanel(m){
   const free=S.players.filter(p=>!inT(p.id)).sort((x,y)=>x.name.localeCompare(y.name,"tr"));
   const poolK=free.filter(p=>!UNAVAIL.includes(stOf(p))).map(p=>p.id).sort(byPos),poolO=free.filter(p=>UNAVAIL.includes(stOf(p))).map(p=>p.id).sort(byPos);
   const poolG=S.guests.filter(p=>!inT(p.id)).map(p=>p.id);
-  const poolRow=id=>{const p=P(id);return `<div class="pl">${avatarO(p)}<div class="pi"><b>${esc(p.name)}</b><span>${esc(posLabel(p))}${stChip(p)}</span></div><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm" data-act="poolAdd" data-k="A" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleklilere">${dot("A")}A</button><button class="btn sm" data-act="poolAdd" data-k="B" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleksizlere">${dot("B")}B</button></span></div>`};
+  const poolRow=id=>{const p=P(id);return `<div class="pl">${avatarO(p)}<div class="pi"><b>${esc(p.name)}</b><span>${esc(posLabel(p))}${kondChip(p.id)}${stChip(p)}</span></div><span class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn sm" data-act="poolAdd" data-k="A" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleklilere">${dot("A")}A</button><button class="btn sm" data-act="poolAdd" data-k="B" data-id="${esc(id)}" aria-label="${esc(p.name)} Yeleksizlere">${dot("B")}B</button></span></div>`};
   return `<details class="pool-box"${t.poolOpen!==false?" open":""} data-act-toggle-team="poolOpen"><summary>Oyuncu seç · ${t.A.length+t.B.length}/${CAP} kişi seçildi</summary><div class="list">
      ${poolK.length?`<div class="grp">Oyuncular</div>${poolK.map(poolRow).join("")}`:`<p class="muted small" style="padding:8px 0">Bütün oyuncular takımlara dağıtıldı.</p>`}
      ${poolO.length?`<details><summary class="small">Sakat, hasta ya da izinde (${poolO.length})</summary>${poolO.map(poolRow).join("")}</details>`:""}
@@ -1633,7 +1653,7 @@ function listRow(p,rk){
   return `<button class="lrow${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}">
     <span class="lth ${tierOf(o)}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span>
     <span class="lmid"><span class="lhd"><span class="rk">${rk}</span><span class="ln">${esc(p.name)}</span></span>
-      <span class="lsub">${S.f.sort==="mv"&&S.tab==="kartlar"?`<span class="mvt">${fM(mvOf(p.id))}</span>${ageOf(p)!=null?`<span class="muted small">${ageOf(p)} yaş</span>`:""}`:S.f.sort==="form"&&S.tab==="kartlar"?formNotes(s):`<span class="pchip">${eposOf(p)}</span>${altOf(p)?`<span class="pchip alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="pchip sqc">Yedek</span>':'<span class="pchip sqa">As</span>'}`}${flag}</span></span>
+      <span class="lsub">${S.f.sort==="mv"&&S.tab==="kartlar"?`<span class="mvt">${fM(mvOf(p.id))}</span>${ageOf(p)!=null?`<span class="muted small">${ageOf(p)} yaş</span>`:""}`:S.f.sort==="form"&&S.tab==="kartlar"?formNotes(s):`${kondChip(p.id)}<span class="pchip">${eposOf(p)}</span>${altOf(p)?`<span class="pchip alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="pchip sqc">Yedek</span>':'<span class="pchip sqa">As</span>'}`}${flag}</span></span>
     <span class="lr"><b class="num ${vcls(o)}">${o}</b>${tr}</span></button>`;
 }
 
@@ -1766,7 +1786,7 @@ function sheetPlayer(pid,inline){
   h+=`<div class="prof"><div style="display:grid;gap:10px;min-width:0">${trophyCase(p.id)}${mvCard(p)}${rtHist(s)}</div>
     <div style="display:grid;gap:12px;min-width:0">
       <div class="row">${st==="hazir"?'<span class="chip ok"><span class="dot"></span>Hazır</span>':stChip(p)}${s.streak?`<span class="chip ${s.streak.hot?"warn":"info"}">${s.streak.hot?"🔥":"❄️"} ${esc(s.streak.t)}</span>`:""}${p.status?.note?`<span class="muted small">${esc(p.status.note)}</span>`:""}<button class="btn sm" data-act="cmpOpen" data-id="${esc(p.id)}">${ICON.scale} Karşılaştır</button></div>
-      ${profStats(p,s,true)}
+      ${kondCard(p)}${profStats(p,s,true)}
     </div></div>`;
   if(inline)return h;
   if(canSt)h+=`<div style="display:grid;gap:10px"><h3>Durumu güncelle</h3>
@@ -1884,6 +1904,8 @@ function viewKurallar(inSheet){
   const n=NOTE;const row=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;const f=x=>x>0?"+"+fN(x):x<0?"−"+fN(-x):"0";
   const RL=[["KL","Kaleci"],["DF","Defans"],["DOS","Defansif orta saha"],["OS","Orta saha"],["FV","Forvet"]];
   return `
+  <section class="card"><h2>Kondisyon</h2><p class="muted small">Maça ne kadar hazır olduğunu gösterir; reytinge ve takım dengesine etkisi yoktur. Son 8 haftadaki en çok 6 maça (dış maçlar dahil) çıkıp çıkmadığına bakılır, yakın maç daha ağır sayılır.</p>
+   <div class="rules">${row("Hepsinde oynadı","%100")}${row("Hiçbirinde oynamadı","%40")}${row("Sakatlık ya da hastalık dönüşü","ilk maç −15, ikinci maç −8")}${row("Takım 3 haftadan uzun maç yapmadı","herkes biraz düşer")}${row("Seviye","%80+ zinde · %60–79 orta · altı düşük")}</div></section>
   <section class="card"><h2>Piyasa değeri</h2><p class="muted small">FC 27'deki oyuncu değerlerinden ayarlandı. Her maçtan sonra güncellenir.</p><div class="rules">${row("Reyting","her reytingin sabit değeri var: 65 = 5 M €, 70 = 9 M €, 75 = 16 M €, 80 = 30 M €, 85 = 47 M €, 90 = 62,6 M €, 100 = 90 M €")}${row("Kaleci","×0,85")}${row("Yaş","15 yaş ×1,2 · 22 yaş ×1,1 · 27 yaş ×1 · 31 yaş ×0,93 · 35+ ×0,85, aralar kademeli")}${row("Form","en az 3 maç oynayanlarda son 5 maçın not ortalaması 7'nin üstündeyse +, altındaysa −; en fazla ±%15")}${row("Devamlılık","en az 5 maç oynandıktan sonra, son 8 maçın katılımına göre en fazla ±%10; yedeklere uygulanmaz")}${row("Kupalar","son sezonun her kupası +%5, daha eskiler +%2")}${row("Taban","en düşük 1 M €")}</div></section>
   <section class="card"><h2>Maç notu</h2><p>Sahada yapılanlar (sonuç, gol, asist, yenilen gol, değerlendirme) toplanır. Sonra <b>maç dengesi</b> uygulanır: maçtaki ortadaki oyuncu ${fN(n.orta)} alacak şekilde herkesin notu aynı miktarda kaydırılır. Böylece notlar şişmez, kim maçın ortalamasının üstünde kim altında net görünür. Not ${fN(n.tavan)}'i geçerse aşan kısım yarı sayılır.</p>
    <p class="muted small">Değerlendirme notun aralığını belirler. Aralığın dışına taşan kısmın dörtte biri sayılır:</p>

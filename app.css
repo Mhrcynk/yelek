@@ -2213,3 +2213,19 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 .perl{display:grid}.per{display:grid;gap:2px;padding:10px 14px;border-bottom:1px solid var(--line,#eee);min-width:0}.per:last-child{border-bottom:0}
 .per b{font-size:.84rem;overflow-wrap:anywhere;font-weight:700}.per small{font-size:.72rem;color:var(--muted);overflow-wrap:anywhere}
 .bkl{margin:4px 0 0;padding-left:18px;display:grid;gap:6px;font-size:.86rem;color:var(--muted)}.bkl b,.bkl code{color:var(--ink,#2a0830)}.bkl code{font-size:.8rem;background:#F1EAFE;padding:1px 5px;border-radius:6px}
+/* kondisyon */
+.kbar{display:block;height:4px;border-radius:9px;background:rgba(0,0,0,.12);overflow:hidden}
+.kbar i{display:block;height:100%;border-radius:inherit;background:currentColor}
+.kbar.khi{color:#1FA855}.kbar.kmd{color:#E8A317}.kbar.klo{color:#E0384F}
+.fut .kbar.fk{width:56%;margin:2px auto 3px;height:3px;background:rgba(0,0,0,.18)}
+.fut.big .kbar.fk{height:4px}
+.kchip{display:inline-flex;align-items:center;gap:3px;font-size:.7rem;font-weight:800;padding:2px 6px;border-radius:99px;line-height:1.2;white-space:nowrap}
+.kchip svg{flex:none}
+.kchip.khi{color:#137A3D;background:#E3F6EA}.kchip.kmd{color:#9A6400;background:#FFF2D6}.kchip.klo{color:#B4142D;background:#FDE6EA}
+.kcard{display:grid;gap:8px;padding:12px 14px;border-radius:16px;background:var(--card2,#F8F5FD)}
+.kch{display:flex;align-items:baseline;gap:8px}.kch span{font:800 .7rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kch b{font:900 1.3rem/1 var(--display);margin-left:auto}.kch em{font-style:normal;font-weight:800;font-size:.8rem}
+.kcard.khi .kch em{color:#137A3D}.kcard.kmd .kch em{color:#9A6400}.kcard.klo .kch em{color:#B4142D}
+.kbar.big{height:8px}
+.kcard small{color:var(--muted);font-size:.78rem}
+.pi>span{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
