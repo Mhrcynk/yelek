@@ -2274,6 +2274,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2752,3 +2753,9 @@ html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!imp
 .yp-dt>span{font:800 15px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;white-space:nowrap}
 .trkh{display:flex;align-items:center;gap:6px;margin-top:8px}.trkh svg{flex:none}
 .yp-grid>.yp-dt{text-align:left}
+/* tarih/saat alanları: iOS'ta taşmasın, yanındaki kutuyla aynı boyda dursun */
+.grid2>*{min-width:0}
+input[type=date],input[type=time]{-webkit-appearance:none;appearance:none;display:block;box-sizing:border-box;width:100%;max-width:100%;min-width:0;height:52px;min-height:52px;line-height:normal;text-align:left}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left;margin:0}
+input[type=date]::-webkit-calendar-picker-indicator{margin:0}
+.f select{height:52px;min-height:52px}
