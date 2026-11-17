@@ -1393,7 +1393,7 @@ function voteResults(m,inf){const vs=m.vsum;const stt=m.stats||{};const M=esc(m.
   const n=vs._n||0;const pl=plAll(m).filter(id=>Array.isArray(vs[id]));const sc=id=>{const c=vs[id],t=c[0]+c[1]+c[2]+c[3];return t?(3*c[0]+2*c[1]+c[2])/t:-1};
   const row=id=>{const c=vs[id];const mx=Math.max(...c);const p=P(id);const r=inf&&inf.pts[id];return `<button class="degr" data-act="open" data-id="${esc(id)}">${p?avatar(p,"sm"):""}<span class="degn"><b>${esc(nameOf(id))}</b>${r?`<span class="muted small">${tDot(r.side)}${esc(TEAM[r.side])}</span>`:""}</span><span class="vdist">${c.map((x,i)=>`<span class="q${i+1}${x===mx&&x>0?" h":""}" title="${VL[i]}">${x}</span>`).join("")}</span></button>`};
   const by=v=>pl.filter(id=>+stt[id]?.k===v).sort((a,b)=>sc(b)-sc(a));
-  let h=`<div class="vtop"><span class="vdist"><span class="q1 h">Ç</span><span class="q2 h">İ</span><span class="q3 h">O</span><span class="q4 h">K</span></span><b>${n} oy</b></div>`;
+  let h="";
   if(n<6)h+=`<p class="muted small">6'dan az oy geldiği için değerlendirme notları etkilemedi.</p><div class="degc">${pl.sort((a,b)=>sc(b)-sc(a)).map(row).join("")}</div>`;
   else h+=`<div class="degs">${[1,2,3,4].map(v=>{const ids=by(v);return ids.length?`<div class="degc"><div class="degh"><span class="pfc p${v}">${VL[v-1]}</span></div>${ids.map(row).join("")}</div>`:""}).join("")}</div>`;
   if(S.admin)h+=`<button class="btn ghost sm" data-act="vReopen" data-id="${M}">${S.f.vReopen===m.id?"Yeniden açmak için tekrar bas":"Oylamayı yeniden aç"}</button>`;

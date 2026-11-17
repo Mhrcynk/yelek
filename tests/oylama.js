@@ -87,7 +87,7 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   await run(()=>load(true));await pg.waitForTimeout(800);
   ok(await run(()=>fin().some(m=>m.vote_on)),"oylama kapandıktan sonra maç sonuçlanmadı");
   await run(()=>{const m=S.matches.find(x=>x.vote_on);S.tab="gecmis";S.view=m.id;S.f.mtab="oy";render(true)});await pg.waitForTimeout(800);
-  const t5=await pg.textContent("#view");ok(t5.includes("7 oy")&&t5.includes("Çok iyi"),"oylama sonuçları görünmüyor");await shot("5_sonuc");
+  const t5=await pg.textContent("#view");ok(t5.includes("Çok iyi"),"oylama sonuçları görünmüyor");await shot("5_sonuc");
   ok(!errs.length,"sayfa hatası: "+errs.join(" | "));
   if(!process.exitCode)console.log("Tamam: oylama akışı çalışıyor.");
   await b.close();srv.close()})();
