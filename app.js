@@ -243,7 +243,7 @@ function gyOrt(){const F=S.matches.filter(m=>m.state==="bitti"&&!isExt(m));let t
 const TRK=[["rt","Reyting","",1],["km","Koşu mesafesi","km",1],["pas","Toplam pas","",0],["hiz","Maks hız","km/s",1],["spr","Sprint","",0],["isa","Pas isabeti","%",0],["tk","Top kapma","",0],["pa","Pas arası","",0],["dri","Dripling","",0],["pp","Progresif pas","",0],["pt","Progresif taşıma","",0]];
 const TRKN=Object.fromEntries(TRK.map(([k,l,u])=>[k,{l,u}]));
 const TRK_W={FV:{pt:.3,dri:.3,spr:.2,hiz:.2},OS:{pas:.2,isa:.2,pp:.25,km:.2,pa:.15},DF:{tk:.35,pa:.3,isa:.2,hiz:.15},KL:{isa:1}};
-const TRK_MIN=4,TRK_CAP=.5,TRK_K=.3;
+const TRK_MIN=4,TRK_CAP=1,TRK_K=.6;
 const trkOf=(m,id)=>{const t=m&&m.track&&m.track[id];return t&&typeof t==="object"&&Object.keys(t).length?t:null};
 const trkHas=m=>!!(m&&m.track&&Object.keys(m.track).length);
 function trkCtx(m){if(!trkHas(m))return null;const pl=plAll(m).filter(id=>trkOf(m,id));if(pl.length<TRK_MIN)return null;const st={};
@@ -1700,7 +1700,7 @@ function sheetTrk(){const m=S.matches.find(x=>x.id===S.sheet.mid);if(!m||!S.admi
       <div class="grid2 trkg">${TRK.map(([k,l,u,dec])=>`<label class="f">${l}${u?" ("+u+")":""}<input type="text" inputmode="decimal" data-bind="trk.${esc(id)}.${k}" value="${esc(v[k]??"")}" placeholder="–" autocomplete="off"></label>`).join("")}</div></details>`};
   const n=plAll(m).filter(id=>{const v=f[id]||{};return TRK.some(([k])=>v[k]!==""&&v[k]!=null)}).length,tot=plAll(m).length;
   return `<div class="ch"><div style="min-width:0"><div class="eyebrow">Saha verileri · ${fmtShort(m.date)}</div><h2 style="white-space:normal">${esc(TEAM.A)} ${m.score_a} – ${m.score_b} ${esc(TEAM.B)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
-    <div class="trkp"><b>${n} / ${tot} oyuncu</b><span class="kbar khi big"><i style="width:${tot?n/tot*100:0}%"></i></span><small class="muted">Akıllı Saha'daki maç ekranından bakıp gir; ondalık için virgül kullanabilirsin. Zorunlu değil. En az ${TRK_MIN} oyuncu girilince notlara (en fazla ±0,5), kartlara (±1) ve kondisyona yansır.</small></div>
+    <div class="trkp"><b>${n} / ${tot} oyuncu</b><span class="kbar khi big"><i style="width:${tot?n/tot*100:0}%"></i></span><small class="muted">Akıllı Saha'daki maç ekranından bakıp gir; ondalık için virgül kullanabilirsin. Zorunlu değil. En az ${TRK_MIN} oyuncu girilince notlara (en fazla ±1), kartlara (±1) ve kondisyona yansır.</small></div>
     <div class="eyebrow trkh">${tDot("A")}${esc(TEAM.A)}</div>${plOf(m,"A").map(row).join("")}
     <div class="eyebrow trkh">${tDot("B")}${esc(TEAM.B)}</div>${plOf(m,"B").map(row).join("")}
     <button class="btn primary block" data-act="trkSave" data-id="${esc(m.id)}">${ICON.check} Kaydet ve hesapla</button>`}
