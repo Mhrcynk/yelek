@@ -10,7 +10,7 @@ S0,S1="/* KOYU-OTO:başla */","/* KOYU-OTO:bitti */"
 if S0 in css:css=css[:css.index(S0)]+css[css.index(S1)+len(S1):]
 src=css
 # iki temada aynı kalacak bileşenler (koyu tasarımlı ya da görsel/şablon)
-SKIP=re.compile(r"\.meBtn|\.pmBtn|\.gearBtn|\.logo\b|\.lg[a-z]*\b|\.navfade|\.fut\b\.tcard|\.tc\b|\.tok\b|\.maf|\.mres|\.field|\.hk|\.pmprev|\.pmcard|\.pmc\b|\.xsb|\.tcl\b|\.nt\.|\.nt\b|\.frx|\.crest|\.pph|\.lphero|\.lpcard|\.sb\b|\.bltk|\.fk\b|\.kbar|\.gdbar i|\.lkt button\.on|\.shirt|\.ovr|html\.dk|::selection|\.flag|\.lflag|\.trend|\.bib|\.fnts|\.pfc|\.chb|\.xi\b|\.sq\b|\.confetti|\.toast|\.brand|\.top\b|\.nav\b|\.nind|\.btn\.primary|\.primary|\.wa\b|\.danger|\.lgg|\.adm\b|\.capi|\.cap\b|\.tov|\.tps|\.lth|\.pa\b|\.pi\b|\.sbme|\.clk|\.lcs|\.mafcd|\.tk\b|\.yp\b|\.yp-")
+SKIP=re.compile(r"\.meBtn|\.pmBtn|\.gearBtn|\.logo\b|\.lg[a-z]*\b|\.navfade|\.fut\b\.tcard|\.tc\b|\.tok\b|\.maf|\.mres|\.field|\.hk|\.pmprev|\.pmcard|\.pmc\b|\.xsb|\.tcl\b|\.nt\.|\.nt\b|\.frx|\.crest|\.pph|\.lphero|\.lpcard|\.sb\b|\.bltk|\.fk\b|\.kbar|\.gdbar i|\.lkt button\.on|\.shirt|\.ovr|html\.dk|::selection|\.flag|\.lflag|\.trend|\.bib|\.fnts|\.pfc|\.chb|\.xi\b|\.sq\b|\.confetti|\.toast|\.brand|\.top\b|\.nav\b|\.nind|\.btn\.primary|\.primary|\.wa\b|\.danger|\.lgg|\.adm\b|\.capi|\.cap\b|\.tov|\.tps|\.lth|\.pa\b|\.pi\b|\.sbme|\.clk|\.lcs|\.mafcd|\.tk\b|\.yp\b|\.yp-|\.vhero")
 HEX=re.compile(r"#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")
 def hx(h):
     h=h.lstrip("#");h="".join(c*2 for c in h) if len(h)==3 else h;return tuple(int(h[i:i+2],16)/255 for i in (0,2,4))
