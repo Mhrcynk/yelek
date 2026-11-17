@@ -736,7 +736,7 @@ function render(force){
   else if(S.loaded&&gated())h+=viewVitrin();
   else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,saha:viewSaha,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"||t==="saha"?"lig":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
-  keepOpen(v,()=>{v.innerHTML=h});v.removeAttribute("aria-busy");phdRender();qkRender();onbBind();
+  keepX(v,()=>keepOpen(v,()=>{v.innerHTML=h}));v.removeAttribute("aria-busy");phdRender();qkRender();onbBind();
   if(chg&&!RM)reveal(v);
 
   renderSheet();wakeSync();
@@ -748,12 +748,14 @@ function keepOpen(root,fn){if(!root)return fn();const open=new Set([...root.quer
 async function wakeSync(){const need=!!(S.admin&&(S.draft||S.teams||(S.sheet&&["stats","eval"].includes(S.sheet.type))));
   try{if(need&&!S.wake&&navigator.wakeLock&&document.visibilityState==="visible"){S.wake=await navigator.wakeLock.request("screen");S.wake.addEventListener("release",()=>{S.wake=null})}
     else if(!need&&S.wake){const w=S.wake;S.wake=null;await w.release()}}catch(_){}}
+const XS=".mtabs,.chips,.mzch,.oyt2,.scroll-x,.mzseg,.kchips,.vsel,.pmi,.pmt";
+function keepX(v,fn){const sx=[...v.querySelectorAll(XS)].map(e=>e.scrollLeft);fn();[...v.querySelectorAll(XS)].forEach((e,i)=>{if(sx[i])e.scrollLeft=sx[i]})}
 function renderSheet(){
   const host=$("#modal");const html=S.sheet?sheetHtml():"";
   if(!html){S.sheet=null;if(host.firstChild){host.innerHTML="";document.body.classList.remove("lock")}return}
   let body=$("#sheetBody");
   if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><button class="grab" data-act="close" aria-label="Kapat"></button><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
-  keepOpen(body,()=>{body.innerHTML=html});
+  const sh=body.parentNode,st=sh.scrollTop;keepX(body,()=>keepOpen(body,()=>{body.innerHTML=html}));if(sh.scrollTop!==st)sh.scrollTop=st;
   if(S.sheet&&S.sheet.type==="pm")ypZoom();
 }
 /* ================= Paylaşım merkezi ================= */
@@ -1792,9 +1794,9 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
     rows=Object.entries(T).filter(([,o])=>o.n>=need).map(([id,o])=>[id,Object.fromEntries(Object.keys(o.s).map(k=>[k,o.s[k]/o.c[k]])),o.n])}
   const unit=k=>({km:"km",hiz:"km/s"})[k]||"";const pct=k=>k==="isa";
   const fv=(k,v)=>(pct(k)?"%":"")+fTrk(k,v).replace(/^%/,"");
-  h+=`<div class="vtog sqt" role="group" aria-label="Saha verisi dönemi">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>`;
   const avail=TRK.map(([k])=>k).filter(k=>rows.some(r=>r[1][k]!=null));let K=S.f.sahaK&&avail.includes(S.f.sahaK)?S.f.sahaK:(avail.includes("km")?"km":avail[0]);
-  h+=`<div class="mzch" role="group" aria-label="Veri türü">${avail.map(k=>`<button data-act="tog1" data-k="sahaK" data-v="${k}" class="${k===K?"on":""}" aria-pressed="${k===K}">${esc(TRKN[k].l)}</button>`).join("")}</div>`;
+  h+=`<div class="mzf"><label class="mzsel"><span>${esc(TRKN[K].l)}</span>${CHVD}<select data-act-change="sahaK" aria-label="Veri türü">${avail.map(k=>`<option value="${k}"${k===K?" selected":""}>${esc(TRKN[k].l)}</option>`).join("")}</select></label>
+    <div class="mzseg" role="group" aria-label="Dönem">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div></div>`;
   const L=rows.filter(r=>r[1][K]!=null).sort((a,b)=>b[1][K]-a[1][K]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
   if(L.length){const[id0,o0,x0]=L[0];const sub=x=>mode==="son"?(x?esc(nmOf(last,x)):""):x+" maç";const others=["km","spr","hiz","isa","rt","pas"].filter(k=>k!==K&&o0[k]!=null).slice(0,3);
     h+=`<button class="mzsh" data-act="open" data-id="${esc(id0)}"><small>${mode==="son"?fmtShort(last.date)+" · ":""}${esc(TRKN[K].l)} lideri</small><span class="mzsh-h"><b>${esc(nameOf(id0))}</b><em class="num">${fv(K,o0[K])}${unit(K)?`<i> ${unit(K)}</i>`:""}</em></span>
@@ -1980,10 +1982,14 @@ function viewKartlar(){
   let ps=S.players.filter(p=>(sq==="all"||(sq==="yedek"?!!p.yedek:!p.yedek))&&(flt==="all"||flt==="as"||flt==="yedek"||p.pos===flt||(altOf(p)&&GROUP_POS[EPOS[altOf(p)][0]]===flt)));
   ps=[...ps].sort((a,b)=>sort==="mv"?mvOf(b.id)-mvOf(a.id)||genOf(b.id)-genOf(a.id):sort==="isim"?a.name.localeCompare(b.name,"tr"):sort==="form"?(S.stats[b.id]?.form??-1)-(S.stats[a.id]?.form??-1)||(S.stats[b.id]?.lastD||0)-(S.stats[a.id]?.lastD||0)||genOf(b.id)-genOf(a.id):genOf(b.id)-genOf(a.id));
   const mi=(act,l,on,extra)=>`<button role="menuitem" data-act="${act}" ${extra||""}>${l}${on?"<i>✓</i>":""}</button>`;
-  let h=`${S.admin?`<div class="ph kph"><button class="btn sm primary" data-act="addSheet" style="margin-left:auto">${ICON.plus} Oyuncu ekle</button></div>`:""}<div class="ktb"><div class="vtog sqt" role="group" aria-label="Kadro">${[["as","As",nAs],["yedek","Yedek",nYd],["all","Tümü",""]].map(([k,l,n])=>`<button data-act="sqf" data-v="${k}" class="${sq===k?"on":""}" aria-pressed="${sq===k}">${l}${n!==""?` <small>${n}</small>`:""}</button>`).join("")}</div>
-    <button class="kic" data-act="kview" data-v="${kv==="list"?"grid":"list"}" aria-label="${kv==="list"?"Kart görünümü":"Liste görünümü"}">${kv==="list"?ICON_GRID:ICON_LIST}</button>
-    <span class="kmw"><button class="kic" data-act="kmenu" aria-label="Diğer" aria-haspopup="menu" aria-expanded="${!!S.f.kmenu}">${ICON_DOTS}</button>${S.f.kmenu?`<button class="kmx" data-act="kmenu" aria-label="Menüyü kapat" tabindex="-1"></button><div class="kmenu" role="menu"><span class="kml">Sırala</span><div class="kpills" role="group" aria-label="Sırala">${[["ovr","Reyting"],["mv","Değer"],["form","Form"],["isim","İsim"]].map(([k,l])=>`<button data-act="ksort" data-v="${k}" class="${sort===k?"on":""}" aria-pressed="${sort===k}">${l}</button>`).join("")}</div><hr>${mi("cmpOpen","Karşılaştır")}${S.admin?mi("sqMode","As / yedek seç"):""}</div>`:""}</span></div>
-    <div class="chips kchips" role="group" aria-label="Mevkiye göre">${[["all","Tümü"],...POS_KEYS.map(k=>[k,k])].map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${flt===k||(k==="all"&&(flt==="as"||flt==="yedek"))?"on":""}">${l}</button>`).join("")}</div>`;
+  const POSL=[["all","Tümü"],["Kaleci","KL"],["Defans","DF"],["Orta saha","OS"],["Forvet","FV"]];const fv=flt==="as"||flt==="yedek"?"all":flt;
+  const nonDef=sq!=="as"||sort!=="ovr";
+  let h=`<div class="mzf">${`<div class="mzseg grow" role="group" aria-label="Mevki">${POSL.map(([k,l])=>`<button data-act="filter" data-v="${esc(k)}" class="${fv===k?"on":""}" aria-pressed="${fv===k}">${l}</button>`).join("")}</div>`}
+    <span class="kmw"><button class="mzib${nonDef?" dot":""}" data-act="kmenu" aria-label="Görünüm ve sıralama" aria-haspopup="menu" aria-expanded="${!!S.f.kmenu}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>${S.f.kmenu?`<button class="kmx" data-act="kmenu" aria-label="Menüyü kapat" tabindex="-1"></button><div class="kmenu" role="menu">
+      <span class="kml">Görünüm</span><div class="kpills">${[["list","Liste"],["grid","Kart"]].map(([k,l])=>`<button data-act="kview" data-v="${k}" class="${kv===k?"on":""}" aria-pressed="${kv===k}">${l}</button>`).join("")}</div>
+      <span class="kml">Kadro</span><div class="kpills">${[["as","As "+nAs],["yedek","Yedek "+nYd],["all","Tümü"]].map(([k,l])=>`<button data-act="sqf" data-v="${k}" class="${sq===k?"on":""}" aria-pressed="${sq===k}">${l}</button>`).join("")}</div>
+      <span class="kml">Sırala</span><div class="kpills">${[["ovr","Reyting"],["mv","Değer"],["form","Form"],["isim","İsim"]].map(([k,l])=>`<button data-act="ksort" data-v="${k}" class="${sort===k?"on":""}" aria-pressed="${sort===k}">${l}</button>`).join("")}</div>
+      <hr>${mi("cmpOpen","Karşılaştır")}${S.admin?mi("sqMode","As / yedek seç")+mi("addSheet","Oyuncu ekle"):""}</div>`:""}</span></div>`;
   if(S.admin&&S.f.sqMode)h+=`<div class="sqbar"><span><b>As / yedek seçiliyor</b><small>${nAs} as · ${nYd} yedek</small></span><button class="btn sm primary" data-act="sqMode">Bitti</button></div>`;
   if(S.admin&&S.f.sqMode)return h+(ps.length?`<section class="card" style="gap:0">${ps.map(p=>`<div class="sqrow">${avatar(p)}<span class="sqn"><b>${esc(p.name)}</b><span class="muted small">${eposOf(p)} · ${ovrOf(p.id)}</span></span><div class="vtog" role="group" aria-label="${esc(p.name)} kadro"><button data-act="setSq" data-id="${esc(p.id)}" data-v="" class="${p.yedek?"":"on"}" aria-pressed="${!p.yedek}">As</button><button data-act="setSq" data-id="${esc(p.id)}" data-v="1" class="${p.yedek?"on":""}" aria-pressed="${!!p.yedek}">Yedek</button></div></div>`).join("")}</section>`:"");
   h+=ps.length?(kv==="grid"?`<div class="mzk">${ps.map(p=>mzCard(p)).join("")}</div>`:`<div class="mzpl">${ps.map((p,i)=>mzRow(p,i+1)).join("")}</div>`):`<section class="card"><div class="empty"><h3>${S.players.length?"Bu mevkide oyuncu yok":"Kadro boş"}</h3><p>${S.admin?"Sağ üstteki düğmeyle oyuncu ekle.":"Yönetici oyuncuları ekleyince kartlar burada görünür."}</p></div></section>`;
@@ -2044,11 +2050,11 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   const L=F.length?ligTable(F):[];const li=L.findIndex(x=>x.id===p.id);
   const gear='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>';
   let h=`<section class="mzme">${ph?`<img class="mzme-av" src="${esc(ph)}" alt="">`:`<span class="mzme-av">${esc(initials(p.name))}</span>`}<div class="mzme-x"><b>${esc(p.name)}</b><div class="mzme-c"><span>${eposOf(p)} · ${o}</span>${S.admin?'<span class="y">Yönetici</span>':""}${p.yedek?"<span>Yedek kadro</span>":""}</div></div>
-    <button class="mzic" data-act="tab" data-tab="ayarlar" aria-label="Ayarlar">${gear}</button></section>`;
+</section>`;
   h+=`<div class="mzst">${[[n,"Maç"],[g,"Gol"],[a,"Asist"],[li<0?"–":(li+1)+".","Ligde"]].map(([v,l])=>`<div><b class="num">${v}</b><span>${l}</span></div>`).join("")}</div>`;
   if(!s.games)h+=`<p class="mzhint">İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikir.</p>`;
   const it=(c,i,t,sub,act,extra)=>`<button class="mzmi" data-act="${act}" ${extra||""}><span class="mzmi-i" style="background:${c}">${i}</span><span class="mzmi-t">${t}</span><span class="mzmi-s">${sub||""}</span><span class="mzmi-c" aria-hidden="true">›</span></button>`;
-  h+=`<div class="mzmn">${it("#FF3EA5","K","Kartım",String(o),"open",`data-id="${esc(p.id)}"`)}${it("#5FE3F5","F","Form ve maçlarım",s.games?s.games+" maç":"","open",`data-id="${esc(p.id)}"`)}${it("#FFD400","Ö","Karşılaştır","","cmpOpen",`data-id="${esc(p.id)}"`)}${it("#00E58A","P","Paylaşım merkezi","","pmOpen","")}${(!isMember()||S.admin)?it("#B9A8FF","D","Oyuncuyu değiştir","","meSheet",""):""}${it("#A99CD6","A","Ayarlar","","tab",'data-tab="ayarlar"')}</div>`;
+  h+=`<div class="mzmn">${it("#FF3EA5","K","Kartım",String(o),"open",`data-id="${esc(p.id)}"`)}${it("#5FE3F5","F","Form ve maçlarım",s.games?s.games+" maç":"","open",`data-id="${esc(p.id)}"`)}${it("#FFD400","Ö","Karşılaştır","","cmpOpen",`data-id="${esc(p.id)}"`)}${it("#00E58A","P","Paylaşım merkezi","","pmOpen","")}${(!isMember()||S.admin)?it("#B9A8FF","D","Oyuncuyu değiştir","","meSheet",""):""}</div>`;
   return h}
 const trq=t=>String(t||"").toLocaleLowerCase("tr").replace(/[çğıöşü]/g,c=>({ç:"c",ğ:"g",ı:"i",ö:"o",ş:"s",ü:"u"})[c]);
 function sheetMe(){
@@ -2811,7 +2817,7 @@ document.addEventListener("click",async e=>{
     case"kmenu":S.f.kmenu=!S.f.kmenu;render(true);break;
     case"ksort":S.f.sort=el.dataset.v;S.f.kmenu=false;render(true);break;
     case"setSq":{const p=P(id);if(!p)break;const v=!!el.dataset.v;if(!!p.yedek===v)break;p.yedek=v;render(true);await A("admin_set_yedek",{p_id:id,p_yedek:v},p.name+(v?" yedek kadroda":" as kadroda"));break}
-    case"sqf":S.f.sq=el.dataset.v;render(true);break;
+    case"sqf":S.f.sq=el.dataset.v;S.f.kmenu=false;render(true);break;
     case"kview":S.f.kmenu=false;S.f.kv=el.dataset.v;LS.set("y_kv",S.f.kv);render(true);break;
     case"rkAll":S.f.rkAll=!S.f.rkAll;render(true);break;
     case"back":S.view=null;render(true);window.scrollTo(0,0);break;
@@ -3020,6 +3026,7 @@ document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.cmp&&S.sheet&&S.sheet.type==="cmp"){S.sheet[t.dataset.cmp]=t.value;render(true);return}
   if(t.dataset.vote){const k="v_"+t.dataset.m;(S.f[k]||(S.f[k]={}))[t.dataset.vote]=t.value;return}
   if(t.dataset.photo&&t.files&&t.files[0]){uploadPhoto(t.dataset.photo,t.files[0]);t.value="";return}
+  if(t.dataset.actChange==="sahaK"){S.f.sahaK=t.value;render(true);return}
   if(t.dataset.actChange==="yr"){S.yr=t.value==="all"?"all":+t.value;S.f.ptab=S.f.ptab;S.view=null;render(true);return}
   if(t.dataset.actChange==="cap"&&S.draft){S.draft["sel"+t.dataset.k]=t.value;render(true)}
   if(t.dataset.actChange==="evA"){const m=S.matches.find(x=>x.id===t.dataset.m);const sd=S.f["sd_"+t.dataset.m];const e=sd&&sd.events[+t.dataset.i];if(e){snap(sd,"asist değişikliği");e.a=t.value||null;S.f.confirmFinish=null;sdSave(m,sd);render(true)}return}
