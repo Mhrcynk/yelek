@@ -554,17 +554,19 @@ function roleRace(F,k){const R=roleAgg(F)[k]||{};const need=needPos(F);const m0=
   const q=all.filter(x=>x.ok).sort(srt);q.under=all.filter(x=>!x.ok).sort((a,b)=>(b.n-a.n)||srt(a,b));q.need=need;return q}
 /* Yelek puanı: maçın mevkideki en iyi 3 notu 3-2-1 (6 altı puan almaz) + mevkiye göre gol/asist + az gol yeme.
    Oyuncunun sezon puanının hepsi o sezon en çok oynadığı mevkinin yarışında sayılır (eşitlikte asıl mevkisi). */
-const YP={g:{FV:1,OS:1.25,DF:1.5,KL:1.5},a:{FV:.5,OS:.75,DF:1,KL:1}};
+// mevki yarışı: sıralama ödülü mevkideki oyuncu sayısının yarısı kadar kişiye (en az 1, en fazla 3); az gol yeme ×2; çizgiden çıkarma; defansta top kapma + pas arası (saha verisi)
+const YP={g:{FV:1,OS:1.25,DF:1.5,KL:1.5},a:{FV:.5,OS:.75,DF:1,KL:1},sav:2,cl:{KL:1,DF:1,OS:.75,FV:.5},trk:.1,trkMax:2};
 // kaleci ve defansın gol yeme puanı: maç notundaki aralığın aynısı (sezon ortalamasına göre), eksiler sayılmaz
 const ypSav=(role,op,avg)=>{if(role!=="KL"&&role!=="DF"||op==null)return 0;const d=op-avg;for(const[lim,v]of NOTE.savunma)if(d<=lim)return Math.max(0,v[role]||0);return 0};
 const fP=v=>String(+(+v).toFixed(2)).replace(".",",");
 function yelekRace(F){const pl={};
   const gA=gyOrt();F.forEach((m,mi)=>{const inf=S.mInfo[m.id];if(!inf)return;const by={};
     for(const[id,r]of Object.entries(inf.pts||{})){if(!r||!P(id)||P(id).guest)continue;(by[r.role]=by[r.role]||[]).push([id,r])}
-    for(const[role,L]of Object.entries(by)){L.sort((a,b)=>b[1].pts-a[1].pts);const bon={};let i=0;
-      while(i<L.length&&i<3){let j=i;while(j+1<L.length&&L[j+1][1].pts===L[i][1].pts)j++;for(let k=i;k<=j;k++)if(L[k][1].pts>=6)bon[L[k][0]]=[3,2,1][i];i=j+1}
+    for(const[role,L]of Object.entries(by)){L.sort((a,b)=>b[1].pts-a[1].pts);const bon={};let i=0;const nAw=Math.min(3,Math.max(1,Math.round(L.length/2)));const stt=m.stats||{};
+      while(i<L.length&&i<nAw){let j=i;while(j+1<L.length&&L[j+1][1].pts===L[i][1].pts)j++;for(let k=i;k<=j;k++)if(L[k][1].pts>=6)bon[L[k][0]]=[3,2,1][i];i=j+1}
       for(const[id,r]of L){const o=pl[id]=pl[id]||{id,tot:0,n:0,m:{},rc:{}};
-        const p=(bon[id]||0)+(r.g||0)*(YP.g[role]||0)+(r.a||0)*(YP.a[role]||0)+ypSav(role,r.op,gA);
+        const t=role==="DF"?trkOf(m,id):null;
+        const p=(bon[id]||0)+(r.g||0)*(YP.g[role]||0)+(r.a||0)*(YP.a[role]||0)+YP.sav*ypSav(role,r.op,gA)+(+stt[id]?.cl||0)*(YP.cl[role]||0)+(t?Math.min(YP.trkMax,((+t.tk||0)+(+t.pa||0))*YP.trk):0);
         o.m[mi]={p:Math.round(p*100)/100,role};o.tot+=p;o.n++;o.rc[role]=(o.rc[role]||0)+1}}});
   const R={KL:[],DF:[],OS:[],FV:[]};
   for(const o of Object.values(pl)){const mx=Math.max(...Object.values(o.rc));const c=Object.keys(o.rc).filter(k=>o.rc[k]===mx);const own=posOf(P(o.id));o.race=c.includes(own)?own:c[0];o.tot=Math.round(o.tot*100)/100;R[o.race]?.push(o)}
@@ -2123,9 +2125,9 @@ function sheetPlayer(pid,inline){
   if(S.admin){const ph=photoOf(p.id);
     h+=`<div class="phrow"><span class="av ${tierOf(ovrOf(p.id))}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":""}</p></div>
       <label class="btn sm primary" for="phFile">${ph?"Değiştir":"Yükle"}</label><input class="vh" id="phFile" type="file" accept="image/*" data-photo="${esc(p.id)}">${ph?`<button class="btn sm ghost" data-act="delPhoto" data-id="${esc(p.id)}" aria-label="Fotoğrafı kaldır">${ICON.x}</button>`:""}</div>`}
-  if(S.admin){const a=S.f.ed||(S.f.ed={name:p.name,pos:p.pos,epos:eposOf(p),alt:altOf(p),yedek:p.yedek?"1":"",attrs:{...(p.attrs||{})}});
+  if(S.admin){const a=S.f.ed||(S.f.ed={name:p.name,pos:p.pos,epos:eposOf(p),alt:altOf(p),yedek:p.yedek?"1":"",age:p.age!=null?String(p.age):"",attrs:{...(p.attrs||{})}});
     h+=`<details${S.f.edOpen?" open":""} data-act-toggle="edOpen"><summary>Kartı düzenle (yönetici)</summary><div style="display:grid;gap:12px;margin-top:10px">
-      <label class="f" for="edName">Ad<input id="edName" type="text" data-bind="ed.name" value="${esc(a.name)}" maxlength="40"></label>
+      <div class="grid2"><label class="f" for="edName">Ad<input id="edName" type="text" data-bind="ed.name" value="${esc(a.name)}" maxlength="40"></label><label class="f" for="edAge">Yaş<input id="edAge" type="number" inputmode="numeric" min="10" max="80" data-bind="ed.age" value="${esc(a.age??"")}" placeholder="–"></label></div>
       <div class="grid2"><label class="f" for="edPos">Mevki${posSelect("edPos","ed.epos",a.epos)}</label><label class="f" for="edAlt">Alternatif mevki${posSelect("edAlt","ed.alt",a.alt,true,a.epos)}</label></div>
       ${sqSelect("edSq","ed.yedek",a.yedek)}
       ${attrInputs("ed",a.pos,a.attrs)}
@@ -2844,6 +2846,8 @@ document.addEventListener("click",async e=>{
     case"saveStatus":{const p=P(S.sheet.id);const sf=S.f.st;await act("set_status",{p_player:p.id,p_type:sf.type,p_until:sf.type==="hazir"?null:(sf.until||null),p_note:sf.type==="hazir"?"":(sf.note||"")},"Durum güncellendi");S.f.st=null;render(true);break}
     case"saveCard":{const p=P(S.sheet.id);const a2=S.f.ed;if(!String(a2.name||"").trim()){toast("Ad boş olamaz");break}
       const ok=await A("admin_save_player_v2",{p_id:p.id,p_name:a2.name.trim(),p_pos:a2.pos,p_epos:a2.epos,p_alt:a2.alt||"",p_attrs:cleanAttrs(a2.pos,a2.attrs)},"Kart güncellendi");
+      {const ag=String(a2.age??"").trim();const nv=ag===""?null:+ag;const cur=p.age!=null?p.age:null;
+        if(ok&&nv!==cur){if(nv!=null&&(!Number.isInteger(nv)||nv<10||nv>80))toast("Yaş 10 ile 80 arasında olmalı");else await A("admin_set_age",{p_id:p.id,p_age:nv},"Yaş kaydedildi")}}
       if(ok&&!!a2.yedek!==!!p.yedek)await A("admin_set_yedek",{p_id:p.id,p_yedek:!!a2.yedek},a2.yedek?"Yedek kadroya alındı":"As kadroya alındı");S.f.ed=null;render(true);break}
     case"delPlayer":{const p=P(S.sheet.id);if(S.f.delP!==p.id){S.f.delP=p.id;render(true);break}const r=await A("admin_archive_player",{p_id:p.id},"Oyuncu kadrodan çıkarıldı");if(r){S.sheet=null;render(true)}break}
     case"atVote":{const v=S.f.atVote||(S.seasonVotes.find(x=>x.voter===S.me)||{}).target;if(!v){toast("Bir oyuncu seç");break}await act("season_vote",{p_year:new Date().getFullYear(),p_voter:S.me,p_target:v},"Altın Top oyun kaydedildi");break}
