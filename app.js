@@ -2273,7 +2273,8 @@ function sessionBackup(ses){try{if(ses&&ses.refresh_token)localStorage.setItem("
 const authHdr=()=>S.session?.access_token?{Authorization:"Bearer "+S.session.access_token}:{};
 const SBJS="vendor/supabase-2.117.3.js";
 const authLib=()=>AUTH.lib||(AUTH.lib=new Promise((ok,no)=>{if(window.supabase)return ok(window.supabase);const s=document.createElement("script");s.src=SBJS;s.onload=()=>ok(window.supabase);s.onerror=()=>{AUTH.lib=null;no(new Error("lib"))};document.head.appendChild(s)}));
-const isMember=()=>S.mem&&S.mem.status==="onayli";
+// hesap oturumu yoksa (saklı oturum da yoksa) önbellekteki üyelik geçmez: çıkış yapmış biri uygulamayı görmesin
+const isMember=()=>!!(S.mem&&S.mem.status==="onayli"&&(S.session||S.sessionStale));
 const gated=()=>TID===0||(!!S.gate&&!isMember()&&!S.fol);
 async function authInit(){
   LS.del("y_davet");const need=LS.get("y_auth")||/[?&]code=/.test(location.search)||S.gate;
@@ -2281,7 +2282,7 @@ async function authInit(){
   await authStart()}
 async function authStart(){
   if(AUTH.sb)return AUTH.sb;
-  let lib;try{lib=await authLib()}catch(_){toast("Giriş servisi yüklenemedi, bağlantını kontrol et");return null}
+  let lib;try{lib=await authLib()}catch(_){AUTH.fail=(AUTH.fail||0)+1;if(AUTH.fail===1)toast("Giriş servisi yüklenemedi, bağlantını kontrol et");if(AUTH.fail<4)setTimeout(()=>authStart().then(()=>render(true)),3000*AUTH.fail);return null}
   AUTH.sb=lib.createClient(SB_URL,SB_KEY,{auth:{flowType:"pkce",detectSessionInUrl:true,persistSession:true,autoRefreshToken:true,storageKey:"y_auth"}});
   try{const{data}=await AUTH.sb.auth.getSession();S.session=data.session||null}catch(_){S.session=S.session||null}
   if(!S.session)await sessionRestore();
@@ -2300,7 +2301,7 @@ async function sessionRestore(){if(AUTH.restoring)return false;let bk=null;try{b
       if(error&&/invalid|revoked|not found|already used/i.test(error.message||"")){LS.del("y_auth_bk");return false}
       await new Promise(r=>setTimeout(r,1500*(i+1)))}}catch(_){}finally{AUTH.restoring=false}return false}
 async function afterAuth(){
-  const prevMem=S.mem;S.mem=null;
+  const prevMem=S.mem;S.mem=null;if(!S.session)S.sessionStale=null;
   if(S.session){
     try{S.mem=await rpc("my_membership",{});try{const c=JSON.parse(localStorage.getItem("y_cache")||"null");if(c){c.mem=S.mem;localStorage.setItem("y_cache",JSON.stringify(c))}}catch(_){}}catch(_){S.mem=prevMem}
     if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}
