@@ -2277,6 +2277,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2516,7 +2518,6 @@ html.dk .pillk{background:var(--bg2,#261E38)}
 html.dk .pillk.up{background:#1C3B2C;color:#2BEE91}
 html.dk .pillk.dn{background:#41161E;color:#DF5870}
 html.dk .trkp{background:var(--bg2,#271A3D)}
-html.dk .shr{background:linear-gradient(160deg,#1A1229,#261443);border:1px solid #412772}
 /* KOYU-OTO:bitti */
 /* ================= Koyu tema (Ayarlar → Görünüm) ================= */
 html.dk{--pl:#EDE4FF;--plb:#8F5BFF;--bg:#0F0A1A;--bg2:#171024;--card:#1A1229;--card2:#1A1229;--card3:#231834;--line:#2B2040;--line2:#3A2C55;
@@ -2762,27 +2763,7 @@ input[type=date],input[type=time]{-webkit-appearance:none;appearance:none;displa
 input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left;margin:0}
 input[type=date]::-webkit-calendar-picker-indicator{margin:0}
 .f select{height:52px;min-height:52px}
-/* lig: saha verileri sekmesi */
-.shh{display:grid;gap:14px;padding:18px 16px 16px;border-radius:24px;margin-bottom:12px;color:#fff;background:radial-gradient(120% 90% at 85% 0%,#5B2BD8 0%,#37003C 62%,#22002A 100%);box-shadow:0 10px 30px -14px rgba(55,0,60,.55)}
-.shh .eyebrow{color:#00FF85}
-.shh h2{margin:4px 0 0;font:900 1.7rem/1.05 var(--display);color:#fff;text-wrap:balance}
-.shh p{margin:6px 0 0;font:600 .82rem/1.35 Inter,sans-serif;color:rgba(255,255,255,.78)}
-.shh .crest,.shh svg{vertical-align:-3px}
-.shh .vtog.shm{background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.16)!important}
-.shh .vtog.shm button{flex:1;color:rgba(255,255,255,.75)}
-.shh .vtog.shm button.on{background:#fff;color:#37003C}
-.shb .tsn small{display:flex;align-items:center;gap:5px}
-.shbar{display:block;height:5px;border-radius:3px;background:var(--line2);overflow:hidden;margin-top:3px}
-.shbar i{display:block;height:100%;border-radius:3px;background:#B9A6E6}
-.shbar.top i{background:linear-gradient(90deg,#00FF85,#5FD8F5)}
-.shb .tsv{font-size:1.3rem;white-space:nowrap}
+/* lig: saha verileri sekmesi (istatistiklerle aynı dil) */
+.shs{margin:-2px 2px 10px}
 .shb .tsv em{font:700 .66rem/1 Inter,sans-serif;font-style:normal;color:var(--muted);margin-left:3px}
-.shr{background:linear-gradient(160deg,#FBF9FE,#F1E8FF);border:1px solid #E4D8FB;margin-bottom:6px}
-.shr .tsv{font-size:1.6rem}
-html.dk .shr{background:linear-gradient(160deg,#1A1229,#261443);border:1px solid #412772}
-html.dk .shbar{background:#3A2C55}
-html.dk .shbar i{background:#7A62B8}
-html.dk .shbar.top i{background:linear-gradient(90deg,#00FF85,#5FD8F5)}
-html.dk .shh .vtog.shm{background:rgba(255,255,255,.1)!important}
-html.dk .shh .vtog.shm button{color:rgba(255,255,255,.75)!important;background:none!important}
-html.dk .shh .vtog.shm button.on{background:#fff!important;color:#37003C!important}
+.shb .tsv{white-space:nowrap}
