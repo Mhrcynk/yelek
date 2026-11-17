@@ -240,7 +240,7 @@ function gyOrt(){const F=S.matches.filter(m=>m.state==="bitti"&&!isExt(m));let t
 // maç içi denge: maçın not ortalaması 7'ye oturur, değerlendirme notun aralığını belirler, eşik maçın ortalama kart seviyesine göre
 /* ===== Akıllı Saha verileri (isteğe bağlı, yönetici girer) =====
    Değerlendirme aynı maçta verisi girilen oyuncuların birbirine göre durumudur; en az 4 oyuncu gerekir. */
-const TRK=[["km","Koşu mesafesi","km",1],["hiz","Maks hız","km/s",1],["spr","Sprint","",0],["pas","Toplam pas","",0],["isa","Pas isabeti","%",0],["pp","Progresif pas","",0],["tk","Top kapma","",0],["pa","Pas arası","",0],["dri","Dripling","",0],["pt","Progresif taşıma","",0]];
+const TRK=[["rt","Reyting","",1],["km","Koşu mesafesi","km",1],["pas","Toplam pas","",0],["hiz","Maks hız","km/s",1],["spr","Sprint","",0],["isa","Pas isabeti","%",0],["tk","Top kapma","",0],["pa","Pas arası","",0],["dri","Dripling","",0],["pp","Progresif pas","",0],["pt","Progresif taşıma","",0]];
 const TRKN=Object.fromEntries(TRK.map(([k,l,u])=>[k,{l,u}]));
 const TRK_W={FV:{pt:.3,dri:.3,spr:.2,hiz:.2},OS:{pas:.2,isa:.2,pp:.25,km:.2,pa:.15},DF:{tk:.35,pa:.3,isa:.2,hiz:.15},KL:{isa:1}};
 const TRK_MIN=4,TRK_CAP=.5,TRK_K=.3;
@@ -495,8 +495,8 @@ function navInd(){const ind=$("#nind"),nav=ind&&ind.parentElement;if(!ind)return
   if(first){ind.dataset.on=1;void ind.offsetWidth;ind.style.transition=""}}
 addEventListener("resize",()=>navInd());
 /* sayfa değişimi: eski sayfa kayarak çekilirken yenisi aynı anda süzülür (View Transitions); boş kare yok */
-function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>TABS.findIndex(y=>y[0]===(x==="sezon"?"lig":x));
-  const dir=S.tab==="sezon"&&t==="lig"?"r":S.tab==="lig"&&t==="sezon"?"r":(idx(t)<0||idx(S.tab)<0)?"r":(idx(t)>=idx(S.tab)?"r":"l");
+function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>TABS.findIndex(y=>y[0]===(x==="sezon"||x==="saha"?"lig":x));
+  const LG=x=>x==="lig"||x==="sezon"||x==="saha";const dir=LG(S.tab)&&LG(t)?(["lig","sezon","saha"].indexOf(t)>=["lig","sezon","saha"].indexOf(S.tab)?"r":"l"):(idx(t)<0||idx(S.tab)<0)?"r":(idx(t)>=idx(S.tab)?"r":"l");
   const run=()=>{window.scrollTo(0,0);S.tab=t;S.view=null;if(fromNav){LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab)}render(true)};
   if(RM||!document.startViewTransition){run();return}
   document.documentElement.dataset.pdir=dir;try{S._vt&&S._vt.skipTransition&&S._vt.skipTransition()}catch(_){}
@@ -713,15 +713,15 @@ function render(force){
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
   if(S.fol&&!FTABS.includes(S.tab))S.tab="lig";document.body.classList.toggle("fol",!!S.fol);
   {const ni=$("#navIn");const nk=S.fol?"f":"n";if(!ni.firstChild||ni.dataset.k!==nk){ni.dataset.k=nk;{const nd=$("#nind");if(nd)delete nd.dataset.on}ni.innerHTML=TABS.filter(x=>!S.fol||FTABS.includes(x[0])).map(([k,l,ic])=>`<button data-tab="${k}"><span class="ic">${ic==="lig"?LIG_SVG:ICON[ic]}</span><span class="tl">${l}</span></button>`).join("")}
-    const cur=S.tab==="sezon"?"lig":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
+    const cur=S.tab==="sezon"||S.tab==="saha"?"lig":S.tab;ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
   document.body.classList.toggle("gated",gated());document.body.classList.toggle("fol",!!S.fol);
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
   if(S.offline&&S.loaded)h+=`<button class="offl" data-act="retry">${SI.bulut}<span><b>İnternet yok</b> · son güncelleme ${new Date(S.offline).toDateString()===new Date().toDateString()?hhmm(S.offline):fmtShort(new Date(S.offline).toISOString().slice(0,10))+" "+hhmm(S.offline)}</span><i>Yenile</i></button>`;
   if(!S.loaded&&!S.err)h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div><div class="skl"><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated()&&!AUTH.ready&&LS.get("y_auth"))h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated())h+=viewVitrin();
-  else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
-  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"?"lig":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
+  else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,saha:viewSaha,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
+  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"||t==="saha"?"lig":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   keepOpen(v,()=>{v.innerHTML=h});v.removeAttribute("aria-busy");phdRender();qkRender();
   if(chg&&!RM)reveal(v);
 
@@ -1679,12 +1679,12 @@ const tDot=k=>crest(k==="A"?TEAM.A:TEAM.B,k,15);
 const fTrk=(k,v)=>v==null||!isFinite(v)?"–":k==="isa"?"%"+Math.round(v):TRK.find(x=>x[0]===k)[3]?fN1(v):String(Math.round(v*10)/10).replace(".",",");
 const trkSum=(m,k,f)=>{const L=plOf(m,k).map(id=>trkOf(m,id)).filter(Boolean);if(!L.length)return null;const v=L.map(t=>t[f]).filter(x=>x!=null);if(!v.length)return null;
   if(f==="isa"){let s=0,w=0;L.forEach(t=>{if(t.isa!=null){const q=t.pas||1;s+=t.isa*q;w+=q}});return w?s/w:null}
-  if(f==="hiz")return Math.max(...v);return v.reduce((a,b)=>a+b,0)};
+  if(f==="hiz")return Math.max(...v);if(f==="rt")return v.reduce((a,b)=>a+b,0)/v.length;return v.reduce((a,b)=>a+b,0)};
 // maçın en'leri
-const trkBest=m=>[["km","En çok koşan"],["hiz","En hızlı"],["pas","Pas ustası"],["tk","Top kapma"],["pa","Pas arası"],["pt","Progresif taşıma"]].map(([k,l])=>{const c=plAll(m).filter(id=>trkOf(m,id)?.[k]!=null).sort((a,b)=>trkOf(m,b)[k]-trkOf(m,a)[k])[0];return c?{k,l,id:c,v:trkOf(m,c)[k]}:null}).filter(Boolean);
+const trkBest=m=>[["rt","En yüksek reyting"],["km","En çok koşan"],["hiz","En hızlı"],["pas","Pas ustası"],["tk","Top kapma"],["pa","Pas arası"],["pt","Progresif taşıma"]].map(([k,l])=>{const c=plAll(m).filter(id=>trkOf(m,id)?.[k]!=null).sort((a,b)=>trkOf(m,b)[k]-trkOf(m,a)[k])[0];return c?{k,l,id:c,v:trkOf(m,c)[k]}:null}).filter(Boolean);
 function trkPanel(m){const n=plAll(m).filter(id=>trkOf(m,id)).length,tot=plAll(m).length;const M=esc(m.id);
   if(!n)return `<div class="empty"><h3>Saha verisi girilmedi</h3><p>Akıllı Saha'daki koşu, pas, hız ve top kapma verileri girilirse burada iki takım karşılaştırılır; notlara, kartlara ve kondisyona da yansır.</p>${S.admin?`<button class="btn primary" data-act="trkOpen" data-id="${M}">Saha verilerini gir</button>`:""}</div>`;
-  const rows=[["km","Koşu (km)"],["pas","Pas"],["isa","Pas isabeti"],["spr","Sprint"],["hiz","En yüksek hız"],["tk","Top kapma"],["pa","Pas arası"],["pp","Progresif pas"],["pt","Progresif taşıma"],["dri","Dripling"]].map(([k,l])=>[k,l,trkSum(m,"A",k),trkSum(m,"B",k)]).filter(r=>r[2]!=null||r[3]!=null);
+  const rows=[["rt","Ort. reyting"],["km","Koşu (km)"],["pas","Pas"],["isa","Pas isabeti"],["spr","Sprint"],["hiz","En yüksek hız"],["tk","Top kapma"],["pa","Pas arası"],["pp","Progresif pas"],["pt","Progresif taşıma"],["dri","Dripling"]].map(([k,l])=>[k,l,trkSum(m,"A",k),trkSum(m,"B",k)]).filter(r=>r[2]!=null||r[3]!=null);
   let h=`<p class="muted small" style="margin:0">${n}/${tot} oyuncunun verisi girildi${n<TRK_MIN?" · notlara ve kartlara yansıması için en az "+TRK_MIN+" oyuncu gerekir":""}. Kaynak: Akıllı Saha.</p>`;
   h+=`<div class="mstat"><div class="msth"><span>${tDot("A")}${esc(TEAM.A)}</span><span>${tDot("B")}${esc(TEAM.B)}</span></div>${rows.map(([k,l,x,y])=>{x=x||0;y=y||0;const t=Math.max(x,y)||1;
     return `<div class="msr"><div class="msl"><b class="num${x>y?" hi":""}">${fTrk(k,x)}</b><span>${l}</span><b class="num${y>x?" hi":""}">${fTrk(k,y)}</b></div><div class="msb"><span class="l"><i style="width:${x/t*100}%"></i></span><span class="r"><i style="width:${y/t*100}%"></i></span></div></div>`}).join("")}</div>`;
@@ -1711,12 +1711,31 @@ function trkPlayer(p){const F=fin().filter(inYr).filter(m=>trkOf(m,p.id));if(!F.
     return `<div class="trkt"><small>${l}</small><b class="num">${fTrk(k,a)}<em>${u&&u!=="%"?u:""}</em></b>${d!=null?`<span class="pillk${cl}">${Math.abs(d)<.05?"±0":(d>0?"+":"−")+fTrk(k,Math.abs(d)).replace("%","")+(k==="isa"?" puan":"")}</span>`:""}</div>`}).join("");
   const rec=[["km","En uzun koşu","km"],["hiz","En yüksek hız","km/s"],["tk","En çok top kapma",""],["pas","En çok pas",""]].map(([k,l,u])=>{let b=null;F.forEach(m=>{const v=trkOf(m,p.id)[k];if(v!=null&&(!b||v>b.v))b={v,m}});return b?`<div class="ln2"><span>${l}</span><b class="num">${fTrk(k,b.v)}${u?" "+u:""} <span class="muted small">· ${fmtShort(b.m.date)}</span></b></div>`:""}).join("");
   return `<div><h3>Saha verileri</h3><p class="muted small" style="margin:2px 0 8px">Maç başına ortalama · ${F.length} maç · etiket: takım ortalamasına göre</p><div class="trkb t3">${tiles}</div>${rec?`<div class="trkrec">${rec}</div>`:""}</div>`}
-// lig: saha liderleri (maç başına ortalama, en az 2 maç)
-function trkLeaders(F){const T={};F.forEach(m=>plAll(m).forEach(id=>{const t=trkOf(m,id);if(!t||!P(id)||P(id).guest)return;const o=T[id]||(T[id]={n:0});o.n++;TRK.forEach(([k])=>{if(t[k]!=null){o[k]=(o[k]||0)+ +t[k];o[k+"_n"]=(o[k+"_n"]||0)+1}})}));
-  const nm=F.filter(trkHas).length;if(!nm)return"";const need=nm<3?1:2;const L=Object.entries(T).filter(([,o])=>o.n>=need);if(!L.length)return"";
-  const cats=[["km","En çok koşan",""],["hiz","En hızlı",""],["isa","Pas ustası",""],["tk","Top kapma",""],["pp","Progresif pas",""],["dri","Dripling",""]];
-  return `<section class="card"><h2>Saha liderleri</h2><p class="muted small" style="margin:2px 0 10px">Akıllı Saha verileri · maç başına ortalama${need>1?" · en az 2 maç":" · "+nm+" maç"}</p><div class="trkl">${cats.map(([k,l])=>{const R=L.filter(([,o])=>o[k+"_n"]).map(([id,o])=>[id,o[k]/o[k+"_n"]]).sort((a,b)=>b[1]-a[1]).slice(0,3);if(!R.length)return"";
-    return `<div class="trklc"><div class="eyebrow">${l}</div>${R.map(([id,v],i)=>`<button class="trklr" data-act="open" data-id="${esc(id)}"><em>${i+1}</em><span>${esc(shortName(nameOf(id)))}</span><b class="num">${fTrk(k,v)}</b></button>`).join("")}</div>`}).join("")}</div></section>`}
+// lig: saha verileri sekmesi (Akıllı Saha sıralamaları)
+const SAHA_G=[["Fizik",["km","hiz","spr"]],["Pas",["pas","isa","pp"]],["Top kazanma",["tk","pa"]],["Top taşıma",["dri","pt"]]];
+function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs("saha");
+  if(!TM.length)return h+`<section class="card"><div class="empty"><h3>Henüz saha verisi yok</h3><p>Akıllı Saha'dan koşu, pas, hız, top kapma ve reyting verileri girildikçe sıralamalar burada görünür.</p></div></section>`;
+  const last=TM[TM.length-1];const mode=S.f.sahaM==="sez"?"sez":"son";const nm=TM.length,need=nm<3?1:2;
+  const tm=id=>plOf(last,"A").includes(id)?"A":plOf(last,"B").includes(id)?"B":null;
+  let rows;// [id,{k:v},sub]
+  if(mode==="son")rows=plAll(last).filter(id=>trkOf(last,id)&&P(id)).map(id=>[id,trkOf(last,id),tm(id)]);
+  else{const T={};TM.forEach(m=>plAll(m).forEach(id=>{const t=trkOf(m,id);if(!t||!P(id)||P(id).guest)return;const o=T[id]||(T[id]={n:0,s:{},c:{}});o.n++;TRK.forEach(([k])=>{if(t[k]!=null){o.s[k]=(o.s[k]||0)+ +t[k];o.c[k]=(o.c[k]||0)+1}})}));
+    rows=Object.entries(T).filter(([,o])=>o.n>=need).map(([id,o])=>[id,Object.fromEntries(Object.keys(o.s).map(k=>[k,o.s[k]/o.c[k]])),o.n])}
+  const CHV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const unit=k=>({km:"km",hiz:"km/s"})[k]||"";
+  const board=(k,big)=>{const l=TRKN[k].l;const L=rows.filter(r=>r[1][k]!=null).sort((a,b)=>b[1][k]-a[1][k]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));if(!L.length)return"";
+    const max=Math.max(...L.map(r=>r[1][k]))||1,min=k==="rt"||k==="isa"||k==="hiz"?Math.min(...L.map(r=>r[1][k]))*.85:0;
+    const bk="sx_"+k+mode,open=!!S.f[bk],top=big?5:3,V=open?L:L.slice(0,top),more=L.length>top;let rk=0,pv=null;
+    return `<section class="card tsb shb${big?" shr":""}"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${big?"Saha reytingi":l}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${V.map((r,i)=>{const[id,o,x]=r;const v=o[k];if(v!==pv){rk=i+1;pv=v}const p=P(id),ph=photoOf(id);
+      const sub=mode==="son"?(x?tDot(x)+esc(TEAM[x]):""):x+" maç";const w=Math.max(4,(v-min)/(max-min||1)*100);
+      return `<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${rk}</span><span class="tsp ${tierOf(ovrOf(id))}${ph?"":" ni"}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy">`:esc(initials(nameOf(id)))}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${sub}</small><span class="shbar${rk===1?" top":""}"><i style="width:${w}%"></i></span></span><b class="tsv num">${fTrk(k,v)}${unit(k)?`<em>${unit(k)}</em>`:""}</b></li>`}).join("")}</ol></section>`};
+  const sa=+last.score_a||0,sb=+last.score_b||0;const n=plAll(last).filter(id=>trkOf(last,id)).length,tot=plAll(last).length;
+  h+=`<section class="shh"><div class="shht"><span class="eyebrow">Akıllı Saha</span><h2>Saha verileri</h2><p>${mode==="son"?`${fmtShort(last.date)} · ${esc(TEAM.A)} ${sa}–${sb} ${esc(TEAM.B)} · ${n}/${tot} oyuncu`:`Sezon · ${nm} maç · maç başına ortalama${need>1?" · en az 2 maç":""}`}</p></div>
+    <div class="vtog shm" role="tablist"><button data-act="tog1" data-k="sahaM" data-v="son" class="${mode==="son"?"on":""}">Son maç</button><button data-act="tog1" data-k="sahaM" data-v="sez" class="${mode==="sez"?"on":""}">Sezon ortalaması</button></div></section>`;
+  const rt=board("rt",true);if(rt)h+=rt;
+  for(const[g,ks]of SAHA_G){const b=ks.map(k=>board(k)).join("");if(b)h+=`<div class="tsx"><h2>${g}</h2></div><div class="boards">${b}</div>`}
+  if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
+  return h}
 function resultPanel(m,...r){return inM(m,()=>_resultPanel(m,...r))}
 function _resultPanel(m){
   const inf=S.mInfo[m.id]||{pts:{},totw:[]};const pl=plAll(m);const stt=m.stats||{};const M=esc(m.id);
@@ -1882,7 +1901,7 @@ function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.se
   t+=`\nKadro ve kartlar: ${location.origin+location.pathname}`;return t}
 
 /* ================= Kartlar ================= */
-const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Lig">${[["lig","Puan durumu"],["sezon","İstatistikler"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
+const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Lig">${[["lig","Puan durumu"],["sezon","İstatistikler"],...(v==="saha"||S.admin||fin().some(trkHas)?[["saha","Saha verileri"]]:[])].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
 function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
   const kv=S.f.kv||LS.get("y_kv")||"list";
@@ -2096,7 +2115,7 @@ function viewLig(){const avg=false;const F=fin().filter(inYr);const L=ligTable(F
       return `<button class="lgr${o.id===S.me?" me":""}${i===nb?" rl":""}${avg&&o.n<2?" few":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.p} puan, averaj ${o.av}"><span class="lrk${i<3?" "+MED[i]:""}"><b>${i+1}</b>${mv}</span><span class="lnm">${avatar(p)}<span>${esc(p.name.length>10?shortName(p.name):p.name)}${o.id===champId?'<em class="chmp" title="Şampiyon">🏆</em>':""}</span></span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num lav${o.av>0?" pos":o.av<0?" neg":""}">${o.av>0?"+":""}${o.av}</span><b class="num lp">${pt(o)}</b><span class="lfs">${fd(o.f)}</span></button>`}).join("")+`</section>`;
   const cw=champWall();
   return h+cw}
-function viewSezon(){return _viewSezon().replace("<!--TRK-->",trkLeaders(fin().filter(inYr)))}
+function viewSezon(){return _viewSezon().replace("<!--TRK-->","")}
 function _viewSezon(){
   const yr=selYr();const F=fin().filter(inYr);
   const ys={};for(const p of S.all)ys[p.id]={g:0,a:0,motm:0,fiy:0,games:0,pts:0,W:0,D:0,L:0,totw:0,klG:0,klC:0,hat:0,best:0};
@@ -2563,6 +2582,7 @@ document.addEventListener("click",async e=>{
     case"folOpen":{const on=el.dataset.v==="1";try{const r=await rpc("admin_set_followable",{p_on:on});if(r&&r.ok){S.settings.followable=on;toast(on?"Lig takibe açıldı":"Lig takibe kapandı");render(true)}else toast("Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"meSheet":if(S.fol){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break}if(isMember()&&!S.admin){S.tab="ben";S.view=null;render(true);break}if(S.me&&P(S.me)&&S.tab!=="ben"&&el.id==="meBtn"){S.tab="ben";S.view=null;render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":S.f[el.dataset.k]=!S.f[el.dataset.k];render(true);break;
+    case"tog1":S.f[el.dataset.k]=el.dataset.v;render(true);break;
     case"setNames":{const m=S.matches.find(x=>x.id===id);const w=S.f["nm_"+id]||{};const a=cleanName(w.a??m.name_a??""),b=cleanName(w.b??m.name_b??"");if(!a||!b){toast("İki takımın adını da yaz");break}
       const r=await A("admin_set_names",{p_id:id,p_a:a,p_b:b},"Takım isimleri kaydedildi");if(r){delete S.f["nm_"+id];await load(true)}break}
     case"shareMenu":S.sheet={type:"share",mid:id};render(true);break;
@@ -2664,7 +2684,7 @@ document.addEventListener("click",async e=>{
       sd[k][pid]=(sd[k][pid]||0)-1;if(sd[k][pid]<=0)delete sd[k][pid];S.f.confirmFinish=null;if(sd.events)sdSave(m,sd);render(true);break}
     case"trkOpen":{const m=S.matches.find(x=>x.id===id);if(!m)break;const f={};plAll(m).forEach(pid=>{const t=trkOf(m,pid)||{};f[pid]={};TRK.forEach(([k])=>{f[pid][k]=t[k]!=null?String(Math.round(t[k]*10)/10).replace(".",","):""})});S.f.trk=f;S.f.trkOpen=plAll(m).find(pid=>!trkOf(m,pid))||null;S.sheet={type:"trk",mid:id};render(true);break}
     case"trkSave":{const m=S.matches.find(x=>x.id===id);const f=S.f.trk||{};const out={};let bad=null;
-      for(const[pid,v]of Object.entries(f)){const o={};for(const[k,l]of TRK){const raw=String(v[k]??"").trim().replace(",",".").replace("%","");if(raw==="")continue;const x=+raw;const lim={km:15,hiz:45,spr:200,pas:400,isa:100,pp:150,tk:60,pa:60,dri:60,pt:150}[k];if(!isFinite(x)||x<0||x>lim){bad=nameOf(pid)+": "+l;break}o[k]=Math.round(x*10)/10}if(bad)break;if(Object.keys(o).length)out[pid]=o}
+      for(const[pid,v]of Object.entries(f)){const o={};for(const[k,l]of TRK){const raw=String(v[k]??"").trim().replace(",",".").replace("%","");if(raw==="")continue;const x=+raw;const lim={rt:10,km:15,hiz:45,spr:200,pas:400,isa:100,pp:150,tk:60,pa:60,dri:60,pt:150}[k];if(!isFinite(x)||x<0||x>lim){bad=nameOf(pid)+": "+l;break}o[k]=Math.round(x*10)/10}if(bad)break;if(Object.keys(o).length)out[pid]=o}
       if(bad){toast("Değeri kontrol et · "+bad);break}
       const n=Object.keys(out).length;const r=await A("admin_track_save",{p_id:id,p_data:out},n?(n<TRK_MIN?n+" oyuncu kaydedildi · yansıması için en az "+TRK_MIN+" gerekir":n+" oyuncunun verisi kaydedildi, notlar güncellendi"):"Saha verileri silindi");if(r){S.sheet=null;S.f.mtab="saha"}render(true);break}
     case"evalOpen":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f["ev_"+id]=exFrom(m.stats);S.sheet={type:"eval",mid:id};render(true);break}
