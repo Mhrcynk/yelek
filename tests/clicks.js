@@ -119,6 +119,17 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     ok(await p3.locator(".folb").count()===1,"takip şeridi yok");await click(p3,"#meBtn");ok(await p3.locator("#tCode").count()===1,"takipçide Takımlar açılmadı")});
   if(p3.errs.length)fails.push("JS hatası (takipçi): "+p3.errs.join(" | "));await p3.ctx.close();
 
+  // --- katılım: kart seç, istek gönder ---
+  const p4=await page({...DB1,settings:[{...DB1.settings[0],gate:true}]});RPC.vitrin={players:players.map(p=>({id:p.id,n:p.name}))};RPC.request_join={ok:true};RPC.my_membership={status:"yok"};
+  await E(p4,`LS.set("y_int","katil");AUTH.ready=true;S.session={access_token:"x",user:{id:"33333333-3333-3333-3333-333333333333",email:"k@x"}};S.mem={status:"yok"};S.vit=undefined;render(true)`);
+  await T("Katılım akışı",async()=>{await p4.waitForTimeout(500);ok(await p4.locator(".fst li").count()===4,"adım göstergesi yok");
+    ok(await p4.locator('[data-act="joinReq"]').isDisabled(),"kart seçmeden gönder açık");
+    await p4.fill("#clQ","Cem");await p4.waitForTimeout(150);ok(await p4.locator(".fpr").count()===1,"arama süzmedi");
+    await click(p4,".fpr");ok(await p4.locator(".fpr.on").count()===1,"kart seçilmedi");
+    await click(p4,'[data-act="joinReq"]');ok(calls.some(c=>c[0]==="request_join"&&/p_player/.test(c[1])),"katılma isteği gitmedi");
+    await click(p4,'[data-act="tog"][data-k="ncOpen"]');ok(await p4.locator("#ncName").count()===1,"yeni kart formu açılmadı")});
+  if(p4.errs.length)fails.push("JS hatası (katılım): "+p4.errs.join(" | "));await p4.ctx.close();
+
   await b.close();srv.close();
   if(fails.length){console.log("HATA\n- "+fails.join("\n- "));process.exit(1)}console.log("Tamam: tıklama testlerinin hepsi geçti.");
 })().catch(e=>{console.error(e);process.exit(1)});
