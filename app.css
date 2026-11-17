@@ -2283,6 +2283,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2784,3 +2785,24 @@ input[type=date]::-webkit-calendar-picker-indicator{margin:0}
 .shi.dng b{color:var(--bad)}
 html.dk .shi.dng .shic{background:rgba(248,113,113,.14)}
 /* saha verileri: son maç / sezon seçimi */
+/* bilgisayar düzeni: solda menü, geniş içerik */
+@media (min-width:1100px){
+  :root{--side:240px;--cw:1040px;--lo:max(0px,calc((100vw - var(--side) - var(--cw)) / 2))}
+  .top .wrap.in{max-width:none;margin:0;padding-left:calc(var(--lo) + 24px);padding-right:calc(var(--lo) + 24px)}
+  #view.wrap,.phd .wrap{max-width:var(--cw);margin-left:calc(var(--lo) + var(--side));margin-right:auto;padding-left:24px;padding-right:24px}
+  .nav{left:calc(var(--lo) + 24px);right:auto;top:82px;bottom:auto;width:200px;max-width:none;margin:0;padding:8px;border-radius:24px;overflow:visible}
+  .nav .in{display:flex!important;flex-direction:column;height:auto;gap:4px}
+  .nav button,.nav button.ctr{flex-direction:row;justify-content:flex-start;gap:12px;height:48px;padding:0 14px;border-radius:16px;font-size:.92rem;letter-spacing:0;text-transform:none}
+  .nav .tl{font-size:.92rem;letter-spacing:0}
+  .nav button[aria-current="page"] .ic{transform:none}
+  .nav .in button[aria-current="page"]{background:var(--plb)!important;color:#fff!important}
+  .nav .in button:not([aria-current="page"]):hover{background:var(--bg2)!important}
+  .nind,.navfade{display:none!important}
+  body{padding-bottom:48px}
+  .toast{bottom:32px}
+  .boards{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .plist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .glist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .glist>.gm,.glist>.bltk,.glist>:not(.frs){grid-column:1/-1}
+  .lgr{grid-template-columns:24px minmax(0,1fr) 34px 34px 34px 34px 40px 44px 76px;padding:0 18px}
+}
