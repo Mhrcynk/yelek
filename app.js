@@ -24,7 +24,8 @@ window.addEventListener("unhandledrejection",e=>{const r=e.reason;logErr((r&&r.m
 
 /* görünüm: açık / koyu / sistem */
 const THEME=()=>LS.get("y_theme")||"acik";
-function themeApply(){const t=THEME();const dk=t==="koyu"||(t==="sis"&&matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dk",dk)}
+// Mor tasarım tek tema: her zaman koyu
+function themeApply(){document.documentElement.classList.add("dk")}
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(THEME()==="sis")themeApply()})}catch(_){}
 
 /* ================= Sabitler ================= */
@@ -2025,8 +2026,7 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   {const yr=curYr();const F=fin().filter(m=>+m.season===+yr);let n=0,g=0,a=0,t=0;
     for(const m of F){const r=S.mInfo[m.id]?.pts?.[p.id];if(!r)continue;n++;g+=r.g||0;a+=r.a||0;t+=r.pts}
     const L=F.length?ligTable(F):[];const li=L.findIndex(o=>o.id===p.id);const rk=li<0?null:li+1;
-    const nx=om?(()=>{const d=parseYmd(om.date);const k=om.state!=="kayit"&&sideOf(om,p.id);return `<button class="bsn" data-act="tab" data-tab="mac"><span>Sıradaki maç · ${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()].slice(0,3)} ${esc(String(om.time||"").slice(0,5))}</span><b>${om.state==="kayit"?"Kadro bekleniyor":k?"Takımın "+esc(TEAM[k]):"Kadroda değilsin"} ›</b></button>`})():"";
-    if(nx)h+=nx}
+    }
   if(!s.games)h+=`<section class="card"><div class="empty"><h3>Kartın uykuda</h3><p>İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikecek.</p></div></section>`;
   h+=`<section class="card benprof">${sheetPlayer(p.id,true)}</section>`;
   return h}
@@ -2674,7 +2674,6 @@ function viewAyarlar(){
   h+=sgrp("Uygulama",[
     pushRow(),
     srow("@rulesSheet",SI.kural,"Puanlama kuralları","Not, reyting ve yelek puanı nasıl hesaplanır"),
-    `<div class="setr nolink thr"><span class="seti">${ICON_MOON}</span><span class="setx"><b>Görünüm</b><small>Bu telefonda geçerli</small></span><div class="vtog" role="group" aria-label="Görünüm">${[["acik","Açık"],["koyu","Koyu"],["sis","Sistem"]].map(([k,l])=>`<button data-act="theme" data-v="${k}" class="${THEME()===k?"on":""}" aria-pressed="${THEME()===k}">${l}</button>`).join("")}</div></div>`,
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Linkler","Uygulamanın tek linki"),
     !S.session?srow("@loginSheet",SI.kilit,"Giriş yap","Google hesabınla"):""]);

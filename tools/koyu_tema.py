@@ -19,12 +19,12 @@ def lum(r,g,b):return .2126*r+.7152*g+.0722*b
 def bg_dark(h):
     r,g,b=hx(h);hh,l,s=colorsys.rgb_to_hls(r,g,b)
     if l<.80:return None
-    if s<.12 or (r>.97 and g>.97 and b>.97):return "#1A1229" if l>.97 else "#20162F"   # nötr beyaz/gri yüzeyler
+    if s<.12 or (r>.97 and g>.97 and b>.97):return "#1E1442" if l>.97 else "#24194F"   # nötr beyaz/gri yüzeyler
     return out(*colorsys.hls_to_rgb(hh,.17,min(.55,s*.6)))                           # pastel → aynı tonda koyu
 def rl(r,g,b):
     f=lambda v:v/12.92 if v<=.03928 else ((v+.055)/1.055)**2.4
     return .2126*f(r)+.7152*f(g)+.0722*f(b)
-SURF=rl(*hx("#1A1229"))
+SURF=rl(*hx("#1E1442"))
 def cr(c):L=rl(*c);return (max(L,SURF)+.05)/(min(L,SURF)+.05)
 def ink_light(h):
     r,g,b=hx(h);hh,l,s=colorsys.rgb_to_hls(r,g,b)
@@ -40,13 +40,13 @@ def ink_light(h):
 def line_dark(h):
     r,g,b=hx(h);hh,l,s=colorsys.rgb_to_hls(r,g,b)
     if l<.78:return None
-    return "#3A2C55" if s<.5 else out(*colorsys.hls_to_rgb(hh,.30,min(.5,s*.6)))
+    return "#3A2C78" if s<.5 else out(*colorsys.hls_to_rgb(hh,.30,min(.5,s*.6)))
 def conv(prop,val):
     p=prop.strip().lower()
     if p in("background","background-color","background-image"):f=bg_dark
     elif p in("color","fill","-webkit-text-fill-color"):f=ink_light
     elif p.startswith("border") or p in("outline","outline-color","text-decoration-color"):f=line_dark
-    elif p=="box-shadow":f=lambda h:("#3A2C55" if (bg_dark(h) or line_dark(h)) and "inset" in val else None)
+    elif p=="box-shadow":f=lambda h:("#3A2C78" if (bg_dark(h) or line_dark(h)) and "inset" in val else None)
     else:return None
     ch=[False]
     def rep(m):
@@ -54,7 +54,7 @@ def conv(prop,val):
         if n:ch[0]=True;return n
         return m.group(0)
     v2=HEX.sub(rep,val)
-    if p in("background","background-color") and re.search(r"\b(white)\b",v2):v2=re.sub(r"\bwhite\b","#1A1229",v2);ch[0]=True
+    if p in("background","background-color") and re.search(r"\b(white)\b",v2):v2=re.sub(r"\bwhite\b","#1E1442",v2);ch[0]=True
     if p in("background","background-color","background-image"):
         def rg(m):
             r,g,b=(int(m.group(i)) for i in (1,2,3));a=m.group(4)

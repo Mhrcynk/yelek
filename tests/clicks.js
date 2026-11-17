@@ -89,9 +89,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     const k=await pg.evaluate(()=>document.querySelector("#modal .surl input")?.value||"");ok(/^[0-9a-f]{64}$/.test(k),"yedek anahtarı üretilmedi");
     ok(calls.some(c=>c[0]==="platform_backup_key"),"yedek anahtarı sunucuya gönderilmedi");await click(pg,'#modal [data-act="close"]')});
 
-  await T("Görünüm",async()=>{await E(pg,`S.f.setp="";S.tab="ayarlar";render(true)`);await pg.waitForTimeout(300);await click(pg,'[data-act="theme"][data-v="koyu"]');
-    ok(await pg.evaluate(()=>document.documentElement.classList.contains("dk")),"koyu tema açılmadı");await click(pg,'[data-act="theme"][data-v="acik"]');
-    ok(!(await pg.evaluate(()=>document.documentElement.classList.contains("dk"))),"açık temaya dönmedi")});
+  await T("Görünüm",async()=>{await E(pg,`S.f.setp="";S.tab="ayarlar";render(true)`);await pg.waitForTimeout(300);ok(await pg.evaluate(()=>document.documentElement.classList.contains("dk")),"mor (koyu) tema açık değil");ok(await pg.locator('[data-act="theme"]').count()===0,"tema seçici hâlâ duruyor")});
 
   await T("Hesabımı sil",async()=>{await click(pg,'[data-act="delAcc"]');await pg.waitForTimeout(400);ok(await pg.locator('#modal [data-act="delAccGo"]').count()===1,"hesap silme penceresi açılmadı");await click(pg,'#modal [data-act="close"]')});
 
