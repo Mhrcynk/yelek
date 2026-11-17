@@ -2289,6 +2289,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2844,3 +2845,4 @@ html.dk .shi.dng .shic{background:rgba(248,113,113,.14)}
 .iabs{margin:4px 0 10px;padding-left:20px;display:grid;gap:4px;font-size:.88rem}
 .tcf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
 .ncf{display:grid;gap:10px}
+.lphero .lpmail{display:block;margin:10px auto 0;color:#fff;opacity:.9;text-decoration:underline}

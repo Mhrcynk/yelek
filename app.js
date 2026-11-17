@@ -2447,7 +2447,7 @@ function teamCardTop(sess){const c=S.tcard;if(c===undefined){S.tcard=null;tcardL
   const meta=[c.field,(GUNLER[+c.day]||"")+" "+String(c.time||"").slice(0,5),c.players+" oyuncu"].filter(x=>x&&x.trim()).map(esc).join(" · ");
   if(!c.followable)return `<section class="lpinv"><span class="lpinvk">Takım</span><b>${esc(c.name)}</b><small class="lpmeta">${meta}</small>
     <p>Bu takım sadece üyelere açık. Takımda oynuyorsan giriş yapıp katılma isteği gönder.</p>
-    ${sess?`${myTeamsList()}<button class="lnk" data-act="signOut">Çıkış yap</button>`:`<button class="lnk lpalt" data-act="oauth" data-v="google">Zaten üyeysen giriş yap</button>`}</section>`;
+    ${sess?`${myTeamsList()}<button class="lnk" data-act="signOut">Çıkış yap</button>`:`<button class="lnk lpalt" data-act="loginSheet">Zaten üyeysen giriş yap</button>`}</section>`;
   const L=c.last;const top=c.top||[];
   return `<section class="lpinv"><span class="lpinvk">Lig</span><b>${esc(c.name)}</b><small class="lpmeta">${meta}</small>
     ${L?`<div class="tcl"><small>Son maç · ${esc(fmtShort(L.date))}</small><div class="tcs"><span>${esc(L.na)}</span><b class="num">${L.a}–${L.b}</b><span>${esc(L.nb)}</span></div></div>`:`<p>Sezonun ilk maçı henüz oynanmadı.</p>`}
@@ -2457,10 +2457,10 @@ function teamCardTop(sess){const c=S.tcard;if(c===undefined){S.tcard=null;tcardL
     <button class="lnk lpalt" data-act="intSet" data-v="katil">Bu takımda oynuyor musun? Takıma katıl</button>${sess?`<button class="lnk" data-act="signOut">Çıkış yap</button>`:""}</section>`}
 function viewVitrin(){
   const sess=!!S.session;const tName=TID>0?(S.settings.group_name||""):"";const nm=(S.session?.user?.user_metadata?.full_name||"").split(" ")[0];
-  const cta=`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Google ile başla</span></button>`;
+  const cta=`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Google ile başla</span></button>${OTP_ON?`<button class="lnk lpalt lpmail" data-act="loginSheet">E-postanla giriş yap</button>`:""}`;
   let top="";
   if(TID>0&&(LS.get("y_int")||"takip")!=="katil")top=teamCardTop(sess);
-  else if(TID>0)top=`<section class="lpinv"><span class="lpinvk">Davet</span><b>${esc(tName)}</b><p>Seni Yelek'teki takımına çağırıyor. ${sess?"Kartını seç, yönetici onaylayınca içeridesin.":"Google ile giriş yap, kendi kartını seç."}</p>${sess?memCard():`<button class="btn lpgo" data-act="oauth" data-v="google">${G_SVG}<span>Giriş yap ve katıl</span></button>`}<button class="lnk lpalt" data-act="intSet" data-v="takip">Oynamıyorum, sadece takip etmek istiyorum</button></section>`;
+  else if(TID>0)top=`<section class="lpinv"><span class="lpinvk">Davet</span><b>${esc(tName)}</b><p>Seni Yelek'teki takımına çağırıyor. ${sess?"Kartını seç, yönetici onaylayınca içeridesin.":"Google ile giriş yap, kendi kartını seç."}</p>${sess?memCard():`<button class="btn lpgo" data-act="loginSheet"><span>Giriş yap ve katıl</span></button>`}<button class="lnk lpalt" data-act="intSet" data-v="takip">Oynamıyorum, sadece takip etmek istiyorum</button></section>`;
   else if(sess)top=`<section class="lpinv"><span class="lpinvk">Hoş geldin${nm?", "+esc(nm):""}</span><b>Takımlar</b>${hubBody()}<button class="lnk" data-act="signOut">Çıkış yap</button><button class="lnk lnkd" data-act="delAcc">Hesabımı sil</button></section>`;
   const feat=[["kart","Reyting kartları","Herkesin kendi reyting kartı olur. Hız, şut, pas… Her maçtan sonra değerler kendiliğinden güncellenir."],
     ["not","Maç sonu notları","Skoru ve golleri gir; gol, asist, sonuç ve performansa göre herkese 1–10 arası not çıkar."],
