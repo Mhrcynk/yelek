@@ -27,9 +27,10 @@ const mk=(k,date,state,sa,sb,fa,fb,shift)=>{const o=ids.slice(shift).concat(ids.
   if(state==="bitti"){A.slice(3,7).forEach((id,j)=>S[id]={g:j%3?1:2,a:j%2,k:0,og:0});B.slice(4,7).forEach((id,j)=>S[id]={g:j?1:3,a:1,k:0,og:0})}
   return{id:uid(100+k),date,time:"21:00",state,kind:"ic",archived:false,season:1,rsvp:Object.fromEntries(o.slice(0,12).map(i=>[i,"g"])),rsvp_at:{},late:{},
   team_a:A,team_b:B,form_a:fa,form_b:fb,lineup_a:A,lineup_b:B,pos_a:null,pos_b:null,score_a:sa,score_b:sb,stats:S,votes:{},motm:state==="bitti"?A[4]:null,cap_a:A[0],cap_b:B[1],preds:{},
+  track:state==="bitti"?Object.fromEntries(o.slice(0,11).map((id,j)=>[id,{km:4.2+((j*7+k)%9)*.3,hiz:24+((j*5+k)%8)*.8,spr:14+((j*3+k)%10)*2,pas:20+((j*11+k)%12)*3,isa:68+((j*13+k)%9)*3,pp:2+((j+k)%6),tk:1+((j*5+k)%6),pa:1+((j*3+k)%5),dri:(j+k)%5,pt:(j*2+k)%6}])):{},
   links:state==="bitti"?[{g:A[4],a:A[3]}]:null,gol_id:state==="bitti"?A[4]:null,fiy_id:state==="bitti"?B[2]:null,tac_a:null,tac_b:null,opponent:null,name_a:"Yelekliler",name_b:"Abiler Kardeşler Spor",
   created_at:date+"T10:00:00Z",finished_at:state==="bitti"?date+"T22:00:00Z":null,notes:null}};
-const matches=[mk(9,"2026-11-24","takim",null,null,"3-2-1","3-3",2)];
+const matches=[mk(99,"2026-11-24","takim",null,null,"3-2-1","3-3",2)];
 ["2026-09-15","2026-09-22","2026-09-29","2026-10-06","2026-10-13","2026-10-20","2026-10-27","2026-11-03","2026-11-10"].forEach((d,i)=>matches.push(mk(i+1,d,"bitti",(i*3)%7,(i*5)%4+(i===4?8:0),FA[i%7],FA[(i+3)%7],i%5)));
 const settings=[{id:1,group_name:"Abiler Kardeşler FC",field_name:"Kartal Spor Tesisleri Halı Saha",day:1,time:"21:00",team_a_name:"Yelekliler",team_b_name:"Yeleksizler",season_len:16,season_closed:1,gate:false,ig:"abilerkardeslerfc"}];
 const DB={settings,players,matches,season_votes:[],player_photos:[]};
@@ -52,7 +53,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
       S.photos[p.id]=c.toDataURL("image/png")});S.me=S.players[0].id;render(true);
     const P0=S.players;S.stats[P0[0].id].streak={t:"5 maçtır gol atıyor",hot:true};S.stats[P0[3].id].streak={t:"3 maçtır not 6 altında",hot:false};S.stats[P0[5].id].series=[66,68,67,70,72,71,75,78,79];S.stats[P0[5].id].ovr=79});
   const plan=[];
-  const items={once:["gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
+  const items={once:["gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
   const ms=await run(()=>fin().map(m=>m.id));const pids=await run(()=>pmPlayers().map(p=>p.id));
   for(const [tab,L] of Object.entries(items))for(const it of L){
     if(tab==="mac"){for(const mid of ms)plan.push({tab,item:it,mid})}

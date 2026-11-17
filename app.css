@@ -2271,6 +2271,9 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2506,6 +2509,10 @@ html.dk .gdc{background:#292036;color:#9282AB}
 html.dk .iab{background:#271A3D}
 html.dk .mtk{background:#43141A;border:1px solid #732633}
 html.dk .mtk>b{color:#DF5870}
+html.dk .pillk{background:var(--bg2,#261E38)}
+html.dk .pillk.up{background:#1C3B2C;color:#2BEE91}
+html.dk .pillk.dn{background:#41161E;color:#DF5870}
+html.dk .trkp{background:var(--bg2,#271A3D)}
 /* KOYU-OTO:bitti */
 /* ================= Koyu tema (Ayarlar → Görünüm) ================= */
 html.dk{--pl:#EDE4FF;--plb:#8F5BFF;--bg:#0F0A1A;--bg2:#171024;--card:#1A1229;--card2:#1A1229;--card3:#231834;--line:#2B2040;--line2:#3A2C55;
@@ -2712,3 +2719,36 @@ html.dk .logo rect.lgbg{fill:#fff!important}html.dk .logo .lgsh{fill:#37003C!imp
 .yp-th.yp-t2,.yp-tr.yp-t2{grid-template-columns:18px auto minmax(0,1fr) 22px 28px;gap:5px;padding:0 7px}
 .yp-tr.yp-t2>span:nth-child(n+4){font-size:inherit}
 .yp-tr.yp-t2 .yp-tp{font-size:1.15em}
+/* saha verileri */
+.trkb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}
+.trkb.t3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.trkt{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;padding:10px 12px;border-radius:16px;border:1px solid var(--line2);background:var(--card);text-align:left;color:inherit}
+.trkt small{font-size:.66rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.trkt b{font-size:1.25rem;font-weight:900;line-height:1}
+.trkt b em{font-style:normal;font-size:.72rem;font-weight:700;color:var(--muted);margin-left:3px}
+.trkt>span:not(.pillk){font-size:.82rem;font-weight:700;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pillk{display:inline-flex;padding:3px 8px;border-radius:99px;font-size:.7rem;font-weight:700;background:var(--bg2,#F3F0FA);color:var(--muted);white-space:nowrap}
+.pillk.up{background:#E3F8EE;color:#0A7A45}.pillk.dn{background:#FDE8EC;color:#B4233C}
+.trkc{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.trkp{display:grid;gap:8px;padding:12px;border-radius:16px;background:var(--bg2,#F8F5FD)}
+.trkr{border:1px solid var(--line2);border-radius:16px;background:var(--card);margin-top:6px}
+.trkr summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none}
+.trkr summary::-webkit-details-marker{display:none}
+.trkn{display:flex;flex-direction:column;min-width:0;flex:1}.trkn small{color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trkg{padding:0 12px 12px;gap:8px}
+.trkg input{min-width:0}
+.trkrec{display:grid;margin-top:8px;padding:2px 12px;border-radius:16px;border:1px solid var(--line2);background:var(--card)}
+.ln2{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line2);font-size:.9rem}.ln2:first-child{border-top:0}
+.trkl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.trklc{min-width:0;padding:10px;border-radius:16px;border:1px solid var(--line2)}
+.trklr{display:flex;align-items:center;gap:7px;width:100%;padding:5px 0;border:0;background:none;color:inherit;font-size:.86rem;text-align:left}
+.trklr em{font-style:normal;width:14px;color:var(--muted);font-weight:800}.trklr span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}.trklr b{font-weight:800}
+@media(max-width:360px){.trkb.t3{grid-template-columns:repeat(2,minmax(0,1fr))}.trkl{grid-template-columns:1fr}}
+.yp-dt{display:flex;flex-direction:column;gap:6px;min-width:0;padding:12px;border-radius:14px;background:rgba(10,2,50,.6);border:1px solid rgba(255,255,255,.14);text-align:left}
+.yp-dt small{font:700 10px/1 Inter,sans-serif;letter-spacing:.16em;color:var(--ac)}
+.yp-dtr{display:flex;align-items:center;gap:10px}
+.yp-dt b{font:800 34px/1 "Barlow Condensed","Arial Narrow",sans-serif;white-space:nowrap}
+.yp-dt b em{font-style:normal;font-size:.47em;opacity:.75;margin-left:3px}
+.yp-dt>span{font:800 15px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.06em;white-space:nowrap}
+.trkh{display:flex;align-items:center;gap:6px;margin-top:8px}.trkh svg{flex:none}
+.yp-grid>.yp-dt{text-align:left}
