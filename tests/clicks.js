@@ -49,7 +49,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
       if(u.includes("/rpc/")){const fn=u.split("/rpc/")[1].split("?")[0];calls.push([fn,r.request().postData()]);return r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(fn in RPC?RPC[fn]:{})})}
       const k=Object.keys(db).find(k=>u.includes("/rest/v1/"+k+"?"));return r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(k?db[k]:[])})});
     const pg=await ctx.newPage();pg.errs=[];pg.on("pageerror",e=>pg.errs.push(e.message));
-    await pg.addInitScript(t=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team",t)},String(db.settings[0].id));
+    await pg.addInitScript(t=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team",t)},String(db.tid||db.settings[0].id));
     await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1300);pg.ctx=ctx;return pg};
   const E=(pg,s)=>pg.evaluate(s=>window.__E(s),s);
   const login=(pg,uidv,role)=>E(pg,`AUTH.ready=true;S.session={access_token:"x",user:{id:"${uidv}",email:"t@x"}};S.mem={status:"onayli",role:"${role}",player_id:"${ids[4]}"};S.me="${ids[4]}";S.admin=${role==="yonetici"};render(true)`);
@@ -118,6 +118,11 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   await T("Takip modu",async()=>{await p3.waitForTimeout(300);const n=await p3.evaluate(()=>document.querySelectorAll("#navIn button").length);ok(n===2,"takipçide "+n+" sekme var");
     ok(await p3.locator(".folb").count()===1,"takip şeridi yok");await click(p3,"#meBtn");ok(await p3.locator("#tCode").count()===1,"takipçide Takımlar açılmadı")});
   if(p3.errs.length)fails.push("JS hatası (takipçi): "+p3.errs.join(" | "));await p3.ctx.close();
+
+  // --- silinmiş takım hatırlanıyorsa tanıtıma dön ---
+  const p5=await page({...DB1,settings:[],tid:"8"});
+  await T("Silinmiş takım",async()=>{await p5.waitForTimeout(800);ok(await p5.locator(".lphero").count()===1,"tanıtım açılmadı");ok(await p5.evaluate(()=>localStorage.getItem("y_team"))==="0","takım unutulmadı")});
+  if(p5.errs.length)fails.push("JS hatası (silinmiş takım): "+p5.errs.join(" | "));await p5.ctx.close();
 
   // --- katılım: kart seç, istek gönder ---
   const p4=await page({...DB1,settings:[{...DB1.settings[0],gate:true}]});RPC.vitrin={players:players.map(p=>({id:p.id,n:p.name}))};RPC.request_join={ok:true};RPC.my_membership={status:"yok"};

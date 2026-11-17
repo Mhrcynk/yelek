@@ -421,6 +421,8 @@ async function load(force){
   try{const yr=new Date().getFullYear();
     const[st,pl,ms,sv2,ag]=await Promise.all([sbGet("settings?id=eq."+TID+"&select=*"),sbGet("players?select=id,name,pos,no,attrs,status,status_log,created_at,archived,photo_v,guest,epos,alt_pos,yedek&order=created_at.asc"),
       sbGet("matches?select=*&archived=eq.false&order=date.desc&limit=400"),sbGet("season_votes?select=*&year=eq."+yr),rpc("player_ages",{}).catch(()=>[]),rpc("team_rev",{}).then(r=>{if(r)S.rev=r}).catch(()=>{})]);
+    if(Array.isArray(st)&&!st.length){// takım silinmiş ya da yok: hatırlanan takımı unut, tanıtım/takımlar ekranına dön
+      cacheClear();TID=0;LS.set("y_team","0");LS.del("y_me");S.me="";S.mem=null;S.admin=false;S.tcard=undefined;applyData([],[],[],[]);S.offline=0;setBrand();if(S.session)afterAuth().then(()=>render(true));render(true);return}
     if(!pl.length&&st[0]&&st[0].gate&&LS.get("y_auth")&&!S.session&&S.loaded&&S.players.length){S.offline=0;return}// giriş tamamlanınca yeniden yüklenecek
     {const am={};(Array.isArray(ag)?ag:[]).forEach(r=>am[r.id]=r.age);pl.forEach(p=>{if(am[p.id]!=null)p.age=am[p.id]})}
     const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&!S.offline&&sig===S.sig;S.sig=sig;
