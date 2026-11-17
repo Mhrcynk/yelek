@@ -66,12 +66,12 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     await E(pg,`S.sheet={type:"me"};render(true)`);await pg.waitForTimeout(300);await click(pg,'#modal .grab');ok(!(await sheetOpen(pg)),"Tutamaca dokununca kapanmadı")});
 
   await T("Geri sayım",async()=>{await click(pg,'.nav [data-tab="mac"]');ok(!(await pg.evaluate(()=>!!document.querySelector(".mafcd"))),"Maç sekmesinde geri sayım olmamalı");
-    await click(pg,'.nav [data-tab="gecmis"]');const t=await pg.evaluate(()=>document.querySelector(".btkf .tkcd")?.textContent||"");
+    await click(pg,'.nav [data-tab="gecmis"]');const t=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");
     ok(/^\d\d:\d\d:\d\d$/.test(t),"24 saat içindeki maçta geri sayım yok ("+t+")");await pg.waitForTimeout(1200);
-    const t2=await pg.evaluate(()=>document.querySelector(".btkf .tkcd")?.textContent||"");ok(t2!==t,"geri sayım ilerlemiyor");await click(pg,'.nav [data-tab="mac"]')});
+    const t2=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");ok(t2!==t,"geri sayım ilerlemiyor");await click(pg,'.nav [data-tab="mac"]')});
 
   await T("Kondisyon",async()=>{ok(await pg.locator(".field .tk").count()>0,"sahada kondisyon rozeti yok");
-    await click(pg,'.nav [data-tab="kartlar"]');ok(await pg.locator(".plist .kchip").count()>0,"listede kondisyon yok");
+    await click(pg,'.nav [data-tab="kartlar"]');ok(await pg.locator(".mzk .mzc").count()>0,"oyuncu kartları yok");
     await click(pg,'#view [data-act="open"]');ok(await pg.locator("#modal .kcard").count()===1,"oyuncu detayında kondisyon yok");await click(pg,'#modal [data-act="close"]')});
 
   await T("Oyuncu ekle butonu",async()=>{await click(pg,'.kph [data-act="addSheet"]');ok(await sheetOpen(pg),"Oyuncu ekle açılmadı");await click(pg,'#modal [data-act="close"]')});
@@ -119,7 +119,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
 
   // --- silinmiş takım hatırlanıyorsa tanıtıma dön ---
   const p5=await page({...DB1,settings:[],tid:"8"});
-  await T("Silinmiş takım",async()=>{await p5.waitForTimeout(800);ok(await p5.locator(".lphero").count()===1,"tanıtım açılmadı");ok(await p5.evaluate(()=>localStorage.getItem("y_team"))==="0","takım unutulmadı")});
+  await T("Silinmiş takım",async()=>{await p5.waitForTimeout(800);ok(await p5.locator(".onb").count()===1,"tanıtım açılmadı");ok(await p5.evaluate(()=>localStorage.getItem("y_team"))==="0","takım unutulmadı")});
   if(p5.errs.length)fails.push("JS hatası (silinmiş takım): "+p5.errs.join(" | "));await p5.ctx.close();
 
   // --- katılım: kart seç, istek gönder ---
