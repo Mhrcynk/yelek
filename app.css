@@ -2303,6 +2303,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -3220,3 +3222,39 @@ html.dk .field .tcard .nt{position:absolute!important;right:2px!important;top:-8
 html.dk{--tA:#FF3EA5;--tB:#5FE3F5}
 .onb-s h2{text-transform:uppercase!important}
 .mzfx>em{flex:none;font-style:normal;font:800 .78rem/1 Inter,sans-serif;background:rgba(255,255,255,.16);color:#fff;padding:6px 9px;border-radius:99px}.mzfx>em.tkcd{background:#00E58A;color:#06200F}.mzfx>em.live{background:#FF3EA5;color:#fff}
+/* saha verileri */
+.mzch{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px 0}.mzch::-webkit-scrollbar{display:none}
+.mzch button{flex:none;height:34px;padding:0 12px;border-radius:10px;border:0;background:#1E1442;color:#A99CD6;font:600 .8rem/1 Inter,sans-serif;cursor:pointer}
+.mzch button.on{background:#00E58A;color:#06200F;font-weight:700}
+.mzsh{width:100%;border:0;border-radius:26px;background:#1E1442;padding:16px;display:grid;gap:8px;text-align:left;color:#fff;cursor:pointer;margin-bottom:14px}
+.mzsh>small{font-size:.75rem;color:#A99CD6}
+.mzsh-h{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.mzsh-h b{font-size:1.05rem;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mzsh-h em{font:800 2.8rem/.9 var(--display);font-style:normal;color:#00E58A;white-space:nowrap}.mzsh-h em i{font-size:1.1rem;color:#A99CD6;font-style:normal}
+.mzsh-s{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+.mzsh-s span{border-radius:14px;background:#2C2060;padding:10px;display:grid;gap:2px}.mzsh-s b{font:800 1.35rem/1 var(--display)}.mzsh-s small{font-size:.66rem;color:#A99CD6}
+.mzbar{display:grid;gap:10px;margin-bottom:14px}
+.mzbar button{display:grid;grid-template-columns:118px minmax(0,1fr) 52px;gap:10px;align-items:center;border:0;background:none;padding:0;color:#fff;text-align:left;cursor:pointer}
+.mzbar-n{font-size:.82rem;font-weight:600;display:grid;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mzbar-n small{font-size:.66rem;color:#A99CD6;font-weight:500}
+.mzbar-b{height:10px;border-radius:10px;background:#1E1442;overflow:hidden}.mzbar-b i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,#7B3FF2,#00E58A)}
+.mzbar b{font:800 1.15rem/1 var(--display);text-align:right}
+/* oylama */
+.mzvh{display:flex;align-items:center;gap:12px;margin-bottom:12px}.mzvh>div{min-width:0;display:grid;gap:2px}
+.mzvh h2{font:800 1.6rem/1 var(--display);text-transform:uppercase}.mzvh small{font-size:.76rem;color:#A99CD6}
+.mzvp{display:grid;gap:6px;margin-bottom:12px}.mzvp>div{display:flex;justify-content:space-between;font-size:.76rem;font-weight:600}.mzvp>div span:last-child{color:#A99CD6}
+.mzvp>i{display:block;height:6px;border-radius:6px;background:#2C2060;overflow:hidden}.mzvp>i i{display:block;height:100%;background:linear-gradient(90deg,#7B3FF2,#FF3EA5)}
+html.dk .vcard{background:none!important;border:0!important;box-shadow:none!important;display:grid;gap:8px;padding:0!important}
+html.dk .vr2{background:#1E1442;border-radius:20px;padding:10px 12px!important;border:0!important}
+html.dk .vb2 button{border-radius:10px!important;border:1.5px solid #3A2C78!important;background:transparent!important;color:#D9D2F5!important;min-height:36px}
+html.dk .vsend{position:sticky;bottom:12px;height:56px;border-radius:18px!important;box-shadow:0 12px 30px rgba(255,62,165,.35)}
+/* paylaşım merkezi: şablonlar ızgara */
+html.dk .sheet .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+html.dk .sheet .chips button{min-height:46px;border-radius:14px!important;background:#2C2060!important;border:0!important;color:#fff!important;font-weight:600;justify-content:flex-start;padding:0 12px}
+html.dk .sheet .chips button.on{background:linear-gradient(150deg,#3A1A9E,#1A0B4D)!important;box-shadow:inset 0 0 0 2px #FF3EA5}
+/* ayarlar */
+html.dk .setr{border-radius:0}
+html.dk .setx b{font-weight:600}
+/* sezon */
+html.dk .tsx h2{font:800 1.5rem/1 var(--display);text-transform:uppercase}
+html.dk .tsb,html.dk .board{border-radius:22px!important}
+html.dk .tsh{font:800 1.05rem/1.1 var(--display)!important;text-transform:uppercase;letter-spacing:.02em}
+html.dk .sgrp>h3{font:700 .7rem/1 Inter,sans-serif!important;letter-spacing:.1em;text-transform:uppercase;color:#A99CD6!important;padding-left:4px}html.dk .sbox{border-radius:20px!important;background:#1E1442!important;border:0!important}

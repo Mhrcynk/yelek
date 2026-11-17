@@ -1387,8 +1387,8 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
   const n1=all.filter(id=>v[id]===1).length,n4=all.filter(id=>v[id]===4).length,dn=all.filter(id=>v[id]).length;
   const row=id=>{const p=P(id);return `<div class="vr2">${p?avatar(p,"sm"):""}<span class="vrn"><b>${esc(nameOf(id))}</b><small>${p&&!p.guest?esc(EPOS[eposOf(p)]?.[1]||""):"Misafir"}</small></span><div class="vb2">${[1,2,3,4].map(k=>{const on=v[id]===k;const dis=!on&&((k===1&&n1>=3)||(k===4&&n4>=3));return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}"${dis?" disabled":""}>${VL[k-1]}</button>`}).join("")}</div></div>`};
   const grp=k=>{const L=oth(k);return L.length?`<div class="eyebrow trkh">${tDot(k)}${esc(TEAM[k])}</div><div class="vcard">${L.map(row).join("")}</div>`:""};
-  return `<div class="ch"><div style="min-width:0"><div class="eyebrow">${fmtShort(m.date)}</div><h2>${me===myPid()?"Değerlendir":esc(shortName(nameOf(me)))+" adına"}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
-    <div class="vq"><span class="q1">Çok iyi ${n1}/3</span><span class="q4">Kötü ${n4}/3</span><span>${dn}/${all.length}</span></div>
+  return `<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyuncuları değerlendir":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${esc(nmOf(m,"A"))} ${+m.score_a||0}–${+m.score_b||0} ${esc(nmOf(m,"B"))} · kimin ne verdiği gizli</small></div></div>
+    <div class="mzvp"><div><span>${dn} / ${all.length} oyuncu</span><span>Çok iyi ${n1}/3 · Kötü ${n4}/3</span></div><i><i style="width:${all.length?Math.round(dn/all.length*100):0}%"></i></i></div>
     ${grp("A")}${grp("B")}
     <button class="btn primary block vsend" data-act="vSend"${dn<all.length?" disabled":""}>${dn<all.length?`Gönder · ${all.length-dn} oyuncu kaldı`:"Gönder"}</button>`}
 function sheetVdet(){const d=S.f.vd;const m=d&&S.matches.find(x=>x.id===d.mid);if(!m||!S.admin)return"";const pl=plAll(m);const sel=d.sel||pl[0];const dir=d.dir||"f";
@@ -1786,16 +1786,17 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
   if(mode==="son")rows=plAll(last).filter(id=>trkOf(last,id)&&P(id)).map(id=>[id,trkOf(last,id),tm(id)]);
   else{const T={};TM.forEach(m=>plAll(m).forEach(id=>{const t=trkOf(m,id);if(!t||!P(id)||P(id).guest)return;const o=T[id]||(T[id]={n:0,s:{},c:{}});o.n++;TRK.forEach(([k])=>{if(t[k]!=null){o.s[k]=(o.s[k]||0)+ +t[k];o.c[k]=(o.c[k]||0)+1}})}));
     rows=Object.entries(T).filter(([,o])=>o.n>=need).map(([id,o])=>[id,Object.fromEntries(Object.keys(o.s).map(k=>[k,o.s[k]/o.c[k]])),o.n])}
-  const CHV='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const unit=k=>({km:"km",hiz:"km/s"})[k]||"";
-  const board=k=>{const l=TRKN[k].l;const L=rows.filter(r=>r[1][k]!=null).sort((a,b)=>b[1][k]-a[1][k]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));if(!L.length)return"";
-    const bk="sx_"+k+mode,open=!!S.f[bk],V=open?L:L.slice(0,3),more=L.length>3;let rk=0,pv=null;
-    return `<section class="card tsb shb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${l}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${V.map(r=>{const[id,o,x]=r;const v=o[k];const i=V.indexOf(r);if(v!==pv){rk=i+1;pv=v}const p=P(id),ph=photoOf(id);
-      const pos=esc(EPOS[eposOf(p)]?.[1]||p.pos||"");const sub=mode==="son"?(x?esc(nmOf(last,x)):pos):pos+" · "+x+" maç";
-      return `<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${rk}</span><span class="tsp ${tierOf(ovrOf(id))}${ph?"":" ni"}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy">`:esc(initials(nameOf(id)))}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${sub}</small></span><b class="tsv num">${fTrk(k,v)}${unit(k)?`<em>${unit(k)}</em>`:""}</b></li>`}).join("")}</ol></section>`};
+  const unit=k=>({km:"km",hiz:"km/s"})[k]||"";const pct=k=>k==="isa";
+  const fv=(k,v)=>(pct(k)?"%":"")+fTrk(k,v).replace(/^%/,"");
   h+=`<div class="vtog sqt" role="group" aria-label="Saha verisi dönemi">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>`;
-  const rt=board("rt");if(rt)h+=`<div class="boards">${rt}</div>`;
-  for(const[g,ks]of SAHA_G){const b=ks.map(k=>board(k)).join("");if(b)h+=`<div class="tsx"><h2>${g}</h2></div><div class="boards">${b}</div>`}
+  const avail=TRK.map(([k])=>k).filter(k=>rows.some(r=>r[1][k]!=null));let K=S.f.sahaK&&avail.includes(S.f.sahaK)?S.f.sahaK:(avail.includes("km")?"km":avail[0]);
+  h+=`<div class="mzch" role="group" aria-label="Veri türü">${avail.map(k=>`<button data-act="tog1" data-k="sahaK" data-v="${k}" class="${k===K?"on":""}" aria-pressed="${k===K}">${esc(TRKN[k].l)}</button>`).join("")}</div>`;
+  const L=rows.filter(r=>r[1][K]!=null).sort((a,b)=>b[1][K]-a[1][K]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
+  if(L.length){const[id0,o0,x0]=L[0];const sub=x=>mode==="son"?(x?esc(nmOf(last,x)):""):x+" maç";const others=["km","spr","hiz","isa","rt","pas"].filter(k=>k!==K&&o0[k]!=null).slice(0,3);
+    h+=`<button class="mzsh" data-act="open" data-id="${esc(id0)}"><small>${mode==="son"?fmtShort(last.date)+" · ":""}${esc(TRKN[K].l)} lideri</small><span class="mzsh-h"><b>${esc(nameOf(id0))}</b><em class="num">${fv(K,o0[K])}${unit(K)?`<i> ${unit(K)}</i>`:""}</em></span>
+      ${others.length?`<span class="mzsh-s">${others.map(k=>`<span><b class="num">${fv(k,o0[k])}</b><small>${esc(TRKN[k].l)}</small></span>`).join("")}</span>`:""}</button>`;
+    const mx=Math.max(...L.map(r=>+r[1][K]||0))||1;
+    h+=`<div class="mzbar">${L.slice(1).map(([id,o,x])=>`<button data-act="open" data-id="${esc(id)}"><span class="mzbar-n">${esc(shortName(nameOf(id)))}<small>${sub(x)}</small></span><span class="mzbar-b"><i style="width:${Math.max(4,Math.round((+o[K]||0)/mx*100))}%"></i></span><b class="num">${fv(K,o[K])}</b></button>`).join("")}</div>`}
   if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
   return h}
 function resultPanel(m,...r){return inM(m,()=>_resultPanel(m,...r))}
