@@ -95,9 +95,8 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
 
   await T("Hesabımı sil",async()=>{await click(pg,'[data-act="delAcc"]');await pg.waitForTimeout(400);ok(await pg.locator('#modal [data-act="delAccGo"]').count()===1,"hesap silme penceresi açılmadı");await click(pg,'#modal [data-act="close"]')});
 
-  await T("Takımlar ekranı",async()=>{await click(pg,".top .brand");await pg.waitForTimeout(400);ok(await pg.locator("#hubQ").count()===1,"Takımlar ekranı açılmadı");
-    await pg.fill("#hubQ","başka");await pg.waitForTimeout(200);ok((await pg.locator("#hubR .hrow").count())===1,"arama süzmüyor");
-    await click(pg,'#hubR [data-act="folSet"]');ok(calls.some(c=>c[0]==="follow_set"&&/"p_team":9/.test(c[1])),"takip et isteği gitmedi");await click(pg,'#modal [data-act="close"]')});
+  await T("Takımlar ekranı",async()=>{await click(pg,".top .brand");await pg.waitForTimeout(400);ok(await pg.locator("#tCode").count()===1,"Takımlar ekranı açılmadı");
+    await pg.fill("#tCode","yokboyle");await pg.locator(".tcf button[type=submit]").click();await pg.waitForTimeout(300);ok(calls.some(c=>c[0]==="team_by_code"&&/yokboyle/.test(c[1])),"takım kodu sorgulanmadı");await click(pg,'#modal [data-act="close"]')});
 
   await T("Hata kaydı",async()=>{await pg.evaluate(()=>setTimeout(()=>{window.__yokFonksiyon()},0));await pg.waitForTimeout(500);ok(calls.some(c=>c[0]==="log_error"),"hata kaydedilmedi");pg.errs=pg.errs.filter(x=>!/__yokFonksiyon/.test(x))});
 
