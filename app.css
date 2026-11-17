@@ -52,7 +52,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr);padding-block:16px 8px}
 .btn.block{width:100%}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btns2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-input[type=text],input[type=password],input[type=number],input[type=date],input[type=time],select{padding:11px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--bg2);min-width:0;width:100%;min-height:46px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],input[type=time],select{padding:11px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--bg2);min-width:0;width:100%;min-height:46px}
 
 input,select,textarea{font-size:max(16px,1em)}
 label.f{display:grid;gap:6px;font-size:.78rem;color:var(--muted);font-weight:700;min-width:0}
@@ -745,7 +745,7 @@ h1,h2,h3{font-family:var(--display);font-weight:400;text-transform:uppercase;let
 .seg3 button,.vtog button,.mtabs button{border-radius:99px}
 .seg3 button.on .bibdot,.seg3 button.on .nobib{display:none}
 .oyt{margin-bottom:-4px}
-input[type=text],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{border-color:transparent}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{border-color:transparent}
 .lrow,.grow{background:#121212;border:0}
 .lrow.me{box-shadow:inset 0 0 0 2px var(--acc)}
 .grow.next{box-shadow:inset 0 0 0 2px var(--acc)}.nobib{border:0}
@@ -849,7 +849,7 @@ main,.wrap{position:relative;z-index:1}
 .card{border-radius:24px}
 .lrow,.grow{border-radius:20px}
 .btn.primary{font-weight:900}
-input[type=text],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{border-radius:14px}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{border-radius:14px}
 .eyebrow{letter-spacing:.16em}
 h1{text-shadow:0 0 30px rgba(255,255,255,.12)}
 .bh-ey{font-weight:700}
@@ -1050,7 +1050,7 @@ h1,h2{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-shad
 .seg3 button,.vtog button,.mtabs button{color:var(--muted)}
 .seg3 button.on,.vtog button.on,.mtabs button.on{background:#fff;color:var(--pl);box-shadow:0 1px 3px rgba(55,0,60,.12)}
 .seg3 button.ta.on{background:var(--tA);color:#fff}.seg3 button.tb.on{background:var(--tB);color:#fff;box-shadow:none}
-input[type=text],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{background:#fff;border:1px solid var(--line2);color:var(--pl)}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],input[type=time],select,textarea{background:#fff;border:1px solid var(--line2);color:var(--pl)}
 .sheet{background:#fff;background-image:none;color:var(--ink)}
 .stTop,.stBot{background:#fff}
 .toast{background:var(--plb);color:#fff}
@@ -2287,6 +2287,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2314,7 +2315,7 @@ html.dk .lrow.me,html.dk .grow.next{border-color:#412F6A}
 html.dk .chips button{background:#1A1229}
 html.dk .seg3,html.dk .vtog,html.dk .mtabs{background:#2C2631}
 html.dk .seg3 button.on,html.dk .vtog button.on,html.dk .mtabs button.on{background:#1A1229}
-html.dk input[type=text],html.dk input[type=password],html.dk input[type=number],html.dk input[type=date],html.dk input[type=time],html.dk select,html.dk textarea{background:#1A1229}
+html.dk input[type=text],html.dk input[type=email],html.dk input[type=password],html.dk input[type=number],html.dk input[type=date],html.dk input[type=time],html.dk select,html.dk textarea{background:#1A1229}
 html.dk .sheet{background:#1A1229}
 html.dk .stTop,html.dk .stBot{background:#1A1229}
 html.dk .lnk,html.dk .pk i,html.dk .act svg,html.dk .timer,html.dk .when .dt,html.dk .gl .gi u,html.dk .exp{color:#9C6FF5}
@@ -2836,3 +2837,9 @@ html.dk .shi.dng .shic{background:rgba(248,113,113,.14)}
   .lgr{grid-template-columns:24px minmax(0,1fr) 34px 34px 34px 34px 40px 44px 76px;padding:0 18px}
 }
 .mtabs{grid-auto-columns:minmax(max-content,1fr);overflow-x:auto}.mtabs button{overflow:visible;padding:0 8px}
+/* kayıt: e-posta kodu, takım kodu, yeni kart */
+.otpf{display:grid;gap:10px}
+.lgb .orsep{margin:4px 0}
+.iabs{margin:4px 0 10px;padding-left:20px;display:grid;gap:4px;font-size:.88rem}
+.tcf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.ncf{display:grid;gap:10px}

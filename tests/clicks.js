@@ -117,7 +117,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   // --- takipçi ---
   const p3=await page(DB1);await E(p3,`AUTH.ready=true;S.session={access_token:"x",user:{id:"22222222-2222-2222-2222-222222222222",email:"f@x"}};S.mem={status:"yok"};S.fol=true;render(true)`);
   await T("Takip modu",async()=>{await p3.waitForTimeout(300);const n=await p3.evaluate(()=>document.querySelectorAll("#navIn button").length);ok(n===2,"takipçide "+n+" sekme var");
-    ok(await p3.locator(".folb").count()===1,"takip şeridi yok");await click(p3,"#meBtn");ok(await p3.locator("#hubQ").count()===1,"takipçide Takımlar açılmadı")});
+    ok(await p3.locator(".folb").count()===1,"takip şeridi yok");await click(p3,"#meBtn");ok(await p3.locator("#tCode").count()===1,"takipçide Takımlar açılmadı")});
   if(p3.errs.length)fails.push("JS hatası (takipçi): "+p3.errs.join(" | "));await p3.ctx.close();
 
   await b.close();srv.close();
