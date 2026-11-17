@@ -1726,11 +1726,11 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
   const board=k=>{const l=TRKN[k].l;const L=rows.filter(r=>r[1][k]!=null).sort((a,b)=>b[1][k]-a[1][k]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));if(!L.length)return"";
     const bk="sx_"+k+mode,open=!!S.f[bk],V=open?L:L.slice(0,3),more=L.length>3;let rk=0,pv=null;
     return `<section class="card tsb shb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${l}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${V.map(r=>{const[id,o,x]=r;const v=o[k];const i=V.indexOf(r);if(v!==pv){rk=i+1;pv=v}const p=P(id),ph=photoOf(id);
-      const pos=esc(EPOS[eposOf(p)]?.[1]||p.pos||"");const sub=mode==="son"?(x?esc(TEAM[x]):pos):pos+" · "+x+" maç";
+      const pos=esc(EPOS[eposOf(p)]?.[1]||p.pos||"");const sub=mode==="son"?(x?esc(nmOf(last,x)):pos):pos+" · "+x+" maç";
       return `<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${rk}</span><span class="tsp ${tierOf(ovrOf(id))}${ph?"":" ni"}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy">`:esc(initials(nameOf(id)))}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${sub}</small></span><b class="tsv num">${fTrk(k,v)}${unit(k)?`<em>${unit(k)}</em>`:""}</b></li>`}).join("")}</ol></section>`};
   const sa=+last.score_a||0,sb=+last.score_b||0;const n=plAll(last).filter(id=>trkOf(last,id)).length,tot=plAll(last).length;
   h+=`<div class="vtog sqt" role="group" aria-label="Saha verisi dönemi">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>
-    <p class="muted small shs">${mode==="son"?`${fmtShort(last.date)} · ${esc(TEAM.A)} ${sa}–${sb} ${esc(TEAM.B)} · ${n}/${tot} oyuncunun verisi`:`${nm} maç · maç başına ortalama${need>1?" · en az 2 maç":""}`} · Akıllı Saha</p>`;
+    <p class="muted small shs">${mode==="son"?`${fmtShort(last.date)} · ${esc(nmOf(last,"A"))} ${sa}–${sb} ${esc(nmOf(last,"B"))} · ${n}/${tot} oyuncunun verisi`:`${nm} maç · maç başına ortalama${need>1?" · en az 2 maç":""}`} · Akıllı Saha</p>`;
   const rt=board("rt");if(rt)h+=`<div class="boards">${rt}</div>`;
   for(const[g,ks]of SAHA_G){const b=ks.map(k=>board(k)).join("");if(b)h+=`<div class="tsx"><h2>${g}</h2></div><div class="boards">${b}</div>`}
   if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
