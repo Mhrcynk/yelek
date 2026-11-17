@@ -1092,9 +1092,10 @@ function _sheetHtml(){const t=S.sheet.type;if(t==="trk")return sheetTrk();if(t==
   if(t==="mng"){const m=S.matches.find(x=>x.id===S.sheet.mid);if(!m||!S.admin)return"";const M=esc(m.id);
     return `<div class="ch"><div><div class="eyebrow">Yönetici · ${fmtShort(m.date)}</div><h2>${esc(nmOf(m,"A"))} ${m.score_a} – ${m.score_b} ${esc(nmOf(m,"B"))}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
       ${namesForm(m)}
-      <div class="mngl"><button class="btn block" data-act="evalOpen" data-id="${M}">Değerlendirmeyi düzenle<small>çok iyi / iyi / orta / kötü, penaltı, çizgi</small></button>
-      <button class="btn block" data-act="reopen" data-id="${M}">Skoru, golleri ve ödülleri düzelt<small>maç kayıt ekranı açılır, kaydedince kartlar yeniden hesaplanır</small></button>
-      <button class="btn block ghost danger" data-act="delMatch" data-id="${M}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div>`}
+      <div class="eyebrow mngh">Maç işlemleri</div><div class="shl">
+      <button class="shi" data-act="evalOpen" data-id="${M}"><span class="shic">★</span><span class="sht"><b>Değerlendirmeyi düzenle</b><small>Çok iyi / iyi / orta / kötü, penaltı, çizgi</small></span><span class="shx">›</span></button>
+      <button class="shi" data-act="reopen" data-id="${M}"><span class="shic">⚽</span><span class="sht"><b>Skoru, golleri ve ödülleri düzelt</b><small>Kaydedince kartlar yeniden hesaplanır</small></span><span class="shx">›</span></button>
+      <button class="shi dng" data-act="delMatch" data-id="${M}"><span class="shic">${ICON.x}</span><span class="sht"><b>${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</b><small>Geri alınamaz</small></span></button></div>`}
   if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&(m.state==="takim"||m.state==="bitti")?inM(m,()=>statEntry(m)):""}
   if(t==="rules")return `<div class="ch"><h2>Puanlama</h2><button class="btn sm" data-act="close">Kapat</button></div>`+viewKurallar(true);
   if(t==="share")return sheetShare();if(t==="pm")return sheetPM();
@@ -1340,8 +1341,8 @@ function rsvpLists(m){
 function adminMore(m,extra){const k="am_"+m.id;const w=S.f["when_"+m.id]||{};const ch=(w.d&&w.d!==m.date)||(w.t&&w.t!==m.time);const open=S.f[k]||ch;
   return `<button class="morebtn${open?" on":""}" data-act="tog" data-k="${k}">Diğer işlemler <span>${open?"▴":"▾"}</span></button>${open?`<div class="morep">${whenForm(m)}${namesForm(m)}<div class="row">${extra}</div></div>`:""}`}
 function namesForm(m){const k="nm_"+m.id;const w=S.f[k]||{};const a=w.a??(m.name_a||""),b=w.b??(m.name_b||"");const ch=a!==(m.name_a||"")||b!==(m.name_b||"");
-  return `<div class="whenf"><span class="eyebrow">Takım isimleri</span><div class="grid2"><label class="f" for="na_${esc(m.id)}"><span><i class="bibdot"></i> 1. takım</span><input type="text" maxlength="20" id="na_${esc(m.id)}" data-bind="${k}.a" value="${esc(a)}" placeholder="1. takım"></label>
-    <label class="f" for="nb_${esc(m.id)}"><span><i class="nobib"></i> 2. takım</span><input type="text" maxlength="20" id="nb_${esc(m.id)}" data-bind="${k}.b" value="${esc(b)}" placeholder="2. takım"></label></div>
+  const row=(k2,id,bd,v,l)=>`<label class="mngi" for="${id}">${crest(v||l,k2,34)}<span><small>${l}</small><input type="text" maxlength="20" id="${id}" data-bind="${bd}" value="${esc(v)}" placeholder="${l} adı" autocomplete="off"></span></label>`;
+  return `<div class="whenf"><span class="eyebrow">Takım isimleri</span><div class="mngn">${row("A","na_"+esc(m.id),k+".a",a,"1. takım")}${row("B","nb_"+esc(m.id),k+".b",b,"2. takım")}</div>
     <button class="btn ${ch?"primary":""} block" data-act="setNames" data-id="${esc(m.id)}">İsimleri kaydet</button></div>`}
 function whenForm(m){const k="when_"+m.id;const w=S.f[k]||{};const d=w.d||m.date,t=w.t||m.time||"21:00";const ch=d!==m.date||t!==m.time;
   return `<div class="whenf"><span class="eyebrow">Tarih ve saat</span><div class="grid2"><label class="f" for="wd_${esc(m.id)}">Tarih<input type="date" id="wd_${esc(m.id)}" data-bind="${k}.d" value="${esc(d)}"></label>
@@ -1688,7 +1689,6 @@ function trkPanel(m){const n=plAll(m).filter(id=>trkOf(m,id)).length,tot=plAll(m
   let h=`<p class="muted small" style="margin:0">${n}/${tot} oyuncunun verisi girildi${n<TRK_MIN?" · notlara ve kartlara yansıması için en az "+TRK_MIN+" oyuncu gerekir":""}. Kaynak: Akıllı Saha.</p>`;
   h+=`<div class="mstat"><div class="msth"><span>${tDot("A")}${esc(TEAM.A)}</span><span>${tDot("B")}${esc(TEAM.B)}</span></div>${rows.map(([k,l,x,y])=>{x=x||0;y=y||0;const t=Math.max(x,y)||1;
     return `<div class="msr"><div class="msl"><b class="num${x>y?" hi":""}">${fTrk(k,x)}</b><span>${l}</span><b class="num${y>x?" hi":""}">${fTrk(k,y)}</b></div><div class="msb"><span class="l"><i style="width:${x/t*100}%"></i></span><span class="r"><i style="width:${y/t*100}%"></i></span></div></div>`}).join("")}</div>`;
-  const B=trkBest(m);if(B.length)h+=`<div><div class="eyebrow">Maçın en'leri</div><div class="trkb">${B.map(o=>`<button class="trkt" data-act="open" data-id="${esc(o.id)}"><small>${o.l}</small><b class="num">${fTrk(o.k,o.v)}<em>${o.k==="km"?"km":o.k==="hiz"?"km/s":""}</em></b><span>${esc(shortName(nameOf(o.id)))}</span></button>`).join("")}</div></div>`;
   if(S.admin)h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${M}">Saha verilerini düzenle</button>`;
   return h}
 // notlar sekmesinde oyuncunun verisi: ortalamaya göre etiketler
@@ -1729,7 +1729,7 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
       const pos=esc(EPOS[eposOf(p)]?.[1]||p.pos||"");const sub=mode==="son"?(x?esc(TEAM[x]):pos):pos+" · "+x+" maç";
       return `<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${rk}</span><span class="tsp ${tierOf(ovrOf(id))}${ph?"":" ni"}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy">`:esc(initials(nameOf(id)))}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${sub}</small></span><b class="tsv num">${fTrk(k,v)}${unit(k)?`<em>${unit(k)}</em>`:""}</b></li>`}).join("")}</ol></section>`};
   const sa=+last.score_a||0,sb=+last.score_b||0;const n=plAll(last).filter(id=>trkOf(last,id)).length,tot=plAll(last).length;
-  h+=`<div class="tsx"><h2>${mode==="son"?"Son maç":"Sezon"}</h2><button class="tsall" data-act="tog1" data-k="sahaM" data-v="${mode==="son"?"sez":"son"}">${mode==="son"?"Sezon ortalaması":"Son maç"} ${CHV}</button></div>
+  h+=`<div class="vtog sqt" role="group" aria-label="Saha verisi dönemi">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>
     <p class="muted small shs">${mode==="son"?`${fmtShort(last.date)} · ${esc(TEAM.A)} ${sa}–${sb} ${esc(TEAM.B)} · ${n}/${tot} oyuncunun verisi`:`${nm} maç · maç başına ortalama${need>1?" · en az 2 maç":""}`} · Akıllı Saha</p>`;
   const rt=board("rt");if(rt)h+=`<div class="boards">${rt}</div>`;
   for(const[g,ks]of SAHA_G){const b=ks.map(k=>board(k)).join("");if(b)h+=`<div class="tsx"><h2>${g}</h2></div><div class="boards">${b}</div>`}

@@ -2279,6 +2279,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2767,3 +2768,18 @@ input[type=date]::-webkit-calendar-picker-indicator{margin:0}
 .shs{margin:-2px 2px 10px}
 .shb .tsv em{font:700 .66rem/1 Inter,sans-serif;font-style:normal;color:var(--muted);margin-left:3px}
 .shb .tsv{white-space:nowrap}
+/* yönetici penceresi: takım isimleri ve maç işlemleri */
+.mngn{border:1px solid var(--line2);background:var(--card);border-radius:16px;overflow:hidden}
+.mngi{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:center;padding:10px 14px;cursor:text}
+.mngi+.mngi{border-top:1px solid var(--line)}
+.mngi>span{display:grid;gap:1px;min-width:0}
+.mngi small{font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.02em}
+.mngn .mngi input[type=text]{border:0!important;background:none!important;padding:0;min-height:28px;border-radius:0;font-weight:700;font-size:max(16px,1.02rem);color:var(--ink);box-shadow:none!important;outline:0}
+.mngi:focus-within{background:var(--bg2)}
+.mngh{margin-top:6px}
+.shi.dng{border-color:transparent;background:none;grid-template-columns:44px minmax(0,1fr)}
+.shi.dng .shic{background:rgba(220,38,38,.1);color:var(--bad)}.shi.dng .shic svg{width:18px;height:18px}
+.shi.dng b{color:var(--bad)}
+html.dk .shi.dng .shic{background:rgba(248,113,113,.14)}
+/* saha verileri: son maç / sezon seçimi */
+.sqt+.shs{margin-top:0}
