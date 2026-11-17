@@ -2296,6 +2296,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -2939,3 +2940,16 @@ input.otpc::placeholder{letter-spacing:.05em;font-weight:600;font-size:1rem}
 @media(min-width:900px){.fl{max-width:560px;margin-inline:auto;width:100%}}
 .yp-cb{position:absolute;z-index:2;display:grid;place-items:center;border-radius:50%;background:#FFD400;color:#1A0B3D;font-style:normal;font-family:"Barlow Condensed",var(--display),sans-serif;font-weight:800;line-height:1;border:2px solid #1A0B3D;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .yp-pl.yp-cap .yp-av{border-color:#FFD400;box-shadow:0 0 0 3px rgba(255,212,0,.35)}
+.yp-dq{width:100%;display:flex;flex-direction:column;gap:12px}
+.yp-dqh{display:flex;justify-content:space-between;gap:10px;font:800 15px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.yp-dqh span{padding:6px 10px;border-radius:6px;max-width:200px;white-space:nowrap;overflow:hidden}
+.yp-dqh .yp-ta{background:#1F2430}.yp-dqh .yp-tb{background:#7B5CFF}
+.yp-dqr{position:relative;display:flex;align-items:center;justify-content:space-between;height:96px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+.yp-dqs{display:flex;align-items:center;gap:10px;width:180px;min-width:0}
+.yp-dqs.yp-r{flex-direction:row-reverse;text-align:right}
+.yp-dqs .yp-av{margin:0;flex:none}
+.yp-dqt{display:flex;flex-direction:column;gap:4px;min-width:0}
+.yp-dqt b{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;letter-spacing:.04em;text-transform:uppercase;line-height:1;white-space:nowrap}
+.yp-dqt em{font:800 28px/1 "Barlow Condensed","Arial Narrow",sans-serif;font-style:normal;color:rgba(255,255,255,.6)}
+.yp-dqt em.yp-up{color:#fff}
+.yp-dqm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:6px 10px;border-radius:99px;background:#140552;border:2px solid var(--ac);box-shadow:0 0 16px rgba(255,62,165,.5);font:800 13px/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}

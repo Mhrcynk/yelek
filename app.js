@@ -867,11 +867,14 @@ function ypKadro(m,notes){const inf=S.mInfo[m.id]||{pts:{}};
     return{html,cap:`${igDate(m.date)} not karnesi 📝\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\n${HT()} #halısaha`,name:"not-karnesi-"+m.date}}
   const html=ypPost({ey:hkWhen(m)+(S.settings.field_name?" · "+S.settings.field_name:""),ti:"Kadrolar açıklandı",wk:ypWkN(m),hc:"top",hero:ypField(m,chip),ft:formLabel(formOf(m,"B"),posArr(m,"B"))+" – "+formLabel(formOf(m,"A"),posArr(m,"A"))});
   return{html,cap:`Kadrolar belli oldu! ${hkWhen(m)} 📣\n${nmOf(m,"A")}: ${ln("A")}\n${nmOf(m,"B")}: ${ln("B")}\nSizce kim kazanır? 👇\n${HT()} #halısaha`,name:"kadrolar-aciklandi-"+m.date}}
-function ypDuel(m){const best=k=>plOf(m,k).filter(id=>P(id)&&!P(id).guest).sort((a,b)=>ovrOf(b)-ovrOf(a))[0];const a=best("A"),b=best("B");if(!a||!b)return null;const{F}=hkSeason();
-  const fa=hkForm5(a),fb=hkForm5(b),ga=ypSG(a,F),gb=ypSG(b,F);
-  const html=ypPost({ey:hkWhen(m)+" · Sizce kim fark yaratır?",ti:"Kritik eşleşme",wk:ypWkN(m),hero:`<div class="yp-duo">${ypCut(a)}<div class="yp-vs" data-b>VS</div>${ypCut(b)}</div>`,
-    pn:ypCmp(ypSn(a),ypSn(b),[["Reyting",String(ovrOf(a)),String(ovrOf(b))],["Değer",fM(mvOf(a)),fM(mvOf(b)),mvOf(a),mvOf(b)],["Son 5 maç",fN(fa),fN(fb),fa??0,fb??0],["Sezon golü",String(ga),String(gb)]]),ft:nmOf(m,"A")+" – "+nmOf(m,"B")});
-  return{html,cap:`Kritik eşleşme ⚔️ ${nameOf(a)} vs ${nameOf(b)}\n${hkWhen(m)} · Sizce kim fark yaratır?\n${HT()} #halısaha`,name:"kritik-esleme-"+m.date}}
+function ypDuel(m){const PG={Defans:"DF","Orta saha":"OS",Forvet:"FV",Kaleci:"KL",DF:"DF",OS:"OS",FV:"FV",KL:"KL"};const grp=id=>{const p=P(id);return p.epos&&EPOS[p.epos]?EPOS[p.epos][0]:PG[p.pos]||EPOS[eposOf(p)]?.[0]};
+  const best=(k,g)=>plOf(m,k).filter(id=>P(id)&&!P(id).guest&&grp(id)===g).sort((a,b)=>ovrOf(b)-ovrOf(a))[0];
+  const R=[["DF","Defans"],["OS","Orta saha"],["FV","Forvet"]].map(([g,l])=>[l,best("A",g),best("B",g)]).filter(r=>r[1]&&r[2]);if(!R.length)return null;
+  const side=(id,t,r,up)=>{const n=TRU(ypSn(id));return `<div class="yp-dqs${r?" yp-r":""}">${ypAv(id,t,"width:64px;height:64px")}<div class="yp-dqt"><b style="font-size:${ypFit(n,24,128,{ls:.04})}px">${esc(n)}</b><em class="${up?"yp-up":""}">${ovrOf(id)}</em></div></div>`};
+  const na=TRU(nmOf(m,"A")),nb=TRU(nmOf(m,"B"));
+  const hero=`<div class="yp-dq"><div class="yp-dqh" data-b><span class="yp-ta" style="font-size:${ypFit(na,15,200,{ls:.08})}px">${esc(na)}</span><span class="yp-tb" style="font-size:${ypFit(nb,15,200,{ls:.08})}px">${esc(nb)}</span></div>${R.map(([l,a,b])=>`<div class="yp-dqr" data-b>${side(a,"ta",0,ovrOf(a)>ovrOf(b))}<span class="yp-dqm">${esc(TRU(l))}</span>${side(b,"tb",1,ovrOf(b)>ovrOf(a))}</div>`).join("")}</div>`;
+  const html=ypPost({ey:hkWhen(m)+" · Sizce kim fark yaratır?",ti:"Kritik eşleşmeler",wk:ypWkN(m),hc:"mid",hero,ft:nmOf(m,"A")+" – "+nmOf(m,"B")});
+  return{html,cap:`Kritik eşleşmeler ⚔️\n${R.map(([l,a,b])=>l+": "+nameOf(a)+" vs "+nameOf(b)).join("\n")}\n${hkWhen(m)} · Sizce kim fark yaratır?\n${HT()} #halısaha`,name:"kritik-esleme-"+m.date}}
 function ypOut(){const L=S.players.filter(p=>!p.guest&&!p.archived&&UNAVAIL.includes(stOf(p)));if(!L.length)return null;const sh=L.slice(0,6),n=sh.length,big=n<=3,cw=(476-20)/Math.min(n,3);
   const ready=S.players.filter(p=>!p.guest&&!p.archived&&!UNAVAIL.includes(stOf(p))).length;
   const cell=p=>{const X=STATUS[stOf(p)];const u=p.status?.until;const d=u?"Dönüş "+fmtShort(u):["izinli","yogun"].includes(stOf(p))?"Bu hafta yok":"Dönüş belirsiz";const nm=TRU(shortName(p.name));
@@ -1036,7 +1039,7 @@ function ypFinal(){const n=[...seasonsAll()].reverse().find(x=>seasonDone(x));if
   return{html,cap:`Sezon ${n} şampiyonu: ${nameOf(w.champ.id)} 🏆\n${rows.map(([l,id])=>l+": "+nameOf(id)).join("\n")}\n${HT()} #şampiyon #halısaha`,name:"sezon-"+n+"-finali"}}
 
 const PM_ITEMS={
-  once:[["gun","Maç günü"],["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
+  once:[["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
   mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["kadro","Not karnesi"],["veri","Maçın verileri"]],
   oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"],["yeni","Aramıza katıldı"],["dogum","Doğum günü"],["km","Kilometre taşı"]],
   sezon:[["tablo","Puan durumu"],["mvp","Zirve yarışı"],["golk","Gol krallığı"],["asistk","Asist krallığı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["ikili","En iyi ikili"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yaris","Mevki yarışı"],["final","Sezon finali"]]};
