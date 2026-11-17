@@ -1713,9 +1713,9 @@ function trkPlayer(p){const F=fin().filter(inYr).filter(m=>trkOf(m,p.id));if(!F.
   return `<div><h3>Saha verileri</h3><p class="muted small" style="margin:2px 0 8px">Maç başına ortalama · ${F.length} maç · etiket: takım ortalamasına göre</p><div class="trkb t3">${tiles}</div>${rec?`<div class="trkrec">${rec}</div>`:""}</div>`}
 // lig: saha liderleri (maç başına ortalama, en az 2 maç)
 function trkLeaders(F){const T={};F.forEach(m=>plAll(m).forEach(id=>{const t=trkOf(m,id);if(!t||!P(id)||P(id).guest)return;const o=T[id]||(T[id]={n:0});o.n++;TRK.forEach(([k])=>{if(t[k]!=null){o[k]=(o[k]||0)+ +t[k];o[k+"_n"]=(o[k+"_n"]||0)+1}})}));
-  const L=Object.entries(T).filter(([,o])=>o.n>=2);if(!L.length)return"";
+  const nm=F.filter(trkHas).length;if(!nm)return"";const need=nm<3?1:2;const L=Object.entries(T).filter(([,o])=>o.n>=need);if(!L.length)return"";
   const cats=[["km","En çok koşan",""],["hiz","En hızlı",""],["isa","Pas ustası",""],["tk","Top kapma",""],["pp","Progresif pas",""],["dri","Dripling",""]];
-  return `<section class="card"><h2>Saha liderleri</h2><p class="muted small" style="margin:2px 0 10px">Akıllı Saha verileri · maç başına ortalama · en az 2 maç</p><div class="trkl">${cats.map(([k,l])=>{const R=L.filter(([,o])=>o[k+"_n"]).map(([id,o])=>[id,o[k]/o[k+"_n"]]).sort((a,b)=>b[1]-a[1]).slice(0,3);if(!R.length)return"";
+  return `<section class="card"><h2>Saha liderleri</h2><p class="muted small" style="margin:2px 0 10px">Akıllı Saha verileri · maç başına ortalama${need>1?" · en az 2 maç":" · "+nm+" maç"}</p><div class="trkl">${cats.map(([k,l])=>{const R=L.filter(([,o])=>o[k+"_n"]).map(([id,o])=>[id,o[k]/o[k+"_n"]]).sort((a,b)=>b[1]-a[1]).slice(0,3);if(!R.length)return"";
     return `<div class="trklc"><div class="eyebrow">${l}</div>${R.map(([id,v],i)=>`<button class="trklr" data-act="open" data-id="${esc(id)}"><em>${i+1}</em><span>${esc(shortName(nameOf(id)))}</span><b class="num">${fTrk(k,v)}</b></button>`).join("")}</div>`}).join("")}</div></section>`}
 function resultPanel(m,...r){return inM(m,()=>_resultPanel(m,...r))}
 function _resultPanel(m){
