@@ -2913,7 +2913,7 @@ document.addEventListener("submit",async e=>{
   const f=e.target.closest("[data-form]");if(!f)return;e.preventDefault();const kind=f.dataset.form;
   if(kind==="otpSend"){const o=S.f.otp||(S.f.otp={});const em=String(o.email||"").trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){toast("Geçerli bir e-posta yaz");return}
     if(o.busy)return;o.busy=true;o.email=em;render(true);const sb=await authStart();
-    try{if(!sb)throw 0;const{error}=await sb.auth.signInWithOtp({email:em,options:{shouldCreateUser:true}});if(error)throw error;o.sent=true;o.code="";LS.set("y_auth","1");toast("Kod gönderildi")}
+    try{if(!sb)throw 0;const{error}=await sb.auth.signInWithOtp({email:em,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});if(error)throw error;o.sent=true;o.code="";LS.set("y_auth","1");toast("Kod gönderildi")}
     catch(e){toast(/rate|limit|seconds/i.test(e&&e.message||"")?"Çok sık denedin, biraz bekleyip tekrar dene":"Kod gönderilemedi, tekrar dene")}finally{o.busy=false;render(true)}return}
   if(kind==="otpVerify"){const o=S.f.otp||{};const code=String(o.code||"").replace(/\D/g,"");if(code.length<6){toast("Kodu yaz");return}
     if(o.busy)return;o.busy=true;render(true);const sb=await authStart();
