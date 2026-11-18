@@ -2315,6 +2315,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -3780,9 +3782,9 @@ html[data-pdir="l"]::view-transition-old(page){animation-name:vtOutR}
 .sheet-bg.out .sheet{animation:shOut .22s cubic-bezier(.4,0,1,1) both!important}
 @keyframes fadeO{to{opacity:0}}
 @keyframes shOut{to{transform:translateY(100%)}}
-#sheetBody.sw{animation:swIn .26s cubic-bezier(.2,.8,.2,1) both}
+#sheetBody.shsw{animation:swIn .26s cubic-bezier(.2,.8,.2,1) both}
 @keyframes swIn{from{opacity:0;transform:translateX(16px)}}
-#sheetBody.swb{animation:swInB .26s cubic-bezier(.2,.8,.2,1) both}
+#sheetBody.shswb{animation:swInB .26s cubic-bezier(.2,.8,.2,1) both}
 @keyframes swInB{from{opacity:0;transform:translateX(-16px)}}
 }
 /* ===== v3 alt bar: genişleyen sekme ===== */
@@ -3796,3 +3798,8 @@ html.dk .nav button[aria-current="page"],html.dk .nav button.ctr[aria-current="p
 html.dk .nav button[aria-current="page"] .tl{max-width:110px;opacity:1}
 html.dk .nind{display:none!important}
 }
+/* takım barları: A pembe, B turkuaz */
+html.dk .msb .l i,html.dk .sr .bar.l i{background:#FF3EA5!important}
+html.dk .msb .r i,html.dk .sr .bar.r i{background:#5FE3F5!important}
+html.dk .msb span{background:#2C2060!important}
+html.dk .sheet .rth{width:100%;box-sizing:border-box;margin-top:12px}
