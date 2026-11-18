@@ -2320,6 +2320,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -3816,3 +3818,30 @@ html.dk body.phout .tt{opacity:1}
 html.dk .pv-tabs button.on{background:#fff!important;color:#24105E!important}
 html.dk .patm.x .t{color:#D9D2F5}
 html.dk .patm.x .d{color:#A99CD6}
+/* ===== istatistik listeleri: tek kart, ince satırlar ===== */
+html.dk .tsb{background:#1E1442!important;border:1.5px solid #3A2C78!important;border-radius:20px!important;padding:12px 14px 6px!important;gap:4px;display:grid}
+html.dk .tsb .tsh{display:flex!important;align-items:center;gap:8px;width:100%;padding:2px 0 8px!important;margin:0;font:800 1.05rem/1.1 var(--display)!important;text-transform:uppercase;letter-spacing:.02em;color:#fff;text-align:left;border-bottom:1px solid #2C2060!important}
+html.dk .tsb .tsh i{margin-left:auto;color:#D9D2F5}
+html.dk .tsb ol{gap:0!important}
+html.dk .tsb ol li{background:none!important;border-radius:0!important;padding:10px 0!important;border:0!important;border-top:1px solid #2C2060!important;grid-template-columns:20px 36px minmax(0,1fr) auto;gap:10px}
+html.dk .tsb ol li:first-child{border-top:0!important}
+html.dk .tsb .tsp{width:36px!important;height:36px!important;border-radius:50%!important;font:800 .8rem var(--display)!important}
+html.dk .tsb .tsp img{border-radius:50%}
+html.dk .tsb .tsr{font:800 1rem var(--display)!important;color:#D9D2F5}
+
+html.dk .tsb .tsn b{font:600 .9rem Inter,sans-serif!important;text-transform:none!important}
+html.dk .tsb .tsn small{font-size:.72rem;color:#D9D2F5!important}
+html.dk .tsb .tsv{font:800 1.3rem/1 var(--display)!important;color:#fff}
+html.dk .tsb .tsv small{color:#D9D2F5!important}
+html.dk .tsb li:active{background:rgba(255,255,255,.04)!important}
+/* hafta şeridi */
+html.dk .ysr{gap:4px;padding-left:2px}
+html.dk .ysr i{height:22px;border-radius:6px;font:700 .66rem/1 Inter,sans-serif}
+html.dk .ysr .on{background:#2C2060;color:#fff}
+html.dk .ysr .hi{background:#FF3EA5;color:#fff}
+html.dk .ysr .no{background:transparent;color:#8C7FC0;border:1px solid #3A2C78}
+html.dk .ysr .fu{border:0;background:#1A1140;position:relative}
+html.dk .ysr .fu::after{content:"";width:4px;height:4px;border-radius:50%;background:#3A2C78}
+html.dk .ysr .ot{box-shadow:inset 0 -2px 0 #FFD400}
+html.dk .ytsb li{row-gap:8px}
+html.dk .boards{display:grid;gap:12px}
