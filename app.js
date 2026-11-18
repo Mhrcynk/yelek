@@ -279,7 +279,7 @@ function baseOf(p){const set=attrSet(p.pos);const a=p.attrs||{};let ep=eposOf(p)
   let s=0,t=0;for(const[k]of set){const x=w[k]??0;s+=x*mainX(a,k,p.pos);t+=x}return flo(t?s/t:set.reduce((q,[k])=>q+mainX(a,k,p.pos),0)/set.length)}
 
 /* ===== Özellik motoru: maçta yapılan iş alt özellikleri değiştirir, GEN özelliklerden hesaplanır ===== */
-const ENG={step:2,cap:8,decay:.05,maxGen:.3,motmGen:.5,ev:.35,roleW:.5};
+const ENG={step:2,cap:8,decay:.05,maxGen:.3,motmGen:.5,ev:.35,evShare:.5,roleW:.5};
 const SUBN={hiz_acc:"Hızlanma",hiz_spr:"Sprint hızı",hiz_cab:"Çabukluk",sut_bit:"Bitiricilik",sut_guc:"Şut gücü",sut_poz:"Pozisyon alma",pas_kis:"Kısa pas",pas_uzn:"Uzun pas",pas_viz:"Vizyon",
   dri_kon:"Top kontrolü",dri_sur:"Top sürme",dri_cev:"Çeviklik",def_kes:"Top kesme",def_bil:"Savunma bilinci",def_mud:"Ayakta müdahale",fiz_day:"Dayanıklılık",fiz_guc:"Güç",fiz_agr:"Agresiflik",
   dal_uza:"Uzanma",dal_kos:"Köşe kurtarışı",ref_ref:"Refleks",ref_yak:"Yakın mesafe",ell_tut:"Top tutma",ell_bas:"Elle oyun başlatma",ayk_pas:"Ayakla pas",ayk_deg:"Uzun degaj",poz_yer:"Yer tutma",poz_bir:"Bire birde çıkış"};
@@ -311,7 +311,8 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
     else if(b==="kötü")add("poz_yer",-ENG.step,op+" gol yedi");else if(b==="kötü+"){add("ref_ref",-ENG.step,op+" gol yedi");add("dal_uza",-ENG.step,op+" gol yedi")}}
   if(og)add(role==="KL"?"poz_yer":"def_bil",-ENG.step*og,"kendi kalesine");
   const my=r.side==="A"?+m.score_a||0:+m.score_b||0;
-  if(r.res==="G")add(MENTAL[role],ENG.step/2,"galibiyet");else if(r.res==="M"&&op-my>=5)add(MENTAL[role],-ENG.step/2,(op-my)+" farklı yenilgi");
+  {const mk=role==="DF"?["def_bil","def_kes","def_mud"]:[MENTAL[role]],mv=ENG.step/2/mk.length;
+    if(r.res==="G")for(const k of mk)add(k,mv,"galibiyet");else if(r.res==="M"&&op-my>=5)for(const k of mk)add(k,-mv,(op-my)+" farklı yenilgi")}
   // Maçın Adamı: pozisyondan bağımsız GEN'e sabit +motmGen, kartın en ağırlıklı ana özelliğine yazılır
   if(ctx.motm){const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const w=W[ep];
     const top=set.reduce((b,x)=>(w[x[0]]??0)>(w[b[0]]??0)?x:b,set[0]);const t=set.reduce((q,[k])=>q+(w[k]??0),0)||1;
@@ -329,14 +330,16 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
 // kendi alt özelliğine doğrudan yazılır; GEN değişiminin kalanı oynadığı mevkinin ve kartının ağırlıklarına göre bütün alt özelliklere yayılır.
 const ROLE_EP={KL:"KL",DF:"STP",OS:"MO",FV:"SNT"};
 function noteSpread(p,cur,ch,D,role){
+  // Bir maçta bütün özellikler aynı yöne gider: not iyiyse hepsi artar, kötüyse hepsi düşer.
+  // Maçta yapılan iş (gol → şut, asist → pas, yenen gol → savunma) yalnızca payın büyüğünü alır, başkasından düşülmez.
   const imp=M=>{const c={...cur};for(const k in M)c[k]+=M[k];return genF(p,c)-genF(p,cur)};
-  const E={},why={};for(const[k,v,w]of ch)if(k in cur){E[k]=(E[k]||0)+v*ENG.ev;why[k]=why[k]||w}
-  const ie=Object.keys(E).length?imp(E):0;const rest=D-ie;const out=Object.entries(E).map(([k,v])=>[k,v,why[k]]);
-  if(Math.abs(rest)<.005)return out;
+  if(Math.abs(D)<.005)return [];const sg=Math.sign(D);
+  const E={},why={};for(const[k,v,w]of ch)if(k in cur&&Math.sign(v)===sg){E[k]=(E[k]||0)+Math.abs(v);why[k]=why[k]||w}
   const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const wc=W[ep]||{};const wr=p.pos==="Kaleci"?wc:(W[ROLE_EP[role]]||wc);
   const U={};for(const[k,,,subs]of set){const w=(1-ENG.roleW)*(wc[k]??0)+ENG.roleW*(wr[k]??0);if(w<=0)continue;for(const[sk]of subs)if((k+"_"+sk) in cur)U[k+"_"+sk]=w/subs.length}
-  const iu=imp(U);if(Math.abs(iu)<1e-6)return out;const f=rest/iu;
-  for(const k in U)out.push([k,U[k]*f,"maç notu"]);return out}
+  const out={},tag={};const put=(M,share,w)=>{const iu=imp(M);if(Math.abs(iu)<1e-6)return false;const f=share/iu;for(const k in M){out[k]=(out[k]||0)+M[k]*f;tag[k]=tag[k]||(typeof w==="string"?w:w[k])}return true};
+  const hasE=Object.keys(E).length>0;let eS=hasE?D*ENG.evShare:0;if(hasE&&!put(E,eS,why))eS=0;put(U,D-eS,"maç notu");
+  return Object.keys(out).map(k=>[k,out[k],tag[k]])}
 // Haftanın Takımı: en yüksek notlu kaleci + en yüksek notlu 6 oyuncu (misafirler hariç), nota göre sıralı
 function totwOf(pl,pts){const ok=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts);
   // mevkiye göre 7: 1 kaleci + 2-2-2 / 2-3-1 / 3-2-1 dizilişlerinden not toplamı en yüksek olanı; bir mevkide oyuncu yetmezse boşluğu en iyi kalan oyuncu doldurur
