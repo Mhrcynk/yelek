@@ -2324,6 +2324,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -3891,3 +3893,4 @@ html.dk .boards{display:grid;gap:12px}
 .pr-lg i.hi{background:var(--c)}.pr-lg i.no{background:transparent;border:1px dashed #5B4A9E}.pr-lg i.ot{background:#5B4A9E repeating-linear-gradient(135deg,rgba(255,255,255,.3) 0 3px,transparent 3px 6px)}
 .ldx{align-items:stretch!important}
 .ldc .ldr{margin-top:auto}
+html.dk body.genb .brand .brc{display:none}
