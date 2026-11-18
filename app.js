@@ -755,10 +755,13 @@ const XS=".ldx,.mtabs,.chips,.mzch,.oyt2,.scroll-x,.mzseg,.kchips,.vsel,.pmi,.pm
 function keepX(v,fn){const sx=[...v.querySelectorAll(XS)].map(e=>e.scrollLeft);fn();[...v.querySelectorAll(XS)].forEach((e,i)=>{if(sx[i])e.scrollLeft=sx[i]})}
 function renderSheet(){
   const host=$("#modal");const html=S.sheet?sheetHtml():"";
-  if(!html){S.sheet=null;if(host.firstChild){host.innerHTML="";document.body.classList.remove("lock")}return}
+  if(!html){S.sheet=null;const bg=host.firstChild;if(bg&&!bg.classList.contains("out")){if(RM){host.innerHTML="";document.body.classList.remove("lock");return}bg.classList.add("out");document.body.classList.remove("lock");setTimeout(()=>{if(!S.sheet&&host.firstChild===bg)host.innerHTML=""},230)}return}
+  if(host.firstChild&&host.firstChild.classList.contains("out")){host.innerHTML=""}
   let body=$("#sheetBody");
   if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><button class="grab" data-act="close" aria-label="Kapat"></button><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
-  const sh=body.parentNode,st=sh.scrollTop;keepX(body,()=>keepOpen(body,()=>{body.innerHTML=html}));if(sh.scrollTop!==st)sh.scrollTop=st;
+  const sk=S.sheet.type,pk=body.dataset.t;const sh=body.parentNode;
+  if(pk&&pk!==sk&&!RM){body.classList.remove("sw","swb");void body.offsetWidth;body.classList.add(sk==="player"&&pk==="pedit"?"swb":"sw");sh.scrollTop=0}
+  body.dataset.t=sk;const st=sh.scrollTop;keepX(body,()=>keepOpen(body,()=>{body.innerHTML=html}));if(sh.scrollTop!==st)sh.scrollTop=st;
   if(S.sheet&&S.sheet.type==="pm")ypZoom();
 }
 /* ================= Paylaşım merkezi ================= */
@@ -2136,6 +2139,24 @@ function attrRadar(p){const s=S.stats[p.id]||{};const L=attrSet(p.pos).map(([k,l
   return `<section class="pss"><h3>Özellikler</h3><div class="parad"><svg viewBox="0 0 160 160" role="img" aria-label="Özellik radarı"><g fill="none" stroke="#ECE6F2"><polygon points="${poly(1)}"/><polygon points="${poly(.5)}"/></g><polygon points="${poly(i=>Math.max(.15,L[i].v/100))}" fill="rgba(123,63,242,.22)" stroke="#7B3FF2" stroke-width="2" stroke-linejoin="round"/><g class="parl2">${lab}</g></svg>
     <div class="paal">${srt.map(x=>`<div><span>${esc(x.full||x.l)}</span><b class="num">${x.v}${x.d?`<em class="${x.d>0?"up":"dn"}">${x.d>0?"▲":"▼"}${Math.abs(x.d)}</em>`:""}</b></div>`).join("")}<small>En güçlü yanı ${esc((srt[0].full||srt[0].l).toLocaleLowerCase("tr"))}, en zayıfı ${esc((srt[n-1].full||srt[n-1].l).toLocaleLowerCase("tr"))}.</small></div></div>
     <details class="padet"><summary>Tüm alt özellikler</summary>${attrDetail(p)}</details></section>`}
+function istNote(p){const N=fin().filter(inYr).sort((a,b)=>matchTs(a)-matchTs(b)).map(m=>{const r=S.mInfo[m.id]?.pts?.[p.id];return r?{m,v:r.pts}:null}).filter(Boolean);
+  if(!N.length)return `<div class="in-c"><div class="in-x"><b>Not ortalaması</b><span>Bu sezon notlu maç yok.</span></div></div>`;
+  const av=N.reduce((a,x)=>a+x.v,0)/N.length,bi=N.reduce((b,x,i)=>x.v>N[b].v?i:b,0);const L=2*Math.PI*40;
+  const W=200,H=44,lo=Math.min(...N.map(x=>x.v))-.3,hi=Math.max(...N.map(x=>x.v))+.3;const X=i=>N.length<2?W/2:6+i*(W-12)/(N.length-1),Y=v=>H-6-(v-lo)/((hi-lo)||1)*(H-12);
+  const T=N.slice(-6),o=N.length-T.length;
+  return `<div class="in-c"><div class="in-r"><svg viewBox="0 0 96 96" aria-hidden="true"><circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="9"/><circle cx="48" cy="48" r="40" fill="none" stroke="#5FE3F5" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(L*Math.min(1,av/10)).toFixed(1)} ${L.toFixed(1)}" transform="rotate(-90 48 48)"/></svg><span><b class="num">${fN(av)}</b><small>/ 10</small></span></div>
+    <div class="in-x"><b>Not ortalaması</b>${N.length>1?`<svg class="in-sp" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Maç notları ${N.map(x=>fN(x.v)).join(", ")}"><polyline points="${N.map((x,i)=>X(i).toFixed(1)+","+Y(x.v).toFixed(1)).join(" ")}" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`:""}
+    <span class="in-n">${T.map((x,i)=>`<span class="${i+o===bi?"b":""}"><b class="num">${fN(x.v)}</b><small>${fmtShort(x.m.date)}</small></span>`).join("")}</span><span class="in-s">${N.length} maç · en iyi ${fN(N[bi].v)}</span></div></div>`}
+function istTrk(p){const F=fin().filter(inYr).filter(m=>trkOf(m,p.id));if(!F.length)return"";const avg=(L,k)=>{const v=L.map(m=>trkOf(m,p.id)[k]).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
+  const team=k=>{const v=[];fin().filter(inYr).forEach(m=>plAll(m).forEach(id=>{const t=trkOf(m,id);if(t&&t[k]!=null)v.push(t[k])}));return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
+  const tiles=TRK.map(([k,l,u])=>{const a=avg(F,k);if(a==null)return"";const t=team(k);const d=t!=null?a-t:null;const z=d==null||Math.abs(d)<(t||1)*.03;const cl=z?"":d>0?"up":"dn";
+    return `<div class="it-t"><small>${l}</small><span><b class="num">${fTrk(k,a)}${u&&u!=="%"?`<em>${u}</em>`:""}</b>${d!=null?`<i class="${cl}">${z?"=":d>0?"▲":"▼"} ${z?"0":fTrk(k,Math.abs(d)).replace("%","")}</i>`:""}</span></div>`}).join("");
+  return `<div class="ist-h"><h3>Saha verileri</h3><small>maç başına · ${F.length} maç · ok: takım ort.</small></div><div class="it-g">${tiles}</div>`}
+function istAttr(p){const s=S.stats[p.id]||{};const a=p.attrs||{};const cur=s.cur||{};const AS=attrSet(p.pos);const sel=AS.some(x=>x[0]===S.f.iaG)?S.f.iaG:AS[0][0];
+  const g=AS.find(x=>x[0]===sel);
+  return `<div class="ist-h"><h3>Özellikler</h3><small>${esc(g[2])}</small></div><div class="at-g ia-g">${AS.map(([k,l])=>{const mv=s.attrs?.[k]??mainVal(a,k,p.pos);return `<button data-act="iaG" data-v="${k}" class="${k===sel?"on":""}" aria-pressed="${k===sel}"><b class="num">${mv}</b><span>${l}</span></button>`}).join("")}</div>
+  <div class="ia-l">${g[3].map(([sk,sl])=>{const b=subVal(a,sel,sk);const c=cur[sel+"_"+sk]??b;const v=Math.round(c);const dd=Math.round((c-b)*10)/10;
+    return `<div class="ia-r"><span><span>${sl}</span><b class="num">${v}${Math.abs(dd)>=.5?`<em class="${dd>0?"up":"dn"}">${fD(dd)}</em>`:""}</b></span><i><i style="width:${v}%"></i></i></div>`}).join("")}</div>`}
 function pHead(p,inline){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=photoOf(p.id);
   const H=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r);const tg=H.reduce((t,x)=>t+(x.r.g||0),0),ta=H.reduce((t,x)=>t+(x.r.a||0),0);
   const tr=s.lastO>0?`<span class="pv-ch up">▲ ${s.lastO} son maç</span>`:s.lastO<0?`<span class="pv-ch dn">▼ ${-s.lastO} son maç</span>`:"";
@@ -2150,8 +2171,8 @@ function sheetPlayer(pid,inline){
   const p=P(pid||S.sheet.id);if(!p)return"";const s=S.stats[p.id]||{};const st=stOf(p);const canSt=S.admin;
   const sf=S.f.st||(S.f.st={type:st,until:p.status?.until||"",note:p.status?.note||""});
   const tab=S.f.ptab||"genel";
-  let h=pHead(p,inline)+`<div class="pv-tabs" role="tablist" aria-label="Oyuncu">${[["genel","Genel"],["ist","İstatistik"],["mac","Maçlar"]].map(([k,l])=>`<button role="tab" data-act="ptab" data-v="${k}" aria-selected="${tab===k}" class="${tab===k?"on":""}">${l}</button>`).join("")}${inline?"":`<button data-act="cmpOpen" data-id="${esc(p.id)}">Karşılaştır</button>`}</div>`;
-  if(tab==="ist"){h+=pSeasonHtml(p)+trkPlayer(p)+attrRadar(p);return h}
+  let h=pHead(p,inline)+`<div class="pv-tabs" role="tablist" aria-label="Oyuncu">${[["genel","Genel"],["ist","İstatistik"],["mac","Maçlar"]].map(([k,l])=>`<button role="tab" data-act="ptab" data-v="${k}" aria-selected="${tab===k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</div>`;
+  if(tab==="ist"){h+=istNote(p)+istTrk(p)+istAttr(p);return h}
   if(tab==="mac"){h+=`
     <div><h3>Son maçlar</h3>${(s.hist||[]).length?`<div class="patl">${(s.hist||[]).slice(-8).reverse().map(x=>{const inf=S.mInfo[x.m.id]||{};
       if(x.kind!=="oynadi")return `<button class="patm x" data-act="viewm" data-id="${esc(x.m.id)}"><span class="d">${fmtShort(x.m.date)}</span><span class="t">${x.kind==="iptal"?"Son dakika iptal":"Maça gelmedi"}</span></button>`;
@@ -2984,6 +3005,7 @@ document.addEventListener("click",async e=>{
     case"pback":S.sheet={type:"player",id:S.sheet.id};render(true);break;
     case"edSq":S.f.ed.yedek=el.dataset.v;render(true);break;
     case"mePos":S.f.mePos=el.dataset.v;document.querySelectorAll(".mepos button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.f.mePos));meFilter($("#meQ")?.value||"");break;
+    case"iaG":S.f.iaG=el.dataset.v;render(true);break;
     case"agTab":S.f.agT=el.dataset.v;render(true);break;
     case"atStep":{const inp=document.querySelector(`input[data-attr="${el.dataset.p}"][data-k="${el.dataset.k}"]`);if(inp){inp.value=clamp((+inp.value||30)+(+el.dataset.d),30,95);inp.dispatchEvent(new Event("input",{bubbles:true}))}break}
     case"saveStatus":{const p=P(S.sheet.id);const sf=S.f.st;await act("set_status",{p_player:p.id,p_type:sf.type,p_until:sf.type==="hazir"?null:(sf.until||null),p_note:sf.type==="hazir"?"":(sf.note||"")},"Durum güncellendi");S.f.st=null;S.f.stOpen=false;render(true);break}
