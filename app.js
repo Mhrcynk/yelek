@@ -616,11 +616,20 @@ function raceCardsBase(F){const yr=selYr();const len=yr==="all"?0:Math.max(sLen(
         if(!x)return '<i class="no" title="Gelmedi">–</i>';return `<i class="${x.p===best&&x.p>0?"hi":"on"}${k&&x.role!==k?" ot":""}" title="${esc(fmtShort(F[i].date))}${k&&x.role!==k?" · başka mevki":""}">${fP(x.p)}</i>`}).join("")}</span>`};
     return `<section class="card tsb ytsb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${ic} ${t}${more?`<i class="${open?"op":""}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></i>`:""}</${more?"button":"h3"}><ol>${L.map((o,i)=>{const p=P(o.id);const ph=photoOf(o.id);
       return `<li data-act="open" data-id="${esc(o.id)}"><span class="tsr num">${i+1}</span><span class="tsp ${tierOf(ovrOf(o.id))}${ph?"":" ni"}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy">`:esc(initials(p.name))}</span><span class="tsn"><b>${esc(p.name)}</b>${len?"":`<small>${o.n} maç</small>`}</span><b class="tsv num">${fP(o.tot)}<small>puan</small></b>${strip(o)}</li>`}).join("")}</ol></section>`}}
-function posRaceHtml(F){const YR=yelekRace(F);const card=raceCardsBase(F);const C={KL:"#FFD400",DF:"#5FE3F5",OS:"#00E58A",FV:"#FF3EA5"};
-  const L=POS_AW.filter(([k])=>(YR[k]||[]).length);if(!L.length)return"";const mx=Math.max(...L.map(([k])=>YR[k][0].tot),1);
-  const tiles=L.map(([k,t])=>{const o=YR[k][0];const on=S.f.prOpen===k;return `<button class="prt${on?" on":""}" data-act="prOpen" data-v="${k}" aria-expanded="${on}"><span class="prh"><i style="background:${C[k]}">${k[0]}</i><span>${esc(t)}</span></span><span class="prn"><span>${esc(shortName(nameOf(o.id)))}</span><b class="num">${fP(o.tot)}</b></span><span class="prb"><i style="width:${Math.max(6,Math.round(o.tot/mx*100))}%;background:${C[k]}"></i></span></button>`}).join("");
-  const open=L.filter(([k])=>S.f.prOpen===k).map(([k,t,ic])=>card(k,t,ic,YR[k]||[])).join("");
-  return `<div class="tsx"><h2>Mevki yarışları</h2></div><div class="prg">${tiles}</div>${open?`<div class="boards">${open}</div>`:""}`}
+function posRaceHtml(F){const YR=yelekRace(F);const C={KL:"#FFD400",DF:"#5FE3F5",OS:"#00E58A",FV:"#FF3EA5"};
+  const L=POS_AW.filter(([k])=>(YR[k]||[]).length);if(!L.length)return"";
+  const sel=L.some(([k])=>k===S.f.prOpen)?S.f.prOpen:L[0][0];const[k,t]=L.find(x=>x[0]===sel);const Q=YR[k];
+  const yr=selYr();const len=yr==="all"?0:Math.max(sLen(),F.length);const all=!!S.f["prAll_"+k];const R=Q.slice(0,all?Q.length:6);
+  const mxP=Math.max(1,...Q.flatMap(o=>Object.values(o.m).map(x=>x.p)));const lead=Q[0],sec=Q[1];
+  const seg=`<div class="pr-s" role="tablist" aria-label="Mevki yarışları">${L.map(([kk,tt])=>`<button role="tab" aria-selected="${kk===sel}" class="${kk===sel?"on":""}" data-act="prOpen" data-v="${kk}" style="--c:${C[kk]}"><i>${kk[0]}</i><span>${esc(tt.replace(/^Sezonun /,""))}</span></button>`).join("")}</div>`;
+  const bars=o=>{if(!len)return"";const best=Math.max(...Object.values(o.m).map(x=>x.p));
+    return `<span class="pr-w" style="--n:${len}" aria-label="Maç maç puanlar">${[...Array(len)].map((_,i)=>{if(i>=F.length)return '<i class="fu"></i>';const x=o.m[i];if(!x)return '<i class="no" title="Gelmedi"></i>';
+      return `<i class="${x.p===best&&x.p>0?"hi":""}${x.role!==k?" ot":""}" style="--h:${Math.max(10,Math.round(x.p/mxP*100))}%" title="${esc(fmtShort(F[i].date))} · ${fP(x.p)}"><em>${fP(x.p)}</em></i>`}).join("")}</span>`};
+  const card=`<section class="pr-c" style="--c:${C[k]}"><div class="pr-h"><span class="pr-t"><i>${k[0]}</i><b>${esc(t)}</b></span><small>${sec?`Lider ${esc(shortName(nameOf(lead.id)))} · 2.'den ${fP(Math.round((lead.tot-sec.tot)*10)/10)} önde`:`Lider ${esc(shortName(nameOf(lead.id)))}`}</small></div>
+    ${R.map((o,i)=>{const p=P(o.id);if(!p)return"";const x=photoOf(o.id);return `<button class="pr-r${i===0?" l":""}" data-act="open" data-id="${esc(o.id)}"><span class="pr-k num">${i+1}</span><span class="pr-a">${x?`<img src="${esc(x)}" alt="">`:esc(initials(p.name))}</span><span class="pr-n"><b>${esc(p.name)}</b><small>${o.n} maç${i?` · ${fP(Math.round((lead.tot-o.tot)*10)/10)} geride`:""}</small></span><b class="pr-v num">${fP(o.tot)}</b>${bars(o)}</button>`}).join("")}
+    ${Q.length>6?`<button class="pr-m" data-act="tog" data-k="prAll_${k}">${all?"Daha az göster":`Tümünü göster · ${Q.length} oyuncu`}</button>`:""}
+    ${len?`<p class="pr-lg"><span><i class="hi"></i>en iyi maçı</span><span><i class="no"></i>gelmedi</span><span><i class="ot"></i>başka mevkide</span></p>`:""}</section>`;
+  return `<div class="tsx"><h2>Mevki yarışları</h2></div>${seg}${card}`}
 function yelekAll(F){const YR=yelekRace(F);return Object.values(YR).flat().sort((a,b)=>b.tot-a.tot||a.n-b.n||nameOf(a.id).localeCompare(nameOf(b.id),"tr"))}
 function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return"";
   const top=L.slice(0,3);const ord=top.length===3?[1,0,2]:top.map((_,i)=>i);
@@ -628,7 +637,11 @@ function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return""
   const tr='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M12 13v4M8 20h8M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/></svg>';
   const l=top[0];
   return `<section class="mzsez"><button class="mzyl" data-act="open" data-id="${esc(l.id)}">${tr}<span><small>Sezonun yeleği · lider</small><b>${esc(nameOf(l.id))}</b></span><em class="num">${fP(l.tot)}<small>puan</small></em></button>
-    ${top.length>1?`<div class="mzpod">${ord.map(i=>{const o=top[i];return P(o.id)?`<button class="p${i+1}" data-act="open" data-id="${esc(o.id)}"><span class="mzpod-a">${ph(o.id)}</span><span class="mzpod-b"><b>${i+1}</b><small>${esc(shortName(nameOf(o.id)))}</small><em class="num">${fP(o.tot)}</em></span></button>`:""}).join("")}</div>`:""}</section>`}
+    ${top.length>1?`<div class="mzpod">${ord.map(i=>{const o=top[i];return P(o.id)?`<button class="p${i+1}" data-act="open" data-id="${esc(o.id)}"><span class="mzpod-a">${ph(o.id)}</span><span class="mzpod-b"><b>${i+1}</b><small>${esc(shortName(nameOf(o.id)))}</small><em class="num">${fP(o.tot)}</em></span></button>`:""}).join("")}</div>`:""}
+    ${L.length>3?(()=>{const all=!!S.f.mvpAll;const R=L.slice(3,all?L.length:8);const mx=L[0].tot||1;
+      return `<div class="yl-l">${R.map((o,j)=>{const p=P(o.id);if(!p)return"";const x=photoOf(o.id);const e=eposOf(p);const pg=(EPOS[e]||["OS"])[0];
+        return `<button class="yl-r" data-act="open" data-id="${esc(o.id)}"><span class="yl-k num">${j+4}</span><span class="yl-a">${x?`<img src="${esc(x)}" alt="">`:esc(initials(p.name))}</span><span class="yl-n"><b>${esc(p.name)}</b><small>${esc(e)} · ${o.n} maç</small></span><span class="yl-b"><i class="g${pg}" style="width:${Math.max(4,Math.round(o.tot/mx*100))}%"></i></span><b class="yl-v num">${fP(o.tot)}</b></button>`}).join("")}
+      ${L.length>8?`<button class="yl-m" data-act="tog" data-k="mvpAll">${all?"Daha az göster":`Tüm sıralama · ${L.length} oyuncu`}</button>`:""}</div>`})():""}</section>`}
 function stSeason(n){const w=seasonAwards(n);if(!w||!w.champ){toast("Bu sezonda maç yok");return}
   const ph=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:`<span class="stini">${esc(initials(nameOf(id)))}</span>`};const c=w.champ;const P2=[];
   P2.push({k:"motm",sh:"shareSeason",h:`<span class="stey">Sezon ${n} · ${w.F.length} maç</span><span class="stey2">🏆 Şampiyon</span><div class="stph">${ph(c.id)}</div><h2>${esc(nameOf(c.id))}</h2><div class="stkv"><div><b class="num">${c.p}</b><small>Puan</small></div><div><b class="num">${c.G}-${c.B}-${c.M}</b><small>G-B-M</small></div><div><b class="num">${c.av>0?"+":""}${c.av}</b><small>Averaj</small></div></div>`});
@@ -750,7 +763,7 @@ function keepOpen(root,fn){if(!root)return fn();const open=new Set([...root.quer
 async function wakeSync(){const need=!!(S.admin&&(S.draft||S.teams||(S.sheet&&["stats","eval"].includes(S.sheet.type))));
   try{if(need&&!S.wake&&navigator.wakeLock&&document.visibilityState==="visible"){S.wake=await navigator.wakeLock.request("screen");S.wake.addEventListener("release",()=>{S.wake=null})}
     else if(!need&&S.wake){const w=S.wake;S.wake=null;await w.release()}}catch(_){}}
-const XS=".ldx,.mtabs,.chips,.mzch,.oyt2,.scroll-x,.mzseg,.kchips,.vsel,.pmi,.pmt,.form-pick,.pv-tabs,.at-g";
+const XS=".pr-s,.ldx,.mtabs,.chips,.mzch,.oyt2,.scroll-x,.mzseg,.kchips,.vsel,.pmi,.pmt,.form-pick,.pv-tabs,.at-g";
 function keepX(v,fn){const sx=[...v.querySelectorAll(XS)].map(e=>e.scrollLeft);fn();[...v.querySelectorAll(XS)].forEach((e,i)=>{if(sx[i])e.scrollLeft=sx[i]})}
 function renderSheet(){
   const host=$("#modal");const html=S.sheet?sheetHtml():"";
@@ -3005,7 +3018,7 @@ document.addEventListener("click",async e=>{
     case"pback":S.sheet={type:"player",id:S.sheet.id};render(true);break;
     case"edSq":S.f.ed.yedek=el.dataset.v;render(true);break;
     case"mePos":S.f.mePos=el.dataset.v;document.querySelectorAll(".mepos button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.f.mePos));meFilter($("#meQ")?.value||"");break;
-    case"prOpen":S.f.prOpen=S.f.prOpen===el.dataset.v?"":el.dataset.v;render(true);break;
+    case"prOpen":S.f.prOpen=el.dataset.v;render(true);break;
     case"iaG":S.f.iaG=el.dataset.v;render(true);break;
     case"agTab":S.f.agT=el.dataset.v;render(true);break;
     case"atStep":{const inp=document.querySelector(`input[data-attr="${el.dataset.p}"][data-k="${el.dataset.k}"]`);if(inp){inp.value=clamp((+inp.value||30)+(+el.dataset.d),30,95);inp.dispatchEvent(new Event("input",{bubbles:true}))}break}
