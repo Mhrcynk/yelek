@@ -618,8 +618,8 @@ function raceCardsBase(F){const yr=selYr();const len=yr==="all"?0:Math.max(sLen(
       return `<li data-act="open" data-id="${esc(o.id)}"><span class="tsr num">${i+1}</span><span class="tsp ${tierOf(ovrOf(o.id))}${ph?"":" ni"}">${ph?`<img src="${esc(ph)}" alt="" loading="lazy">`:esc(initials(p.name))}</span><span class="tsn"><b>${esc(p.name)}</b>${len?"":`<small>${o.n} maç</small>`}</span><b class="tsv num">${fP(o.tot)}<small>puan</small></b>${strip(o)}</li>`}).join("")}</ol></section>`}}
 function posRaceHtml(F){const YR=yelekRace(F);const card=raceCardsBase(F);const C={KL:"#FFD400",DF:"#5FE3F5",OS:"#00E58A",FV:"#FF3EA5"};
   const L=POS_AW.filter(([k])=>(YR[k]||[]).length);if(!L.length)return"";const mx=Math.max(...L.map(([k])=>YR[k][0].tot),1);
-  const tiles=L.map(([k,t])=>{const o=YR[k][0];const on=!!S.f["pr_"+k];return `<button class="prt${on?" on":""}" data-act="tog" data-k="pr_${k}" aria-expanded="${on}"><span class="prh"><i style="background:${C[k]}">${k[0]}</i><span>${esc(t)}</span></span><span class="prn"><span>${esc(shortName(nameOf(o.id)))}</span><b class="num">${fP(o.tot)}</b></span><span class="prb"><i style="width:${Math.max(6,Math.round(o.tot/mx*100))}%;background:${C[k]}"></i></span></button>`}).join("");
-  const open=L.filter(([k])=>S.f["pr_"+k]).map(([k,t,ic])=>card(k,t,ic,YR[k]||[])).join("");
+  const tiles=L.map(([k,t])=>{const o=YR[k][0];const on=S.f.prOpen===k;return `<button class="prt${on?" on":""}" data-act="prOpen" data-v="${k}" aria-expanded="${on}"><span class="prh"><i style="background:${C[k]}">${k[0]}</i><span>${esc(t)}</span></span><span class="prn"><span>${esc(shortName(nameOf(o.id)))}</span><b class="num">${fP(o.tot)}</b></span><span class="prb"><i style="width:${Math.max(6,Math.round(o.tot/mx*100))}%;background:${C[k]}"></i></span></button>`}).join("");
+  const open=L.filter(([k])=>S.f.prOpen===k).map(([k,t,ic])=>card(k,t,ic,YR[k]||[])).join("");
   return `<div class="tsx"><h2>Mevki yarışları</h2></div><div class="prg">${tiles}</div>${open?`<div class="boards">${open}</div>`:""}`}
 function yelekAll(F){const YR=yelekRace(F);return Object.values(YR).flat().sort((a,b)=>b.tot-a.tot||a.n-b.n||nameOf(a.id).localeCompare(nameOf(b.id),"tr"))}
 function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return"";
@@ -760,7 +760,7 @@ function renderSheet(){
   if(!body){host.innerHTML=`<div class="sheet-bg" data-act="closeBg"><div class="sheet" role="dialog" aria-modal="true"><button class="grab" data-act="close" aria-label="Kapat"></button><div id="sheetBody"></div></div></div>`;body=$("#sheetBody");document.body.classList.add("lock")}
   const sk=S.sheet.type,pk=body.dataset.t;const sh=body.parentNode;
   if(pk&&pk!==sk&&!RM){body.classList.remove("shsw","shswb");void body.offsetWidth;body.classList.add(sk==="player"&&pk==="pedit"?"shswb":"shsw");sh.scrollTop=0}
-  const same=pk===sk;const h0=same?sh.offsetHeight:0;if(!same)sh.style.minHeight="";body.dataset.t=sk;const st=sh.scrollTop;keepX(body,()=>keepOpen(body,()=>{body.innerHTML=html}));if(same&&sh.offsetHeight<h0)sh.style.minHeight=h0+"px";if(sh.scrollTop!==st)sh.scrollTop=st;
+  const same=pk===sk;const h0=same?sh.offsetHeight:0;if(!same)sh.style.minHeight="";body.dataset.t=sk;sh.classList.toggle("full",["player","pedit","cmp"].includes(sk));const st=sh.scrollTop;keepX(body,()=>keepOpen(body,()=>{body.innerHTML=html}));if(same&&sh.offsetHeight<h0)sh.style.minHeight=h0+"px";if(sh.scrollTop!==st)sh.scrollTop=st;
   if(S.sheet&&S.sheet.type==="pm")ypZoom();
 }
 /* ================= Paylaşım merkezi ================= */
@@ -3005,6 +3005,7 @@ document.addEventListener("click",async e=>{
     case"pback":S.sheet={type:"player",id:S.sheet.id};render(true);break;
     case"edSq":S.f.ed.yedek=el.dataset.v;render(true);break;
     case"mePos":S.f.mePos=el.dataset.v;document.querySelectorAll(".mepos button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.f.mePos));meFilter($("#meQ")?.value||"");break;
+    case"prOpen":S.f.prOpen=S.f.prOpen===el.dataset.v?"":el.dataset.v;render(true);break;
     case"iaG":S.f.iaG=el.dataset.v;render(true);break;
     case"agTab":S.f.agT=el.dataset.v;render(true);break;
     case"atStep":{const inp=document.querySelector(`input[data-attr="${el.dataset.p}"][data-k="${el.dataset.k}"]`);if(inp){inp.value=clamp((+inp.value||30)+(+el.dataset.d),30,95);inp.dispatchEvent(new Event("input",{bubbles:true}))}break}

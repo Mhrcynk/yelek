@@ -2317,6 +2317,9 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
+
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -3457,8 +3460,6 @@ html.dk .brand b{display:flex;align-items:center;gap:4px;font:800 1.15rem/1 var(
 .brc{flex:none;width:14px;height:14px;color:#A99CD6}
 html.dk .brand .adm{display:none!important}
 html.dk .top .in{transition:height .22s ease}
-html.dk body.phout .top .in{height:54px}
-html.dk body.phout .top .logo{width:32px;height:32px}
 html.dk .tt{left:44px!important;right:0!important;text-align:center}
 /* yenileme: dönen top + halka */
 html.dk .ptr{background:transparent!important}
@@ -3752,7 +3753,7 @@ html.dk .szd i.on{background:linear-gradient(90deg,#FF3EA5,#7B3FF2)!important;bo
 .ia-r>i{display:block;height:6px;border-radius:3px;background:#2C2060;overflow:hidden}.ia-r>i>i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#7B3FF2,#FF3EA5)}
 /* ===== v3 düğme stili 1: kenarlıklı ===== */
 html.dk .mzic{background:#2C2060!important;border:1.5px solid #5B4A9E!important;color:#fff!important}
-html.dk .sheet .x,html.dk .sheet [data-act="close"]:not(.btn):not(.mzic){background:#2C2060;border:1.5px solid #5B4A9E;color:#fff}
+html.dk .sheet button.x:not(.patm),html.dk .sheet [data-act="close"]:not(.btn):not(.mzic):not(.grab){background:#2C2060;border:1.5px solid #5B4A9E;color:#fff}
 html.dk .btn:not(.primary):not(.ghost):not(.danger):not(.wa):not(.turf):not(.light):not(.gbtn){background:#2C2060!important;border:1.5px solid #5B4A9E!important;color:#fff!important}
 html.dk .btn.ghost:not(.danger){border:1.5px solid #5B4A9E!important;color:#fff!important}
 html.dk .card,html.dk .sbox,html.dk .pv-d,html.dk .pv-k,html.dk .pv-nt,html.dk .pv-ad,html.dk .pv-st,html.dk .pv-sp,html.dk .rth,html.dk .pe-l,html.dk .pe-pv,html.dk .at-l,html.dk .cv-t,html.dk .cv-sum,html.dk .mg-l2,html.dk .mg-k button,html.dk .stg-t,html.dk .sacc,html.dk .prt,html.dk .mzr,html.dk .mzpl-r,html.dk .ked-t button:not(.on),html.dk .tsb,html.dk .mzfx{border:1.5px solid #3A2C78!important}
@@ -3803,3 +3804,15 @@ html.dk .msb .l i,html.dk .sr .bar.l i{background:#FF3EA5!important}
 html.dk .msb .r i,html.dk .sr .bar.r i{background:#5FE3F5!important}
 html.dk .msb span{background:#2C2060!important}
 html.dk .sheet .rth{width:100%;box-sizing:border-box;margin-top:12px}
+
+/* başlık geçişi: üst üste binmesin */
+html.dk .brand .t{transition:opacity .12s ease,transform .12s ease!important}
+html.dk body.phout .brand .t{opacity:0!important;visibility:hidden;transition:opacity .1s ease,visibility 0s .1s!important}
+html.dk .tt{opacity:0;transition:opacity .18s ease .08s!important}
+html.dk body.phout .tt{opacity:1}
+.ldx{align-items:flex-start}
+.sheet.full{height:92vh;height:92dvh}
+
+html.dk .pv-tabs button.on{background:#fff!important;color:#24105E!important}
+html.dk .patm.x .t{color:#D9D2F5}
+html.dk .patm.x .d{color:#A99CD6}
