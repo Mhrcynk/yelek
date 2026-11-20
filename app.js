@@ -126,7 +126,7 @@ const S={all:[],players:[],matches:[],settings:{...DEF_SET},seasonVotes:[],me:LS
   tab:"mac",sheet:null,guests:[],photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
 S.admin=false;S.pin="";LS.del("y_pin");
 {const old={hafta:"mac",oyuncular:"kartlar",kurallar:"ayarlar"};let t=LS.get("y_tab");t=old[t]||t;if(TABS.some(x=>x[0]===t))S.tab=t;
- const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;else if(hh==="uyeler"||hh==="platform"){S.tab="ayarlar";S.f=S.f||{};S.f.setp=hh}}
+ const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;else if(hh==="uyeler"||hh==="platform"){S.tab="ben";S.f=S.f||{};S.f.setp=hh}}
 
 /* ================= Yardımcılar ================= */
 const $=s=>document.querySelector(s);
@@ -557,7 +557,7 @@ function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(
   return `<div class="sprog"><div class="sprt"><b>${done?"Sezon tamamlandı":`Hafta ${n}/${L}`}</b>${fin2?'<span class="sfin">Final haftaları</span>':""}</div><span class="sbar"><i style="width:${Math.min(100,Math.round((done?L:n)/L*100))}%"></i></span></div>`}
 const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Lig",1],saha:["Lig",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
 function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const gen=!S.session&&!S.viaLink;const n=gen?"Yelek":(S.settings&&S.settings.group_name)||"Yelek";if(bt&&bt.textContent!==n)bt.textContent=n;const bs=document.querySelector(".brand .bsub");if(bs){const st=gen?"Halı saha ligi":"Takımın";if(bs.textContent!==st)bs.textContent=st}document.body.classList.toggle("genb",gen)}const t=S.tab;let c=PHD[t];
-  if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ayarlar")c=[S.f.setp&&SUBT[S.f.setp]?SUBT[S.f.setp]:"Ayarlar",0];if(typeof gated==="function"&&gated())c=null;
+  if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ben"&&S.f.setp)c=[SUBT[S.f.setp]||"Ben",0];if(typeof gated==="function"&&gated())c=null;
   if(!S.loaded||!c){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout");$("#tt").textContent="";return}
   el.hidden=false;document.body.classList.add("hasphd");$("#tt").textContent=c[0];
   const me=null;
@@ -757,13 +757,14 @@ function qkRender(){const old=$("#qk");if(old)old.innerHTML="";const el=$("#view
       el.classList.remove("loading");el.classList.add("done");const tt=$("#ptt");if(tt){tt.classList.add("on");setTimeout(()=>tt.classList.remove("on"),1800)}await new Promise(r=>setTimeout(r,350));back(420);busy=false}
     else if(d)back(300)})})();
 function render(force){
+  if(S.tab==="ayarlar")S.tab="ben";
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
   const s=S.settings;
   
   $("#admPill").hidden=true;{const gb=$("#gearBtn");if(gb){gb.classList.toggle("adm",!!S.admin);gb.hidden=!S.admin}}
   {const gb=$("#gearBtn");if(gb){const k="ayar";if(gb.dataset.k!==k){gb.innerHTML=ICON.ayar;gb.dataset.k=k;gb.setAttribute("aria-label","Ayarlar");gb.title="Ayarlar"}gb.classList.toggle("on",S.tab==="ayarlar")}}
-  const me=P(S.me);const mb=$("#meBtn");
+  const me=P(S.me);const mb=$("#meBtn");mb.hidden=!S.fol;
   if(S.fol){mb.className="meBtn";mb.innerHTML=`${ICON_EYE}<span>Takip</span>`;mb.setAttribute("aria-label","Takip ettiğin ligler")}
   else if(me){mb.className="meBtn";mb.innerHTML=`${avatar(me,"sm")}<span>${esc(firstName(me.name))}</span>`;mb.setAttribute("aria-label","Ben: "+me.name+". Değiştir")}
   else{mb.className="meBtn ask";mb.textContent="Kimsin?";mb.removeAttribute("aria-label")}
@@ -1470,7 +1471,7 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
   if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip adm">Yönetici</span></div>${editorPanel(m)}</section>`;
-  let h="";
+  let h=S.admin?nextStep(m):"";
   if(m.state==="kayit"){
     h+=kadroCard(m);
     if(S.admin)h+=`<section class="card admc"><div class="ch"><div><div class="eyebrow">Yönetici</div><h2>Takımları kur</h2></div></div>
@@ -1711,6 +1712,13 @@ function snap(sd,label){sd.undo.push(JSON.stringify({l:label,events:sd.events,a:
 const hasDraft=m=>{const sd=S.f["sd_"+m.id];if(sd)return sd.touched||sd.events.length||sd.motm;return !!LS.get("y_sd_"+m.id)};
 const evLabel=e=>e.t==="g"?shortName(nameOf(e.g))+" golü":e.t==="og"?shortName(nameOf(e.p))+" kendi kalesine":shortName(nameOf(e.p))+" asisti";
 const MGI={cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M9 3v4M15 3v4"/></svg>',shirt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M8 4l-5 3 2 4 3-1v10h8V10l3 1 2-4-5-3c-1 2-2 2.5-4 2.5S9 6 8 4z"/></svg>'};
+// yöneticinin o anki tek işi maç başlığının hemen altında: kaydırmadan başlar
+function nextStep(m){const M=esc(m.id);
+  if(m.state==="kayit"){const rs=m.rsvp||{};const n=S.players.filter(p=>!p.guest&&rs[p.id]==="g"&&!UNAVAIL.includes(stOf(p))).length;
+    return `<section class="nxs"><span class="nxs-x"><small>Sıradaki adım</small><b>${n<4?"Oynayacakları işaretle":"Takımları kur"}</b><span>${n}/${CAP} oyuncu işaretli</span></span>${n<4?`<a class="btn sm" href="#kadrolar">Kadroya git</a>`:`<button class="btn primary sm" data-act="autoKadro" data-id="${M}">Otomatik kur</button>`}</section>`}
+  if(m.state==="bitti"||vPend(m))return"";
+  const draft=hasDraft(m),sd=draft?sdOf(m):null;
+  return `<section class="nxs"><span class="nxs-x"><small>Sıradaki adım</small><b>Maç bitti mi?</b><span>${draft?`Taslak: ${sd.a} – ${sd.b} · ${sd.events.length} kayıt`:"Skoru ve golleri gir"}</span></span><button class="btn primary sm" data-act="statSheet" data-id="${M}">${draft?"Devam et":"Skoru gir"}</button></section>`}
 function finishCard(m){
   const draft=hasDraft(m);const sd=draft?sdOf(m):null;const M=esc(m.id);
   const reo=m.finished_at&&m.score_a!=null&&m.score_b!=null;
@@ -1719,8 +1727,6 @@ function finishCard(m){
   return `<section class="card admc mgc"><div class="mg-h"><span>Yönetici · ${fmtShort(m.date)}</span><h2>Maçı yönet</h2></div>
     <div class="mg-st">${[["Kadro","d"],["Maç günü","n"],["Sonuç",""]].map(([l,c])=>`<span class="${c}"><i></i>${l}</span>`).join("")}</div>
     ${reo?`<div class="note warn">Bu maç düzeltme için açıldı. Tekrar bitirilene kadar sonuçları kartlara ve tablolara sayılmıyor; veriler duruyor. <button class="btn sm" data-act="restoreFin" data-id="${M}" style="margin-top:8px">Değişiklik yapmadan geri kapat</button></div>`:""}
-    <div class="mg-hero"><span class="mg-e">SIRADAKİ ADIM</span><b>Maç bitti mi?</b><span>${draft?`Kaydedilmemiş taslak: ${esc(TEAM.A)} ${sd.a} – ${sd.b} ${esc(TEAM.B)} · ${sd.events.length} kayıt`:"Skoru ve golleri gir, notlama ve oylama açılsın."}</span>
-      <button class="btn primary block" data-act="statSheet" data-id="${M}">${ICON.check} ${draft?"Girişe devam et":"Skoru ve golleri gir"}</button></div>
     <span class="mg-lb">MAÇ BİLGİLERİ</span>
     <div class="mg-l2">${row(kw,MGI.cal,"#5FE3F5","Tarih ve saat",`${fmtShort(m.date)} · ${esc(String(m.time||"").slice(0,5))}`)}${S.f[kw]||wch?`<div class="mg-f">${whenForm(m)}</div>`:""}
       ${row(kn,MGI.shirt,"#FF3EA5","Takım adları",`${esc(TEAM.A)} · ${esc(TEAM.B)}`)}${S.f[kn]?`<div class="mg-f">${namesForm(m)}</div>`:""}</div>
@@ -2086,7 +2092,7 @@ function sheetAdd(){
 }
 const LIG_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3M12 13v4M8 20h8M9.5 17h5"/></svg>`;
 const LOCK_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
-function viewBen(){return memCard()+_viewBen()+verTxt()}
+function viewBen(){const k=S.f.setp||"";if(k)return setSub(k);return memCard()+_viewBen()+ayarBody()+verTxt()}
 function verTxt(){const v=APP_V;if(!/^\d{12}$/.test(v))return"";const d=new Date(Date.UTC(2000+ +v.slice(0,2),+v.slice(2,4)-1,+v.slice(4,6),+v.slice(6,8),+v.slice(8,10)));const p=n=>String(n).padStart(2,"0");return `<p class="vtx">Sürüm ${p(d.getDate())}.${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}</p>`}
 function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div class="empty"><h3>Kim olduğunu seç</h3><p>Kendi kartını, formunu ve maçlarını görmek için oyuncunu seç.</p><button class="btn primary" data-act="meSheet">Kimsin?</button></div></section>`;
   const s=S.stats[p.id]||{};const o=s.ovr??baseOf(p);const ph=photoOf(p.id);
@@ -2099,7 +2105,7 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   h+=`<div class="mzst">${[[n,"Maç"],[g,"Gol"],[a,"Asist"],[li<0?"–":(li+1)+".","Ligde"]].map(([v,l])=>`<div><b class="num">${v}</b><span>${l}</span></div>`).join("")}</div>`;
   if(!s.games)h+=`<p class="mzhint">İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikir.</p>`;
   const it=(c,i,t,sub,act,extra)=>`<button class="mzmi" data-act="${act}" ${extra||""}><span class="mzmi-i" style="background:${c}">${i}</span><span class="mzmi-t">${t}</span><span class="mzmi-s">${sub||""}</span><span class="mzmi-c" aria-hidden="true">›</span></button>`;
-  h+=`<div class="mzmn">${it("#FF3EA5","K","Kartım",String(o),"open",`data-id="${esc(p.id)}"`)}${it("#00E58A","P","Paylaşım merkezi","","pmOpen","")}${(!isMember()||S.admin)?it("#B9A8FF","D","Oyuncuyu değiştir","","meSheet",""):""}</div>`;
+  h+=`<div class="mzmn">${it("#FF3EA5","K","Kartım",String(o),"open",`data-id="${esc(p.id)}"`)}${(!isMember()||S.admin)?it("#B9A8FF","D","Oyuncuyu değiştir","","meSheet",""):""}</div>`;
   return h}
 const trq=t=>String(t||"").toLocaleLowerCase("tr").replace(/[çğıöşü]/g,c=>({ç:"c",ğ:"g",ı:"i",ö:"o",ş:"s",ü:"u"})[c]);
 function sheetMe(){
@@ -2659,7 +2665,7 @@ async function pushCheck(){if(!pushOk()){PUSH.st=isIOS()&&!isStandalone()?"ios":
   if(Notification.permission==="denied"){PUSH.st="red";return}
   try{const r=PUSH.reg||await navigator.serviceWorker.ready;const sub=await r.pushManager.getSubscription();PUSH.st=sub?"acik":"kapali"}catch(_){PUSH.st="kapali"}}
 const b64u=s=>{s=s.replace(/-/g,"+").replace(/_/g,"/");const r=atob(s+"===".slice((s.length+3)%4));return Uint8Array.from(r,c=>c.charCodeAt(0))};
-async function pushOn(){if(PUSH.st==="ios"){S.f.setp="tel";S.tab="ayarlar";render(true);toast("Önce uygulamayı ana ekrana ekle");return}
+async function pushOn(){if(PUSH.st==="ios"){S.f.setp="tel";S.tab="ben";render(true);toast("Önce uygulamayı ana ekrana ekle");return}
   if(!pushOk())return toast("Bu tarayıcı bildirim desteklemiyor");
   PUSH.busy=true;render(true);
   try{const perm=await Notification.requestPermission();if(perm!=="granted"){PUSH.st=perm==="denied"?"red":"kapali";toast(perm==="denied"?"Bildirim izni kapalı, telefon ayarlarından aç":"İzin verilmedi");return}
@@ -2672,7 +2678,7 @@ async function pushOff(){PUSH.busy=true;render(true);
   try{const reg=PUSH.reg||await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();
     if(sub){const j=sub.toJSON();try{await rpc("push_subscribe",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_on:false})}catch(_){}await sub.unsubscribe()}
     PUSH.st="kapali";toast("Bildirimler kapandı")}catch(_){toast("Kapatılamadı")}finally{PUSH.busy=false;render(true)}}
-const pushSub=()=>({acik:"Takımlar ve maç sonuçları"+(S.admin?", katılma istekleri":""),kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:"Bu tarayıcıda desteklenmiyor","?":"…"}[PUSH.st]||"");
+const pushSub=()=>({acik:"Takımlar ve maç sonuçları"+(S.admin?", katılma istekleri":""),kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:isIOS()&&!isStandalone()?"Önce Telefona ekle ile ana ekrana ekle":"Desteklenmiyor · Chrome ya da Safari ile aç","?":"…"}[PUSH.st]||"");
 function waitPush(){const st=PUSH.st;if(st==="acik")return `<p class="wpush on">${SI.zil} Onaylanınca bildirim gelecek.</p>`;
   if(st==="kapali")return `<button class="btn block wpush" data-act="pushOn">${SI.zil} Onaylanınca bana haber ver</button>`;
   if(st==="ios")return `<p class="wpush">${SI.zil} Onaylanınca haber almak için önce uygulamayı ana ekrana ekle: Paylaş → Ana Ekrana Ekle.</p>`;return""}
@@ -2720,12 +2726,13 @@ function audAgo(t){const d=(Date.now()-new Date(t))/6e4;return d<1?"şimdi":d<60
 function adminAudit(){if(!S.admin)return"";if(!S.audit){audLoad();return `<div class="vskl"><i style="height:240px"></i></div>`}
   if(!S.audit.length)return `<p class="snote">Henüz kayıt yok. Bundan sonra yöneticilerin yaptığı değişiklikler burada görünecek.</p>`;
   return `<section class="sgrp"><h3 class="mh3">Son değişiklikler<button class="mref" data-act="audLoad">Yenile</button></h3><div class="sbox">${S.audit.map(r=>`<div class="setr nolink aud"><span class="setx"><b>${esc(audText(r))}</b><small>${esc(r.who||"Yönetici")} · ${audAgo(r.at)}</small></span></div>`).join("")}</div></section><p class="snote">Son 60 değişiklik. Oyuncuların kendi işlemleri burada görünmez.</p>`}
-const SUBT={sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
+const SUBT={hesap:"Hesabı sil",sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
 const APPL=location.origin+location.pathname;
 const teamLink=()=>APPL;
 function setSub(k){const url=teamLink();
-  let h=`<button class="sback" data-act="setp" data-v="">${ICON_BACK} Ayarlar</button>`;
+  let h=`<button class="sback" data-act="setp" data-v="">${ICON_BACK} Ben</button>`;
   if(k==="uyeler")h+=adminMembers();
+  else if(k==="hesap")h+=`<section class="card szx"><b>Hesabını silmek istiyor musun?</b><p class="snote" style="margin:0">Giriş hesabın, takım üyeliklerin, takip ettiğin ligler ve bildirim kayıtların kalıcı olarak silinir; geri alınamaz. Oyuncu kartın takımda kalır, yönetici isterse siler.</p><button class="btn ghost danger block" data-act="delAcc">Hesabımı kalıcı olarak sil</button></section>`;
   else if(k==="gecmis")h+=adminAudit();
   else if(k==="sil"&&S.admin&&TID!==1)h+=`<section class="card szx"><b>${esc(S.settings.group_name)} silinsin mi?</b><p class="snote" style="margin:0">Oyuncular, maçlar, kartlar, fotoğraflar ve üyelikler kalıcı olarak silinir; geri alınamaz. Onaylamak için takımın adını aynen yaz.</p>
     <input type="text" data-bind="tdel" value="${esc(S.f.tdel||"")}" placeholder="${esc(S.settings.group_name)}" autocomplete="off"><button class="btn danger block" data-act="teamDel">Takımı kalıcı olarak sil</button></section>`;
@@ -2760,13 +2767,13 @@ function setSub(k){const url=teamLink();
     ${S.mem?.role==="yonetici"?`<div class="sbox"><div class="setr nolink lnks"><span class="setx"><b>Takip edilebilir</b><small>${fo?"Üye olmayanlar da fikstürü ve puan durumunu izleyebilir":"Sadece üyeler görür"}</small></span><button class="sw ${fo?"on":""}" data-act="folOpen" data-v="${fo?"0":"1"}" role="switch" aria-checked="${fo}" aria-label="Takip edilebilir"><i></i></button></div></div>`:""}`}
   else if(k==="pin"){h+=`<section class="card"><form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`}
   return h}
-function viewAyarlar(){
-  const k=S.f.setp||"";if(k)return setSub(k);
+const viewAyarlar=()=>viewBen();
+function ayarBody(){
   const adm=S.admin,pend=(S.memList||[]).filter(m=>m.status==="bekliyor").length,okN=(S.memList||[]).filter(m=>m.status==="onayli").length;
   if(adm&&!S.memList&&S.mem?.role==="yonetici")memLoad();
-  let h="";
+  let h="",acc="";
   if(S.session){const u=S.session.user||{};const md=u.user_metadata||{};const p=S.me&&P(S.me);
-    h+=`<section class="sacc">${md.avatar_url?`<img src="${esc(md.avatar_url)}" alt="" referrerpolicy="no-referrer">`:`<span class="sav">${esc(initials(md.full_name||u.email||"?"))}</span>`}<span class="setx"><b>${esc(md.full_name||md.name||u.email||"")}</b><small>${esc(u.email||"")}</small><small>${p?esc(p.name)+" kartına bağlı":"Kart bağlı değil"}</small></span>${S.mem?.role==="yonetici"?'<i class="mtag">Yönetici</i>':""}</section>`}
+    acc=`<section class="sacc">${md.avatar_url?`<img src="${esc(md.avatar_url)}" alt="" referrerpolicy="no-referrer">`:`<span class="sav">${esc(initials(md.full_name||u.email||"?"))}</span>`}<span class="setx"><b>${esc(md.full_name||md.name||u.email||"")}</b><small>${esc(u.email||"")}</small><small>${p?esc(p.name)+" kartına bağlı":"Kart bağlı değil"}</small></span>${S.mem?.role==="yonetici"?'<i class="mtag">Yönetici</i>':""}</section>`}
   if(S.session){if(!S.myTeams)teamsLoad();const MT=Array.isArray(S.myTeams)?S.myTeams:[];
     const nM=MT.filter(t=>t.status==="onayli").length,nF=(S.follows||[]).length;const gn=S.settings.group_name||"Takım";
     h+=`<section class="stm"><span class="stm-c">${esc(initials(gn))}</span><span class="stm-x"><small>Aktif takım${nM>1||nF?` · ${nM} takım${nF?", "+nF+" takip":""}`:""}</small><b>${esc(gn)}</b></span><button class="btn sm" data-act="hub">Değiştir</button></section>`}
@@ -2786,18 +2793,19 @@ function viewAyarlar(){
     srow("@rulesSheet",SI.kural,"Puanlama kuralları","Not, reyting ve yelek puanı nasıl hesaplanır"),
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Linkler","Uygulamanın tek linki"),
-    !S.session?srow("@loginSheet",SI.kilit,"Giriş yap","Google hesabınla"):""]);
-  if(S.session)h+=sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),srow("@delAcc",SI.cik,"Hesabımı sil","Giriş hesabın ve üyeliklerin kalıcı olarak silinir","","danger")]);
-  return h+verTxt()}
+    srow("@gizlilik",SI.kilit,"Gizlilik","Hangi bilgiler tutulur, kim görür")]);
+  if(S.session)h+=`<section class="sgrp"><h3>Hesap</h3>${acc}</section>`+sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),srow("hesap",SI.cik,"Hesabı sil","Hesabın ve üyeliklerin kalıcı olarak silinir")]);
+  return h}
 
 /* ================= Olaylar ================= */
 document.addEventListener("click",async e=>{
-  const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}goTab(tb.dataset.tab,true);return}
+  const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab==="ben"&&S.f.setp){S.f.setp="";if(S.tab==="ben"){render(true);window.scrollTo(0,0);return}}if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}goTab(tb.dataset.tab,true);return}
   if(e.target.closest(".top .brand")&&S.session){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);return}
   if(S.f&&S.f.setp==="pay"&&e.target.closest(".lnkc .btn"))LS.set("y_shr_"+TID,"1");
   const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;if(S.fol&&FBLOCK.includes(a))return;const id=el.dataset.id;const t=S.teams;
   switch(a){
-    case"tab":if(el.dataset.tab==="ayarlar")S.f.setp="";goTab(el.dataset.tab);break;
+    case"gizlilik":window.open("gizlilik.html","_blank","noopener");break;
+    case"tab":{let tt=el.dataset.tab;if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";goTab(tt);if(tt===S.tab)render(true);break}
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"open":S.f.ptab="genel";S.sheet={type:"player",id};S.f.st=null;S.f.stOpen=false;S.f.ed=null;S.f.delP=null;render(true);break;
     case"intSet":LS.set("y_int",el.dataset.v);render(true);window.scrollTo(0,0);break;

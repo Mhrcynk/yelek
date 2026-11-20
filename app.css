@@ -2329,6 +2329,7 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
+
 /* KOYU-OTO:başla */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
@@ -3920,3 +3921,10 @@ html .vtog.pmf button{height:auto}
 html .at-g button.on,html .at-g button.on *,html .ia-g button.on,html .ia-g button.on *{color:#120A2A!important}
 html.dk .btn.sm,html.dk .oyt2 button,html.dk .pv-tabs button,html.dk .form-pick button,html.dk .mtabs button,html.dk .tsx button,html.dk .vb2 button,html.dk .mzh-y{min-height:40px}
 html .pmf button{min-height:40px!important}
+/* yöneticinin sıradaki adımı: maç başlığının altında tek satır */
+.nxs{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:18px;background:#1E1442;border:1.5px solid #FF3EA5}
+.nxs-x{flex:1;min-width:0;display:grid;gap:2px}
+.nxs-x small{font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#FF8BC8}
+.nxs-x b{font:800 1.25rem/1.05 var(--display);text-transform:uppercase;color:#fff}
+.nxs-x span{font-size:.8rem;color:#D9D2F5}
+.nxs .btn{flex:none}

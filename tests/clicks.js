@@ -91,7 +91,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
 
   await T("Görünüm",async()=>{await E(pg,`S.f.setp="";S.tab="ayarlar";render(true)`);await pg.waitForTimeout(300);ok(await pg.evaluate(()=>document.documentElement.classList.contains("dk")),"mor (koyu) tema açık değil");ok(await pg.locator('[data-act="theme"]').count()===0,"tema seçici hâlâ duruyor")});
 
-  await T("Hesabımı sil",async()=>{await click(pg,'[data-act="delAcc"]');await pg.waitForTimeout(400);ok(await pg.locator('#modal [data-act="delAccGo"]').count()===1,"hesap silme penceresi açılmadı");await click(pg,'#modal [data-act="close"]')});
+  await T("Hesabımı sil",async()=>{await click(pg,'[data-act="setp"][data-v="hesap"]');await pg.waitForTimeout(300);await click(pg,'[data-act="delAcc"]');await pg.waitForTimeout(400);ok(await pg.locator('#modal [data-act="delAccGo"]').count()===1,"hesap silme penceresi açılmadı");await click(pg,'#modal [data-act="close"]')});
 
   await T("Takımlar ekranı",async()=>{await click(pg,".top .brand");await pg.waitForTimeout(400);ok(await pg.locator("#tCode").count()===1,"Takımlar ekranı açılmadı");
     await pg.fill("#tCode","yokboyle");await pg.locator(".tcf button[type=submit]").click();await pg.waitForTimeout(300);ok(calls.some(c=>c[0]==="team_by_code"&&/yokboyle/.test(c[1])),"takım kodu sorgulanmadı");await click(pg,'#modal [data-act="close"]')});
