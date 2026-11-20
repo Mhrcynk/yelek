@@ -32,16 +32,24 @@ const DI={
   grafik:["M4 13h4v7H4zM10 8h4v12h-4zM16 4h4v16h-4z",""],
   kalp:["M12 20.5C6 16.5 3.5 13.500 3.500 9.800A4.300 4.300 0 0 1 12 8a4.300 4.300 0 0 1 8.5 1.800c0 3.700-2.500 6.700-8.500 10.700z",""],
   degis:["","M5 9h13l-3-3M19 15H6l3 3"],
-  kitap:["M5 4h9a4 4 0 0 1 4 4v12H8a3 3 0 0 1-3-3z","M9 9h5M9 13h5"]};
-const DC={pink:"#FF3EA5",cyan:"#5FE3F5",gold:"#FFD400",green:"#00E58A",lila:"#B9A8FF",white:"#FFFFFF"};
-// çift ton ikon (uygulama)
+  kitap:["M5 4h9a4 4 0 0 1 4 4v12H8a3 3 0 0 1-3-3z","M9 9h5M9 13h5"],
+  duduk:["M3 11.5a4.5 4.5 0 0 0 8.6 1.9L20 12V8.5h-9.3A4.5 4.5 0 0 0 3 11.5z","M7.5 10a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3zM20 8.5V6.5"],
+  eldiven:["M7 21v-6.5L4.5 11c-.8-1.1.6-2.4 1.6-1.6L7.5 11V5.5a1.5 1.5 0 0 1 3 0V10V4a1.5 1.5 0 0 1 3 0v6V5a1.5 1.5 0 0 1 3 0v6V7.5a1.5 1.5 0 0 1 3 0v7c0 3.5-2 6.5-5.5 6.5z","M7 18h9.5"],
+  ates:["M12 21c-4 0-7-2.7-7-6.5 0-3.5 2.6-5.6 3.7-8.6.5 2 1.6 3 2.6 3.3C11.5 6.5 13 4 15.5 2.5c-.4 3 1 5 2.3 7 1 1.5 1.2 3 1.2 4.5 0 4-3 7-7 7z","M12 21c-1.8 0-3-1.3-3-3 0-2 1.5-2.8 2.2-4.5.8 1.2 1.4 1.2 1.8 1.4C14 16 15 17 15 18c0 1.7-1.3 3-3 3z"]};
+const DC={pink:"#FF3EA5",cyan:"#5FE3F5",gold:"#FFD400",green:"#00E58A",lila:"#B9A8FF",orange:"#FF8A3D",white:"#FFFFFF"};
+// sevimli çıkartmalarda yüzün yeri [x,y]; listede olmayan ikon yüzsüz çizilir
+const DFACE={top:[12,12.2],kupa:[12,8.6],kart:[12,15],takvim:[12,14.8],yildiz:[12,12.6],yelek:[12,13.5],kalkan:[12,11],kalp:[12,12.6],ates:[12,15.2],eldiven:[13,14.5],duduk:[7.5,11.5],kisi:[12,8.2],para:[12,12]};
+const DFS={kupa:.8,kisi:.8};const DFKEEP=["kupa","takvim","eldiven"];
+const faceSvg=(k)=>{const f=DFACE[k];if(!f)return"";const[x,y]=f,q=DFS[k]||1;return `<g fill="#120A2A"><circle cx="${x-2.1*q}" cy="${y-.4*q}" r="${.85*q}"/><circle cx="${x+2.1*q}" cy="${y-.4*q}" r="${.85*q}"/></g><path d="M${x-1.3*q} ${y+1.1*q}q${1.3*q} ${1.1*q} ${2.6*q} 0" fill="none" stroke="#120A2A" stroke-width="${.9*q}"/><g fill="#FF8BC8" opacity=".9"><circle cx="${x-3.4*q}" cy="${y+.9*q}" r="${.75*q}"/><circle cx="${x+3.4*q}" cy="${y+.9*q}" r="${.75*q}"/></g>`};
 // boş ekran ikonu: yumuşak halka içinde çift ton ikon
 const empIc=(k,c)=>`<span class="emp-i" style="--c:${DC[c]||c}" aria-hidden="true">${dIcon(k,c,40)}</span>`;
-function dIcon(k,c,sz){const d=DI[k];if(!d)return"";c=DC[c]||c||DC.lila;sz=sz||24;
-  return `<svg class="di" width="${sz}" height="${sz}" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d[0]?`<path d="${d[0]}" fill="${c}" fill-opacity=".28" stroke="${c}" stroke-width="1.9"/>`:""}${d[1]?`<path d="${d[1]}" fill="none" stroke="${c}" stroke-width="1.9"/>`:""}</svg>`}
+// parlak degrade ikon (uygulama): renkten mora geçen dolgu, beyaz ayrıntı, küçük parlama
+let _dg=0;
+function dIcon(k,c,sz){const d=DI[k];if(!d)return"";c=DC[c]||c||DC.lila;sz=sz||24;const id="dg"+(++_dg);const g=`url(#${id})`;
+  return `<svg class="di" width="${sz}" height="${sz}" viewBox="-1 -1 26 26" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="#7B3FF2"/></linearGradient></defs>${d[0]?`<path d="${d[0]}" fill="${g}" stroke="${g}" stroke-width="2"/>`:""}${d[1]?`<path d="${d[1]}" fill="none" stroke="${d[0]?"#fff":g}" stroke-width="${d[0]?1.7:2.4}"/>`:""}${d[0]?`<ellipse cx="9" cy="7" rx="3" ry="1.4" fill="#fff" opacity=".35" transform="rotate(-25 9 7)"/>`:""}</svg>`}
 // çıkartma ikon (paylaşım görselleri)
-function sIcon(k,c,sz,rot){const d=DI[k];if(!d)return"";c=DC[c]||c||DC.gold;sz=sz||28;rot=rot==null?-8:rot;const b=d[0]||d[1];
-  return `<svg class="si" width="${sz}" height="${sz}" viewBox="-3 -3 30 30" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(${rot} 12 12)"><path d="${b}" fill="#fff" stroke="#fff" stroke-width="5.5"/>${d[0]?`<path d="${d[0]}" fill="${c}" stroke="#120A2A" stroke-width="1.6"/>`:""}${d[1]?`<path d="${d[1]}" fill="none" stroke="#120A2A" stroke-width="1.6"/>`:""}</g></svg>`}
+function sIcon(k,c,sz,rot){const d=DI[k];if(!d)return"";c=DC[c]||c||DC.gold;sz=sz||28;rot=rot==null?-8:rot;const b=d[0]||d[1];const fc=DFACE[k]&&d[0];
+  return `<svg class="si" width="${sz}" height="${sz}" viewBox="-4 -4 32 32" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(${rot} 12 12)"><path d="${b}" fill="#fff" stroke="#fff" stroke-width="6"/>${d[0]?`<path d="${d[0]}" fill="${c}" stroke="#120A2A" stroke-width="1.5"/>`:""}${d[1]?`<path d="${d[1]}" fill="none" stroke="#120A2A" stroke-width="1.5"${fc&&!DFKEEP.includes(k)?' stroke-opacity=".22"':""}/>`:""}${fc?faceSvg(k):""}</g></svg>`}
 /* kullanım sayımı: kişi bilgisi olmadan hangi sekme/pencere/düğmenin kaç kez kullanıldığı (yönetici Ben > Kullanım'da görür) */
 const USE={q:{},t:0,n:0};
 function useHit(k){try{if(!TID||!/^[a-z]{2,8}:[a-zA-Z0-9_]{1,24}$/.test(k))return;USE.q[k]=(USE.q[k]||0)+1;USE.n++;clearTimeout(USE.t);USE.t=setTimeout(useFlush,USE.n>30?1000:20000)}catch(_){}}
@@ -593,7 +601,7 @@ function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const 
   if(!S.loaded||!c){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout");$("#tt").textContent="";return}
   el.hidden=false;document.body.classList.add("hasphd");$("#tt").textContent=c[0];
   const me=null;
-  el.innerHTML=`<div class="wrap"><h1>${dIcon({gecmis:"takvim",lig:"kupa",sezon:"kupa",kartlar:"kart",ben:"kisi",kurallar:"kitap"}[t]||"",{gecmis:"cyan",lig:"gold",sezon:"gold",kartlar:"pink",ben:"lila",kurallar:"green"}[t],30)}<span>${c[0]}</span></h1>${c[1]?`<div class="phsr">${yrSel()}${seasonProg()}</div>`:me?`<span class="phsub">${esc(me.name)}</span>`:""}</div>`;
+  el.innerHTML=`<div class="wrap"><h1>${dIcon({gecmis:"takvim",lig:"kupa",sezon:"kupa",kartlar:"kart",ben:"kisi",kurallar:"duduk"}[t]||"",{gecmis:"cyan",lig:"gold",sezon:"gold",kartlar:"pink",ben:"lila",kurallar:"green"}[t],30)}<span>${c[0]}</span></h1>${c[1]?`<div class="phsr">${yrSel()}${seasonProg()}</div>`:me?`<span class="phsub">${esc(me.name)}</span>`:""}</div>`;
   if(!S._phIO&&"IntersectionObserver"in window){S._phIO=new IntersectionObserver(es=>{for(const e of es)document.body.classList.toggle("phout",!e.isIntersecting)},{rootMargin:"-60px 0px 0px 0px"});S._phIO.observe(el)}}
 function yrAgg(F){const g={},a={},mo={};for(const m of F){const inf=S.mInfo[m.id];if(!inf)continue;
     for(const[id,r]of Object.entries(inf.pts||{})){if(!r)continue;g[id]=(g[id]||0)+r.g;a[id]=(a[id]||0)+r.a}if(inf.motm)mo[inf.motm]=(mo[inf.motm]||0)+1}
@@ -680,11 +688,11 @@ function posRaceHtml(F){const YR=yelekRace(F);const C={KL:"#FFD400",DF:"#5FE3F5"
   const sel=L.some(([k])=>k===S.f.prOpen)?S.f.prOpen:L[0][0];const[k,t]=L.find(x=>x[0]===sel);const Q=YR[k];
   const yr=selYr();const len=yr==="all"?0:Math.max(sLen(),F.length);const all=!!S.f["prAll_"+k];const R=Q.slice(0,all?Q.length:6);
   const mxP=Math.max(1,...Q.flatMap(o=>Object.values(o.m).map(x=>x.p)));const lead=Q[0],sec=Q[1];
-  const seg=`<div class="pr-s" role="tablist" aria-label="Mevki yarışları">${L.map(([kk,tt])=>`<button role="tab" aria-selected="${kk===sel}" class="${kk===sel?"on":""}" data-act="prOpen" data-v="${kk}" style="--c:${C[kk]}"><i class="dit">${dIcon({KL:"kale",DF:"kalkan",OS:"krampon",FV:"hedef"}[kk],C[kk],22)}</i><span>${esc(tt.replace(/^Sezonun /,""))}</span></button>`).join("")}</div>`;
+  const seg=`<div class="pr-s" role="tablist" aria-label="Mevki yarışları">${L.map(([kk,tt])=>`<button role="tab" aria-selected="${kk===sel}" class="${kk===sel?"on":""}" data-act="prOpen" data-v="${kk}" style="--c:${C[kk]}"><i class="dit">${dIcon({KL:"eldiven",DF:"kalkan",OS:"krampon",FV:"hedef"}[kk],C[kk],22)}</i><span>${esc(tt.replace(/^Sezonun /,""))}</span></button>`).join("")}</div>`;
   const bars=o=>{if(!len)return"";const best=Math.max(...Object.values(o.m).map(x=>x.p));
     return `<span class="pr-w" style="--n:${len}" aria-label="Maç maç puanlar">${[...Array(len)].map((_,i)=>{if(i>=F.length)return '<i class="fu"></i>';const x=o.m[i];if(!x)return '<i class="no" title="Gelmedi"></i>';
       return `<i class="${x.p===best&&x.p>0?"hi":""}${x.role!==k?" ot":""}" style="--h:${Math.max(10,Math.round(x.p/mxP*100))}%" title="${esc(fmtShort(F[i].date))} · ${fP(x.p)}"><em>${fP(x.p)}</em></i>`}).join("")}</span>`};
-  const card=`<section class="pr-c" style="--c:${C[k]}"><div class="pr-h"><span class="pr-t"><i class="dit">${dIcon({KL:"kale",DF:"kalkan",OS:"krampon",FV:"hedef"}[k],C[k],20)}</i><b>${esc(t)}</b></span><small>${sec?`Lider ${esc(shortName(nameOf(lead.id)))} · 2.'den ${fP(Math.round((lead.tot-sec.tot)*10)/10)} önde`:`Lider ${esc(shortName(nameOf(lead.id)))}`}</small></div>
+  const card=`<section class="pr-c" style="--c:${C[k]}"><div class="pr-h"><span class="pr-t"><i class="dit">${dIcon({KL:"eldiven",DF:"kalkan",OS:"krampon",FV:"hedef"}[k],C[k],20)}</i><b>${esc(t)}</b></span><small>${sec?`Lider ${esc(shortName(nameOf(lead.id)))} · 2.'den ${fP(Math.round((lead.tot-sec.tot)*10)/10)} önde`:`Lider ${esc(shortName(nameOf(lead.id)))}`}</small></div>
     ${R.map((o,i)=>{const p=P(o.id);if(!p)return"";const x=photoOf(o.id);return `<button class="pr-r${i===0?" l":""}" data-act="open" data-id="${esc(o.id)}"><span class="pr-k num">${i+1}</span><span class="pr-a">${x?`<img src="${esc(x)}" alt="">`:esc(initials(p.name))}</span><span class="pr-n"><b>${esc(p.name)}</b><small>${o.n} maç${i?` · ${fP(Math.round((lead.tot-o.tot)*10)/10)} geride`:""}</small></span><b class="pr-v num">${fP(o.tot)}</b>${bars(o)}</button>`}).join("")}
     ${Q.length>6?`<button class="pr-m" data-act="tog" data-k="prAll_${k}">${all?"Daha az göster":`Tümünü göster · ${Q.length} oyuncu`}</button>`:""}
     ${len?`<p class="pr-lg"><span><i class="hi"></i>en iyi maçı</span><span><i class="no"></i>gelmedi</span><span><i class="ot"></i>başka mevkide</span></p>`:""}</section>`;
@@ -881,7 +889,7 @@ const ypGhostNone="";
 
 // çerçeve: üst bilgi, içerik alanı (hero), alt panel (pn), alt satır
 // paylaşım görselinin konusuna göre çıkartma ikon: [anahtar kelimeler, ikon, renk]
-const YP_IC=[[/asist/,"krampon","cyan"],[/değer|piyasa/,"para","gold"],[/maçın adamı|oyuncusu|zirve|yıldız/,"yildiz","gold"],[/veri|seri|istikrar|kaçırmadı|form|kondisyon/,"simsek","green"],[/kadro|haftanın takımı|en iyi yedi|transfer|katıldı|yelek/,"yelek","pink"],[/puan durumu|şampiyon|karne|sıralama/,"kupa","gold"],[/mevki|eşleşme|kafa kafaya|ikili|kaleci|defans/,"kalkan","cyan"],[/kart|rozet/,"kart","pink"],[/gol|maç sonucu|kazandı|berabere|fark attı|maç günü/,"top","pink"]];
+const YP_IC=[[/asist/,"krampon","cyan"],[/değer|piyasa/,"para","gold"],[/maçın adamı|oyuncusu|zirve|yıldız/,"yildiz","gold"],[/seri|istikrar|kaçırmadı|form|üst üste/,"ates","orange"],[/kaleci|eldiven/,"eldiven","green"],[/veri|kondisyon/,"simsek","green"],[/kadro|haftanın takımı|en iyi yedi|transfer|katıldı|yelek/,"yelek","pink"],[/puan durumu|şampiyon|karne|sıralama/,"kupa","gold"],[/mevki|eşleşme|kafa kafaya|ikili|defans/,"kalkan","cyan"],[/kart|rozet/,"kart","pink"],[/gol|maç sonucu|kazandı|berabere|fark attı|maç günü/,"top","pink"]];
 const ypIc=(t,sz)=>{t=String(t||"").toLocaleLowerCase("tr");const m=YP_IC.find(x=>x[0].test(t))||[0,"top","pink"];return sIcon(m[1],m[2],sz||24)};
 function ypPost(o){const wk=o.wkH||(o.wk?`<div class="yp-wk" data-b>${esc(TRU(o.wk))}</div>`:"");
   const wkW=o.wkH?o.wkW:o.wk?ypW(TRU(o.wk),15,800,BC,.08)+22:0;const tw=476-(wkW?wkW+16:0);const ic=o.ic===false?"":ypIc((o.ey||"")+" "+(o.ti||""),26);
@@ -2432,7 +2440,7 @@ function viewKurallar(inSheet){
    <div class="scroll-x"><table class="tbl"><thead><tr><th>Mevki</th><th>Gol</th><th>Asist</th><th>Katkı yok</th></tr></thead><tbody>
    ${RL.map(([k,l])=>`<tr><td>${l}</td><td>${f(n.gol[k])}</td><td>${f(n.asist[k])}</td><td>${n.bos[k]?f(n.bos[k]):"–"}</td></tr>`).join("")}</tbody></table></div>
    <p class="muted small">İlk 3 gol tam, 4. ve 5. gol ×0,6, 6. golden sonrası ×0,3 sayılır. Penaltı golü normal golün yarısıdır. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 12 gol varsa ×1, 16 gol ×0,75 (en az ×0,7), 10 gol ×1,15 (en fazla).</p></details>
-  <details class="card rdet"><summary>${dIcon("kale","cyan",24)}<h2>Yenilen gol</h2></summary><p class="muted small">Grubun maç başı gol ortalamasına göre bakılır (şu an <b>${fN(gyOrt())}</b>). Ortalamanın altında gol yiyen savunma artı alır, üstünde yiyen eksi.</p><div class="scroll-x"><table class="tbl"><thead><tr><th>Ortalamaya göre</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
+  <details class="card rdet"><summary>${dIcon("eldiven","cyan",24)}<h2>Yenilen gol</h2></summary><p class="muted small">Grubun maç başı gol ortalamasına göre bakılır (şu an <b>${fN(gyOrt())}</b>). Ortalamanın altında gol yiyen savunma artı alır, üstünde yiyen eksi.</p><div class="scroll-x"><table class="tbl"><thead><tr><th>Ortalamaya göre</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
    ${n.savunma.map(([lim,v],i)=>`<tr><td>${i===0?Math.abs(lim)+"+ az":i===n.savunma.length-1?(n.savunma[i-1][0]+1)+"+ fazla":(()=>{const a=n.savunma[i-1][0]+1,b=lim;const t=x=>x<0?Math.abs(x)+" az":x>0?x+" fazla":"aynı";return a===b?t(a):t(a)+" – "+t(b)})()}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`).join("")}</tbody></table></div><p class="muted small">Kalecinin yediği penaltı golleri yarım gol sayılır.</p></details>
   <details class="card rdet"><summary>${dIcon("grafik","lila",24)}<h2>Maç değerlendirmesi</h2></summary><p class="muted small">Maç başladıktan 1 saat sonra oylama açılır. Oynayan herkes kendisi hariç tüm oyuncuları çok iyi, iyi, orta veya kötü diye oylar; en fazla 3 çok iyi ve 3 kötü verilebilir. Yönetici oylamayı kapatınca oyuncular aldıkları oyların ortalamasına göre sıralanır: 14 kişilik maçta ilk 3 çok iyi, sonraki 4 iyi, sonraki 4 orta, son 3 kötü olur. 6'dan az kişi oy verirse değerlendirme notu etkilemez. Kimin kime ne oy verdiğini sadece yönetici görür. Kurtarış sayısı tutulmadığı için kalecide değerlendirme daha ağır sayılır.</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th></th><th>Saha oyuncusu</th><th>Kaleci</th></tr></thead><tbody>${[1,2,3,4].map(k=>`<tr><td>${n.perf[k][1]}</td><td>${f(n.perf[k][0])}</td><td>${f(n.perfKL[k])}</td></tr>`).join("")}</tbody></table></div>
@@ -3269,7 +3277,12 @@ function storyBase(x,W,H){x.fillStyle=C_BG;x.fillRect(0,0,W,H);
   x.save();x.globalAlpha=.05;x.fillStyle="#fff";for(const[px,w]of[[W*.55,120],[W*.72,60],[W*.86,140]]){x.beginPath();x.moveTo(px,-80);x.lineTo(px+w,-80);x.lineTo(px+w-260,BH);x.lineTo(px-260,BH);x.closePath();x.fill()}x.restore();
   x.textAlign="center";x.textBaseline="alphabetic"}
 function cSticker(x,k,c,cx,cy,sz,rot){const d=DI[k];if(!d)return;const b=new Path2D(d[0]||d[1]);x.save();x.translate(cx,cy);x.rotate((rot||-8)*Math.PI/180);x.scale(sz/24,sz/24);x.translate(-12,-12);x.lineCap="round";x.lineJoin="round";
-  x.fillStyle="#fff";x.strokeStyle="#fff";x.lineWidth=5.5;x.fill(b);x.stroke(b);if(d[0]){x.fillStyle=DC[c]||c;x.strokeStyle="#120A2A";x.lineWidth=1.6;x.fill(b);x.stroke(b)}if(d[1]){x.strokeStyle="#120A2A";x.lineWidth=1.6;x.stroke(new Path2D(d[1]))}x.restore()}
+  x.fillStyle="#fff";x.strokeStyle="#fff";x.lineWidth=6;x.fill(b);x.stroke(b);const fc=DFACE[k]&&d[0];if(d[0]){x.fillStyle=DC[c]||c;x.strokeStyle="#120A2A";x.lineWidth=1.5;x.fill(b);x.stroke(b)}
+  if(d[1]){x.save();x.globalAlpha=fc&&!DFKEEP.includes(k)?.22:1;x.strokeStyle="#120A2A";x.lineWidth=1.5;x.stroke(new Path2D(d[1]));x.restore()}
+  if(fc){const[fx,fy]=DFACE[k],q=DFS[k]||1;x.fillStyle="#120A2A";for(const s of[-1,1]){x.beginPath();x.arc(fx+s*2.1*q,fy-.4*q,.85*q,0,Math.PI*2);x.fill()}
+    x.strokeStyle="#120A2A";x.lineWidth=.9*q;x.beginPath();x.moveTo(fx-1.3*q,fy+1.1*q);x.quadraticCurveTo(fx,fy+2.2*q,fx+1.3*q,fy+1.1*q);x.stroke();
+    x.fillStyle="rgba(255,139,200,.9)";for(const s of[-1,1]){x.beginPath();x.arc(fx+s*3.4*q,fy+.9*q,.75*q,0,Math.PI*2);x.fill()}}
+  x.restore()}
 function cHead(x,W,h,label,meta){
   x.save();rr(x,0,-60,W,h+60,56);x.clip();x.strokeStyle="rgba(255,255,255,.06)";x.lineWidth=4;x.beginPath();x.arc(W/2,h,300,Math.PI,0);x.stroke();x.beginPath();x.moveTo(0,h-2);x.lineTo(W,h-2);x.stroke();
   const g=x.createRadialGradient(W/2,h,20,W/2,h,700);g.addColorStop(0,"rgba(255,62,165,.16)");g.addColorStop(1,"rgba(255,62,165,0)");x.fillStyle=g;x.fillRect(0,0,W,h);x.restore();
