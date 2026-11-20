@@ -13,6 +13,12 @@ async function rpc(fn,args){
   if(!r.ok)throw new Error((body&&body.message)||("HTTP "+r.status));return body;
 }
 
+/* kullanım sayımı: kişi bilgisi olmadan hangi sekme/pencere/düğmenin kaç kez kullanıldığı (yönetici Ben > Kullanım'da görür) */
+const USE={q:{},t:0,n:0};
+function useHit(k){try{if(!TID||!/^[a-z]{2,8}:[a-zA-Z0-9_]{1,24}$/.test(k))return;USE.q[k]=(USE.q[k]||0)+1;USE.n++;clearTimeout(USE.t);USE.t=setTimeout(useFlush,USE.n>30?1000:20000)}catch(_){}}
+function useFlush(){const q=USE.q;if(!Object.keys(q).length)return;USE.q={};USE.n=0;
+  try{fetch(SB_URL+"/rest/v1/rpc/usage_hit",{method:"POST",keepalive:true,headers:{apikey:SB_KEY,"Content-Type":"application/json",...teamHdr(),...authHdr()},body:JSON.stringify({p_hits:q})}).catch(()=>{})}catch(_){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")useFlush()});
 /* hata kaydı: beklenmeyen hatalar platform sahibine görünür (oturum başına en çok 5, aynısı bir kez) */
 const ERRS=new Set();
 function logErr(msg,src,stack){try{msg=String(msg||"").slice(0,300);if(!msg||ERRS.size>=5||ERRS.has(msg))return;
@@ -778,7 +784,7 @@ function render(force){
   else if(S.loaded&&gated()&&!AUTH.ready&&LS.get("y_auth"))h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
   else if(S.loaded&&gated())h+=viewVitrin();
   else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,saha:viewSaha,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
-  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"||t==="saha"?"lig":t));const chg=S._tab!==undefined&&S._tab!==S.tab;const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
+  const v=$("#view");const tabI=t=>TABS.findIndex(x=>x[0]===(t==="sezon"||t==="saha"?"lig":t));const chg=S._tab!==undefined&&S._tab!==S.tab;if(S._tab!==S.tab)useHit("tab:"+S.tab);{const sk=S.sheet&&S.sheet.type;if(sk&&sk!==S._shk)useHit("sheet:"+sk);S._shk=sk||null}const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
   {const vk=S.tab+"|"+(S.view||"");const same=v.dataset.vk===vk;const need=same?Math.round(innerHeight-v.getBoundingClientRect().top):0;v.dataset.vk=vk;v.style.paddingBottom="";v.style.minHeight="";keepX(v,()=>keepOpen(v,()=>{v.innerHTML=h}));if(same&&need>0){const hh=v.offsetHeight;if(need>hh){const pb=parseFloat(getComputedStyle(v).paddingBottom)||0;v.style.paddingBottom=Math.round(pb+need-hh)+"px"}}}v.removeAttribute("aria-busy");phdRender();qkRender();onbBind();ldBind();
   if(chg&&!RM)reveal(v);
 
@@ -2197,6 +2203,22 @@ function pHead(p,inline){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=
     <div class="pv-x"><b class="pv-n">${esc(p.name)}</b><span class="pv-s">${reigningChamp()===p.id?"🏆 Şampiyon · ":""}${EPOS[eposOf(p)][1]}${altOf(p)?" · "+EPOS[altOf(p)][1]:""}${ageOf(p)!=null?" · "+ageOf(p)+" yaş":""}</span><span class="pv-chs">${tr}<span class="pv-ch">${fN1(mvOf(p.id))} M€</span></span></div>
     ${inline?"":`<div class="pv-b"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><button class="mzic" data-act="cmpOpen" data-id="${esc(p.id)}" aria-label="Karşılaştır">${ICON.scale}</button></div>`}</div>
     <div class="pv-st">${[[s.games||0,"Maç"],[tg,"Gol"],[ta,"Asist"],[ligRank(p.id),"Ligde"]].map(([v,l])=>`<div><b class="num">${v}</b><span>${l}</span></div>`).join("")}</div>`}
+const USE_L={"tab:mac":"Maç","tab:gecmis":"Fikstür","tab:lig":"Lig · Puan durumu","tab:sezon":"Lig · İstatistikler","tab:kartlar":"Oyuncular","tab:ben":"Ben","sheet:player":"Oyuncu kartı","sheet:cmp":"Karşılaştır","sheet:pm":"Paylaşım merkezi","sheet:share":"Paylaş","sheet:vote":"Oylama","sheet:trk":"Saha verisi girişi","sheet:pedit":"Kartı düzenle","act:sezV_yelek":"İstatistik · Yelek","act:sezV_kral":"İstatistik · Krallar","act:sezV_mevki":"İstatistik · Mevkiler","act:sezV_saha":"İstatistik · Saha","act:statSheet":"Skor girişi","act:autoKadro":"Otomatik kadro","act:shareImg":"Görsel paylaşma","act:voteOpen":"Oy verme","act:cmpOpen":"Karşılaştır düğmesi","act:viewm":"Maç detayı","act:story":"Hikâye"};
+function usageView(){if(!S.usage){S.usage="…";rpc("admin_usage",{p_pin:S.pin||""}).then(r=>{S.usage=(r&&r.rows)||[];render(true)}).catch(()=>{S.usage=[];render(true)});return `<div class="vskl"><i></i><i></i></div>`}
+  if(S.usage==="…")return `<div class="vskl"><i></i><i></i></div>`;
+  const R=S.usage;if(!R.length)return `<section class="card"><p class="muted small" style="margin:0">Henüz sayım yok. Sayım bu sürümle başladı; birkaç hafta içinde hangi bölümlerin kullanıldığı burada görünür.</p></section>`;
+  const W=[...new Set(R.map(r=>r.w))].sort().slice(-6);const K={};R.forEach(r=>{if(W.includes(r.w))(K[r.k]||(K[r.k]={}))[r.w]=r.n});
+  const rows=Object.entries(K).map(([k,o])=>[k,W.reduce((t,w)=>t+(o[w]||0),0),o]).sort((a,b)=>b[1]-a[1]);
+  const lab=k=>USE_L[k]||k.replace(/^(tab|sheet|act):/,"");
+  return `<section class="card"><p class="muted small" style="margin:0 0 10px">Son ${W.length} haftada her bölümün kaç kez açıldığı. Kimin açtığı tutulmaz. Az kullanılan bölümleri sadeleştirme kararı için.</p>
+    <div class="scroll-x"><table class="tbl"><thead><tr><th>Bölüm</th>${W.map(w=>`<th>${esc(fmtShort(w))}</th>`).join("")}<th>Toplam</th></tr></thead><tbody>${rows.map(([k,t,o])=>`<tr><td>${esc(lab(k))}</td>${W.map(w=>`<td>${o[w]||0}</td>`).join("")}<td><b>${t}</b></td></tr>`).join("")}</tbody></table></div></section>`}
+// kartın son maçta neden değiştiği, tek cümle
+function whyCard(p){const s=S.stats[p.id];const h=(s&&s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r);const x=h[h.length-1];if(!x)return"";
+  const ch=(x.ch||[]).filter(c=>c[1]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]));const up=x.d>0,dn=x.d<0;
+  const top=ch.slice(0,3).map(c=>SUBN[c[0]]||c[0]);const why=[x.r.g?x.r.g+" gol":"",x.r.a?x.r.a+" asist":"",x.r.res==="G"?"galibiyet":x.r.res==="M"?"mağlubiyet":"beraberlik"].filter(Boolean).join(", ");
+  const esk=x.r.esik!=null?fN(x.r.esik):"";
+  const txt=up?`Notun ${fN(x.r.pts)}, eşiğin ${esk} idi; kart ${fA(x.d)} yükseldi.`:dn?`Notun ${fN(x.r.pts)}, eşiğin ${esk} idi; kart ${fA(x.d)} düştü.`:`Notun ${fN(x.r.pts)}, eşiğine (${esk}) yakın; kart değişmedi.`;
+  return `<button class="why ${up?"up":dn?"dn":""}" data-act="viewm" data-id="${esc(x.m.id)}"><span class="why-h"><small>Son maç · ${fmtShort(x.m.date)} · ${why}</small><b class="num">${up?"▲":dn?"▼":"="} ${fA(x.d)}</b></span><span class="why-t">${txt}${top.length?` En çok ${up?"artan":"düşen"}: ${top.join(", ")}.`:""}</span></button>`}
 function ligRank(id){const L=ligTable(fin().filter(inYr));const i=L.findIndex(o=>o.id===id);return i<0?"–":(i+1)+"."}
 function kondMini(p){const c=kondOf(p.id);if(!c)return"";const col=c.lv==="hi"?"#00E58A":c.lv==="md"?"#FFD400":"#FF4D6D";const L=2*Math.PI*16;
   return `<div class="pv-k"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="#2C2060" stroke-width="5"/><circle cx="20" cy="20" r="16" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(L*c.k/100).toFixed(1)} ${L.toFixed(1)}" transform="rotate(-90 20 20)"/></svg><span><small>Kondisyon</small><b class="num">%${c.k} <em style="color:${col}">${esc(c.l)}</em></b></span></div>`}
@@ -2206,6 +2228,7 @@ function sheetPlayer(pid,inline){
   const tab=S.f.ptab||"genel";
   let h=pHead(p,inline)+`<div class="pv-tabs" role="tablist" aria-label="Oyuncu">${[["genel","Genel"],["ist","İstatistik"],["mac","Maçlar"]].map(([k,l])=>`<button role="tab" data-act="ptab" data-v="${k}" aria-selected="${tab===k}" class="${tab===k?"on":""}">${l}</button>`).join("")}</div>`;
   if(tab==="ist"){h+=istNote(p)+istTrk(p)+istAttr(p);return h}
+  if(tab==="genel")h+=whyCard(p);
   if(tab==="mac"){h+=`
     <div><h3>Son maçlar</h3>${(s.hist||[]).length?`<div class="patl">${(s.hist||[]).slice(-8).reverse().map(x=>{const inf=S.mInfo[x.m.id]||{};
       if(x.kind!=="oynadi")return `<button class="patm x" data-act="viewm" data-id="${esc(x.m.id)}"><span class="d">${fmtShort(x.m.date)}</span><span class="t">${x.kind==="iptal"?"Son dakika iptal":"Maça gelmedi"}</span></button>`;
@@ -2378,8 +2401,9 @@ function viewKurallar(inSheet){
   <section class="card"><h2>Herkes için</h2><div class="rules">${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy)+" (Kötü de seçildiyse "+f(n.fiy*n.fiyKotu)+")")}${row("Kendi kalesine gol",f(n.kk))}</div></section>
   <section class="card"><h2>Kart</h2><p>Eşik notu <b>maçın not ortalamasıdır</b>. Notu bunun üstünde olanın kartı yükselir, altında olanınki düşer: <b>kart değişimi = (not − eşik) × ${String(n.kat).replace(".",",")}</b>, tek maçta en fazla ±${fN(n.katMax)}. Bir maçta yükselenlerle düşenlerin toplamı sıfıra yakındır, reytingler toplu şişmez.</p>
    <p class="muted small">Yüksek kartlı oyuncudan beklenti de yüksektir: maçtaki ortalama karttan her 1 puan yukarıda olan için eşik ${String(n.esikAdim).replace(".",",")} artar, aşağıda olan için azalır.</p></section>
-  <section class="card"><h2>Karttaki özellikler</h2><p>Kart değişimi, maçta yapılan işe göre özelliklere dağıtılır: gol bitiriciliğe, asist pasa, defansın gol katkısı vizyon ve şut gücüne, az gol yemek savunmaya ya da reflekse yazılır. Özel bir iş yoksa kartın en önemli özelliği değişir.</p>
-   <div class="rules">${row("Maça gelmeyen","kartı değişmez")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("4 maç üst üste gelmek","Dayanıklılık +2")}${row("Reyting","küsüratlı hesaplanır, kartta tam kısmı görünür (74,99 → 74)")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
+  <section class="card"><h2>Karttaki özellikler</h2><p>Bir maçta bütün özellikler <b>aynı yöne</b> gider: kart yükseliyorsa hepsi artar, düşüyorsa hepsi düşer. Değişimin yarısı maçta yapılan işe yazılır, yarısı o maç oynadığın mevkinin ve kartının önemli özelliklerine yayılır.</p>
+   <div class="rules">${row("Gol","bitiricilik ve pozisyon alma; hat-trick şut gücü")}${row("Asist","kısa pas ve vizyon; 2+ asist uzun pas")}${row("Defansta yenilen gol ve galibiyet","savunma bilinci, top kesme ve müdahaleye eşit")}${row("Kalecide yenilen gol","refleks ve yer tutma")}${row("Galibiyet (diğer mevkiler)","mevkinin oyun zekâsı: forvette pozisyon alma, orta sahada vizyon, kalecide yer tutma")}${row("Saha verisi","koşu, hız, pas, top kapma gibi veriler ilgili özelliğe")}${row("Kart düşerken","maçta yapılan iş düşüşten korunmaz ama ayrıca da düşmez; düşüş kartın geneline yayılır")}</div>
+   <div class="rules">${row("Biten maç","puanı kesinleşir; kurallar sonradan değişse de geçmiş maçlar değişmez")}${row("Maç düzeltilirse","o maç ve sonraki maçlar yeniden hesaplanır")}${row("Maça gelmeyen","kartı değişmez")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("Reyting","küsüratlı hesaplanır, kartta tam kısmı görünür (74,99 → 74)")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
    <p class="muted small">Haftanın Takımı, form ve ortalamalar da maç notuna göre hesaplanır.</p></section>
   <section class="card"><h2>Sezon ve ödüller</h2><div class="rules">${row("Sezon",sLen()+" maç; puan durumu ve istatistikler her sezon sıfırlanır, reyting devam eder")}${row("Şampiyon","puan durumunda birinci")}${row("Gol ve asist kralı","en çok gol / asist; eşitlikte daha az maçta yapan")}
    ${row("Sezonun oyuncusu","mevki fark etmeksizin sezonda en çok Yelek puanı toplayan")}${row("Mevki ödülleri","Yelek puanı: her maçta mevkinin en iyi 3 notu 3-2-1 puan (6 altı puan almaz); gol forvette +1, orta sahada +1,25, defansta +1,5; asist forvette +0,5, orta sahada +0,75, defans ve kalecide +1; kaleci ve defans, maç notundaki gol yeme aralığına göre puan alır: ortalamanın 3 gol altı kaleci +1,6 / defans +1,3, 1 gol altı +1 / +0,8, ortalama civarı +0,3 / +0,2. Puanın hepsi sezonda en çok oynanan mevkide sayılır")}
@@ -2730,12 +2754,13 @@ function audAgo(t){const d=(Date.now()-new Date(t))/6e4;return d<1?"şimdi":d<60
 function adminAudit(){if(!S.admin)return"";if(!S.audit){audLoad();return `<div class="vskl"><i style="height:240px"></i></div>`}
   if(!S.audit.length)return `<p class="snote">Henüz kayıt yok. Bundan sonra yöneticilerin yaptığı değişiklikler burada görünecek.</p>`;
   return `<section class="sgrp"><h3 class="mh3">Son değişiklikler<button class="mref" data-act="audLoad">Yenile</button></h3><div class="sbox">${S.audit.map(r=>`<div class="setr nolink aud"><span class="setx"><b>${esc(audText(r))}</b><small>${esc(r.who||"Yönetici")} · ${audAgo(r.at)}</small></span></div>`).join("")}</div></section><p class="snote">Son 60 değişiklik. Oyuncuların kendi işlemleri burada görünmez.</p>`}
-const SUBT={hesap:"Hesabı sil",sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
+const SUBT={kullanim:"Kullanım",hesap:"Hesabı sil",sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
 const APPL=location.origin+location.pathname;
 const teamLink=()=>APPL;
 function setSub(k){const url=teamLink();
   let h=`<button class="sback" data-act="setp" data-v="">${ICON_BACK} Ben</button>`;
   if(k==="uyeler")h+=adminMembers();
+  else if(k==="kullanim")h+=usageView();
   else if(k==="hesap")h+=`<section class="card szx"><b>Hesabını silmek istiyor musun?</b><p class="snote" style="margin:0">Giriş hesabın, takım üyeliklerin, takip ettiğin ligler ve bildirim kayıtların kalıcı olarak silinir; geri alınamaz. Oyuncu kartın takımda kalır, yönetici isterse siler.</p><button class="btn ghost danger block" data-act="delAcc">Hesabımı kalıcı olarak sil</button></section>`;
   else if(k==="gecmis")h+=adminAudit();
   else if(k==="sil"&&S.admin&&TID!==1)h+=`<section class="card szx"><b>${esc(S.settings.group_name)} silinsin mi?</b><p class="snote" style="margin:0">Oyuncular, maçlar, kartlar, fotoğraflar ve üyelikler kalıcı olarak silinir; geri alınamaz. Onaylamak için takımın adını aynen yaz.</p>
@@ -2790,6 +2815,7 @@ function ayarBody(){
     srow("grup",SI.grup,"Ekip ve saha",`${esc(S.settings.group_name||"")} · ${GUNLER[+S.settings.day]||""} ${esc(S.settings.time||"")}`),
     srow("sezon",SI.sezon,"Sezon",`Sezon ${curYr()} · ${seasonCount(curYr())}/${sLen()} maç`),
     S.mem?.role==="yonetici"?srow("gecmis",SI.gecmis,"Değişiklik geçmişi","Kim neyi ne zaman değiştirdi"):"",
+    S.mem?.role==="yonetici"?srow("kullanim",SI.sezon,"Kullanım","Hangi bölüm kaç kez açıldı (kişi bilgisi yok)"):"",
     S.mem?.role==="yonetici"&&TID!==1?srow("sil",SI.cik,"Takımı sil","Bütün veriler kalıcı olarak silinir","","danger"):""]);
   h+=sgrp("Uygulama",[
     S.session&&S.session.user?.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273"?srow("platform",SI.platform,"Platform","Bütün takımlar"):"",
@@ -2806,7 +2832,7 @@ document.addEventListener("click",async e=>{
   const tb=e.target.closest(".nav button[data-tab]");if(tb){if(tb.dataset.tab==="ben"&&S.f.setp){S.f.setp="";if(S.tab==="ben"){render(true);window.scrollTo(0,0);return}}if(tb.dataset.tab===S.tab){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}goTab(tb.dataset.tab,true);return}
   if(e.target.closest(".top .brand")&&S.session){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);return}
   if(S.f&&S.f.setp==="pay"&&e.target.closest(".lnkc .btn"))LS.set("y_shr_"+TID,"1");
-  const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;if(S.fol&&FBLOCK.includes(a))return;const id=el.dataset.id;const t=S.teams;
+  const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;if(!/^(close|closeBg|tog|tab|setp)$/.test(a))useHit("act:"+(a==="tog1"?el.dataset.k+"_"+el.dataset.v:a).replace(/[^a-zA-Z0-9_]/g,"").slice(0,24));if(S.fol&&FBLOCK.includes(a))return;const id=el.dataset.id;const t=S.teams;
   switch(a){
     case"gizlilik":window.open("gizlilik.html","_blank","noopener");break;
     case"tab":{let tt=el.dataset.tab;if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";goTab(tt);if(tt===S.tab)render(true);break}

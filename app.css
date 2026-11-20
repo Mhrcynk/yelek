@@ -3935,3 +3935,11 @@ html .pmf button{min-height:40px!important}
 .sx3 button{min-height:40px;border-radius:12px;border:1.5px solid #3A2C78;background:#1E1442;color:#D9D2F5;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}
 .sx3 button.on{background:#fff;border-color:#fff;color:#24105E}
 html.dk .ldc .ldr button{min-height:44px}
+/* oyuncu kartı: kartın son maçta neden değiştiği */
+.why{display:grid;gap:6px;width:100%;text-align:left;margin:0 0 14px;padding:12px 14px;border-radius:16px;border:1.5px solid #3A2C78;background:#1E1442;color:#fff;font:inherit;cursor:pointer}
+.why-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.why-h small{font-size:.75rem;color:#A99CD6;min-width:0}
+.why-h b{font:800 1.15rem/1 var(--display);flex:none}
+.why.up .why-h b{color:#00E58A}.why.dn .why-h b{color:#FF6B8B}
+.why-t{font-size:.85rem;line-height:1.4;color:#D9D2F5}
+html.dk .btn.sm{min-height:42px}
