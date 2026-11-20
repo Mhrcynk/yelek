@@ -3350,3 +3350,11 @@ html.dk .pr-s button.on{background:color-mix(in srgb,var(--c) 30%,var(--c-card))
 .csel button i{width:20px;height:20px;flex:none}.csel button i svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .csel button[disabled]{opacity:.45;cursor:default}
 .cselg{font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--c-ink3);padding:12px 12px 6px}
+/* maç önü raporu: iki takımın bilgileri aynı satırlarda hizalı */
+.pvg{grid-template-rows:repeat(6,auto);row-gap:0}
+.pvg .pv{grid-row:span 6;grid-template-rows:subgrid;row-gap:10px}
+.pvg .pv>div:empty{display:block;min-height:0}
+.pvk button{flex-wrap:nowrap;max-width:100%;min-width:0}
+.pvkn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pvk .pchip{flex:none}
+.pvk button{min-height:40px}

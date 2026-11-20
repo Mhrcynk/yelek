@@ -1416,14 +1416,10 @@ function hero(om){
   const me=S.me&&(A.includes(S.me)?"A":B.includes(S.me)?"B":"");
   const t0=new Date();t0.setHours(0,0,0,0);const dd=Math.round((d-t0)/864e5);const ended=mEnded(om),scored=ended&&om.state==="bitti";const left=ended?"MAÇ BİTTİ":dd<0?"":dd===0?"BUGÜN":dd===1?"YARIN":dd+" GÜN KALDI";
   const wk=Math.min(seasonCount(curYr())+1,sLen());
-  const meTxt=me?(()=>{const L=pad7(lineupOf(om,me),me==="A"?A:B),PS=posArr(om,me);const i=L.indexOf(S.me);const ep=i<0?"":i===0?"KL":slotPos(PS[i][0],PS[i][1],PS[i][2]);
-    return `Takımın ${esc(TEAM[me])} · ${i<0?"Yedek":esc(EPOS[ep]?.[1]||ep)}${(me==="A"?om.cap_a:om.cap_b)===S.me?" · Kaptan":""}`})():"";
-  const st=om.state==="kayit"?"Kadro bekleniyor":ended?(vPend(om)?"Oylama sürüyor":"Sonuç bekleniyor"):"Kadrolar açıklandı";
   const row=k=>`<span class="mzh-t"><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:""}</span>`;
   return `<section class="mzh"><div class="mzh-ey"><span>${GKISA[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()]} · ${esc(String(om.time||"").slice(0,5))} · Hafta ${wk}</span>${left?`<em>${left}</em>`:""}</div>
     <div class="mzh-vs">${row("A")}<i>VS</i>${row("B")}</div>
-    <p class="mzh-me">${meTxt?meTxt+" · ":""}${st}</p>
-    <div class="mzh-b"><a class="mzb w" href="#kadrolar">${om.state==="kayit"?"Kadro":"Kadrolar"}</a><button class="mzb g" data-act="shareMenu" data-id="${esc(om.id)}">Paylaş</button></div></section>`;
+    </section>`;
 }
 function mzTiles(){const F=fin().filter(m=>!isExt(m));const lf=F[F.length-1];if(!lf)return"";const sa=+lf.score_a||0,sb=+lf.score_b||0;
   const res=sa===sb?"Berabere":esc(nmOf(lf,sa>sb?"A":"B"))+" kazandı";const L=ligTable(fin().filter(inYr));const ld=L[0]&&P(L[0].id);
@@ -2055,11 +2051,11 @@ function preview(m){const A=(m.team_a||[]),B=(m.team_b||[]);if(!A.length||!B.len
   const streaks=[...real(A),...real(B)].filter(id=>S.stats[id]?.streak);
   const cap=k=>k==="A"?m.cap_a:m.cap_b;
   const col=(k,T)=>{const kp=key(T);return `<div class="pv"><div class="pvh">${k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}<b>${esc(TEAM[k])}</b><span class="num">${k==="A"?avA:avB}</span></div>
-    ${recent(T)?(()=>{const r=recent(T);return `<div><span class="eyebrow">Oyuncuların son maçları</span><div class="rec"><span class="g">${r.G}G</span><span class="b">${r.B}B</span><span class="m">${r.M}M</span></div><span class="muted pvs">%${Math.round(r.G/r.n*100)} galibiyet</span></div>`})():""}
-    ${chem(T)?`<div><span class="eyebrow">Takım kimyası</span><b class="num pvn">%${chem(T).p}</b></div>`:""}
-    ${kp?`<div class="pvk"><span class="eyebrow">Kilit oyuncu</span><button data-act="open" data-id="${esc(kp)}">${esc(nameOf(kp))} <span class="pchip">${eposOf(P(kp))}</span></button></div>`:""}
-    ${inForm(T).length?`<div><span class="eyebrow">Formda</span>${inForm(T).map(id=>`<div class="small fm"><span>${esc(shortName(nameOf(id)))}</span><b class="num">${fN(formOf2(id))}</b></div>`).join("")}</div>`:""}
-    ${cap(k)&&T.includes(cap(k))?`<div class="small"><span class="capi">C</span>${esc(nameOf(cap(k)))}</div>`:""}</div>`};
+    ${recent(T)?(()=>{const r=recent(T);return `<div><span class="eyebrow">Oyuncuların son maçları</span><div class="rec"><span class="g">${r.G}G</span><span class="b">${r.B}B</span><span class="m">${r.M}M</span></div><span class="muted pvs">%${Math.round(r.G/r.n*100)} galibiyet</span></div>`})():"<div></div>"}
+    ${chem(T)?`<div><span class="eyebrow">Takım kimyası</span><b class="num pvn">%${chem(T).p}</b></div>`:"<div></div>"}
+    ${kp?`<div class="pvk"><span class="eyebrow">Kilit oyuncu</span><button data-act="open" data-id="${esc(kp)}"><span class="pvkn">${esc(shortName(nameOf(kp)))}</span><span class="pchip">${eposOf(P(kp))}</span></button></div>`:"<div></div>"}
+    ${inForm(T).length?`<div><span class="eyebrow">Formda</span>${inForm(T).map(id=>`<div class="small fm"><span>${esc(shortName(nameOf(id)))}</span><b class="num">${fN(formOf2(id))}</b></div>`).join("")}</div>`:"<div></div>"}
+    ${cap(k)&&T.includes(cap(k))?`<div class="small"><span class="capi">C</span>${esc(nameOf(cap(k)))}</div>`:"<div></div>"}</div>`};
   const pk="pv_"+m.id,open=S.f[pk];const fav=pA===50?"Denk maç":`Favori ${esc(TEAM[pA>50?"A":"B"])} · %${Math.max(pA,100-pA)}`;
   if(!open)return `<button class="card pvc" data-act="tog" data-k="${pk}"><span><span class="eyebrow">Maç önü raporu</span><b>${fav}</b></span><span class="pvx">Aç ▾</span></button>`;
   return `<section class="card"><button class="pvc in" data-act="tog" data-k="${pk}"><span><span class="eyebrow">Maç önü raporu</span><b>${fav}</b></span><span class="pvx">Kapat ▴</span></button>
