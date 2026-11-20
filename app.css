@@ -3308,3 +3308,6 @@ html.dk .onb-d button::before{content:"";width:10px;height:10px;border-radius:5p
 html.dk .onb-d button.on{width:44px;background:none}
 html.dk .onb-d button.on::before{width:28px;background:var(--c-pink)}
 html.dk .empty.emp2 h3{color:#fff!important}
+/* ana sekmelerde büyük başlık yok: kaydırınca da takım adı üstte kalır */
+html.dk body.phnt.phout .brand .t{opacity:1!important;visibility:visible;transform:none;pointer-events:auto}
+html.dk body.phnt .phd{padding-top:6px}

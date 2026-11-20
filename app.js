@@ -592,11 +592,12 @@ function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(
 const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Lig",1],saha:["Lig",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
 function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const gen=!S.session&&!S.viaLink;const n=gen?"Yelek":(S.settings&&S.settings.group_name)||"Yelek";if(bt&&bt.textContent!==n)bt.textContent=n;const bs=document.querySelector(".brand .bsub");if(bs){const st=gen?"Halı saha ligi":isMember()?"Takımın":S.fol?"Takip ettiğin lig":"Takım";if(bs.textContent!==st)bs.textContent=st}document.body.classList.toggle("genb",gen||!S.session)}const t=S.tab;let c=PHD[t];
   if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ben"&&S.f.setp)c=[SUBT[S.f.setp]||"Ben",0];if(typeof gated==="function"&&gated())c=null;
-  if(!S.loaded||!c){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout");$("#tt").textContent="";return}
-  el.hidden=false;document.body.classList.add("hasphd");$("#tt").textContent=c[0];
-  const me=null;
-  el.innerHTML=`<div class="wrap"><h1>${dIcon({gecmis:"takvim",lig:"kupa",sezon:"kupa",kartlar:"kart",ben:"kisi",kurallar:"duduk"}[t]||"",{gecmis:"cyan",lig:"gold",sezon:"gold",kartlar:"pink",ben:"lila",kurallar:"green"}[t],40)}<span>${c[0]}</span></h1>${c[1]?`<div class="phsr">${yrSel()}${seasonProg()}</div>`:me?`<span class="phsub">${esc(me.name)}</span>`:""}</div>`;
-  if(!S._phIO&&"IntersectionObserver"in window){S._phIO=new IntersectionObserver(es=>{for(const e of es)document.body.classList.toggle("phout",!e.isIntersecting)},{rootMargin:"-60px 0px 0px 0px"});S._phIO.observe(el)}}
+  // alt barda adı yazan ana sekmelerde büyük başlık yok (sade); alt sayfalar ve Puanlama başlığını korur
+  const navT=["gecmis","lig","kartlar","sezon","saha","ben"].includes(t)&&!(t==="ben"&&S.f.setp);
+  if(!S.loaded||!c||(navT&&!c[1])){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout","phnt");$("#tt").textContent="";return}
+  el.hidden=false;document.body.classList.add("hasphd");document.body.classList.toggle("phnt",navT);$("#tt").textContent=navT?"":c[0];
+  el.innerHTML=`<div class="wrap"><h1${navT?' class="vh"':""}><span>${c[0]}</span></h1>${c[1]?`<div class="phsr">${yrSel()}${seasonProg()}</div>`:""}</div>`;
+  if(!S._phIO&&"IntersectionObserver"in window){S._phIO=new IntersectionObserver(es=>{for(const e of es)document.body.classList.toggle("phout",!e.target.hidden&&!e.isIntersecting)},{rootMargin:"-60px 0px 0px 0px"});S._phIO.observe(el)}}
 function yrAgg(F){const g={},a={},mo={};for(const m of F){const inf=S.mInfo[m.id];if(!inf)continue;
     for(const[id,r]of Object.entries(inf.pts||{})){if(!r)continue;g[id]=(g[id]||0)+r.g;a[id]=(a[id]||0)+r.a}if(inf.motm)mo[inf.motm]=(mo[inf.motm]||0)+1}
   const top=o=>{const e=Object.entries(o).filter(([id,v])=>v>0&&P(id)&&!P(id).guest).sort((x,y)=>y[1]-x[1]);return e.length?{id:e[0][0],v:e[0][1]}:null};
