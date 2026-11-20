@@ -3275,3 +3275,15 @@ html.dk .onb-cta .lgo{background:#fff!important;color:#24105E!important;border-c
 html.dk .vfoot{align-items:center}
 html.dk .fl .lnk,html.dk .flf .lnk{min-height:40px;display:inline-flex;align-items:center;justify-content:center}
 html.dk .flpriv a{display:inline-block;padding:12px 8px}
+/* çift ton ikonlar */
+.di{flex:none;display:block}
+html.dk .phd h1{display:flex;align-items:center;gap:10px}
+html.dk .mzmi-i.dit{color:inherit}
+html.dk .pr-s button i.dit,html.dk .pr-t i.dit{background:color-mix(in srgb,var(--c) 14%,transparent)!important}
+.ldt{display:flex;align-items:center;gap:6px}
+.hic{display:flex;align-items:center;gap:8px}
+.mzst .di{margin-bottom:2px}
+/* paylaşım görselleri: çıkartma ikonlar */
+.si{flex:none;display:block}
+.yp-ey.yp-eyi{display:flex;align-items:center;gap:6px;margin-top:-6px}
+.yp-mini .si{margin-right:2px}
