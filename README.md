@@ -4,7 +4,8 @@ Halı saha ekibi için oyuncu reyting kartları ve maç takibi.
 
 - Oyuncu kartları: hız, şut, pas, top sürme, savunma, fizik (kaleciler için plonjon, elle oyun, ayakla oyun, refleks, hız, pozisyon alma)
 - Her maç sonunda girilen gol, asist ve skora göre kart reytingi artar ya da düşer
-- Sakatlık, hastalık, izin gibi durumlar kartta görünür; maça gelinmeyen her hafta reyting yarım puan düşer
+- Sakatlık, hastalık, izin gibi durumlar kartta görünür; maça gelmeyenin kartı değişmez
+- Biten maçın puanları kesinleşir (maç kaydına yazılır); kurallar değişse de geçmiş aynı kalır, yönetici isterse sezonu yeniden hesaplatır
 - 7'li takımlar için dizilişler (2-3-1, 3-2-1, 2-1-2-1, 2-2-2, 3-1-2, 1-3-2, 3-3) ve saha üzerinde kadro yerleştirme
 - Dengeli takım kurma ve kaptan draftı
 - EA tarzı mevkiler (SNT, SĞK, MOO, STP…) ve her oyuncuya bir alternatif mevki
@@ -24,7 +25,7 @@ Sayfa GitHub Pages üzerinden yayınlanır.
 - `app.js`: bütün uygulama kodu
 - `sw.js`: bildirimler ve internet yokken açılış
 - `gizlilik.html`: gizlilik metni
-- `tests/smoke.js`: her ekranın hatasız açıldığını kontrol eden test
+- `tests/`: otomatik testler (aşağıda)
 - `tools/surum.sh`: yeni sürüm numarası verir
 
 ## Değişiklik yaparken
