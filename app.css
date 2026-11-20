@@ -3257,9 +3257,13 @@ html.dk .xform .stp button,html.dk .sback{min-height:40px;min-width:40px}
 html.dk .mref{min-height:40px;padding:0 10px}
 .kdq{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 12px}
 /* puanlama kuralları: açılır bölümler */
-.rdet>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.rdet>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;min-height:44px}
 .rdet>summary::-webkit-details-marker{display:none}
-.rdet>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--c-ink3);border-bottom:2px solid var(--c-ink3);transform:rotate(45deg);margin:0 6px 4px}
-.rdet[open]>summary::after{transform:rotate(-135deg);margin-bottom:-4px}
 .rdet>summary h2{margin:0}
 .rdet[open]>summary{margin-bottom:10px}
+html.dk .vfoot a{display:inline-block;padding:12px 8px}
+html.dk .onb-d button{position:relative}
+html.dk .onb-d button::after{content:"";position:absolute;inset:-14px -6px}
+html.dk .mzseg button{min-height:42px}
+html.dk .rdet{padding:10px 16px!important;gap:0!important}
+html.dk .rdet>summary h2{flex:1;text-align:left;font-size:1.3rem}

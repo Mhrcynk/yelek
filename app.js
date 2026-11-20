@@ -1745,7 +1745,7 @@ function finishCard(m){
     <div class="mg-l2">${row(kw,MGI.cal,"#5FE3F5","Tarih ve saat",`${fmtShort(m.date)} · ${esc(String(m.time||"").slice(0,5))}`)}${S.f[kw]||wch?`<div class="mg-f">${whenForm(m)}</div>`:""}
       ${row(kn,MGI.shirt,"#FF3EA5","Takım adları",`${esc(TEAM.A)} · ${esc(TEAM.B)}`)}${S.f[kn]?`<div class="mg-f">${namesForm(m)}</div>`:""}</div>
     <span class="mg-lb">KADROLAR</span>
-    <div class="mg-k"><button data-act="editTeams" data-id="${M}"><b>Kadroları değiştir</b><small>Oyuncu taşı, diziliş seç</small></button><button data-act="backRsvp" data-id="${M}"><b>Kadro aşamasına dön</b><small>Katılım yeniden açılır</small></button></div>
+    <div class="mg-k"><button data-act="editTeams" data-id="${M}"><b>Kadroları değiştir</b><small>Oyuncu taşı, diziliş seç</small></button><button data-act="backRsvp" data-id="${M}"><b>Kadro aşamasına dön</b><small>Oynayacakları yeniden işaretle</small></button></div>
     <div class="mg-dz">${draft?`<button class="btn sm danger" data-act="draftDel" data-id="${M}">${S.f.delDraft===m.id?"Taslağı silmek için tekrar bas":"Taslağı sil"}</button>`:""}<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
 }
 function ptile(id,act,M,on,extra,cls){const p=P(id);return `<button class="pt${on?" on":""}${cls?" "+cls:""}" data-act="${act}" data-m="${M}" data-p="${esc(id)}"${extra||""} aria-pressed="${!!on}">${p?avatar(p,"xs"):`<span class="av xs">?</span>`}<b>${esc(shortName(nameOf(id)))}</b></button>`}
@@ -2832,7 +2832,7 @@ function ayarBody(){
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Linkler","Uygulamanın tek linki"),
     srow("@gizlilik",SI.kilit,"Gizlilik","Hangi bilgiler tutulur, kim görür")]);
-  if(S.session)h+=`<section class="sgrp"><h3>Hesap</h3>${acc}</section>`+sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),srow("hesap",SI.cik,"Hesabı sil","Hesabın ve üyeliklerin kalıcı olarak silinir")]);
+  if(S.session)h+=`<section class="sgrp"><h3>Hesap</h3>${acc}</section>`+sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),S.mem&&S.mem.status==="onayli"?srow("@leaveTeam",SI.cik,S.f.leave?"Emin misin? Tekrar dokun":"Takımdan ayrıl",S.f.leave?esc(S.settings.group_name)+" üyeliğin biter":"Kartın takımda kalır; istersen yeniden katılırsın"):"",srow("hesap",SI.cik,"Hesabı sil","Hesabın ve üyeliklerin kalıcı olarak silinir")]);
   return h}
 
 /* ================= Olaylar ================= */
@@ -2850,6 +2850,8 @@ document.addEventListener("click",async e=>{
       try{await navigator.clipboard.writeText(tx);toast("Kopyalandı · WhatsApp grubuna yapıştır")}catch(_){S.f.copyTx=tx;S.sheet={type:"txt"};render(true)}break}
     case"archList":S.f.kmenu=false;S.sheet={type:"arch"};render(true);break;
     case"restoreP":{const p=S.all.find(x=>x.id===id);await A("admin_restore_player",{p_id:id},(p?p.name:"Oyuncu")+" kadroya geri döndü");render(true);break}
+    case"leaveTeam":{if(!S.f.leave){S.f.leave=1;render(true);break}S.f.leave=0;
+      try{const r=await rpc("leave_team",{});if(r&&r.ok){LS.del("y_me");toast("Takımdan ayrıldın");setTimeout(()=>location.reload(),900)}else toast(r&&r.error==="tek_yonetici"?"Takımın tek yöneticisisin; önce başka birini yönetici yap":"Yapılamadı");render(true)}catch(_){toast("Yapılamadı, bağlantını kontrol et")}break}
     case"myStatus":S.f.ptab="genel";S.f.st=null;S.f.stOpen=true;S.sheet={type:"player",id:S.me};render(true);break;
     case"gizlilik":window.open("gizlilik.html","_blank","noopener");break;
     case"tab":{let tt=el.dataset.tab;if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";goTab(tt);if(tt===S.tab)render(true);break}

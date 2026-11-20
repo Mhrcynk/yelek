@@ -38,7 +38,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   teams_hub:{mine:[{id:1,name:"Test FC",slug:"test",tag:"yonetici"}],all:[{id:1,name:"Test FC",slug:"test",followable:true,players:14},{id:9,name:"Başka FC",slug:"baska",followable:true,players:9}]},
   platform_teams:{ok:true,rows:[{id:1,name:"Test FC",slug:"test",active:true,pending:false,followable:true,players:14,members:5,matches:2,owner:"Test"}]},
   platform_errors:{ok:true,rows:[]},platform_backup_info:{ok:true,last_used:null,uses:0},my_account_check:{solo_admin:[]},
-  follow_set:{ok:true},platform_backup_key:{ok:true},log_error:null,my_teams:[],my_follows:[]};
+  follow_set:{ok:true},platform_backup_key:{ok:true},log_error:null,my_teams:[],my_follows:[],admin_add_guest:{ok:true,id:"00000000-0000-4000-8000-000000000999"},admin_set_roster:{ok:true,n:7},admin_restore_player:{ok:true}};
 
 (async()=>{
   await new Promise(r=>srv.listen(0,r));const port=srv.address().port;
@@ -96,6 +96,20 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   await T("Takımlar ekranı",async()=>{await click(pg,".top .brand");await pg.waitForTimeout(400);ok(await pg.locator("#tCode").count()===1,"Takımlar ekranı açılmadı");
     await pg.fill("#tCode","yokboyle");await pg.locator(".tcf button[type=submit]").click();await pg.waitForTimeout(300);ok(calls.some(c=>c[0]==="team_by_code"&&/yokboyle/.test(c[1])),"takım kodu sorgulanmadı");await click(pg,'#modal [data-act="close"]')});
 
+  await T("Dış maç: misafir ekleme",async()=>{await E(pg,`S.sheet=null;S.f.setp="";S.tab="gecmis";render(true)`);await pg.waitForTimeout(300);
+    ok(await pg.locator('.glist [data-act="extNew"]').count()===1,"fikstürde dış maç ekle satırı yok");ok(await pg.locator('.tbl').count()===0,"fikstürün üstünde tablo var");
+    await click(pg,'.glist [data-act="extNew"]');ok(await pg.locator('#extGuestName').count()===1,"dış maçta misafir alanı yok");
+    await pg.fill("#extGuestName","Misafir Hasan");await pg.locator('form[data-form="extGuest"] button[type=submit]').click();await pg.waitForTimeout(600);
+    ok(calls.some(c=>c[0]==="admin_add_guest"&&/Misafir Hasan/.test(c[1])),"misafir sunucuya gitmedi");
+    ok(await pg.evaluate(()=>window.__E("S.f.ext.team.includes('00000000-0000-4000-8000-000000000999')")),"misafir dış maç kadrosuna girmedi");await click(pg,'#modal [data-act="close"]')});
+  await T("Kadro: hızlı seçim ve kopyala",async()=>{await E(pg,`S.sheet=null;S.tab="mac";const m=openMatch();m.state="kayit";render(true)`);await pg.waitForTimeout(300);
+    ok(await pg.locator('[data-act="copyTxt"][data-v="rsvp"]').count()===1,"kadro listesini kopyala yok");
+    await click(pg,'[data-act="rosterSet"][data-v="ready"]');ok(calls.some(c=>c[0]==="admin_set_roster"),"hazır olanlar sunucuya gitmedi");await E(pg,`openMatch().state="takim";render(true)`)});
+  await T("Üye kendi durumunu günceller",async()=>{await E(pg,`S.admin=false;S.mem={status:"onayli",role:"uye",player_id:"${ids[4]}"};S.me="${ids[4]}";S.tab="ben";S.sheet=null;render(true)`);await pg.waitForTimeout(300);
+    await click(pg,'[data-act="myStatus"]');ok(await pg.locator('#modal [data-act="stType"]').count()>0,"üye durum seçeneklerini göremiyor");await click(pg,'#modal [data-act="close"]');
+    await E(pg,`S.admin=true;S.mem={status:"onayli",role:"yonetici",player_id:"${ids[4]}"};render(true)`)});
+  await T("Çıkarılan oyuncuyu geri al",async()=>{await E(pg,`S.all.find(p=>p.id==="${ids[13]}").archived=true;S.players=S.players.filter(p=>p.id!=="${ids[13]}");S.sheet={type:"arch"};render(true)`);await pg.waitForTimeout(300);
+    await click(pg,'#modal [data-act="restoreP"]');ok(calls.some(c=>c[0]==="admin_restore_player"),"geri alma sunucuya gitmedi");await E(pg,`S.sheet=null;render(true)`)});
   await T("Hata kaydı",async()=>{await pg.evaluate(()=>setTimeout(()=>{window.__yokFonksiyon()},0));await pg.waitForTimeout(500);ok(calls.some(c=>c[0]==="log_error"),"hata kaydedilmedi");pg.errs=pg.errs.filter(x=>!/__yokFonksiyon/.test(x))});
 
   // dar ekranda yatay taşma
