@@ -1890,7 +1890,7 @@ function trkPlayer(p){const F=fin().filter(inYr).filter(m=>trkOf(m,p.id));if(!F.
   const rec=[["km","En uzun koşu","km"],["hiz","En yüksek hız","km/s"],["tk","En çok top kapma",""],["pas","En çok pas",""]].map(([k,l,u])=>{let b=null;F.forEach(m=>{const v=trkOf(m,p.id)[k];if(v!=null&&(!b||v>b.v))b={v,m}});return b?`<div class="ln2"><span>${l}</span><b class="num">${fTrk(k,b.v)}${u?" "+u:""} <span class="muted small">· ${fmtShort(b.m.date)}</span></b></div>`:""}).join("");
   return `<div><h3>Saha verileri</h3><p class="muted small" style="margin:2px 0 8px">Maç başına ortalama · ${F.length} maç · etiket: takım ortalamasına göre</p><div class="trkb t3">${tiles}</div>${rec?`<div class="trkrec">${rec}</div>`:""}</div>`}
 // lig: saha verileri sekmesi (Akıllı Saha sıralamaları)
-const SAHA_G=[["Fizik",["km","hiz","spr"]],["Pas",["pas","isa","pp"]],["Top kazanma",["tk","pa"]],["Top taşıma",["dri","pt"]]];
+const SAHA_G=[["Fizik",["km","hiz","spr","rt"]],["Pas",["pas","isa","pp"]],["Top kazanma",["tk","pa"]],["Top taşıma",["dri","pt"]]];
 function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs("saha");
   if(!TM.length)return h+`<section class="card"><div class="empty emp2">${empIc("grafik","green")}<h3>Henüz saha verisi yok</h3><p>Akıllı Saha'dan koşu, pas, hız, top kapma ve reyting verileri girildikçe sıralamalar burada görünür.</p></div></section>`;
   const last=TM[TM.length-1];const mode=S.f.sahaM==="sez"?"sez":"son";const nm=TM.length,need=nm<3?1:2;
@@ -1901,14 +1901,20 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
     rows=Object.entries(T).filter(([,o])=>o.n>=need).map(([id,o])=>[id,Object.fromEntries(Object.keys(o.s).map(k=>[k,o.s[k]/o.c[k]])),o.n])}
   const unit=k=>({km:"km",hiz:"km/s"})[k]||"";const pct=k=>k==="isa";
   const fv=(k,v)=>(pct(k)?"%":"")+fTrk(k,v).replace(/^%/,"");
-  const avail=TRK.map(([k])=>k).filter(k=>rows.some(r=>r[1][k]!=null));let K=S.f.sahaK&&avail.includes(S.f.sahaK)?S.f.sahaK:(avail.includes("km")?"km":avail[0]);
-  h+=`<div class="mzf"><label class="mzsel"><span>${esc(TRKN[K].l)}</span>${CHVD}<select data-act-change="sahaK" aria-label="Veri türü">${avail.map(k=>`<option value="${k}"${k===K?" selected":""}>${esc(TRKN[k].l)}</option>`).join("")}</select></label>
-    <div class="mzseg" role="group" aria-label="Dönem">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div></div>`;
-  const L=rows.filter(r=>r[1][K]!=null).sort((a,b)=>b[1][K]-a[1][K]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
-  // sade liste: sıra, ad, ince çubuk, değer; lider aynı listede vurgulu
-  h+=`<p class="shc">${mode==="son"?`${fmtShort(last.date)} maçı`:`Sezon ortalaması${need>1?` · en az ${need} maç`:""}`}</p>`;
-  if(L.length){const mx=Math.max(...L.map(r=>+r[1][K]||0))||1;
-    h+=`<div class="shl">${L.map(([id,o],i)=>`<button class="${i===0?"l":""}" data-act="open" data-id="${esc(id)}"><span class="shl-r num">${i+1}</span><span class="shl-n">${esc(shortName(nameOf(id)))}</span><span class="shl-b"><i style="width:${Math.max(4,Math.round((+o[K]||0)/mx*100))}%"></i></span><b class="num">${fv(K,o[K])}${unit(K)?`<small> ${unit(K)}</small>`:""}</b></button>`).join("")}</div>`}
+  const avail=TRK.map(([k])=>k).filter(k=>rows.some(r=>r[1][k]!=null));
+  const ini=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:esc(initials(nameOf(id)))};
+  const subOf=x=>mode==="son"?(x?esc(nmOf(last,x)):""):x+" maç";
+  const LK=k=>rows.filter(r=>r[1][k]!=null).sort((a,b)=>b[1][k]-a[1][k]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
+  const segM=`<div class="mzseg shm" role="group" aria-label="Dönem">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>`;
+  const cap=`<p class="shc">${mode==="son"?`${fmtShort(last.date)} maçı`:`Sezon ortalaması${need>1?` · en az ${need} maç`:""}`}</p>`;
+  // Krallar'daki liste kartı
+  const board=(k)=>{const A=LK(k);if(!A.length)return"";const bk="bxs_"+k;const open=!!S.f[bk];const more=A.length>3;
+    return `<section class="card tsb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${esc(TRKN[k].l)}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${A.slice(0,open?A.length:3).map(([id,o,x],i)=>`<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${i+1}</span><span class="tsp ${tierOf(ovrOf(id))}${photoOf(id)?"":" ni"}">${ini(id)}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${subOf(x)}</small></span><b class="tsv num">${fv(k,o[k])}${unit(k)?" "+unit(k):""}</b></li>`).join("")}</ol></section>`};
+  {// Mevkiler sekmesiyle aynı düzen: ikonlu grup sekmeleri + grup içindeki her veri için liste kartı
+    const GI={Fizik:["simsek","#00E58A"],Pas:["krampon","#5FE3F5"],"Top kazanma":["kalkan","#FFD400"],"Top taşıma":["top","#FF3EA5"]};
+    const G=SAHA_G.filter(([,ks])=>ks.some(k=>avail.includes(k)));const g=G.find(x=>x[0]===S.f.sahaG)||G[0];
+    h+=`<div class="mzf">${segM}${cap}</div><div class="pr-s" role="tablist" aria-label="Veri grupları">${G.map(([t])=>`<button role="tab" aria-selected="${t===g[0]}" class="${t===g[0]?"on":""}" data-act="tog1" data-k="sahaG" data-v="${esc(t)}" style="--c:${GI[t][1]}"><i class="dit">${dIcon(GI[t][0],GI[t][1],26)}</i>${esc(t)}</button>`).join("")}</div>`;
+    h+=`<div class="boards">${g[1].filter(k=>avail.includes(k)).map(board).join("")}</div>`}
   if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
   return h}
 function resultPanel(m,...r){return inM(m,()=>_resultPanel(m,...r))}
