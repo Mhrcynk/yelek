@@ -3282,7 +3282,7 @@ html.dk .pr-s button i.dit,html.dk .pr-t i.dit{background:color-mix(in srgb,var(
 .hic{display:flex;align-items:center;gap:8px}
 .mzst .di{margin-bottom:4px}
 /* ikonlar yazıyla aynı hizada */
-html.dk .phd h1{gap:12px}html.dk .phd h1 .di{margin-top:-4px}
+html.dk .phd h1{gap:12px}html.dk .phd h1 .di{margin-top:2px}
 html.dk .pr-s button i.dit{width:34px;height:34px;border-radius:11px}
 html.dk .pr-t i.dit{width:32px;height:32px;border-radius:10px}
 .ldt .di{margin-top:-1px}
