@@ -1816,7 +1816,6 @@ function _perfBlock(m,sd,skey){skey=skey||"sd_"+m.id;const SK=esc(skey);const M=
     <button class="lnk" data-act="tog" data-k="exo_${SK}">${exOpen?"▴":"▾"} Penaltı ve çizgiden çıkarma${EXK.some(k=>Object.values(sd[k]||{}).some(Boolean))?" ✓":""}</button>
     ${exOpen?`<div style="display:grid;gap:12px">${EXK.map(exT).join("")}</div>`:""}</div>`}
 function scoreSide(m,side,name,val,bib){return `<div class="se"><span class="tn">${bib?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${name}</span><span class="big num">${val}</span><span class="pm"><button class="rnd" data-act="sc" data-m="${esc(m.id)}" data-side="${side}" data-d="-1" aria-label="${name} skorunu azalt">−</button><button class="rnd" data-act="sc" data-m="${esc(m.id)}" data-side="${side}" data-d="1" aria-label="${name} skorunu artır">+</button></span></div>`}
-function stp(mid,pid,k,lbl,v){v=+v||0;return `<span class="stp${v?" on":""}"><label>${lbl}</label><button data-act="st" data-m="${esc(mid)}" data-p="${esc(pid)}" data-k="${k}" data-d="-1" aria-label="${lbl} azalt">−</button><b>${v}</b><button data-act="st" data-m="${esc(mid)}" data-p="${esc(pid)}" data-k="${k}" data-d="1" aria-label="${lbl} artır">+</button></span>`}
 
 /* ================= Sonuç ================= */
 /* ===== Saha verileri: ekranlar ===== */
