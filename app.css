@@ -3312,4 +3312,23 @@ html.dk .empty.emp2 h3{color:#fff!important}
 html.dk body.phnt.phout .brand .t{opacity:1!important;visibility:visible;transform:none;pointer-events:auto}
 html.dk body.phnt .phd{padding-top:6px}
 /* lig > saha */
-.shc{margin:0 0 0 auto;font-size:.8rem;color:var(--c-ink3);text-align:right;min-width:0}
+
+/* Ben: fotoğraf kareyi doldurur (kartlardaki alttan solan boşluk kırpılır) */
+.mzme-av.ph{overflow:hidden;padding:0}
+.mzme-av.ph img{width:100%;height:100%;object-fit:cover;object-position:50% 0;transform:scale(1.28);transform-origin:50% 0;display:block}
+/* oyuncular: görünüm ve sıralama menüsü */
+html.dk .kmenu{width:min(300px,calc(100vw - 32px))!important;padding:14px!important;gap:2px}
+.kmh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 2px 6px;min-height:28px}
+.kmh b{font:800 1.05rem/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+html.dk .kmenu .kmh button{width:auto;min-height:0;padding:6px 10px;border-radius:99px;background:var(--c-card2);color:#fff;font:600 .78rem/1 Inter,sans-serif}
+html.dk .kmenu .kml{margin:10px 2px 6px}
+html.dk .kpills{padding:4px;border-radius:14px}
+html.dk .kpills button{height:40px;border-radius:10px!important;font-size:.82rem;display:flex;align-items:center;justify-content:center;gap:5px}
+html.dk .kpills button small{font-size:.72rem;font-weight:700;opacity:.7}
+.kma{display:grid;gap:2px;margin-top:8px;padding-top:6px;border-top:1px solid var(--c-line)}
+html.dk .kmenu .kma [role=menuitem]{display:flex;align-items:center;gap:12px;padding:8px 4px;min-height:52px}
+html.dk .kmenu .kma [role=menuitem]:hover{background:var(--c-card2)}
+.kmi{width:38px;height:38px;border-radius:12px;background:var(--c-card2);display:grid;place-items:center;flex:none}
+.kmt{display:grid;gap:3px;flex:1;min-width:0}.kmt b{font-size:.92rem;font-weight:700}.kmt small{font-size:.75rem;color:var(--c-ink3);font-weight:500}
+html.dk .kmenu .kma i{width:18px;height:18px;color:var(--c-ink3);display:grid;place-items:center}.kmenu .kma i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+.mzf:has(.kmenu){position:relative;z-index:45}
