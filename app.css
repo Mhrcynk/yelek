@@ -3248,3 +3248,18 @@ html.dk .ldc .ldr button{min-height:44px}
 html.dk .btn.sm{min-height:42px}
 .pe-u{margin:0;padding:10px 14px;font-size:.8rem;line-height:1.4;color:var(--c-gold);background:rgba(255,212,0,.08);border-top:1px solid var(--c-line)}
 html.dk .oyt2 button,html.dk .sx3 button{min-height:44px}
+/* fikstür: dış maç ekleme satırı */
+html.dk .fnew.xadd{margin:0 0 6px;min-height:56px;color:#fff}
+.xadd-i{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--c-card2);color:var(--c-pink)}
+.xadd-i svg{width:18px;height:18px}
+.xadd b{font-size:.95rem}.xadd small{font-size:.78rem;color:var(--c-ink3)}
+html.dk .xform .stp button,html.dk .sback{min-height:40px;min-width:40px}
+html.dk .mref{min-height:40px;padding:0 10px}
+.kdq{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 12px}
+/* puanlama kuralları: açılır bölümler */
+.rdet>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.rdet>summary::-webkit-details-marker{display:none}
+.rdet>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--c-ink3);border-bottom:2px solid var(--c-ink3);transform:rotate(45deg);margin:0 6px 4px}
+.rdet[open]>summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+.rdet>summary h2{margin:0}
+.rdet[open]>summary{margin-bottom:10px}
