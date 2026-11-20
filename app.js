@@ -1356,7 +1356,7 @@ function setupGuide(){if(!S.admin||fin().length||extFin().length||LS.get("y_gd_"
   const done=st.filter(x=>x[2]).length;const nx=st.findIndex(x=>!x[2]);
   return `<section class="card gd"><div class="gdh"><div><div class="eyebrow">Kurulum · ${done}/${st.length}</div><h2>Takımını hazırla</h2></div><button class="lnk" data-act="gdHide">Gizle</button></div>
     <span class="gdbar"><i style="width:${Math.round(done/st.length*100)}%"></i></span>
-    <ol class="gdl">${st.map(([t,d,ok,b],i)=>`<li class="${ok?"ok":i===nx?"now":""}"><span class="gdc">${ok?ICON.check:i+1}</span><span class="gdt"><b>${t}</b><small>${d}</small></span>${ok?"":b}</li>`).join("")}</ol></section>`}
+    <ol class="gdl">${st.map(([t,d,ok,b],i)=>`<li class="${ok?"ok":i===nx?"now":""}"><span class="gdc">${ok?ICON.check:i+1}</span><span class="gdt"><b>${t}</b><small>${d}</small></span>${ok?"":b}</li>`).join("")}</ol><p class="muted small" style="margin:10px 0 0">18 yaşından küçük oyuncu eklersen kart, fotoğraf ve yaş için velisinin onayını al.</p></section>`}
 function createHero(){const d=S.f.newDate||nextDay(+S.settings.day);const tm=S.f.newTime||S.settings.time;
   const sg=sugg();const nA=cleanName(S.f.newNameA||"")||sg[0],nB=cleanName(S.f.newNameB||"")||sg[1];const few=S.players.length<6;
   return `${mafEmpty(d,tm,nA,nB,"YENİ MAÇ","Tarihi ve takım adlarını seç, maçı aç")}
@@ -2266,7 +2266,7 @@ function sheetPEdit(){const p=P(S.sheet.id);if(!p||!S.admin)return"";const ph=ph
   <div class="pe-pv"><span class="pe-c ${tierOf(o1)}"><b class="num" id="ed_ovr">${o1}</b><small>${esc(a.epos)}</small></span><span class="pe-x"><b>${esc(a.name||p.name)}</b><small>Değiştirdikçe başlangıç reytingi canlı güncellenir</small><small>Şu anki reyting: <b class="num">${o0}</b></small></span></div>
   <div class="pe-l">
     <label class="pe-r" for="edName"><span>Ad</span><input id="edName" type="text" data-bind="ed.name" value="${esc(a.name)}" maxlength="40"></label>
-    <label class="pe-r" for="edAge"><span>Yaş</span><input id="edAge" type="number" inputmode="numeric" min="10" max="80" data-bind="ed.age" value="${esc(a.age??"")}" placeholder="–"></label>
+    <label class="pe-r" for="edAge"><span>Yaş</span><input id="edAge" type="number" inputmode="numeric" min="10" max="80" data-bind="ed.age" value="${esc(a.age??"")}" placeholder="–"></label>${+a.age>0&&+a.age<18?`<p class="pe-u">18 yaşından küçük: kart, fotoğraf ve yaş için velisinin onayını almış olmalısın. Durum notuna sağlık ayrıntısı yazma.</p>`:""}
     <label class="pe-r" for="edPos"><span>Mevki</span>${posSelect("edPos","ed.epos",a.epos)}</label>
     <label class="pe-r" for="edAlt"><span>Alternatif</span>${posSelect("edAlt","ed.alt",a.alt,true,a.epos)}</label>
     <div class="pe-r"><span>Kadro</span><div class="mzseg"><button data-act="edSq" data-v="" class="${a.yedek?"":"on"}">As</button><button data-act="edSq" data-v="1" class="${a.yedek?"on":""}">Yedek</button></div></div>
