@@ -791,7 +791,7 @@ function qkRender(){const old=$("#qk");if(old)old.innerHTML="";const el=$("#view
       await new Promise(r=>setTimeout(r,Math.max(0,900-(Date.now()-t0))));
       el.classList.remove("loading");el.classList.add("done");const tt=$("#ptt");if(tt){tt.classList.add("on");setTimeout(()=>tt.classList.remove("on"),1800)}await new Promise(r=>setTimeout(r,350));back(420);busy=false}
     else if(d)back(300)})})();
-function render(force){
+function render(force){document.body.dataset.fs=S.f.fs||"";
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -1328,10 +1328,8 @@ function viewGecmis(){
     const left=dd<=0?"Bugün":dd===1?"Yarın":dd+" gün kaldı";const wk=Math.min(seasonCount(curYr())+1,sLen());
     const cap=k=>{const id=k==="A"?om.cap_a:om.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
       return `<span class="btkt"><span class="btkc">${ok?(ph?`<img src="${esc(ph)}" alt="">`:`<i>${esc(initials(nameOf(id)))}</i>`):crest(nmOf(om,k),k,52,nmOf(om,k==="A"?"B":"A"))}</span><b>${esc(nmOf(om,k))}</b>${ok?`<small>KPT · ${esc(shortName(nameOf(id)))}</small>`:""}</span>`};
-    const side=om.state!=="kayit"&&S.me&&playSide(om,S.me);
-    const info=om.state==="kayit"?"Kadrolar henüz açıklanmadı":side?`Kadrolar belli · Takımın ${esc(nmOf(om,side))}`:"Kadrolar belli";
     h+=`<div class="gm">Sıradaki maç</div><button class="mzfx nx" data-act="tab" data-tab="mac"><span class="mzd"><b>${d.getDate()}</b><small>${AYLAR[d.getMonth()].slice(0,3).toLocaleUpperCase("tr")}</small></span>
-      <span class="mzfx-t"><b>${esc(nmOf(om,"A"))} – ${esc(nmOf(om,"B"))}</b><small>${GKISA[d.getDay()]} ${esc(String(om.time||"").slice(0,5))} · ${info}</small></span>${tkCd(matchTs(om),left)}</button>`}
+      <span class="mzfx-t"><b>${esc(nmOf(om,"A"))} – ${esc(nmOf(om,"B"))}</b><small>${GKISA[d.getDay()]} ${esc(String(om.time||"").slice(0,5))}</small></span>${tkCd(matchTs(om),left)}</button>`}
   for(const m of F){const d=parseYmd(m.date);const mk=AYLAR[d.getMonth()]+" "+d.getFullYear();if(mk!==cur){h+=`<div class="gm">${mk}</div>`;cur=mk}
     const i=S.mInfo[m.id]||{};const sa=+m.score_a||0,sb=+m.score_b||0;const st=m.stats||{};const ext=isExt(m);
     const sc=k=>(k==="A"?m.team_a:m.team_b||[]).filter(id=>+st[id]?.g).map(id=>firstName(nameOf(id))+(+st[id].g>1?" ×"+st[id].g:"")).join(", ");
@@ -1642,7 +1640,7 @@ function cardTok(T,mode,caps,notes,editable,sel){const id=T.id,kc=T.k.toLowerCas
   const kd2=kc2?`<i class="ptk-k k${kc2.lv}" aria-hidden="true">${ICON_BOLT}${kc2.k}</i>`:"";
   return `<button class="tcard ptk ${mode==="both"?"sm":"lg"} ${kc}${xc}" style="${st}" ${act} ${lab}><span class="ptk-c"><span class="ptk-p">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</span>${cap?'<i class="ptk-cap" aria-label="Kaptan">C</i>':""}<b class="ptk-o num">${ov}</b>${nt}</span><span class="ptk-n">${esc(shortName(nameOf(id)))}</span><span class="ptk-m"><i>${T.ep}</i>${kd2}</span></button>`}
 function fieldHtml(mode,pa,pb,la,lb,editable,sel,caps,notes){
-  return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
+  return `<div class="field ${mode==="both"?"both":"single"} cards${editable?" edit":""}${S.f.fs?" fs"+S.f.fs:""}" data-mode="${mode}">${fieldSvg()}${layout(mode,pa,pb,la,lb,true).map(T=>T.id||editable?cardTok(T,mode,caps,notes,editable,sel):"").join("")}</div>`;
 }
 const posArr=(m,k)=>{const p=k==="A"?m.pos_a:m.pos_b;return p&&p.length===TEAM_SIZE?p:FORMS[formOf(m,k)].slots};
 const formLabel=(fk,ps)=>samePos(ps,fk)?fk:"Özel";
