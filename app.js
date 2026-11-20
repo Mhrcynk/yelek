@@ -1905,11 +1905,10 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
   h+=`<div class="mzf"><label class="mzsel"><span>${esc(TRKN[K].l)}</span>${CHVD}<select data-act-change="sahaK" aria-label="Veri türü">${avail.map(k=>`<option value="${k}"${k===K?" selected":""}>${esc(TRKN[k].l)}</option>`).join("")}</select></label>
     <div class="mzseg" role="group" aria-label="Dönem">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div></div>`;
   const L=rows.filter(r=>r[1][K]!=null).sort((a,b)=>b[1][K]-a[1][K]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
-  if(L.length){const[id0,o0,x0]=L[0];const sub=x=>mode==="son"?(x?esc(nmOf(last,x)):""):x+" maç";const others=["km","spr","hiz","isa","rt","pas"].filter(k=>k!==K&&o0[k]!=null).slice(0,3);
-    h+=`<button class="mzsh" data-act="open" data-id="${esc(id0)}"><small>${mode==="son"?fmtShort(last.date)+" · ":""}${esc(TRKN[K].l)} lideri</small><span class="mzsh-h"><b>${esc(nameOf(id0))}</b><em class="num">${fv(K,o0[K])}${unit(K)?`<i> ${unit(K)}</i>`:""}</em></span>
-      ${others.length?`<span class="mzsh-s">${others.map(k=>`<span><b class="num">${fv(k,o0[k])}</b><small>${esc(TRKN[k].l)}</small></span>`).join("")}</span>`:""}</button>`;
-    const mx=Math.max(...L.map(r=>+r[1][K]||0))||1;
-    h+=`<div class="mzbar">${L.slice(1).map(([id,o,x])=>`<button data-act="open" data-id="${esc(id)}"><span class="mzbar-n">${esc(shortName(nameOf(id)))}<small>${sub(x)}</small></span><span class="mzbar-b"><i style="width:${Math.max(4,Math.round((+o[K]||0)/mx*100))}%"></i></span><b class="num">${fv(K,o[K])}</b></button>`).join("")}</div>`}
+  // sade liste: sıra, ad, ince çubuk, değer; lider aynı listede vurgulu
+  h+=`<p class="shc">${mode==="son"?`${fmtShort(last.date)} maçı`:`Sezon ortalaması${need>1?` · en az ${need} maç`:""}`}</p>`;
+  if(L.length){const mx=Math.max(...L.map(r=>+r[1][K]||0))||1;
+    h+=`<div class="shl">${L.map(([id,o],i)=>`<button class="${i===0?"l":""}" data-act="open" data-id="${esc(id)}"><span class="shl-r num">${i+1}</span><span class="shl-n">${esc(shortName(nameOf(id)))}</span><span class="shl-b"><i style="width:${Math.max(4,Math.round((+o[K]||0)/mx*100))}%"></i></span><b class="num">${fv(K,o[K])}${unit(K)?`<small> ${unit(K)}</small>`:""}</b></button>`).join("")}</div>`}
   if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
   return h}
 function resultPanel(m,...r){return inM(m,()=>_resultPanel(m,...r))}

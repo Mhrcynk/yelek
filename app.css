@@ -3311,3 +3311,13 @@ html.dk .empty.emp2 h3{color:#fff!important}
 /* ana sekmelerde büyük başlık yok: kaydırınca da takım adı üstte kalır */
 html.dk body.phnt.phout .brand .t{opacity:1!important;visibility:visible;transform:none;pointer-events:auto}
 html.dk body.phnt .phd{padding-top:6px}
+/* lig > saha: tek kartta sade sıralama */
+.shc{margin:-4px 2px 10px;font-size:.8rem;color:var(--c-ink3)}
+.shl{display:grid;background:var(--c-card);border-radius:20px;padding:4px 14px;margin-bottom:14px}
+.shl button{display:grid;grid-template-columns:22px minmax(0,7.5rem) minmax(0,1fr) 4.4rem;gap:12px;align-items:center;min-height:48px;border:0;border-top:1px solid var(--c-line);background:none;padding:0;color:#fff;text-align:left;cursor:pointer}
+.shl button:first-child{border-top:0}
+.shl-r{font:800 .95rem/1 var(--display);color:var(--c-ink3);text-align:center}
+.shl-n{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shl-b{height:6px;border-radius:6px;background:var(--c-line);overflow:hidden}.shl-b i{display:block;height:100%;border-radius:6px;background:var(--c-ink3)}
+.shl b{font:800 1.1rem/1 var(--display);text-align:right;white-space:nowrap}.shl b small{font:600 .7rem Inter,sans-serif;color:var(--c-ink3)}
+.shl button.l .shl-r,.shl button.l b{color:var(--c-green)}.shl button.l .shl-b i{background:var(--c-green)}
