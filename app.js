@@ -28,11 +28,8 @@ function logErr(msg,src,stack){try{msg=String(msg||"").slice(0,300);if(!msg||ERR
 window.addEventListener("error",e=>logErr(e.message,String(e.filename||"").split("/").pop()+":"+e.lineno+":"+e.colno,e.error&&e.error.stack));
 window.addEventListener("unhandledrejection",e=>{const r=e.reason;logErr((r&&r.message)||String(r),"promise",r&&r.stack)});
 
-/* görünüm: açık / koyu / sistem */
-const THEME=()=>LS.get("y_theme")||"acik";
-// Mor tasarım tek tema: her zaman koyu
+/* görünüm: mor tasarım tek tema, her zaman koyu */
 function themeApply(){document.documentElement.classList.add("dk")}
-try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(THEME()==="sis")themeApply()})}catch(_){}
 
 /* ================= Sabitler ================= */
 const STATUS={hazir:{label:"Hazır",cls:"ok"},sakat:{label:"Sakat",cls:"bad",flag:"SAKAT"},hasta:{label:"Hasta",cls:"bad",flag:"HASTA"},
@@ -2870,7 +2867,6 @@ document.addEventListener("click",async e=>{
     case"gateSet":{const on=el.dataset.v==="1";const r=await act("admin_set_gate",{p_pin:"",p_gate:on},on?"Uygulama kilitlendi":"Kilit kaldırıldı");if(r){S.gate=on;await load(true)}break}
     case"memLoad":S.memList=null;render(true);break;
     case"retry":load(true);break;
-    case"theme":LS.set("y_theme",el.dataset.v);themeApply();render(true);break;
     case"gdHide":LS.set("y_gd_"+TID,"1");render(true);break;
     case"gdLink":S.f.lk=el.dataset.v;S.f.setp="pay";goTab("ayarlar");render(true);window.scrollTo(0,0);break;
     case"setpGo":S.f.setp=el.dataset.v;goTab("ayarlar");render(true);break;
