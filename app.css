@@ -2330,7 +2330,8 @@ button.grab::before{content:"";position:absolute;inset:-14px -40px}
 
 
 
-/* KOYU-OTO:başla */
+
+/* Koyu tema katmanı (eskiden tools/koyu_tema.py üretirdi; artık elle düzenlenir) */
 html.dk .av{background:linear-gradient(150deg,#272C2F,#A4ADB3)}
 html.dk .sr .bar.r i{background:#273028}
 html.dk .msb .r i{background:#273028}
@@ -2595,20 +2596,21 @@ html.dk .mzh-ey em{color:#F1EAFB;background:#1E1442}
 html.dk .mzb.w{background:#1E1442;color:#F1EAFB}
 html.dk .mzlead .av{border:2px solid #3A2C78}
 html.dk .mzc.me{box-shadow:inset 0 0 0 2px #3A2C78}
-html.dk .mzmi-i{color:#F1EAFB}
+
 html.dk .mzh-y{background:#1E1442;color:#F1EAFB}
 html.dk .ob-pod i{border:3px solid #3A2C78}
 html.dk .mzpod-a{border:3px solid #3A2C78}
 html.dk .mzseg button.on{background:#1E1442;color:#F1EAFB}
 html.dk .ptt{background:#1E1442;color:#F1EAFB}
-html.dk .prh i{color:#F1EAFB}
+
 html.dk .pv-tabs button.on{background:#1E1442;color:#F1EAFB !important}
-html.dk .pr-s button i{color:#F1EAFB}
-html.dk .pr-t i{color:#F1EAFB}
-html.dk .ptk-cap{color:#F1EAFB}
+
+
+
 html.dk html .at-g button.on{color:#F1EAFB}
 html.dk html .at-g button.on,html.dk html .at-g button.on *,html.dk html .ia-g button.on,html.dk html .ia-g button.on *{color:#F1EAFB !important}
-/* KOYU-OTO:bitti */
+html.dk .sx3 button.on{background:#1E1442;border-color:#3A2C78;color:#F1EAFB}
+
 /* ================= Koyu tema (Ayarlar → Görünüm) ================= */
 html.dk{--pl:#EDE4FF;--plb:#FF3EA5;--bg:#120A2A;--bg2:#170E33;--card:#1E1442;--card2:#1E1442;--card3:#2C2060;--line:#2C2060;--line2:#3A2C78;
  --ink:#F1EAFB;--muted:#A99CD6;--dim:#8C7FC0;--acc:#FF3EA5;--glass:#1E1442;--gline:#2C2060;color-scheme:dark}
@@ -3913,7 +3915,7 @@ html .nt.n7,html .fnts .fn7{background:#5DB443!important;color:#06170D!important
 html .btn.sm.primary,html .pmi button.on{font-weight:700;font-size:.875rem}
 html .at-g button.on{color:#120A2A}
 /* dokunma alanları: satırlar ve alanlar en az 44 px, satır içi küçük düğmeler en az 40 px */
-html .pe-r input,html .pe-r select,html .tsb .tsh,html .mzbar.rvc button{min-height:44px}
+html .pe-r input,html .pe-r select,html .tsb .tsh,html .mzbar button{min-height:44px}
 html .mzseg button,html .at-r button,html .ked-c,html .pmi button,html .vtog button{min-height:40px}
 html .at-r button{min-width:40px}
 html .mzh-y{min-height:32px;padding-top:4px;padding-bottom:4px}
@@ -3928,3 +3930,8 @@ html .pmf button{min-height:40px!important}
 .nxs-x b{font:800 1.25rem/1.05 var(--display);text-transform:uppercase;color:#fff}
 .nxs-x span{font-size:.8rem;color:#D9D2F5}
 .nxs .btn{flex:none}
+/* İstatistikler: Yelek · Krallar · Mevkiler · Saha */
+.sx3{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:6px;margin:0 0 16px}
+.sx3 button{min-height:40px;border-radius:12px;border:1.5px solid #3A2C78;background:#1E1442;color:#D9D2F5;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}
+.sx3 button.on{background:#fff;border-color:#fff;color:#24105E}
+html.dk .ldc .ldr button{min-height:44px}
