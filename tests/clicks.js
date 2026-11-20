@@ -110,6 +110,12 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     await E(pg,`S.admin=true;S.mem={status:"onayli",role:"yonetici",player_id:"${ids[4]}"};render(true)`)});
   await T("Çıkarılan oyuncuyu geri al",async()=>{await E(pg,`S.all.find(p=>p.id==="${ids[13]}").archived=true;S.players=S.players.filter(p=>p.id!=="${ids[13]}");S.sheet={type:"arch"};render(true)`);await pg.waitForTimeout(300);
     await click(pg,'#modal [data-act="restoreP"]');ok(calls.some(c=>c[0]==="admin_restore_player"),"geri alma sunucuya gitmedi");await E(pg,`S.sheet=null;render(true)`)});
+  await T("Giriş ekranı",async()=>{await E(pg,`S.tab="ben";S.f.setp="hesap";render(true)`);await E(pg,`S.session=null;S.mem=null;S.admin=false;S.me="";S.fol=false;S.sheet=null;S.f.setp="";S.tab="mac";S.viaLink=false;render(true)`);await pg.waitForTimeout(300);
+    const st=await pg.evaluate(()=>({nav:getComputedStyle(document.querySelector(".nav")).display,pm:getComputedStyle(document.querySelector("#pmBtn")).display,br:document.querySelector("#brT").textContent,txt:document.querySelector("#view").innerText}));
+    ok(st.nav==="none","giriş ekranında alt bar görünüyor");ok(st.pm==="none","giriş ekranında paylaş düğmesi görünüyor");ok(st.br==="Yelek","giriş ekranında takım adı görünüyor: "+st.br);ok(!/Test FC/i.test(st.txt),"giriş ekranı içeriğinde takım adı geçiyor");
+    ok(await pg.locator('.onb-cta [data-act="oauth"]').count()===1,"giriş düğmesi yok");
+    await click(pg,'.onb-cta [data-act="loginSheet"]');ok(!/Test FC/i.test(await pg.locator("#modal").innerText()),"giriş penceresinde takım adı geçiyor");await click(pg,'#modal [data-act="close"]');
+    await login(pg,OWNER,"yonetici")});
   await T("Hata kaydı",async()=>{await pg.evaluate(()=>setTimeout(()=>{window.__yokFonksiyon()},0));await pg.waitForTimeout(500);ok(calls.some(c=>c[0]==="log_error"),"hata kaydedilmedi");pg.errs=pg.errs.filter(x=>!/__yokFonksiyon/.test(x))});
 
   // dar ekranda yatay taşma

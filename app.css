@@ -3267,3 +3267,11 @@ html.dk .onb-d button::after{content:"";position:absolute;inset:-14px -6px}
 html.dk .mzseg button{min-height:42px}
 html.dk .rdet{padding:10px 16px!important;gap:0!important}
 html.dk .rdet>summary h2{flex:1;text-align:left;font-size:1.3rem}
+/* giriş / tanıtım ekranı: alt bar ve paylaş düğmesi yok */
+html.dk body.gated .nav,html.dk body.gated .navfade,html.dk body.gated #pmBtn,html.dk body.gated #meBtn,html.dk body.gated .qk{display:none!important}
+/* giriş ekranı: ana eylem belirgin, alt yazı hizalı, bağlantılar basılabilir */
+html.dk .onb-cta .lgo{background:#fff!important;color:#24105E!important;border-color:#fff!important}
+.onb-nx{margin:10px 4px 0;text-align:center;font-size:.8rem;line-height:1.4;color:var(--c-ink3)}
+html.dk .vfoot{align-items:center}
+html.dk .fl .lnk,html.dk .flf .lnk{min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+html.dk .flpriv a{display:inline-block;padding:12px 8px}

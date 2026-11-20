@@ -97,7 +97,7 @@ const lvMul=lv=>1;const lvMulOld=lv=>Math.round(clamp(lv<NOTE.ref?1+(NOTE.ref-lv
 const fN=x=>x==null?"–":(Math.round(x*10)/10).toFixed(1).replace(".",",");
 const AYLAR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 const GUNLER=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
-const DEF_SET={group_name:"Salı Ekibi",field_name:"",day:2,time:"21:00"};
+const DEF_SET={group_name:"Takım",field_name:"",day:2,time:"21:00"};
 const TABS=[["gecmis","Fikstür","gecmis"],["lig","Lig","lig"],["mac","Maç","mac"],["kartlar","Oyuncular","kart"],["ben","Ben","ben"]];
 
 const sv=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -559,7 +559,7 @@ function yrSel(){const y=selYr();const L=yrList();
 function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(y),L=sLen(),done=seasonDone(y);const fin2=!done&&n>=L-2;
   return `<div class="sprog"><div class="sprt"><b>${done?"Sezon tamamlandı":`Hafta ${n}/${L}`}</b>${fin2?'<span class="sfin">Final haftaları</span>':""}</div><span class="sbar"><i style="width:${Math.min(100,Math.round((done?L:n)/L*100))}%"></i></span></div>`}
 const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Lig",1],saha:["Lig",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
-function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const gen=!S.session&&!S.viaLink;const n=gen?"Yelek":(S.settings&&S.settings.group_name)||"Yelek";if(bt&&bt.textContent!==n)bt.textContent=n;const bs=document.querySelector(".brand .bsub");if(bs){const st=gen?"Halı saha ligi":"Takımın";if(bs.textContent!==st)bs.textContent=st}document.body.classList.toggle("genb",gen)}const t=S.tab;let c=PHD[t];
+function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const gen=!S.session&&!S.viaLink;const n=gen?"Yelek":(S.settings&&S.settings.group_name)||"Yelek";if(bt&&bt.textContent!==n)bt.textContent=n;const bs=document.querySelector(".brand .bsub");if(bs){const st=gen?"Halı saha ligi":isMember()?"Takımın":S.fol?"Takip ettiğin lig":"Takım";if(bs.textContent!==st)bs.textContent=st}document.body.classList.toggle("genb",gen||!S.session)}const t=S.tab;let c=PHD[t];
   if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ben"&&S.f.setp)c=[SUBT[S.f.setp]||"Ben",0];if(typeof gated==="function"&&gated())c=null;
   if(!S.loaded||!c){el.hidden=true;el.innerHTML="";document.body.classList.remove("hasphd","phout");$("#tt").textContent="";return}
   el.hidden=false;document.body.classList.add("hasphd");$("#tt").textContent=c[0];
@@ -808,7 +808,7 @@ function renderSheet(){
   if(S.sheet&&S.sheet.type==="pm")ypZoom();
 }
 /* ================= Paylaşım merkezi ================= */
-let IGH="@abilerkardeslerfc";
+let IGH="Yelek";
 const HT=()=>"#"+(S.settings.ig||String(S.settings.group_name||"yelek").toLocaleLowerCase("tr").replace(/[^a-z0-9çğıöşü]/g,""));
 const setBrand=()=>{IGH=S.settings.ig?"@"+S.settings.ig:(S.settings.group_name||"Yelek")};
 const canPM=()=>true;
@@ -2488,7 +2488,7 @@ async function signIn(provider){if(inApp()){S.sheet={type:"inapp"};render(true);
   const sb=await authStart();if(!sb)return;
   const{error}=await sb.auth.signInWithOAuth({provider,options:{redirectTo:location.origin+location.pathname}});
   if(error)toast(provider==="apple"?"Apple ile giriş şu an açık değil":"Google ile giriş şu an açık değil")}
-async function signOut(){AUTH.byUser=true;LS.del("y_auth_bk");if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;S.admin=false;cacheClear();LS.del("y_me");S.me="";render(true);load(true)}
+async function signOut(){AUTH.byUser=true;LS.del("y_auth_bk");if(AUTH.sb){try{await AUTH.sb.auth.signOut()}catch(_){}}S.session=null;S.mem=null;S.admin=false;S.fol=false;S.sheet=null;S.view=null;S.f.setp="";S.f.leave=0;S.tab="mac";cacheClear();LS.del("y_me");S.me="";render(true);window.scrollTo(0,0);load(true)}
 const G_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6a5.1 5.1 0 0 1-2.2 3.4v2.8h3.6c2-1.9 3.2-4.7 3.2-8.3z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.4-2.7l-3.6-2.8c-1 .7-2.3 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2v2.9A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14c-.2-.7-.4-1.4-.4-2.1s.1-1.4.4-2.1V7H2a11 11 0 0 0 0 9.9z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2 7l3.7 2.9C6.6 7.3 9.1 5.4 12 5.4z"/></svg>';
 const APPLE_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7a4.6 4.6 0 0 0-3.6-2c-1.5-.2-3 .9-3.7.9s-2-.9-3.2-.8a4.8 4.8 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8s1.9.8 3.2.8 2.1-1.2 2.9-2.4a10 10 0 0 0 1.3-2.7c-.1 0-2.3-.9-2.3-3.9zM14 5.4a4.3 4.3 0 0 0 1-3.1 4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3c1.1.1 2.2-.5 2.9-1.4z"/></svg>';
 // e-posta koduyla giriş: Supabase e-posta (SMTP) ayarı yapılınca true yapılır
@@ -2502,7 +2502,7 @@ function otpForm(){if(!OTP_ON)return"";const o=S.f.otp||(S.f.otp={email:"",code:
 function loginBtns(){if(S.f.otp&&S.f.otp.sent)return `<div class="lgb">${otpForm()}</div>`;
   return `<div class="lgb">${inApp()?"":`<button class="btn block lgg" data-act="oauth" data-v="google">${G_SVG} Google ile devam et</button>${OTP_ON?'<div class="orsep"><span>ya da e-postayla</span></div>':""}`}${otpForm()}</div>`}
 function sheetLogin(){const sent=!!(S.f.otp&&S.f.otp.sent);
-  return `<div class="ch"><div><div class="eyebrow">${IGH}</div><h2>${sent?"Kodu gir":"Giriş yap"}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
+  return `<div class="ch"><div><div class="eyebrow">${!S.session&&!S.viaLink?"Yelek":IGH}</div><h2>${sent?"Kodu gir":"Giriş yap"}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
    ${sent?"":`<p class="flsub">Şifre yok. Google hesabınla ya da e-postana gelen kodla girersin.</p>`}${loginBtns()}
    <p class="flpriv">Yöneticin sadece adını, e-postanı ve profil fotoğrafını görür. <a href="gizlilik.html">Gizlilik</a></p>`}
 function claimList(){const g=S.gate&&!isMember();if(g){if(!S.vit){vitrinLoad();return[]}return(S.vit.players||[]).map(p=>({id:p.id,n:p.n}))}return S.players.map(p=>({id:p.id,n:p.name}))}
@@ -2677,10 +2677,11 @@ function viewVitrin(){
   const card=`<div class="lpcard"><div class="lpct"><b>82</b><span>STP</span></div><div class="lpcp">${SILH}</div><div class="lpcn">SEN</div><div class="lpcs"><span><b>78</b> HIZ</span><span><b>74</b> ŞUT</span><span><b>81</b> PAS</span><span><b>76</b> DRİ</span><span><b>84</b> DEF</span><span><b>80</b> FİZ</span></div></div>`;
   const home=(TID===0||gen)&&!inApp();
   const ctaM=`<div class="onb-cta"><button class="mzb w lgo" data-act="oauth" data-v="google">${G_SVG}<span>Google ile devam et</span></button>${OTP_ON?`<button class="mzb g2" data-act="loginSheet">E-postayla devam et</button>`:""}</div>`;
-  return `${top}${onbSlides()}${home&&!inApp()?ctaM:""}
+  return `${top}${onbSlides()}${home&&!inApp()?ctaM+`<p class="onb-nx">Girişten sonra takım kodunla takımına katılırsın ya da kendi takımını kurarsın.</p>`:""}
     <section class="lpsec"><span class="lpk">Sık sorulanlar</span><div class="lpfaq">
       <details><summary>Ücretli mi?</summary><p>Hayır, Yelek ücretsiz.</p></details>
       <details><summary>Takıma nasıl katılırım?</summary><p>Giriş yap, yöneticiden aldığın takım kodunu yaz ve listeden kartını seç. Kartın yoksa yeni kart iste. Yönetici onaylayınca içeridesin.</p></details>
+      <details><summary>Kendi takımımı nasıl kurarım?</summary><p>Giriş yap, Takımlar ekranında "Kendi takımını kur"a dokun; takımın adını ve maç gününü yaz. İsteğin onaylanınca oyuncularını ekler, ekibini linkle davet edersin.</p></details>
       <details><summary>Reytingim neye göre değişir?</summary><p>Maç notuna göre. Not; gol, asist, maç sonucu, takım arkadaşlarının oyları ve varsa saha verilerinden çıkar.</p></details>
       <details><summary>Oylamada kimin ne verdiği görünür mü?</summary><p>Hayır. Herkes oyların dağılımını görür; kimin kime ne verdiğini sadece yönetici görür.</p></details>
       <details><summary>Verilerimizi kimler görür?</summary><p>Sadece takımın onayladığı üyeler. Takipçiler yalnızca skor ve puan durumunu görür. Takımlar birbirinin verisini göremez.</p></details>
