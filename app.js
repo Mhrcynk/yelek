@@ -1521,7 +1521,7 @@ function matchBody(m){
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`;
   }else{
     const ended=mEnded(m);if(ended)h+=voteCard(m);
-    h+=`<section class="card" id="kadrolar"><div class="ch"><h2 class="hic">${dIcon("yelek","pink",26)}Kadrolar</h2><button class="btn sm ghost" data-act="copyTxt" data-id="${esc(m.id)}" data-v="teams">Kopyala</button></div>${teamsView(m,true)}</section>`;
+    h+=`<section class="card" id="kadrolar"><div class="ch"><h2 class="hic">${dIcon("yelek","pink",26)}Kadrolar</h2></div>${teamsView(m,true)}</section>`;
     if(!ended)h+=preview(m);
     if(S.admin)h+=finishCard(m);
   }
