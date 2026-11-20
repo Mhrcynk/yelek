@@ -586,7 +586,7 @@ function countUp(el){const n=el.firstChild;if(!n||n.nodeType!==3)return;const t=
   put(pre+(dec?"0,0":"0"));requestAnimationFrame(step)}
 const CHVD='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function yrSel(){const y=selYr();const L=yrList();
-  return `<label class="yrsel"><span>${y==="all"?"Tüm zamanlar":"Sezon "+y}</span><i>${CHVD}</i><select data-act-change="yr" aria-label="Sezon seç">${L.map(x=>`<option value="${x}"${x===y?" selected":""}>Sezon ${x}${seasonDone(x)?"":" (devam ediyor)"}</option>`).join("")}<option value="all"${y==="all"?" selected":""}>Tüm zamanlar</option></select></label>`}
+  return `<label class="yrsel"><span>${y==="all"?"Tüm zamanlar":"Sezon "+y}</span><i>${CHVD}</i><select data-act-change="yr" aria-label="Sezon seç">${L.map(x=>`<option value="${x}"${x===y?" selected":""}>Sezon ${x}</option>`).join("")}<option value="all"${y==="all"?" selected":""}>Tüm zamanlar</option></select></label>`}
 function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(y),L=sLen(),done=seasonDone(y);const fin2=!done&&n>=L-2;
   return `<div class="sprog"><div class="sprt"><b>${done?"Sezon tamamlandı":`Hafta ${n}/${L}`}</b>${fin2?'<span class="sfin">Final haftaları</span>':""}</div><span class="sbar"><i style="width:${Math.min(100,Math.round((done?L:n)/L*100))}%"></i></span></div>`}
 const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Lig",1],saha:["Lig",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
@@ -3456,4 +3456,31 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
   if(S.badTeam)toast("Takım linki geçersiz ya da takım kapatılmış");
   if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
 })();
+// ---- uygulamaya uygun seçim menüsü: telefonun kendi açılır listesi yerine ----
+(()=>{let pop=null,src=null,tx=0,ty=0,tsel=null,lastTouch=0;
+  const close=()=>{if(!pop)return;pop.remove();pop=null;const s=src;src=null;try{s&&s.focus({preventScroll:true})}catch(_){}};
+  const open=sel=>{if(sel.disabled)return;close();src=sel;
+    const box=(sel.closest(".yrsel,.cv-s,.mzsel,.pe-r,label.f")||sel).getBoundingClientRect();
+    const opts=[...sel.querySelectorAll("option,optgroup")];
+    const html=opts.map(o=>o.tagName==="OPTGROUP"?`<span class="cselg">${esc(o.label)}</span>`:`<button type="button" role="option" aria-selected="${o.selected}" class="${o.selected?"on":""}" data-v="${esc(o.value)}"${o.disabled?" disabled":""}><span>${esc(o.textContent)}</span>${o.selected?'<i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>':""}</button>`).join("");
+    pop=document.createElement("div");pop.className="csel-w";
+    pop.innerHTML=`<button type="button" class="csel-x" aria-label="Kapat" tabindex="-1"></button><div class="csel" role="listbox" aria-label="${esc(sel.getAttribute("aria-label")||sel.closest("label")?.firstChild?.textContent?.trim()||"Seç")}">${html}</div>`;
+    document.body.appendChild(pop);const m=pop.querySelector(".csel");
+    const vw=innerWidth,vh=innerHeight,w=Math.min(vw-24,Math.max(box.width,240));m.style.width=w+"px";
+    m.style.left=Math.max(12,Math.min(box.left,vw-12-w))+"px";
+    const below=vh-box.bottom-16,above=box.top-16,mh=Math.min(m.scrollHeight,420);
+    if(below>=Math.min(mh,260)||below>=above){m.style.top=(box.bottom+6)+"px";m.style.maxHeight=Math.max(160,below-80)+"px"}
+    else{m.style.bottom=(vh-box.top+6)+"px";m.style.maxHeight=Math.max(160,above)+"px"}
+    const on=m.querySelector("button.on");if(on)on.scrollIntoView({block:"center"});(on||m.querySelector("button"))?.focus({preventScroll:true});
+    pop.addEventListener("click",e=>{const b=e.target.closest(".csel button");if(!b){close();return}if(b.disabled)return;const s=src;
+      if(s.value!==b.dataset.v){s.value=b.dataset.v;close();s.dispatchEvent(new Event("input",{bubbles:true}));s.dispatchEvent(new Event("change",{bubbles:true}))}else close()});
+    pop.addEventListener("keydown",e=>{const bs=[...m.querySelectorAll("button:not([disabled])")];const i=bs.indexOf(document.activeElement);
+      if(e.key==="Escape"){e.preventDefault();close()}else if(e.key==="ArrowDown"){e.preventDefault();bs[Math.min(bs.length-1,i+1)]?.focus()}else if(e.key==="ArrowUp"){e.preventDefault();bs[Math.max(0,i-1)]?.focus()}})};
+  const selOf=t=>t.closest?.("select")||(t.closest?.("label")?.querySelector("select"))||null;
+  document.addEventListener("touchstart",e=>{lastTouch=Date.now();const s=selOf(e.target);tsel=s;if(s){tx=e.touches[0].clientX;ty=e.touches[0].clientY}},{capture:true,passive:true});
+  document.addEventListener("touchend",e=>{lastTouch=Date.now();const s=tsel;tsel=null;if(!s||selOf(e.target)!==s)return;const t=e.changedTouches[0];if(Math.abs(t.clientX-tx)>10||Math.abs(t.clientY-ty)>10)return;e.preventDefault();open(s)},{capture:true,passive:false});
+  document.addEventListener("mousedown",e=>{if(Date.now()-lastTouch<800)return;const s=selOf(e.target);if(!s||e.button)return;e.preventDefault();open(s)},true);
+  document.addEventListener("click",e=>{const s=selOf(e.target);if(s&&e.target.tagName!=="SELECT")e.preventDefault()},true);
+  document.addEventListener("keydown",e=>{const s=e.target;if(s.tagName==="SELECT"&&[" ","Enter","ArrowDown","ArrowUp"].includes(e.key)&&!e.altKey){e.preventDefault();open(s)}},true);
+  addEventListener("resize",close);document.addEventListener("scroll",e=>{if(pop&&!pop.contains(e.target))close()},true);})();
 })();

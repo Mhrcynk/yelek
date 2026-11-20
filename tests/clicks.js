@@ -74,6 +74,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     await click(pg,'.nav [data-tab="kartlar"]');ok(await pg.locator(".mzpl .kchip").count()>0,"listede kondisyon yok");
     await click(pg,'#view [data-act="open"]');ok(await pg.locator("#modal .pv-k svg").count()===1,"oyuncu detayında kondisyon yok");await click(pg,'#modal [data-act="close"]')});
 
+  await T("Seçim menüsü uygulamanın kendi listesiyle açılıyor",async()=>{await E(pg,"window._t=S.tab;S.sheet=null;S.tab='lig';render(true)");await pg.waitForTimeout(300);await click(pg,'.yrsel select');ok(await pg.locator('.csel').count()===1,"menü açılmadı");const v0=await pg.evaluate(()=>document.querySelector('.yrsel select').value);await click(pg,'.csel button:not(.on)');ok(await pg.locator('.csel').count()===0,"menü kapanmadı");ok(await pg.evaluate(()=>document.querySelector('.yrsel select').value)!==v0,"seçim uygulanmadı");await E(pg,"S.yr='all';render(true)");await pg.evaluate(()=>{const s=document.querySelector('.yrsel select');s.value=s.options[0].value;s.dispatchEvent(new Event('change',{bubbles:true}))});await E(pg,"S.tab=window._t;render(true)");await pg.waitForTimeout(300)});
   await T("Oyuncu ekle butonu",async()=>{await click(pg,'.mzib[data-act="kmenu"]');await click(pg,'[data-act="addSheet"]');ok(await sheetOpen(pg),"Oyuncu ekle açılmadı");await click(pg,'#modal [data-act="close"]')});
 
   await T("Dış maç formu",async()=>{await click(pg,'.nav [data-tab="gecmis"]');await click(pg,'[data-act="extNew"]');ok(await sheetOpen(pg),"Dış maç açılmadı");
