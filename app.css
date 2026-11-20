@@ -3280,11 +3280,18 @@ html.dk .mzmi-i.dit{color:inherit}
 html.dk .pr-s button i.dit,html.dk .pr-t i.dit{background:color-mix(in srgb,var(--c) 14%,transparent)!important}
 .ldt{display:flex;align-items:center;gap:6px}
 .hic{display:flex;align-items:center;gap:8px}
-.mzst .di{margin-bottom:2px}
+.mzst .di{margin-bottom:4px}
+/* ikonlar yazıyla aynı hizada */
+html.dk .phd h1{gap:12px}html.dk .phd h1 .di{margin-top:-4px}
+html.dk .pr-s button i.dit{width:34px;height:34px;border-radius:11px}
+html.dk .pr-t i.dit{width:32px;height:32px;border-radius:10px}
+.ldt .di{margin-top:-1px}
 /* paylaşım görselleri: çıkartma ikonlar */
 .si{flex:none;display:block}
-.yp-ey.yp-eyi{display:flex;align-items:center;gap:6px;margin-top:-6px}
-.yp-mini .si{margin-right:2px}
+.yp-ey.yp-eyi{display:flex;align-items:center;gap:6px}
+/* çıkartma yazının ortasına hizalı; büyük olsa da başlığı aşağı itmez */
+.yp-eyi .si{margin:-11px 0 -11px -6px}
+.yp-mini .si{margin:-4px 2px -4px -2px}
 /* boş ekranlar: konu ikonu, başlık, açıklama, varsa tek düğme */
 html.dk .empty.emp2{padding:30px 16px 26px;gap:8px}
 html.dk .empty.emp2::before{display:none}
