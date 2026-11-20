@@ -340,6 +340,21 @@ function noteSpread(p,cur,ch,D,role){
   const out={},tag={};const put=(M,share,w)=>{const iu=imp(M);if(Math.abs(iu)<1e-6)return false;const f=share/iu;for(const k in M){out[k]=(out[k]||0)+M[k]*f;tag[k]=tag[k]||(typeof w==="string"?w:w[k])}return true};
   const hasE=Object.keys(E).length>0;let eS=hasE?D*ENG.evShare:0;if(hasE&&!put(E,eS,why))eS=0;put(U,D-eS,"maç notu");
   return Object.keys(out).map(k=>[k,out[k],tag[k]])}
+// Maç sonu puanları dondurulur: yönetici cihazı bitmiş maçların sonucunu sırayla maç kaydına yazar.
+// Sonraki hesaplar donmuş maçı yeniden hesaplamaz; kurallar değişse de geçmiş aynı kalır. Maç düzeltilirse sunucu o maçı ve sonrakileri çözer.
+const ENG_V="2026-11-18";
+const dlPack=DL=>{const o={};for(const k in DL){const v=Math.round(DL[k]*1000)/1000;if(v)o[k]=v}return o};
+function calcOf(m,id,KS){const e=m.calc&&m.calc.p&&m.calc.p[id];if(!e||!e.dl||typeof e.dl!=="object")return null;
+  for(const k in e.dl)if(!KS.includes(k))return null;return e}// mevki kaleciyle saha oyuncusu arasında değiştiyse yeniden hesapla
+async function calcSync(){if(!S.admin||S._cs||S.fol)return;S._cs=true;let n=0;
+  try{const F=fin();let i=0;while(i<F.length&&F[i].calc)i++;
+    for(;i<F.length&&n<30;i++){const m=F[i];const inf=S.mInfo&&S.mInfo[m.id];if(!inf||!inf.pts)break;const p={};
+      for(const[id,r]of Object.entries(inf.pts)){const st=S.stats[id];const h=st&&st.hist.find(x=>x.m.id===m.id&&x.kind==="oynadi");
+        p[id]={pts:Math.round(r.pts*100)/100,esik:Math.round((r.esik??0)*1000)/1000,dl:h&&h.dl?h.dl:{},ch:h?h.ch:[]}}
+      const calc={v:ENG_V,at:new Date().toISOString(),p};let ok=false;
+      try{const r=await rpc("admin_set_calc",{p_pin:S.pin||"",p_id:m.id,p_calc:calc});ok=!!(r&&r.ok)}catch(_){}
+      if(!ok)break;m.calc=calc;n++}}
+  finally{S._cs=false}return n}
 // Haftanın Takımı: en yüksek notlu kaleci + en yüksek notlu 6 oyuncu (misafirler hariç), nota göre sıralı
 function totwOf(pl,pts){const ok=pl.filter(id=>pts[id]&&P(id)&&!P(id).guest).sort((a,b)=>pts[b].pts-pts[a].pts);
   // mevkiye göre 7: 1 kaleci + 2-2-2 / 2-3-1 / 3-2-1 dizilişlerinden not toplamı en yüksek olanı; bir mevkide oyuncu yetmezse boşluğu en iyi kalan oyuncu doldurur
@@ -358,6 +373,7 @@ function computeCore(LV){
   const F=fin();const mInfo={};const out={};const lvOf=(mid,id)=>LV?.[mid]?.[id]??(P(id)?baseOf(P(id)):NOTE.ref);
   for(const m of F){const motm=m.motm||null,fiy=m.fiy_id||topVote(m,"fiyasko"),gol=m.gol_id||topVote(m,"gol");
     const pl=plAll(m);const pts=matchNotes(m,motm,gol,fiy,id=>lvOf(m.id,id));
+    if(m.calc&&m.calc.p)for(const id in pts){const e=m.calc.p[id];if(e&&isFinite(e.pts)){pts[id].pts=e.pts;if(isFinite(e.esik))pts[id].esik=e.esik;pts[id].fz=true}}
     const totw=totwOf(pl,pts);mInfo[m.id]={motm,fiy,gol,pts,totw}}
   for(const p of S.all){
     const base=baseOf(p);const joined=p.created_at?new Date(new Date(p.created_at).toDateString()).getTime():0;
@@ -375,6 +391,9 @@ function computeCore(LV){
         ch=matchChanges(p,r,m,(m.stats||{})[p.id]||{},{fvDry,osDry,att,motm:inf.motm===p.id});line={kind:"oynadi",r};
       }else{streak=0;att=0;ch=[];line={kind:"gelmedi"}} // maça gelmeyenin kartı değişmez
       if(r)for(const k of KS)DL[k]*=(1-ENG.decay);
+      const fz=r&&calcOf(m,p.id,KS);
+      if(fz){const before=gen;for(const k of KS)DL[k]=fz.dl[k]||0;gen=clamp(genF(p,curOf()),40,99);ovr=flo(gen);
+        hist.push({m,d:Math.round((gen-before)*10)/10,od:ovr-flo(before),ovr,gx:gen,ch:fz.ch||[],dl:fz.dl,fz:true,...line});series.push(ovr);continue}
       ch=ch.filter(x=>x[0] in DL);const before=gen;const g0=genF(p,curOf());const nD=r?clamp((r.pts-(r.esik??lvEsik(r.lv??NOTE.ref)))*NOTE.kat,-NOTE.katMax,NOTE.katMax):0;if(r)ch=noteSpread(p,curOf(),ch,nD,r.role);const DL0={...DL};
       const req={};for(const[k,v]of ch){req[k]=(req[k]||0)+v;DL[k]=clamp(DL[k]+v,-ENG.cap,ENG.cap)}
       let ng=genF(p,curOf());
@@ -382,7 +401,7 @@ function computeCore(LV){
       else{const lim=ENG.maxGen;if(Math.abs(ng-before)>lim){const f=lim/Math.abs(ng-before);for(const k of KS)DL[k]=DL0[k]+(DL[k]-DL0[k])*f;ng=genF(p,curOf())}}
       ch=Object.keys(req).map(k=>{const v=Math.round((DL[k]-DL0[k])*10)/10;return v?[k,v]:Math.abs(req[k])>=.05?[k,0,req[k]>0?"tavan":"taban"]:null}).filter(Boolean);
       gen=clamp(ng,40,99);ovr=flo(gen);
-      hist.push({m,d:Math.round((gen-before)*10)/10,od:ovr-flo(before),ovr,gx:gen,ch,...line});series.push(ovr);
+      hist.push({m,d:Math.round((gen-before)*10)/10,od:ovr-flo(before),ovr,gx:gen,ch,dl:r?dlPack(DL):null,...line});series.push(ovr);
     }
     const last=hist[hist.length-1];const cur=curOf();const attrs={},attrD={};
     for(const[k,,,subs]of attrSet(p.pos)){const v=subs.reduce((q,[sk])=>q+cur[k+"_"+sk],0)/subs.length,b=subs.reduce((q,[sk])=>q+B0[k+"_"+sk],0)/subs.length;attrs[k]=flo(v);attrD[k]=flo(v)-flo(b)}
@@ -483,7 +502,7 @@ async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
       let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");if(d.length>=250000)continue;
       const w=await rpc("admin_set_photo",{p_pin:S.pin||"",p_id:x.id,p_data:d});if(w&&w.ok){S.photos[x.id]=d;await rpc("admin_photo_fix_done",{p_pin:S.pin||"",p_id:x.id});n++}}
     if(n){toast(n+" fotoğraf hizalandı");render(true)}}catch(e){console.warn(e)}finally{S._pf=false}}
-async function notesSync(force){setTimeout(photoFixRun,2500);if(!S.admin||S._ns)return;S._ns=true;
+async function notesSync(force){setTimeout(photoFixRun,2500);setTimeout(calcSync,1500);if(!S.admin||S._ns)return;S._ns=true;
   try{for(const m of S.matches){if(!mDone(m)||(m.notes&&m.id!==force)||isExt(m))continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
     const n={};for(const[id,r]of Object.entries(inf.pts)){if(r&&isFinite(r.pts))n[id]={n:Math.round(r.pts*10)/10}}
     if(!Object.keys(n).length)continue;try{const r=await rpc("admin_set_notes",{p_pin:S.pin||"",p_id:m.id,p_notes:n});if(r&&r.ok)m.notes=n}catch(_){}}}
@@ -2738,7 +2757,8 @@ function setSub(k){const url=teamLink();
       <div class="szd">${Array.from({length:L},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("")}</div>${seasonDone(curYr())?'<p class="snote" style="margin:0">Bir sonraki maç yeni sezonu başlatır.</p>':""}</section>
     <section class="card" style="display:grid;gap:12px"><label class="f" for="sLen">Bir sezondaki maç sayısı<select id="sLen" data-bind="sLen">${[4,5,6,7,8,9,10,12,14,16].map(n=>`<option value="${n}"${n===+(S.f.sLen||sLen())?" selected":""}>${n} maç</option>`).join("")}</select></label>
       <button class="btn primary block" data-act="seasonSave">Kaydet</button></section>
-    ${seasonDone(curYr())||!n?"":`<section class="card szx"><b>Sezonu erken bitir</b><p class="snote" style="margin:0">Oynanan maçlarla sezon kapanır, şampiyon belli olur. Geri alınamaz.</p><button class="btn ghost danger block" data-act="seasonClose">${S.f.sClose?"Emin misin? Sezon "+curYr()+" şimdi bitsin":"Sezonu şimdi bitir"}</button></section>`}`}
+    ${seasonDone(curYr())||!n?"":`<section class="card szx"><b>Sezonu erken bitir</b><p class="snote" style="margin:0">Oynanan maçlarla sezon kapanır, şampiyon belli olur. Geri alınamaz.</p><button class="btn ghost danger block" data-act="seasonClose">${S.f.sClose?"Emin misin? Sezon "+curYr()+" şimdi bitsin":"Sezonu şimdi bitir"}</button></section>`}
+    ${(()=>{const F=fin(),fz=F.filter(m=>m.calc).length;return `<section class="card szx"><b>Kart puanları</b><p class="snote" style="margin:0">Biten maçların puanları kesinleşir; kurallar değişse de geçmiş aynı kalır. ${F.length?fz+"/"+F.length+" maç kesin.":""}</p><p class="snote" style="margin:0">Yeniden hesaplarsan bu sezonun bütün maçları güncel kurallarla baştan hesaplanır, kartlar değişebilir.</p><button class="btn ghost block" data-act="calcReset">${S.f.cReset?"Emin misin? Sezon "+curYr()+" yeniden hesaplansın":"Bu sezonu yeniden hesapla"}</button></section>`})()}`}
   else if(k==="tel")h+=`<p class="snote" style="margin:0 4px 10px">Ana ekrana eklersen uygulama gibi tam ekran açılır.</p><div class="sbox">
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>iPhone · Safari</b><span>Alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</span></span></div>
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>Android · Chrome</b><span>Sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç.</span></span></div></div>`;
@@ -2901,6 +2921,7 @@ document.addEventListener("click",async e=>{
     case"seasonStory":stSeason(+id);break;
     case"shareSeason":{if(S.story)stPause(true);await shareSeason(+id);break}
     case"seasonSave":{const L=+(S.f.sLen||sLen());await A("admin_season",{p_len:L,p_close:false},"Sezon ayarı kaydedildi");await load(true);break}
+    case"calcReset":{if(!S.f.cReset){S.f.cReset=1;render(true);break}S.f.cReset=0;const r=await A("admin_calc_reset",{p_season:curYr()},"Kartlar yeniden hesaplanıyor");if(r){await load(true);compute();const n=await calcSync();toast(n+" maç yeniden hesaplandı");render(true)}break}
     case"seasonClose":{if(!S.f.sClose){S.f.sClose=1;render(true);break}S.f.sClose=0;await A("admin_season",{p_len:sLen(),p_close:true},"Sezon bitirildi");await load(true);break}
     case"story":S._stChain=false;stOpen(id,0);break;
     case"stDetail":stClose();S.view=id;S.tab="gecmis";render(true);window.scrollTo(0,0);break;
