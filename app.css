@@ -1338,7 +1338,7 @@ body.ptrb .ptr{transition:height .38s cubic-bezier(.2,.8,.2,1)}
 .kpills{display:flex;gap:6px;padding:4px 6px 8px}
 .kpills button{flex:1;border:0;border-radius:10px;padding:10px 4px;background:var(--bg2);color:var(--muted);font:700 .8rem/1 Inter,sans-serif;justify-content:center;min-height:0}
 .kpills button.on{background:var(--ink);color:#fff}
-.kmenu .kpills button:hover{background:var(--bg2)}.kmenu .kpills button.on:hover{background:var(--ink)}
+.kmenu .kpills button:hover{background:var(--bg2)}
 .mecur{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;background:linear-gradient(120deg,#7B3FF2,#5FD8F5);color:#fff}
 .mecur .av{width:48px;height:48px;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
 .mecur span:not(.av){min-width:0;flex:1;display:grid;gap:3px}
@@ -1989,7 +1989,6 @@ html.dk .card,html.dk .lrow,html.dk .grow,html.dk .slide,html.dk .psh>div,html.d
 html.dk .card .card{background:#24194F!important}
 html.dk .btn:not(.primary):not(.ghost):not(.danger):not(.wa):not(.turf):not(.light):not(.gbtn){background:var(--c-card2);border-color:var(--line2);color:var(--ink)}
 html.dk .chips button{background:var(--c-card);border-color:var(--line2);color:var(--ink)}
-html.dk .chips button.on{background:var(--c-pink);border-color:var(--c-pink)}
 html.dk .seg3,html.dk .vtog,html.dk .mtabs,html.dk .oyt2{background:#1A1140!important;border-color:var(--line)!important}
 html.dk .seg3 button.on,html.dk .vtog button.on,html.dk .mtabs button.on{background:#2E2246!important;color:#fff!important}
 html.dk .nav .in,html.dk .nav{background:rgba(26,18,41,.92)!important;border-color:var(--line)!important}
@@ -2013,7 +2012,7 @@ html.dk .bkl code,html.dk .htag{background:#34246E;color:#D9C8FF}
 .brand .bsub{letter-spacing:.06em;font-size:.6875rem}
 .card.gd{justify-items:stretch;text-align:left}
 /* koyu: açık temada koyu (ters) zeminli öğeler koyuda vurgu moruna döner */
-html.dk .chips button.on,html.dk .kpills button.on,html.dk .kmenu .kpills button.on:hover,html.dk .pmi button.on,html.dk .pabd i{background:var(--c-pink)!important;color:#fff!important;border-color:var(--c-pink)!important}
+html.dk .pabd i{background:var(--c-pink)!important;color:#fff!important;border-color:var(--c-pink)!important}
 html.dk .setr.danger .seti{background:#3E1420;color:#FF8FA6}html.dk .setr.danger b{color:#FF8FA6}
 html.dk .pmprev{background:#170E33!important}
 /* koyu: alt bar arkası koyu zemine erisin,logo iki temada aynı kalsın */
@@ -2781,7 +2780,6 @@ html.dk .rth text,html.dk .rth .rtl{fill:var(--c-ink2)!important}
 .pmi{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;margin:0 -18px 10px!important;padding:0 18px;scroll-padding:0 18px}
 .pmi::-webkit-scrollbar{display:none}
 .pmi button{flex:none;white-space:nowrap;border:0!important;background:#24194F!important;color:var(--c-ink2)!important;padding:10px 14px!important}
-html.dk .pmi button.on{background:var(--c-pink)!important;color:#fff!important}
 .pmf{width:max-content;margin:0 0 10px auto!important}
 .pmf button{flex:none!important;padding:7px 12px!important;font-size:.75rem!important;min-height:0!important}
 /* üst bar v3: takım adı solda,kaydırınca başlık ortada */
@@ -3333,8 +3331,10 @@ html.dk .kmenu .kma [role=menuitem]:hover{background:var(--c-card2)}
 html.dk .kmenu .kma i{width:18px;height:18px;color:var(--c-ink3);display:grid;place-items:center}.kmenu .kma i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
 .mzf:has(.kmenu){position:relative;z-index:45}
 /* seçili filtre her yerde aynı: beyaz zemin, koyu yazı (Puan durumu / İstatistikler gibi) */
-html.dk .mzseg button.on,html.dk .sx3 button.on,html.dk .pmi button.on,html.dk .form-pick button.on,html.dk .at-g button.on{background:#fff!important;color:#24105E!important;border-color:#fff!important;box-shadow:none!important}
-html.dk .at-g button.on *{color:#24105E!important}
-html.dk .pk.on{background:#fff!important;border-color:#fff!important;color:#24105E!important}
-html.dk .pk.on i{color:#7B3FF2}
+html.dk .mzseg button.on,html.dk .sx3 button.on,html.dk .pmi button.on{background:#fff!important;color:#24105E!important;border-color:#fff!important;box-shadow:none!important}
+html.dk .pk.on{background:rgba(255,62,165,.2)!important;border-color:var(--c-pink)!important;box-shadow:inset 0 0 0 1px var(--c-pink);color:#fff!important}
+html.dk .pk.on i{color:var(--c-pink)}
+/* kendi rengine sahip seçimler: pembe dolgu */
+html.dk .at-g button.on{background:var(--c-pink)!important;border-color:var(--c-pink)!important}
+html.dk .kmenu .kpills button:not(.on):hover{background:var(--c-card2)!important}
 html.dk .pr-s button.on{background:color-mix(in srgb,var(--c) 30%,var(--c-card));box-shadow:inset 0 0 0 1.5px var(--c);color:#fff}
