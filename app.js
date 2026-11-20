@@ -1986,18 +1986,6 @@ function sheetCmp(){const c=S.sheet;const pa=P(c.a),pb=P(c.b);
 
 /* ================= Tahmin ve maç önü ================= */
 const predPts=(pr,m)=>{if(!pr||m.score_a==null)return 0;const a=+m.score_a,b=+m.score_b;if(+pr.a===a&&+pr.b===b)return 3;return Math.sign(+pr.a-+pr.b)===Math.sign(a-b)?1:0};
-function predCard(m){const open=Date.now()<matchTs(m)&&m.state!=="bitti";const pr=m.preds||{};const ids=Object.keys(pr).filter(id=>P(id));const me=S.me&&P(S.me)&&!P(S.me).guest?S.me:null;
-  let h=`<section class="card"><div class="ch"><div><h2>Skor tahmini</h2></div><span class="chip muted">${ids.length} tahmin</span></div>`;
-  if(open){if(!me)h+=`<button class="btn block" data-act="meSheet">Tahmin için kim olduğunu seç</button>`;
-    else{const k="pr_"+m.id;const d=S.f[k]||(S.f[k]={a:pr[me]?.a??0,b:pr[me]?.b??0});const st=(side)=>`<div class="pst"><span>${side==="a"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${esc(TEAM[side.toUpperCase()])}</span><div class="pnum"><button class="rnd" data-act="prS" data-m="${esc(m.id)}" data-side="${side}" data-d="-1" aria-label="Azalt">−</button><b class="num">${d[side]}</b><button class="rnd" data-act="prS" data-m="${esc(m.id)}" data-side="${side}" data-d="1" aria-label="Artır">+</button></div></div>`;
-      h+=`<div class="pred">${st("a")}${st("b")}</div><button class="btn primary block" data-act="predict" data-id="${esc(m.id)}">${pr[me]?"Tahminimi güncelle":"Tahminimi gönder"}</button>${pr[me]?`<span class="chip ok" style="justify-self:center"><span class="dot"></span>Tahminin: ${pr[me].a}-${pr[me].b}</span>`:""}`}
-    const c={A:0,D:0,B:0};ids.forEach(id=>{const x=pr[id];c[x.a>x.b?"A":x.a<x.b?"B":"D"]++});
-    if(ids.length&&S.admin)h+=adminPreds(m,ids);
-    if(ids.length)h+=`<p class="muted small">${TEAM.A} kazanır: <b style="color:var(--ink)">${c.A}</b> · Berabere: <b style="color:var(--ink)">${c.D}</b> · ${TEAM.B} kazanır: <b style="color:var(--ink)">${c.B}</b>.</p>`;
-  }else if(S.admin&&ids.length){h+=adminPreds(m,ids,true)}else{h+=ids.length?`<div class="hist">${ids.sort((a,b)=>predPts(pr[b],m)-predPts(pr[a],m)).map(id=>{const pts=m.state==="bitti"?predPts(pr[id],m):null;return `<div style="grid-template-columns:minmax(0,1fr) auto auto"><span>${esc(nameOf(id))}</span><span class="num"><b>${pr[id].a}-${pr[id].b}</b></span><span class="delta ${pts===3?"pos":pts===1?"pos":"zero"}">${pts==null?"":pts?"+"+pts:"0"}</span></div>`}).join("")}</div>`:`<p class="muted small">Bu maç için tahmin yapılmadı.</p>`}
-  return h+`</section>`}
-function adminPreds(m,ids,open){const pr=m.preds||{};
-  return `<details class="admp"${open||S.f.admPr===m.id?" open":""} data-act-toggle-pr="${esc(m.id)}"><summary class="small">Kim ne tahmin etti? <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="hist">${ids.sort((a,b)=>nameOf(a).localeCompare(nameOf(b),"tr")).map(id=>`<div style="grid-template-columns:minmax(0,1fr) auto auto auto"><span>${esc(nameOf(id))}</span><b class="num">${pr[id].a}-${pr[id].b}</b><span class="delta ${predPts(pr[id],m)?"pos":"zero"}">${m.state==="bitti"?"+"+predPts(pr[id],m):""}</span><button class="xb" data-act="delPred" data-m="${esc(m.id)}" data-p="${esc(id)}" aria-label="${esc(nameOf(id))} tahminini sil">${S.f.delPr===m.id+id?"✓":ICON.x}</button></div>`).join("")}</div></details>`}
 function formOf2(id){const f=S.stats[id]?.form;return f==null?null:f}
 function preview(m){const A=(m.team_a||[]),B=(m.team_b||[]);if(!A.length||!B.length)return"";
   const avA=sumAvg(A),avB=sumAvg(B);const pA=Math.round(100/(1+Math.pow(10,-(avA-avB)/15)));
@@ -2897,8 +2885,6 @@ document.addEventListener("click",async e=>{
     case"filter":S.filter=el.dataset.v;render(true);break;
     case"cmpOpen":S.sheet={type:"cmp",a:id||S.me||"",b:id&&S.me&&id!==S.me?S.me:""};render(true);break;
     case"cmpPair":S.sheet={type:"cmp",a:el.dataset.a,b:el.dataset.b};render(true);break;
-    case"prS":{const k="pr_"+el.dataset.m;const d=S.f[k];if(!d)break;d[el.dataset.side]=clamp(d[el.dataset.side]+(+el.dataset.d),0,40);render(true);break}
-    case"predict":{const d=S.f["pr_"+id];if(!d||!S.me)break;const r=await act("predict",{p_match:id,p_player:S.me,p_a:d.a,p_b:d.b},"Tahminin kaydedildi");if(r)S.f["pr_"+id]=null;break}
     case"extNew":S.f.ext={id:null,date:ymd(new Date()),opp:"",us:0,them:0,team:[],stats:{},motm:""};S.sheet={type:"ext"};render(true);break;
     case"extEdit":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f.ext={id:m.id,date:m.date,opp:m.opponent||"",us:+m.score_a||0,them:+m.score_b||0,team:[...(m.team_a||[])],stats:JSON.parse(JSON.stringify(m.stats||{})),motm:m.motm||""};S.sheet={type:"ext"};render(true);break}
     case"extPick":{const f=S.f.ext;const pid=el.dataset.p;if(f.team.includes(pid)){f.team=f.team.filter(x=>x!==pid);delete f.stats[pid];if(f.motm===pid)f.motm=""}else f.team.push(pid);render(true);break}
@@ -2951,7 +2937,6 @@ document.addEventListener("click",async e=>{
       if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(t)){toast("Tarih ve saati kontrol et");break}
       const r=await A("admin_set_when",{p_id:id,p_date:d,p_time:t},"Tarih ve saat güncellendi");if(r)delete S.f["when_"+id];break}
     case"delMatch":if(S.f.delMatch!==id){S.f.delMatch=id;render(true);break}S.f.delMatch=null;if(S.sheet&&S.sheet.type==="mng")S.sheet=null;S.teams=null;S.view=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);await A("admin_archive_match",{p_id:id},"Maç silindi, tüm etkileri geri alındı");break;
-    case"rsvp":{if(el.disabled)break;const r=await act("rsvp",{p_match:el.dataset.m,p_player:el.dataset.p,p_value:el.dataset.v});if(r)toast(el.dataset.v==="g"?"Görüşürüz sahada!":el.dataset.v==="y"?"Yedek olarak yazıldı":"Gelemiyor olarak işlendi");break}
     case"copy":{const tx=el.dataset.txt;try{await navigator.clipboard.writeText(tx);toast("Kopyalandı")}catch(_){toast("Kopyalanamadı, metni elle seç")}break}
     case"balance":{const ids=t?[...t.A,...t.B]:[];if(ids.length<4){toast("Önce en az 4 oyuncu seç");break}const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
     case"editTeams":{const m=S.matches.find(x=>x.id===id);startEditor(id,m.team_a||[],m.team_b||[],m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);render(true);break}
@@ -3011,8 +2996,6 @@ document.addEventListener("click",async e=>{
       snap(sd,"penaltı işareti");e.pk=!e.pk;if(e.pk)e.a=null;S.f.confirmFinish=null;sdSave(m,sd);render(true);break}
     case"evDel":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd)break;const i=+el.dataset.i;const e=sd.events[i];if(!e)break;
       snap(sd,evLabel(e)+" silindi");sd.events.splice(i,1);sd.step=null;syncScore(m,sd);S.f.confirmFinish=null;sdSave(m,sd);render(true);break}
-    case"delPred":{const k=el.dataset.m+el.dataset.p;S.f.admPr=el.dataset.m;if(S.f.delPr!==k){S.f.delPr=k;render(true);break}S.f.delPr=null;
-      const r=await A("admin_del_pred",{p_match:el.dataset.m,p_player:el.dataset.p},nameOf(el.dataset.p)+" tahmini silindi");break}
     case"undo":{const m=S.matches.find(x=>x.id===el.dataset.m);const sd=S.f["sd_"+el.dataset.m];if(!sd||!sd.undo.length)break;const u=JSON.parse(sd.undo.pop());
       Object.assign(sd,{events:u.events,a:u.a,b:u.b,manual:u.manual,touched:u.touched,motm:u.motm,gol:u.gol||"",fiy:u.fiy||"",step:null});S.f.confirmFinish=null;sdSave(m,sd);toast("Geri alındı: "+u.l);render(true);break}
     case"draftDel":{if(S.f.delDraft!==id){S.f.delDraft=id;render(true);setTimeout(()=>{if(S.f.delDraft===id){S.f.delDraft=null;render()}},4000);break}
@@ -3184,7 +3167,7 @@ function shareCanvas(c,fname,title){c.toBlob(async blob=>{if(!blob){toast("Görs
 const loadImg=src=>new Promise(r=>{if(!src)return r(null);const im=new Image();im.onload=()=>r(im);im.onerror=()=>r(null);im.src=src});
 function fitFont(x,txt,max,min,weight,fam,w){let f=max;x.font=`${weight} ${f}px ${fam}`;while(f>min&&x.measureText(txt).width>w){f-=2;x.font=`${weight} ${f}px ${fam}`}return f}
 const NOTE_COL=v=>v>=8?"#00A35B":v>=7?"#5BBF2E":v>=6.5?"#F2B800":v>=6?"#F28C00":"#E90052";
-const NOTE_TX=v=>v>=6.5&&v<7?"#37003C":"#FFFFFF";
+const NOTE_TX=v=>v<6?"#FFFFFF":"#120A2A";
 /* Paylaşım görselleri: Gece Stadı dili. Koyu zemin, stadyum ışığı, buzlu cam kartlar, gece sahası, parlayan rozetler */
 const SD='"Inter Tight",Inter,system-ui,sans-serif',SF='Inter,system-ui,sans-serif';
 const C_INK="#FFFFFF",C_DK="#FFFFFF",C_MUT="#A99CD6",C_BG="#120A2A",C_TB="#5FE3F5",C_TA="#FF3EA5",C_V="#FF3EA5",C_CARD="#1E1442",C_CARD2="#2C2060",C_LINE="#3A2C78";

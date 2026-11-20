@@ -52,4 +52,6 @@ node tests/clicks.js   # ana akışlar: pencereler, geri sayım, kondisyon, link
 node tests/paylasim.js # 30 paylaşım şablonu: üst üste binme ve taşma kontrolü (--shots klasör ile ekran görüntüsü)
 node tests/oylama.js  # oyuncu oylaması: maç 1 saat sonra biter, kota, kapanış dağılımı, sonuç ekranı
 node tests/acilis.js   # açılışta veri gecikmesi ve oturum (geçerli / süresi dolmuş)
+node tests/motor.js    # puan motoru: olaylar doğru özelliğe, bir maçta tek yön, donmuş maçlar değişmez
+node tests/okunur.js   # 19 ekranda küçük yazı, düşük kontrast, küçük dokunma alanı
 ```
