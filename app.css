@@ -3262,8 +3262,6 @@ html.dk .mref{min-height:40px;padding:0 10px}
 .rdet>summary h2{margin:0}
 .rdet[open]>summary{margin-bottom:10px}
 html.dk .vfoot a{display:inline-block;padding:12px 8px}
-html.dk .onb-d button{position:relative}
-html.dk .onb-d button::after{content:"";position:absolute;inset:-14px -6px}
 html.dk .mzseg button{min-height:42px}
 html.dk .rdet{padding:10px 16px!important;gap:0!important}
 html.dk .rdet>summary h2{flex:1;text-align:left;font-size:1.3rem}
@@ -3287,3 +3285,19 @@ html.dk .pr-s button i.dit,html.dk .pr-t i.dit{background:color-mix(in srgb,var(
 .si{flex:none;display:block}
 .yp-ey.yp-eyi{display:flex;align-items:center;gap:6px;margin-top:-6px}
 .yp-mini .si{margin-right:2px}
+/* boş ekranlar: konu ikonu, başlık, açıklama, varsa tek düğme */
+html.dk .empty.emp2{padding:30px 16px 26px;gap:8px}
+html.dk .empty.emp2::before{display:none}
+.emp-i{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin-bottom:6px;position:relative;
+  background:radial-gradient(circle,color-mix(in srgb,var(--c) 22%,transparent) 0,color-mix(in srgb,var(--c) 6%,transparent) 62%,transparent 70%)}
+.emp-i::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--c) 40%,transparent)}
+html.dk .empty.emp2 h3{font:800 1.35rem/1.1 var(--display);text-transform:uppercase;margin:0}
+html.dk .empty.emp2 p{margin:0;max-width:34ch;font-size:.9rem;line-height:1.45;color:var(--c-ink2)}
+html.dk .empty.emp2 .btn{margin-top:8px}
+/* tanıtım noktaları: görünür ve parmakla basılabilir */
+html.dk .onb-d{gap:2px;margin:12px 0 2px}
+html.dk .onb-d button{width:28px;height:40px;padding:0;background:none;display:grid;place-items:center;border-radius:12px}
+html.dk .onb-d button::before{content:"";width:10px;height:10px;border-radius:5px;background:var(--c-line2);transition:width .25s,background .25s}
+html.dk .onb-d button.on{width:44px;background:none}
+html.dk .onb-d button.on::before{width:28px;background:var(--c-pink)}
+html.dk .empty.emp2 h3{color:#fff!important}
