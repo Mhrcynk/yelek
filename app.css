@@ -3376,3 +3376,28 @@ body[data-fs=C] .mzh,body[data-fs=C] .mzfx.nx{background:linear-gradient(180deg,
 body[data-fs=C] .mzfx.nx{background:linear-gradient(90deg,rgba(255,62,165,.4),rgba(95,227,245,.3)),#22145A!important}
 body[data-fs=D] .mzh,body[data-fs=D] .mzfx.nx{background:repeating-linear-gradient(180deg,rgba(0,0,0,.06) 0 22px,transparent 22px 44px),linear-gradient(150deg,#22924C,#145A2E)!important;box-shadow:0 18px 40px rgba(10,60,30,.35)!important}
 body[data-fs=D] .mzh::after{border-color:rgba(255,255,255,.14)}
+/* paylaşım: İlk 7 afişi */
+.yp.yp-x7{padding:0!important;display:block!important}
+.yp.yp-x7a{background:radial-gradient(70% 55% at 85% 45%,rgba(255,62,165,.45),rgba(255,62,165,0) 70%),linear-gradient(165deg,#8A1259 0%,#3A0B2E 58%,#160822 100%)!important}
+.yp.yp-x7b{background:radial-gradient(70% 55% at 85% 45%,rgba(95,227,245,.38),rgba(95,227,245,0) 70%),linear-gradient(165deg,#0F6A8C 0%,#0A2F4D 58%,#08142A 100%)!important}
+.yp-x7a{--x7:#FF3EA5;--x7l:#FFB3DA;--x7d:#2A0820}.yp-x7b{--x7:#5FE3F5;--x7l:#BDF4FB;--x7d:#071C30}
+.yp-x7::before,.yp-x7::after{display:none!important}
+.x7-ph{position:absolute;right:32px;top:116px;width:200px;height:340px;border-radius:24px;overflow:hidden;background:linear-gradient(170deg,rgba(255,255,255,.14),rgba(255,255,255,.03));box-shadow:0 0 0 3px var(--x7),0 18px 40px rgba(0,0,0,.45)}
+.x7-ph img{position:absolute;left:0;top:0;width:100%;height:125%;object-fit:cover;object-position:50% 0;max-width:none}
+.x7-ph svg{position:absolute;left:0;bottom:0;width:100%;height:auto}
+.x7-t{position:absolute;right:32px;top:40px;font:800 46px/1 "Barlow Condensed",sans-serif;color:var(--x7);letter-spacing:.01em}
+.x7-hd{position:absolute;left:34px;top:34px;display:flex;align-items:center;gap:14px}
+.x7-hd span{font:800 22px/1 "Barlow Condensed",sans-serif;color:var(--x7)}
+.x7-hd svg:last-child{opacity:.75}
+.x7-xi{position:absolute;left:34px;top:120px;width:270px;margin:0;padding:0;list-style:none}
+.x7-xi li{display:flex;align-items:center;gap:0;white-space:nowrap}
+.x7-xi i{width:44px;flex:none;font:700 15px/1 "Barlow Condensed",sans-serif;font-style:normal;letter-spacing:.06em;color:var(--x7l)}
+.x7-xi b{font-weight:800;font-family:"Barlow Condensed",sans-serif;line-height:1;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.35)}
+.x7-xi em{font:800 20px/1 "Barlow Condensed",sans-serif;font-style:normal;color:var(--x7);margin-left:8px}
+.x7-st{position:absolute;right:32px;top:474px;width:200px;text-align:right;display:flex;flex-direction:column;align-items:flex-end}
+.x7-st small{font:700 11px/1 Inter,sans-serif;letter-spacing:.16em;color:var(--x7l)}
+.x7-st b{font:800 26px/1.05 "Barlow Condensed",sans-serif;margin-top:4px}
+.x7-st em{margin-top:6px;font:800 18px/1 "Barlow Condensed",sans-serif;font-style:normal;color:var(--x7d);background:var(--x7);border-radius:8px;padding:4px 9px}
+.x7-ft{position:absolute;left:0;right:0;bottom:0;height:56px;padding:0 34px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(0,0,0,.38)}
+.x7-ft b{font-weight:800;font-family:"Barlow Condensed",sans-serif;white-space:nowrap;flex:none}
+.x7-ft span{font-weight:700;font-family:Inter,sans-serif;letter-spacing:.12em;white-space:nowrap;color:rgba(255,255,255,.85)}

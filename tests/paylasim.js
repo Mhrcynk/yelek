@@ -53,11 +53,12 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
       S.photos[p.id]=c.toDataURL("image/png")});S.me=S.players[0].id;render(true);
     const P0=S.players;S.stats[P0[0].id].streak={t:"5 maçtır gol atıyor",hot:true};S.stats[P0[3].id].streak={t:"3 maçtır not 6 altında",hot:false};S.stats[P0[5].id].series=[66,68,67,70,72,71,75,78,79];S.stats[P0[5].id].ovr=79});
   const plan=[];
-  const items={once:["gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
+  const items={once:["ilk7","gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
   const ms=await run(()=>fin().map(m=>m.id));const pids=await run(()=>pmPlayers().map(p=>p.id));
   for(const [tab,L] of Object.entries(items))for(const it of L){
     if(tab==="mac"){for(const mid of ms)plan.push({tab,item:it,mid})}
     else if(tab==="oyuncu"){for(const pid of pids.slice(0,8))plan.push({tab,item:it,pid})}
+    else if(it==="ilk7"){plan.push({tab,item:it,x7k:"A"});plan.push({tab,item:it,x7k:"B"})}
     else if(it==="yaris"){for(const race of["FV","OS","DF","KL"])plan.push({tab,item:it,race})}
     else plan.push({tab,item:it})}
   const fails=[],empty=new Set(),made=new Set();let n=0;
@@ -79,7 +80,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
     const key=f.tab+"/"+f.item;
     if(r.empty){empty.add(key);continue}made.add(key);n++;
     if(r.out.length)fails.push(`${key} ${fmt} ${JSON.stringify(f.pid||f.mid||f.race||"").slice(-6)}: `+r.out.join(" | "));
-    if(shots&&(fmt==="story"?!made.has(key+"s"):true)){const fn=`${key.replace("/","-")}-${fmt}-${(f.pid||f.mid||f.race||"x").slice(-2)}.png`;
+    if(shots&&(fmt==="story"?!made.has(key+"s"):true)){const fn=`${key.replace("/","-")}-${fmt}-${(f.pid||f.mid||f.race||f.x7k||"x").slice(-2)}.png`;
       if(!fs.existsSync(path.join(shots,key.replace("/","-")+"-"+fmt+"-ilk.png"))){await (await pg.$(fmt==="story"?"#ypTest .yp-story":"#ypTest .yp")).screenshot({path:path.join(shots,key.replace("/","-")+"-"+fmt+"-ilk.png")})}
       else if(fmt==="post"&&(f.pid===pids[0]||f.mid===ms[ms.length-1]))await (await pg.$("#ypTest .yp")).screenshot({path:path.join(shots,fn)})}
   }
