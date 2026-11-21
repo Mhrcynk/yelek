@@ -3900,3 +3900,15 @@ body.kb #modal .sheet-bg{align-items:flex-end}
 .oda-h em{font:800 .68rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
 .oda-cb{flex:none;width:20px;height:20px;border-radius:6px;background:#2A1F00;color:#FFD400;font:800 .75rem/20px Inter,sans-serif;font-style:normal;text-align:center}
 .oda-m li.cap .oda-b q{background:rgba(42,31,0,.16)}
+
+/* duyuru, dürtme, sabit mesaj düzenleme */
+.oda-dy{display:grid;gap:6px;padding:12px;border-radius:16px;background:linear-gradient(135deg,rgba(255,212,0,.18),rgba(255,212,0,.05));border:1.5px solid rgba(255,212,0,.55)}
+.oda-dy .oda-h b{color:#FFD400;font-size:.8rem;flex:1}.oda-dy p{margin:0;font-size:.98rem;line-height:1.4;font-weight:600;overflow-wrap:anywhere}
+.oda-ng{display:flex;align-items:center;gap:8px;font-size:.76rem;color:var(--c-ink2);line-height:1.35}.oda-ng span{flex:1;min-width:0}
+.oda-ng button{flex:none;min-height:40px;padding:0 14px;border-radius:12px;border:1px solid #FFD400;background:none;color:#FFD400;font:700 .78rem Inter,sans-serif;cursor:pointer}
+.oda-q button.on{background:#FFD400!important;border-color:#FFD400!important;color:#2A1F00!important}
+.oda-an{display:flex;gap:8px;align-items:flex-start;margin:0;padding:8px 12px;border-radius:12px;background:rgba(255,212,0,.12);font-size:.78rem;line-height:1.4;color:var(--c-ink2)}
+.oda-pb{margin-top:-4px}
+.oda.pe .oda-q,.oda.pe .bcm-i,.oda.pe .oda-rb,.oda.pe .oda-an{display:none!important}
+body.kb .oda.pe .oda-m,body.kb .oda.pf .oda-m{display:none}
+.oda .oda-f input{width:100%}
