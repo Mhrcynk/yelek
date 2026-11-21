@@ -3709,7 +3709,7 @@ function betNoteTxt(n){const nm=`<b>${esc(shortName(nameOf(n.a)))}</b>`,q=n.b?`<
 function sheetBetNotes(){const N=BET.notes;const sn=S.sheet.seen||0;
   const ic=n=>n.k==="kazandi"?`<span class="bn-ic ok">${dIcon("tuttu","green",22)}</span>`:n.k==="kaybetti"?`<span class="bn-ic bad">${dIcon("yatti","red",22)}</span>`:avatar(P(n.a)||{id:n.a,name:"?"},"sm");
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Bildirimler</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
-  ${!N?`<p class="muted">Yükleniyor…</p>`:N.length?`<ul class="bn">${N.map(n=>`<li><button class="${+n.id>sn?"new":""}" data-act="betNoteGo" data-v="${esc(n.k)}" data-c="${esc(n.c||"")}">${ic(n)}<span class="bn-t">${betNoteTxt(n)}<time>${betAgo(n.t)}</time></span></button></li>`).join("")}</ul>`:`<div class="bcm-e">${dIcon("zil","gold",30)}<b>Henüz bildirim yok</b><span>Kupon, tepki ve yorumlar burada görünür.</span></div>`}`}
+  ${!N?`<p class="muted">Yükleniyor…</p>`:N.length?`<ul class="bn">${N.map(n=>`<li><button class="${+n.id>sn?"new":""}" data-act="betNoteGo" data-v="${esc(n.k)}" data-c="${esc(n.c||"")}">${ic(n)}<span class="bn-t">${betNoteTxt(n)}${(c=>c&&["tepki","yorum","yorum2","kazandi","kaybetti"].includes(n.k)?`<i class="bn-c">${esc(betCTitle(c))}</i>`:"")(betFind(n.c))}<time>${betAgo(n.t)}</time></span></button></li>`).join("")}</ul>`:`<div class="bcm-e">${dIcon("zil","gold",30)}<b>Henüz bildirim yok</b><span>Kupon, tepki ve yorumlar burada görünür.</span></div>`}`}
 // ===== Soyunma odası: takıma özel sohbet, taktik, görevler =====
 const ODA={d:{},at:{}};const ODA_ERR={closed:"Oda kapalı",cap:"Bunu kaptan ya da yönetici yapabilir",slow:"Biraz yavaş, çok hızlı yazıyorsun",value:"Eksik ya da hatalı",auth:"Önce giriş yapmalısın"};
 function odaLoad(mid,force){if(!mid||!myPid())return;const t=ODA.at[mid]||0;if(t===-1||(!force&&Date.now()-t<15000))return;ODA.at[mid]=-1;
@@ -3765,6 +3765,12 @@ function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d
   }
   return h+`</div>`}
 setInterval(()=>{if(S.sheet&&S.sheet.type==="oda"&&document.visibilityState==="visible")odaLoad(S.sheet.mid,true)},7000);
+// klavye açılınca alttan açılan pencere görünen alana sığsın (iOS pencereyi yukarı itip bozuyordu)
+if(window.visualViewport){const vvFix=()=>{const v=visualViewport;const kb=v.height<innerHeight*.78;document.documentElement.style.setProperty("--vvh",Math.round(v.height)+"px");document.body.classList.toggle("kb",kb);
+  const bg=document.querySelector("#modal .sheet-bg");if(bg){if(kb){bg.style.top=Math.round(v.offsetTop)+"px";bg.style.height=Math.round(v.height)+"px";bg.style.bottom="auto"}else{bg.style.top=bg.style.height=bg.style.bottom=""}}
+  if(kb)setTimeout(()=>{odaBottom();const c=document.querySelector(".bcm");if(c)c.scrollTop=c.scrollHeight},30)};
+  visualViewport.addEventListener("resize",vvFix);visualViewport.addEventListener("scroll",vvFix)}
+
 const lIc=k=>{const d=DI[k]||["",""];return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d[0]?`<path d="${d[0]}"/>`:""}${d[1]?`<path d="${d[1]}"/>`:""}</svg>`};
 function betHead(b,L,kb){const l0=L[0]||{};const lab=String(l0.l||"");const i=lab.indexOf(" · ");const mk=kb?"Kombine":i>0?lab.slice(0,i):"Tahmin";const sel=kb?`${L.length} seçim`:i>0?lab.slice(i+3):lab;
   const pid=!kb&&String(l0.k||"").includes(":")?String(l0.k).split(":")[1]:null;const pp=pid&&P(pid);
@@ -3856,10 +3862,13 @@ function betSave(){try{const m=betNext();const me=myPid();localStorage.setItem("
 function betRestore(){try{const d=JSON.parse(localStorage.getItem("y_bet_"+(TID))||"null");if(!d)return;Object.assign(BET.board,d.b||{});if(!BET.tbl)BET.tbl=d.t||null;Object.assign(BET.lists,d.l||{});if(!BET.kings)BET.kings=d.k||null}catch(_){}}
 // uygulama açılınca arka planda yükle
 function betPrefetch(){if(!isMember()||S.fol)return;betRestore();const m=betNext();if(m)betLoad("board",m.id);betLoad("tbl");betLoad("feed");betLoad("notes");const me=myPid();if(me)betLoad("list",me)}
+function betFind(id){if(!id)return null;const L=[BET.feed,...Object.values(BET.lists||{})];for(const x of L){const c=x&&x.rows&&x.rows.find(r=>r.id===id);if(c)return c}return null}
+function betMini(id){const c=betFind(id);if(!c){betLoad("feed");return""}const L=c.legs||[];const [z,cl]=BET_ST[c.z]||["",""];
+  return `<div class="bmini">${P(c.p)?avatar(P(c.p),"sm"):""}<span><b>${esc(shortName(nameOf(c.p)))} · ${L.length>1?"Kombine · "+L.length+" seçim":esc(L[0]?.l||"Kupon")}</b>${L.length>1?`<small>${L.map(l=>esc(l.l)).join(" + ")}</small>`:""}<small>${fJ(c.st)} sikke · oran ${fO(c.odd)}</small></span><em class="bk-z ${cl}">${z}</em></div>`}
 function betAgo(t){const d=(Date.now()-Date.parse(t))/60000;if(!(d>=0)||d<1)return"az önce";if(d<60)return Math.floor(d)+" dk";if(d<1440)return Math.floor(d/60)+" sa";return Math.floor(d/1440)+" gün"}
 function sheetBetCom(){const id=S.sheet.id;const C=BET.com&&BET.com.id===id?BET.com.rows:null;const me=myPid();
   const send='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-1z"/></svg>';
-  return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Yorumlar${C&&C.length?` <small class="bcm-n">${C.length}</small>`:""}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
+  return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Yorumlar${C&&C.length?` <small class="bcm-n">${C.length}</small>`:""}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>${betMini(id)}
   ${!C?`<p class="muted">Yükleniyor…</p>`:C.length?`<ul class="bcm">${C.map(c=>{const mine=c.p===me;return `<li class="${mine?"me":""}">${mine?"":avatar(P(c.p)||{id:c.p,name:"?"},"sm")}<div class="bcm-b"><span class="bcm-h"><b>${mine?"Sen":esc(shortName(nameOf(c.p)))}</b><time>${betAgo(c.at)}</time>${mine||S.admin?`<button class="bcm-x" data-act="betComDel" data-v="${esc(c.id)}" aria-label="Yorumu sil">Sil</button>`:""}</span><p>${esc(c.b)}</p></div></li>`}).join("")}</ul>`:`<div class="bcm-e">${dIcon("kalp","pink",30)}<b>Henüz yorum yok</b><span>İlk lafı sen sok.</span></div>`}
   <div class="bcm-i"><input id="betComTxt" maxlength="140" placeholder="Yorum yaz…" aria-label="Yorum" enterkeyhint="send" autocomplete="off"><button class="bcm-s" data-act="betComSend" data-id="${esc(id)}" aria-label="Gönder">${send}</button></div>`}
 // Ben sayfasındaki küçük tahmin kartı

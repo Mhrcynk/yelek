@@ -3838,3 +3838,15 @@ html.dk .bs-i input,html.dk body.tg .bs-i input[type=number]{flex:1;min-width:0;
 .oda-g li{display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 8px 6px 14px;border-radius:14px;background:var(--c-card2);font-size:.9rem}
 .oda-g li>span{flex:1;min-width:0}.oda-g b{color:var(--ocL);font-weight:700;font-size:.86rem}.oda-g em{font-style:normal;color:var(--c-ink3);font-size:.82rem}
 .oda-g .btn{min-height:40px}.oda-gx{width:40px;height:40px;border:0;background:none;color:var(--c-ink3);font-size:1.2rem;cursor:pointer}
+/* klavye açıkken pencereler */
+body.kb #modal .sheet{max-height:100%!important;border-radius:18px 18px 0 0;padding-bottom:10px!important}
+body.kb .oda .ch,body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb .oda .oda-pin{display:none}
+body.kb .oda-m{height:max(80px,calc(var(--vvh,400px) - 190px))}
+body.kb .bcm{max-height:max(70px,calc(var(--vvh,400px) - 250px))!important}
+body.kb .bmini{display:none}
+.oda-m{height:min(42vh,calc(var(--vvh,100vh) - 380px));min-height:120px}
+/* yorum penceresinde ve bildirimde kupon özeti */
+.bmini{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:10px 12px;border-radius:14px;background:var(--c-card2);border:1px solid var(--c-line)}
+.bmini .av{flex:none;width:34px!important;height:34px!important;min-width:34px;border-radius:50%;overflow:hidden}.bmini .av img{width:100%;height:100%;object-fit:cover}
+.bmini>span{flex:1;min-width:0;display:grid;gap:3px}.bmini b{font-size:.86rem;font-weight:700;overflow-wrap:anywhere}.bmini small{font-size:.75rem;color:var(--c-ink3);overflow-wrap:anywhere}
+.bn-c{display:block;margin-top:3px;font-style:normal;font-size:.76rem;color:var(--c-ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
