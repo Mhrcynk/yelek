@@ -3857,3 +3857,39 @@ body.kb .bmini{display:none}
 .oda-g li>span{display:grid;gap:3px}.oda-g li>span b{font-size:.86rem}.oda-g li>span small{font-size:.86rem;color:#fff;overflow-wrap:anywhere}
 .oda-gf{display:grid;gap:10px;padding:12px;border-radius:16px;background:var(--c-card)}.oda-gf .f{display:grid;gap:6px;font-size:.8rem;color:var(--c-ink2);font-weight:600}
 .oda-gf select,.oda-gf input{min-height:46px;border-radius:12px!important;font:500 16px Inter,sans-serif!important;padding:0 12px!important;color:#fff;width:100%}.oda-gf .btn{min-height:46px}
+/* soyunma odası v2: tepki, yanıt, bahsetme, skor tahmini, rakip raporu */
+.oda-bw{min-width:0;max-width:82%;display:grid;gap:4px;justify-items:start}.oda-m li.me .oda-bw{justify-items:end}
+.oda-bw .oda-b{max-width:100%;cursor:pointer}
+.oda-m li.at .oda-b{box-shadow:inset 0 0 0 2px #FFD400}.oda-m li.sel .oda-b{outline:2px solid var(--ocL);outline-offset:2px}
+.oda-b q{display:block;quotes:none;padding:5px 8px;border-radius:8px;background:rgba(0,0,0,.22);font-size:.76rem;line-height:1.3;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px}
+.oda-lk{display:flex;gap:5px}.oda-lk i{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;background:var(--c-card2);font:700 .72rem/1 Inter,sans-serif;font-style:normal;color:#00E58A}
+.oda-lk i.dn{color:#FF8FA8}.oda-lk i.on{box-shadow:inset 0 0 0 1px currentColor}.oda-lk svg{width:13px;height:13px}
+.oda-ac{display:flex;gap:6px;flex-wrap:wrap}.oda-m li.me .oda-ac{justify-content:flex-end}
+.oda-ac button{display:inline-flex;align-items:center;gap:6px;min-height:40px;min-width:44px;justify-content:center;padding:0 12px;border-radius:12px;border:1px solid var(--c-line);background:var(--c-card2);color:#fff;font:700 .78rem/1 Inter,sans-serif;cursor:pointer}
+.oda-ac svg{width:16px;height:16px}.oda-ac button.on{border-color:#00E58A;color:#00E58A}.oda-ac button.on.dn{border-color:#FF8FA8;color:#FF8FA8}
+.oda-rb{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border-radius:12px;background:var(--c-card2);box-shadow:inset 3px 0 0 var(--oc);font-size:.8rem;color:var(--c-ink2)}
+.oda-rb span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oda-rb small{display:block;font-size:.72rem;color:var(--ocL);font-weight:700}
+.oda-rb button{flex:none;width:40px;height:40px;border:0;background:none;color:var(--c-ink3);font-size:1.2rem;cursor:pointer}
+.oda-best{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(255,212,0,.16),rgba(255,212,0,.04));border:1px solid rgba(255,212,0,.4);font-size:.86rem;line-height:1.35}
+.oda-best small{display:block;font-size:.72rem;color:#FFD400;font-weight:700;margin-bottom:2px}.oda-best span{min-width:0;overflow-wrap:anywhere}
+.oda-sg{display:flex;flex-wrap:wrap;gap:6px}.oda-sg span{padding:6px 10px;border-radius:99px;background:var(--c-card2);font-size:.78rem}.oda-sg b{color:#FFD400;margin-left:2px}
+.oda-sf{display:flex;gap:8px;align-items:flex-end}.oda-sf label{flex:1;min-width:0;display:grid;gap:4px;font:700 .72rem/1.1 Inter,sans-serif;color:var(--c-ink3);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.oda-sf input{width:100%;min-height:44px;border-radius:12px!important;text-align:center;font:800 1.2rem var(--display)!important;padding:0 6px!important;color:#fff}.oda-sf .btn{flex:none;min-height:44px}
+.oda-sw{display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:rgba(255,212,0,.14);font-size:.82rem}.oda-sw b{color:#FFD400}
+.oda-rp{display:grid;gap:10px;padding:14px;border-radius:18px;background:var(--c-card)}
+.oda-pw{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:center}.oda-pw span{display:grid;gap:3px;min-width:0}.oda-pw b{font:800 1.8rem/1 var(--display)}.oda-pw small{font-size:.72rem;color:var(--c-ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.oda-pw i{font-style:normal;font-size:.76rem;color:var(--c-ink2);line-height:1.3}
+.oda-rr{display:grid;grid-template-columns:1fr 1fr;gap:6px}.oda-rr div{display:grid;gap:3px;padding:10px 12px;border-radius:12px;background:var(--c-card2);min-width:0}
+.oda-rr small{font:700 .72rem/1 Inter,sans-serif;letter-spacing:.04em;color:var(--c-ink3);text-transform:uppercase}.oda-rr b{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oda-rr em{font-style:normal;font-size:.76rem;color:#FFD400}
+.oda-t{margin:4px 0 0;font-size:.95rem;font-weight:700}
+.oda-mk{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.oda-mk li{display:flex;align-items:center;gap:10px;min-height:56px;padding:6px 8px 6px 12px;border-radius:14px;background:var(--c-card2)}
+.oda-mk .av{flex:none;width:36px!important;height:36px!important;min-width:36px;border-radius:50%;overflow:hidden}.oda-mk .av img{width:100%;height:100%;object-fit:cover}
+.oda-mk li>span{flex:1;min-width:0;display:grid;gap:3px}.oda-mk b{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oda-mk small{font-size:.74rem;color:var(--c-ink3)}
+.oda-mk select{flex:none;width:128px;min-height:44px;border-radius:12px!important;font:600 .84rem Inter,sans-serif!important;padding:0 10px!important;color:#fff}
+.oda-mk em{flex:none;font-style:normal;font-size:.82rem;color:var(--c-ink3);padding-right:8px}.oda-mk em.on{color:var(--ocL);font-weight:700}
+
+/* klavye açıkken: alt bar gizlenir, pencere görünen alanı doldurur ve içi kayar */
+body.kb .nav{display:none!important}
+body.kb #modal .sheet{max-height:100%!important;overflow:auto;-webkit-overflow-scrolling:touch}
+body.kb #modal .sheet-bg{align-items:flex-end}
