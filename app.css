@@ -3983,3 +3983,8 @@ body.kb #modal .sheet-bg{background:var(--c-card)}
 html.dk body.kb.tg #modal .sheet-bg{background:#0A2318}
 /* klavye açıkken diğer pencereler de saat ve pil satırının altına girmesin */
 body.kb #modal .sheet:not(:has(.oda)){margin-top:env(safe-area-inset-top,0px);max-height:calc(100% - env(safe-area-inset-top,0px))!important}
+
+/* kupon yorumları: soyunma odasıyla aynı sohbet düzeni, yeşil */
+.oda-T{--oc:#00E58A;--ocL:#00E58A;--ocI:#04130C;--ocT:rgba(0,229,138,.18)}
+.oda .bmini{flex:none;margin:8px 12px 0}
+html.dk body.tg .oda .oda-m{background:#04110B}
