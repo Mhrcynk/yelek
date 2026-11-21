@@ -3450,3 +3450,10 @@ body[data-fs=D] .mzh::after{border-color:rgba(255,255,255,.14)}
 .br-n{flex:1;min-width:0;display:grid;gap:2px}.br-n b{font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.br-n small{font-size:.75rem;color:var(--c-ink3)}
 .br-v{font:800 1.3rem/1 var(--display)}
 .br-d{padding:0 0 10px 30px}.br-d .bkl{padding:0!important}
+.bj-b{margin:6px 0 0;font:600 .75rem/1.4 Inter,sans-serif;color:#fff;background:rgba(18,10,42,.35);border-radius:10px;padding:7px 10px}
+/* üst barda Ben düğmesi (paylaşın sağında) */
+html.dk .meBtn.me1{width:40px;height:40px;padding:0!important;border-radius:50%!important;display:grid;place-items:center;overflow:hidden;max-width:none;background:var(--c-card)!important;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18)}
+html.dk .meBtn.me1 .av{width:40px;height:40px;border-radius:50%;margin:0;font-size:.8rem}
+html.dk .meBtn.me1 svg{width:22px;height:22px}
+html.dk .meBtn.me1.on{box-shadow:0 0 0 2px #fff}
+html.dk .meBtn.me1>span.av:last-child{display:grid;place-items:center}
