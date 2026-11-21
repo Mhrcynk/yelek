@@ -1057,12 +1057,12 @@ function ypKimne(m){if(!isMember())return null;const F=BET.feed;if(!F){betLoad("
     ${brave&&P(brave.p)?`<div class="yp-knc" data-b><span><small>EN CESUR KUPON</small><em>${esc(shortName(nameOf(brave.p)))} · ${esc(betCTitle(brave).length>26?((brave.legs||[]).length+"'li kombine"):betCTitle(brave))}</em></span><b>× ${fO(brave.odd)}</b></div>`:""}</div>`;
   return{html:ypPost({ey:igDate(m.date)+" · Tahmin",ti:"Kim neye oynadı?",hc:"mid",hero,ft:"#tahmin"}),cap:`Kim neye oynadı? 🤔 ${C.length} kupon, ${fJ(jet)} sikke\n${sn?`${nmOf(m,"A")} %${pc("1")} · X %${pc("X")} · ${nmOf(m,"B")} %${pc("2")}\n`:""}${HT()} #tahmin`,name:"kim-neye-oynadi-"+m.date}}
 function ypTduel(){if(!isMember())return null;const me=myPid();const T=BET.tbl;if(!T){betLoad("tbl");return null}if(!BET.feed){betLoad("feed");return null}
-  const R=T.rows.filter(r=>P(r.p)).sort((a,b)=>b.net-a.net||b.bal-a.bal);const riv=betRival(R,me);if(!me||!riv)return null;const d=betDuelData(me,riv);if(!d)return null;
+  const R=betRank(T);const riv=betRival(R,me);if(!me||!riv)return null;const d=betDuelData(me,riv);if(!d)return null;
   const side=(p,v,w,c)=>{const nm=TRU(shortName(nameOf(p)));return `<div class="${c}" data-b>${ypAv(p,"","width:120px;height:120px")}<b style="font-size:${ypFit(nm,30,200)}px">${esc(nm)}</b><em class="${v>0?"pos":v<0?"neg":""}">${v>0?"+":""}${fJ(v)}</em><small>son maç ${w>0?"+":""}${fJ(w)}</small></div>`};
   const hero=`<div class="yp-du">${side(me,d.a,d.wa,"a")}<span class="vs">VS</span>${side(riv,d.b,d.wb,"b")}</div>`;
   const lead=d.a===d.b?"Berabere":(d.a>d.b?shortName(nameOf(me)):shortName(nameOf(riv)))+" önde";
   return{html:ypPost({ey:"Sezon "+T.season+" · Tahmin",ti:"Tahmin düellosu",hc:"mid",hero,ft:lead}),cap:`Tahmin düellosu ⚔️ ${nameOf(me)} ${d.a>0?"+":""}${fJ(d.a)} – ${nameOf(riv)} ${d.b>0?"+":""}${fJ(d.b)}\n${HT()} #tahmin`,name:"tahmin-duellosu"}}
-function ypTtab(){if(!isMember())return null;const T=BET.tbl;if(!T){betLoad("tbl");return null}const L=T.rows.filter(r=>P(r.p)&&r.n>0).sort((a,b)=>b.net-a.net||b.bal-a.bal).slice(0,6);if(!L.length)return null;
+function ypTtab(){if(!isMember())return null;const T=BET.tbl;if(!T){betLoad("tbl");return null}const L=betRank(T).slice(0,6);if(!L.length)return null;
   const hero=`<div class="yp-tt">${L.map((r,i)=>`<div class="${i?"":"f"}" data-b><b class="k">${i+1}</b>${ypAv(r.p,"","width:44px;height:44px")}<span><em style="font-size:${ypFit(TRU(shortName(nameOf(r.p))),17,200,{w:700,fam:INF})}px">${esc(shortName(nameOf(r.p)))}</em><small>${fJ(r.bal)} sikke · ${r.won}/${r.n}</small></span><b class="v ${r.net>0?"pos":r.net<0?"neg":""}">${r.net>0?"+":""}${fJ(r.net)}</b></div>`).join("")}</div>`;
   return{html:ypPost({ey:"Sezon "+T.season+" · Tahmin",ti:"Tahmin tablosu",hc:"mid",hero,ft:"#tahminkralı"}),cap:`Tahmin tablosu 📈\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)).join("\n")}\n${HT()} #tahmin`,name:"tahmin-tablosu"}}
 // paylaşım: haftanın kuponu ve tahmin kralı
@@ -1074,7 +1074,7 @@ function ypTkup(m){if(!isMember())return null;const W=BET.week[m.id];if(!W){betL
   const html=ypPost({ey:igDate(m.date)+" · Tahmin",ti:"Haftanın kuponu",wk:igWeek(m),hc:"mid",hero,ft:W.n?`${W.n} kupondan ${W.won} tanesi tuttu`:"#tahmin"});
   return{html,cap:`Haftanın kuponu: ${nameOf(c.p)} ${fJ(c.st)} sikkeyle ${fJ(c.py)} sikke aldı 🎯\n${L.map(l=>"• "+l.l).join("\n")}\n${HT()} #halısaha`,name:"haftanin-kuponu-"+m.date}}
 function ypTkral(){if(!isMember())return null;const T=BET.tbl;if(!T){betLoad("tbl");return null}
-  const L=T.rows.filter(r=>P(r.p)&&r.n>0).sort((a,b)=>b.net-a.net||b.bal-a.bal).slice(0,3);if(!L.length)return null;
+  const L=betRank(T).slice(0,3);if(!L.length)return null;
   const html=ypPost({ey:"Sezon "+T.season+" · Tahmin",ti:"Tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:fJ(r.bal)+" sikke · "+r.won+"/"+r.n}))),ft:"#tahminkralı"});
   return{html,cap:`Tahmin kralı yarışı 🎯\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)+" sikke").join("\n")}\n${HT()} #halısaha`,name:"tahmin-krali"}}
 function ypDuel(m){const PG={Defans:"DF","Orta saha":"OS",Forvet:"FV",Kaleci:"KL",DF:"DF",OS:"OS",FV:"FV",KL:"KL"};const grp=id=>{const p=P(id);return p.epos&&EPOS[p.epos]?EPOS[p.epos][0]:PG[p.pos]||EPOS[eposOf(p)]?.[0]};
@@ -3641,6 +3641,7 @@ const betKick=mid=>{const m=S.matches.find(x=>x.id===mid);return m?matchTs(m):In
 // geri alma süresi dolunca düğme kendiliğinden kaybolsun
 setInterval(()=>{if(S.tab==="iddia"&&(S.f.bt||"oyna")==="kupon"&&!S.sheet){const me=myPid();const L=me&&BET.lists[me];if(L&&L.rows.some(b=>b.z==="acik"&&b.at&&Date.now()-Date.parse(b.at)<BET_UNDO+60000))render(true)}},30000);
 const BET_ST={acik:["Açık",""],kazandi:["Kazandı","ok"],kaybetti:["Kaybetti","bad"],iade:["İade","mid"]};
+function betRank(T){return (T&&T.rows||[]).filter(r=>P(r.p)&&(r.n>0||r.open>0)).sort((a,b)=>b.net-a.net||b.won-a.won||(b.best||0)-(a.best||0)||nameOf(a.p).localeCompare(nameOf(b.p),"tr"))}
 function betSeen(){try{return +localStorage.getItem("y_bn_"+TID)||0}catch(_){return 0}}
 function betMarkSeen(){const N=BET.notes||[];const mx=N.reduce((a,n)=>Math.max(a,+n.id||0),0);if(mx)try{localStorage.setItem("y_bn_"+TID,String(mx))}catch(_){}}
 function betUnread(){const sn=betSeen();return (BET.notes||[]).filter(n=>+n.id>sn).length}
@@ -3715,16 +3716,18 @@ function viewIddia(){
       h+=R.length?`<ul class="card bkl">${R.map(b=>betRow(b,false,true)).join("")}</ul>`:`<div class="card emp2">${empIc("kart","cyan")}<p>Henüz görünen arkadaş kuponu yok.</p></div>`}}
   else{const T=BET.tbl;betLoad("kings");betLoad("feed");
     if(!T)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
-    else{const R=T.rows.filter(r=>P(r.p)).sort((a,b)=>b.net-a.net||b.bal-a.bal||nameOf(a.p).localeCompare(nameOf(b.p),"tr"));const op=S.f.betOpen;
-      h+=`<div class="bxh"><span class="chip">Sezon ${T.season}</span><span>Net kazanca göre · dokun, kuponlarını gör</span></div><ol class="card brk">${R.map((r,i)=>{const o=op===r.p;if(o)betLoad("list",r.p);const L=BET.lists[r.p];
+    else{const R=betRank(T);const op=S.f.betOpen;const nz=T.rows.filter(r=>P(r.p)&&!(r.n>0||r.open>0)).length;
+      h+=`<div class="bxh"><span class="chip">Sezon ${T.season}</span><span>Kuponlardan net kazanca göre · dokun, kuponlarını gör</span></div><ol class="card brk">${R.map((r,i)=>{const o=op===r.p;if(o)betLoad("list",r.p);const L=BET.lists[r.p];
         return `<li class="${r.p===me?"me":""}"><button class="br" data-act="tog1" data-k="betOpen" data-v="${o?"":esc(r.p)}" aria-expanded="${o}"><span class="br-k num">${i===0&&r.net>0?dIcon("kupa","gold",20):i+1}</span>${avatar(P(r.p),"sm")}<span class="br-n"><b>${esc(nameOf(r.p))}${betBadges(r.p).map(x=>`<i class="bbg" title="${esc(x[1])}">${x[0]}</i>`).join("")}</b><small>${r.n||r.open?`${fJ(r.bal)} sikke · ${r.won}/${r.n} tuttu${r.open?` · ${fJ(r.open)} açıkta`:""}`:"Henüz kupon yok"}</small></span><b class="br-v num ${r.net<0?"neg":r.net>0?"pos":""}">${r.n?(r.net>0?"+":"")+fJ(r.net):"–"}</b></button>
           ${o?`<div class="br-d">${r.p!==me?`<div class="br-a"><button class="chip${betFollows().includes(r.p)?" on":""}" data-act="betFollow" data-id="${esc(r.p)}">${betFollows().includes(r.p)?"Takip ediliyor":"Takip et"}</button><button class="chip" data-act="tog1" data-k="bduel" data-v="${esc(r.p)}">Düello</button></div>`:""}${betBadges(r.p).length?`<div class="bbgl">${betBadges(r.p).map(x=>`<span>${x[0]} ${esc(x[1])}</span>`).join("")}</div>`:""}${!L?`<p class="muted small">Yükleniyor…</p>`:L.rows.length?`<ul class="bkl">${L.rows.map(b=>betRow(b,false)).join("")}</ul>`:`<p class="muted small">Görünen kupon yok.</p>`}${L&&L.hidden?`<p class="muted small">${L.hidden} kupon tahminler kapanınca görünecek.</p>`:""}</div>`:""}</li>`}).join("")}</ol>`;
+      if(!R.length)h=h.replace('<ol class="card brk"></ol>',`<div class="card emp2">${empIc("kupa","gold")}<p>Sıralama ilk kuponla açılır. İlk tahmini sen yap.</p></div>`);
+      if(nz&&R.length)h+=`<p class="muted small bxn">${nz} kişi henüz kupon yapmadı; ilk kuponlarıyla sıralamaya girerler.</p>`;
       h+=betDuelCard(R,me);
       const K=(BET.kings||[]).filter(k=>P(k.p));if(K.length)h+=`<section class="card bkg"><h3>Tahmin kralları</h3>${K.map(k=>`<div class="bkg-r">${dIcon("kupa","gold",22)}<span>Sezon ${k.s}</span><b>${esc(nameOf(k.p))}</b><em class="num pos">+${fJ(k.net)}</em></div>`).join("")}</section>`}}
   return h+`</div>`}
 function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board[m.id];const row=BET.tbl&&me?BET.tbl.rows.find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
   const R=sum?[["Başlangıç",sum.start||5000,"Sezon başında herkese"],["Harçlık",sum.harc,"Her maçtan sonra +100"],["Maç primi",sum.oyn||0,"Maçın oyuncusu 100 · çok iyi 80 · iyi 60 · orta 40 · kötü 20"],["Oy verme",sum.oy||0,"Maçtan sonra oy verene +50"],...(sum.kurt?[["Kurtarma",sum.kurt,"Bakiye 100'ün altına düşünce"]]:[]),["Kuponlar",sum.net,"Net kazanç ya da kayıp"],["Açık kuponda",-sum.open,"Maç bitince sonuçlanır"]]:[];
-  const K=[["kart","pink","Kupona 1–4 tahmin koyarsın. Birden fazlaysa kombine olur, oranlar çarpılır, hepsi tutarsa kazanırsın."],["takvim","cyan","Tahminler kadrolar açıklanınca açılır, maçtan 1 saat önce kapanır. Yaptığın kuponu ilk 5 dakika içinde geri alabilirsin."],["kalkan","green","Bir kupon en az 10, en fazla bakiyenin yarısı kadar sikke olabilir. Kendi adına oyuncu tahmini yapılamaz."],["kupa","gold","Sıralama net kazanca göre. Sezon bitince bakiyeler sıfırlanır, en çok kazanan sezonun tahmin kralı olur."]];
+  const K=[["kart","pink","Kupona 1–4 tahmin koyarsın. Birden fazlaysa kombine olur, oranlar çarpılır, hepsi tutarsa kazanırsın."],["takvim","cyan","Tahminler kadrolar açıklanınca açılır, maçtan 1 saat önce kapanır. Yaptığın kuponu ilk 5 dakika içinde geri alabilirsin."],["kalkan","green","Bir kupon en az 10, en fazla bakiyenin yarısı kadar sikke olabilir. Kendi adına oyuncu tahmini yapılamaz."],["kupa","gold","Sıralamaya sadece kupon yapanlar girer. Sıra, kuponlardan kazanılan ya da kaybedilen net sikkeye göre belirlenir; harçlık ve primler sırayı etkilemez. Sezon bitince en çok kazanan tahmin kralı olur."]];
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Sikke ve kurallar</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
   ${sum?`<div class="bif">${R.map(([l,v,d])=>`<div class="bif-r"><span><b>${l}</b><small>${d}</small></span><em class="num ${v<0?"neg":""}">${v>0&&l!=="Başlangıç"?"+":""}${fJ(v)}</em></div>`).join("")}<div class="bif-r t"><span><b>Bakiyen</b></span><em class="num">${fJ(sum.bal)}</em></div></div>`:""}
   <div class="bdef"><label><span>Varsayılan kupon tutarı</span><input id="betDef" type="number" inputmode="numeric" min="10" step="10" value="${esc(betDefAmt())}" placeholder="Boş"></label><button class="btn sm" data-act="betDefAmt">Kaydet</button></div>
@@ -3749,7 +3752,7 @@ function sheetBetCom(){const id=S.sheet.id;const C=BET.com&&BET.com.id===id?BET.
   <div class="bcm-i"><input id="betComTxt" maxlength="140" placeholder="Yorum yaz…" aria-label="Yorum" enterkeyhint="send" autocomplete="off"><button class="bcm-s" data-act="betComSend" data-id="${esc(id)}" aria-label="Gönder">${send}</button></div>`}
 // Ben sayfasındaki küçük tahmin kartı
 function betBenCard(){if(!isMember())return"";const me=myPid();if(!me)return"";betLoad("tbl");betLoad("feed");const T=BET.tbl;if(!T)return"";
-  const R=T.rows.filter(r=>P(r.p)).sort((a,b)=>b.net-a.net||b.bal-a.bal);const i=R.findIndex(r=>r.p===me);if(i<0)return"";const r=R[i];
+  const R=betRank(T);const i=R.findIndex(r=>r.p===me);if(i<0){const r0=T.rows.find(r=>r.p===me);return `<button class="card bben" data-act="tab" data-tab="iddia">${dIcon("kupa","gold",26)}<span><b>Tahmin · sıralamada değilsin</b><small>${r0?fJ(r0.bal)+" sikke · ":""}ilk kuponunu yap, sıralamaya gir</small></span></button>`}const r=R[i];
   return `<button class="card bben" data-act="tab" data-tab="iddia">${dIcon("kupa","gold",26)}<span><b>Tahmin · ${i+1}. sıra ${betBadges(me).map(x=>`<i class="bbg" title="${esc(x[1])}">${x[0]}</i>`).join("")}</b><small>${fJ(r.bal)} sikke · ${r.won}/${r.n} kupon tuttu</small></span><em class="num ${r.net<0?"neg":r.net>0?"pos":""}">${r.net>0?"+":""}${fJ(r.net)}</em></button>`}
 // ---- uygulamaya uygun seçim menüsü: telefonun kendi açılır listesi yerine ----
 (()=>{let pop=null,src=null,tx=0,ty=0,tsel=null,lastTouch=0;
