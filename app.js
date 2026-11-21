@@ -3508,10 +3508,10 @@ function viewIddia(){
   const bd=m&&BET.board[m.id];const row=BET.tbl&&me?BET.tbl.rows.find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
   const tab=S.f.bt||"oyna";
   let h=`<div class="wrap iddia">`;
-  h+=`<section class="bj"><span class="bj-l">Bakiyen</span><b class="bj-v num">${sum?fJ(sum.bal):"…"}<small> jeton</small></b>
+  h+=`<section class="bj"><button class="bj-i${S.f.bjInfo?" on":""}" data-act="tog" data-k="bjInfo" aria-expanded="${!!S.f.bjInfo}" aria-label="Jeton kuralları">i</button><span class="bj-l">Bakiyen</span><b class="bj-v num">${sum?fJ(sum.bal):"…"}<small> jeton</small></b>
     <div class="bj-s"><span><b class="num ${sum&&sum.net<0?"neg":sum&&sum.net>0?"pos":""}">${sum?(sum.net>0?"+":"")+fJ(sum.net):"–"}</b>net kazanç</span><span><b class="num">${sum?fJ(sum.open):"–"}</b>açık kuponda</span><span><b class="num">${sum?`${sum.won}/${sum.n}`:"–"}</b>tutan</span></div>
-    ${sum&&sum.harc!=null?`<p class="bj-b">Başlangıç ${fJ(sum.start||5000)} · harçlık ${fJ(sum.harc)} · maça gelme ${fJ(sum.oyn||0)} · oy verme ${fJ(sum.oy||0)}${sum.kurt?` · kurtarma ${fJ(sum.kurt)}`:""}</p>`:""}
-    <p class="bj-n">Oyun parasıdır, gerçek değeri yok. Her maçtan sonra +100 harçlık, maçta oynayana +50, oy verene +25. Bakiyen 100'ün altına düşerse sıradaki maçtan önce 100'e tamamlanır.</p></section>`;
+    ${S.f.bjInfo?`<div class="bj-inf">${sum&&sum.harc!=null?`<p class="bj-b">Başlangıç ${fJ(sum.start||5000)} · harçlık ${fJ(sum.harc)} · maça gelme ${fJ(sum.oyn||0)} · oy verme ${fJ(sum.oy||0)}${sum.kurt?` · kurtarma ${fJ(sum.kurt)}`:""}</p>`:""}
+    <p class="bj-n">Oyun parasıdır, gerçek değeri yok. Her maçtan sonra +100 harçlık, maçta oynayana +50, oy verene +25. Bakiyen 100'ün altına düşerse sıradaki maçtan önce 100'e tamamlanır.</p></div>`:""}</section>`;
   h+=`<div class="mtabs bt" role="tablist">${[["oyna","Oyna"],["kupon","Kuponlarım"],["sira","Sıralama"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(tab==="oyna"){
     if(!m)h+=`<div class="card emp2">${empIc("takvim","cyan")}<p>Sıradaki maçın kadroları açıklanınca tahminler açılır.</p></div>`;
