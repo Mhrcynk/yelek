@@ -537,7 +537,7 @@ async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
       let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");if(d.length>=250000)continue;
       const w=await rpc("admin_set_photo",{p_pin:S.pin||"",p_id:x.id,p_data:d});if(w&&w.ok){S.photos[x.id]=d;await rpc("admin_photo_fix_done",{p_pin:S.pin||"",p_id:x.id});n++}}
     if(n){toast(n+" fotoğraf hizalandı");render(true)}}catch(e){console.warn(e)}finally{S._pf=false}}
-async function notesSync(force){setTimeout(photoFixRun,2500);setTimeout(calcSync,1500);if(!S.admin||S._ns)return;S._ns=true;
+async function notesSync(force){setTimeout(photoFixRun,2500);setTimeout(calcSync,1500);setTimeout(betRateSync,2500);if(!S.admin||S._ns)return;S._ns=true;
   try{for(const m of S.matches){if(!mDone(m)||(m.notes&&m.id!==force)||isExt(m))continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
     const n={};for(const[id,r]of Object.entries(inf.pts)){if(r&&isFinite(r.pts))n[id]={n:Math.round(r.pts*10)/10}}
     if(!Object.keys(n).length)continue;try{const r=await rpc("admin_set_notes",{p_pin:S.pin||"",p_id:m.id,p_notes:n});if(r&&r.ok)m.notes=n}catch(_){}}}
@@ -3481,6 +3481,11 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
   if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
 })();
 
+// tahmin oranları için kadro reytingleri: yönetici cihazı hesaplayıp sunucuya yazar
+async function betRateSync(){if(!S.admin||S.fol||S._brs)return;const m=betNext();if(!m||matchTs(m)<=Date.now())return;
+  const av=k=>{const L=plOf(m,k).filter(id=>P(id));return L.length?L.reduce((t,id)=>t+ovrOf(id),0)/L.length:null};const ra=av("A"),rb=av("B");if(ra==null||rb==null)return;
+  const r0=m.bet_r||{};if(Math.abs((+r0.ra||0)-ra)<.3&&Math.abs((+r0.rb||0)-rb)<.3)return;S._brs=1;
+  try{const r=await rpc("bet_rate",{p_match:m.id,p_ra:+ra.toFixed(1),p_rb:+rb.toFixed(1)});if(r&&r.ok){m.bet_r={ra:+ra.toFixed(1),rb:+rb.toFixed(1)};delete BET.board[m.id];delete BET.at["board"+m.id];if(S.tab==="iddia")render(true)}}catch(_){}S._brs=0}
 // ===== TAHMİN: sembolik jetonla maç tahminleri (iç adı "iddia") =====
 const BET={board:{},tbl:null,lists:{},slip:null,amt:"",busy:0,at:{}};
 const fJ=n=>(Math.round(+n||0)).toLocaleString("tr-TR");
