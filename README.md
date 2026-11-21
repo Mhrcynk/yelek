@@ -56,3 +56,6 @@ node tests/acilis.js   # açılışta veri gecikmesi ve oturum (geçerli / süre
 node tests/motor.js    # puan motoru: olaylar doğru özelliğe, bir maçta tek yön, donmuş maçlar değişmez
 node tests/okunur.js   # 19 ekranda küçük yazı, düşük kontrast, küçük dokunma alanı
 ```
+
+## Tahmin oyunu
+Sembolik jetonla maç tahmini (gerçek para yok). Veritabanında `private.coupons` (kuponlar) ve `private.bets` (kupondaki seçimler) tutulur; bakiye `private.bet_sum` ile maç maç hesaplanır (5.000 başlangıç, maç başına +100 harçlık, oynayana +50, oy verene +25, 100'ün altına düşene kurtarma). Oranlar `private.bet_markets` / `private.bet_pmarkets` ile sunucuda hesaplanır: takımın gol ortalaması, oyuncuların gol/asist hızı ve yöneticinin cihazından yazılan kadro reytingleri (`bet_rate`). Maç bitince `bet_settle` tetikleyicisi kuponları sonuçlandırır ve tutanlara bildirim gönderir. İstemci fonksiyonları: `bet_board`, `bet_place`, `bet_cancel`, `bet_table`, `bet_list`, `bet_kings`, `bet_week`.

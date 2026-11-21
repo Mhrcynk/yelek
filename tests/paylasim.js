@@ -50,10 +50,12 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
   await run(async()=>{await document.fonts.load('800 40px "Barlow Condensed"');await document.fonts.load('700 12px Inter');
     S.players.forEach((p,i)=>{if(i%2)return;const c=document.createElement("canvas");c.width=256;c.height=320;const g=c.getContext("2d");
       g.fillStyle=`hsl(${i*40},60%,55%)`;g.beginPath();g.arc(128,100,56,0,7);g.fill();g.beginPath();g.moveTo(14,320);g.quadraticCurveTo(20,190,128,190);g.quadraticCurveTo(236,190,242,320);g.fill();
-      S.photos[p.id]=c.toDataURL("image/png")});S.me=S.players[0].id;render(true);
+      S.photos[p.id]=c.toDataURL("image/png")});S.me=S.players[0].id;render(true);S.session=S.session||{user:{id:"u"}};S.mem={status:"onayli",player_id:S.players[0].id,role:"yonetici"};const nw=Date.now();
+      fin().forEach(m=>{BET.week[m.id]={ok:true,n:9,won:3,rows:[{p:S.players[2].id,odd:7.42,st:250,py:1855,legs:[{l:"Maç sonucu · "+nmOf(m,"A"),odd:2.06},{l:"Toplam gol 12,5 · Üst",odd:1.81},{l:nameOf(S.players[4].id)+" · 2+ gol",odd:1.99}]}]};BET.at["week"+m.id]=nw});
+      BET.tbl={ok:true,season:1,rows:S.players.slice(0,6).map((p,i)=>({p:p.id,bal:5300+i*90,net:[340,1250,-60,-420,880,0][i],n:4,won:2,open:0}))};BET.at.tbl=nw;
     const P0=S.players;S.stats[P0[0].id].streak={t:"5 maçtır gol atıyor",hot:true};S.stats[P0[3].id].streak={t:"3 maçtır not 6 altında",hot:false};S.stats[P0[5].id].series=[66,68,67,70,72,71,75,78,79];S.stats[P0[5].id].ovr=79});
   const plan=[];
-  const items={once:["ilk7","gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
+  const items={once:["ilk7","gun","kadro","duel","out"],mac:["tkup","skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tkral","tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
   const ms=await run(()=>fin().map(m=>m.id));const pids=await run(()=>pmPlayers().map(p=>p.id));
   for(const [tab,L] of Object.entries(items))for(const it of L){
     if(tab==="mac"){for(const mid of ms)plan.push({tab,item:it,mid})}
