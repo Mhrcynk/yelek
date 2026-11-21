@@ -3950,7 +3950,7 @@ html.dk .oda-cr textarea,.oda-cr textarea{flex:1;min-width:0;min-height:44px;max
 .oda .oda-pf{padding:4px 2px}
 body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb #odaPinW,body.kb .oda .oda-best{display:none}
 body.kb .oda .oda-m{display:flex!important}
-body.kb .oda-hd{padding-top:6px;padding-bottom:6px}
+body.kb .oda-hd{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:6px}
 /* klavye üstündeki sistem çubuğunun arkasında sayfa görünmesin: pencerenin altı düz renkle devam eder */
 body.kb #modal .sheet-bg::after{content:"";position:absolute;left:0;right:0;top:100%;height:260px;background:var(--c-card);pointer-events:none}
 html.dk body.kb.tg #modal .sheet-bg::after{background:#0A2318}
@@ -3981,3 +3981,5 @@ html.dk body.kb:has(#modal .sheet-bg)::before,html.dk body.kb:has(#modal .sheet-
 html:has(body.kb.tg #modal .sheet-bg),html.dk body.kb.tg:has(#modal .sheet-bg){background:#0A2318!important}
 body.kb #modal .sheet-bg{background:var(--c-card)}
 html.dk body.kb.tg #modal .sheet-bg{background:#0A2318}
+/* klavye açıkken diğer pencereler de saat ve pil satırının altına girmesin */
+body.kb #modal .sheet:not(:has(.oda)){margin-top:env(safe-area-inset-top,0px);max-height:calc(100% - env(safe-area-inset-top,0px))!important}
