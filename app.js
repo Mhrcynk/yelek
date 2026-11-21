@@ -537,7 +537,7 @@ async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
       let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");if(d.length>=250000)continue;
       const w=await rpc("admin_set_photo",{p_pin:S.pin||"",p_id:x.id,p_data:d});if(w&&w.ok){S.photos[x.id]=d;await rpc("admin_photo_fix_done",{p_pin:S.pin||"",p_id:x.id});n++}}
     if(n){toast(n+" fotoğraf hizalandı");render(true)}}catch(e){console.warn(e)}finally{S._pf=false}}
-async function notesSync(force){setTimeout(photoFixRun,2500);setTimeout(calcSync,1500);setTimeout(betRateSync,2500);if(!S.admin||S._ns)return;S._ns=true;
+async function notesSync(force){setTimeout(photoFixRun,2500);setTimeout(calcSync,1500);setTimeout(betRateSync,2500);setTimeout(betPrefetch,600);if(!S.admin||S._ns)return;S._ns=true;
   try{for(const m of S.matches){if(!mDone(m)||(m.notes&&m.id!==force)||isExt(m))continue;const inf=S.mInfo[m.id];if(!inf||!inf.pts)continue;
     const n={};for(const[id,r]of Object.entries(inf.pts)){if(r&&isFinite(r.pts))n[id]={n:Math.round(r.pts*10)/10}}
     if(!Object.keys(n).length)continue;try{const r=await rpc("admin_set_notes",{p_pin:S.pin||"",p_id:m.id,p_notes:n});if(r&&r.ok)m.notes=n}catch(_){}}}
@@ -2521,7 +2521,7 @@ async function afterAuth(){
   const prevMem=S.mem;S.mem=null;if(!S.session)S.sessionStale=null;
   if(S.session){
     try{S.mem=await rpc("my_membership",{});try{const c=JSON.parse(localStorage.getItem("y_cache")||"null");if(c){c.mem=S.mem;localStorage.setItem("y_cache",JSON.stringify(c))}}catch(_){}}catch(_){S.mem=prevMem}
-    if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}
+    if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}setTimeout(betPrefetch,400);
       if(S.mem.role==="yonetici"){S.admin=true;S.pin=S.pin||"";setTimeout(notesSync,1500)}
       if(!LS.get("y_hos")&&!S.sheet)S.sheet={type:"hos"}}
     if(S.sheet&&S.sheet.type==="login")S.sheet=null;
@@ -3510,13 +3510,17 @@ const fO=n=>(+n).toFixed(2).replace(".",",");
 const betNext=()=>S.matches.filter(m=>!m.archived&&!isExt(m)&&m.state==="takim").sort((a,b)=>matchTs(a)-matchTs(b))[0];
 const betGrp=k=>["sonuc","fark"].includes(k)?"sonuc":["aralik","t95","t125","t155","iki6"].includes(k)?"toplam":k.includes(":")?"p:"+k.split(":")[1]:k;
 const betOdd=()=>Math.min(999,BET.slip.reduce((t,l)=>t*l.odd,1));
-async function betLoad(k,arg,force){const key=k+(arg||"");if(!force&&BET.at[key]&&Date.now()-BET.at[key]<60000)return;if(BET.at[key]===-1)return;BET.at[key]=-1;
-  try{let r;if(k==="board"){r=await rpc("bet_board",{p_match:arg});if(r&&r.ok)BET.board[arg]=r}
+// oturum anahtarı süresi dolmak üzereyse önce tazele (ilk açılışta tahmin verisi takılmasın)
+async function freshAuth(){const e=S.session?.expires_at;if(!e||e*1000-Date.now()>60000||!AUTH.sb)return;try{const{data}=await AUTH.sb.auth.refreshSession();if(data&&data.session)S.session=data.session}catch(_){}}
+async function betLoad(k,arg,force,tries){const key=k+(arg||"");if(!force&&BET.at[key]&&Date.now()-BET.at[key]<60000)return;if(BET.at[key]===-1)return;BET.at[key]=-1;
+  let ok=false;try{await freshAuth();let r;if(k==="board"){r=await rpc("bet_board",{p_match:arg});if(r&&r.ok)BET.board[arg]=r}
     else if(k==="tbl"){r=await rpc("bet_table",{});if(r&&r.ok)BET.tbl=r}
     else if(k==="kings"){r=await rpc("bet_kings",{});if(r&&r.ok)BET.kings=r.rows}
     else if(k==="week"){r=await rpc("bet_week",{p_match:arg});if(r&&r.ok)BET.week[arg]=r}
     else if(k==="list"){r=await rpc("bet_list",{p_player:arg});if(r&&r.ok)BET.lists[arg]=r}
-    BET.at[key]=Date.now()}catch(_){BET.at[key]=Date.now()-55000}
+    ok=!!(r&&r.ok);BET.at[key]=ok?Date.now():0}catch(_){BET.at[key]=0}
+  if(!ok&&(tries||0)<4){setTimeout(()=>betLoad(k,arg,true,(tries||0)+1),800*((tries||0)+1));return}
+  betSave();
   if(S.tab==="iddia"||S.tab==="ben"||(S.sheet&&S.sheet.type==="pm"))render(true)}
 const BET_ERR={closed:"Tahminler kapandı",own:"Kendi adına tahmin yapamazsın",min:"En az 10 jeton oynayabilirsin",bal:"Bakiyen yetmiyor",auth:"Önce giriş yapmalısın",market:"Bu seçenek artık yok",grp:"Bu iki seçim aynı kupona konamaz",legs:"Bir kupona en fazla 4 seçim"};
 const BET_ST={acik:["Açık",""],kazandi:["Kazandı","ok"],kaybetti:["Kaybetti","bad"],iade:["İade","mid"]};
@@ -3583,6 +3587,11 @@ function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board
     <li>Kazanılan jetonların karşılığında para, hediye, ödül ya da herhangi bir menfaat verilmez.</li>
     <li>Bu oyun bir bahis, şans oyunu ya da kumar hizmeti değildir. Tahminler arkadaşlar arasında sıralama ve sohbet konusu olsun diye vardır.</li></ul>
     <p>Jetonlar her sezon başında sıfırlanır ve uygulama dışında hiçbir yerde geçerli değildir.</p></section>`}
+// tahmin verisini cihazda sakla: sekme ilk açılışta da anında dolu gelsin
+function betSave(){try{const m=betNext();const me=myPid();localStorage.setItem("y_bet_"+(TID),JSON.stringify({b:m&&BET.board[m.id]?{[m.id]:BET.board[m.id]}:{},t:BET.tbl,l:me&&BET.lists[me]?{[me]:BET.lists[me]}:{},k:BET.kings}))}catch(_){}}
+function betRestore(){try{const d=JSON.parse(localStorage.getItem("y_bet_"+(TID))||"null");if(!d)return;Object.assign(BET.board,d.b||{});if(!BET.tbl)BET.tbl=d.t||null;Object.assign(BET.lists,d.l||{});if(!BET.kings)BET.kings=d.k||null}catch(_){}}
+// uygulama açılınca arka planda yükle
+function betPrefetch(){if(!isMember()||S.fol)return;betRestore();const m=betNext();if(m)betLoad("board",m.id);betLoad("tbl");const me=myPid();if(me)betLoad("list",me)}
 // Ben sayfasındaki küçük tahmin kartı
 function betBenCard(){if(!isMember())return"";const me=myPid();if(!me)return"";betLoad("tbl");const T=BET.tbl;if(!T)return"";
   const R=T.rows.filter(r=>P(r.p)).sort((a,b)=>b.net-a.net||b.bal-a.bal);const i=R.findIndex(r=>r.p===me);if(i<0)return"";const r=R[i];
