@@ -792,7 +792,10 @@ function qkRender(){const old=$("#qk");if(old)old.innerHTML="";const el=$("#view
       await new Promise(r=>setTimeout(r,Math.max(0,900-(Date.now()-t0))));
       el.classList.remove("loading");el.classList.add("done");const tt=$("#ptt");if(tt){tt.classList.add("on");setTimeout(()=>tt.classList.remove("on"),1800)}await new Promise(r=>setTimeout(r,350));back(420);busy=false}
     else if(d)back(300)})})();
-function render(force){document.body.dataset.fs=S.f.fs||"";
+// yatay kayan listeler yeniden çizilince yerinde kalsın
+function render(force){const _ks={};document.querySelectorAll("[data-ks]").forEach(e=>_ks[e.dataset.ks]=e.scrollLeft);_render(force);
+  document.querySelectorAll("[data-ks]").forEach(e=>{if(_ks[e.dataset.ks]!=null)e.scrollLeft=_ks[e.dataset.ks]})}
+function _render(force){document.body.dataset.fs=S.f.fs||"";
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -3538,7 +3541,7 @@ function betPlayers(m,bd){const me=myPid();const P2=bd.players||[];if(!P2.length
   const sel=S.f.bpl&&P2.some(x=>x.p===S.f.bpl)?S.f.bpl:(P2.find(x=>x.p!==me)||P2[0]).p;const cur=P2.find(x=>x.p===sel);
   const chip=x=>`<button class="${x.p===sel?"on":""}${x.x?" me":""}" data-act="tog1" data-k="bpl" data-v="${esc(x.p)}" aria-pressed="${x.p===sel}">${avatar(P(x.p)||{id:x.p,name:"?"},"sm")}<span>${esc(shortName(nameOf(x.p)))}</span>${x.r?`<em>${x.r}</em>`:""}</button>`;
   return `<section class="card bmk bpm"><h3>Oyuncu tahminleri</h3>
-    ${["A","B"].map(k=>`<div class="bpt"><span class="bpt-h t${k}">${esc(nmOf(m,k))}</span><div class="bpc">${P2.filter(x=>x.side===k).sort((a,b)=>"KLDFOSFV".indexOf(a.r||"OS")-"KLDFOSFV".indexOf(b.r||"OS")).map(chip).join("")}</div></div>`).join("")}
+    ${["A","B"].map(k=>`<div class="bpt"><span class="bpt-h t${k}">${esc(nmOf(m,k))}</span><div class="bpc" data-ks="bpc${k}">${P2.filter(x=>x.side===k).sort((a,b)=>"KLDFOSFV".indexOf(a.r||"OS")-"KLDFOSFV".indexOf(b.r||"OS")).map(chip).join("")}</div></div>`).join("")}
     ${cur?(cur.x?`<p class="muted small">Kendi adına tahmin yapamazsın. Başka bir oyuncu seç.</p>`:`<div class="bo n2">${cur.o.map(o=>{const on=BET.slip.some(l=>l.k===o.k);
       return `<button class="${on?"on":""}" ${!bd.open?"disabled":""} data-act="betPick" data-k="${esc(o.k)}" data-v="e" data-l="${esc(nameOf(cur.p)+" · "+o.l)}" data-o="${o.odd}" aria-pressed="${on}"><span>${esc(o.l)}</span><b class="num">${fO(o.odd)}</b></button>`}).join("")}</div>`):""}</section>`}
 function betSlip(m,sum){if(!BET.slip.length)return"";const mx=sum?Math.max(10,Math.floor(sum.bal/2)):0;const a=BET.amt;const od=betOdd();const kb=BET.slip.length>1;
