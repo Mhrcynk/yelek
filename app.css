@@ -3511,3 +3511,17 @@ html.dk .bj-i:active{background:rgba(255,255,255,.26)}
 
 .iddia{width:100%;min-width:0}
 .bpc button em{font:800 .7rem/1 var(--display);font-style:normal;letter-spacing:.04em;opacity:.7}
+/* kupon durum etiketi: satıra oturur, renkli */
+.bk-z{align-self:center;height:auto;min-height:0;line-height:1;display:inline-flex;align-items:center}
+.bk-z{background:rgba(255,212,0,.16)!important;color:#FFD400!important}
+.bk-z.ok{background:rgba(0,229,138,.16)!important;color:var(--c-green)!important}
+.bk-z.bad{background:rgba(255,107,139,.16)!important;color:#FF8FA8!important}
+.bk-z.mid{background:var(--c-card2)!important;color:var(--c-ink2)!important}
+.bk-x{align-self:center}
+.bk.ok{box-shadow:inset 3px 0 0 var(--c-green)}.bk.bad{box-shadow:inset 3px 0 0 #FF6B8B}.bk:not(.ok):not(.bad):not(.mid){box-shadow:inset 3px 0 0 #FFD400}
+.bk{padding-left:12px!important;margin-left:-14px;margin-right:-14px;padding-right:14px}
+/* oyuncu tahmin kutuları eşit */
+.bpm .bo{grid-auto-rows:56px}
+.bpm .bo button{height:56px;font-size:.84rem}
+.bpm .bo button:last-child:nth-child(odd){grid-column:1/-1}
+.bo.n5 button:last-child,.bo.n3 button{grid-auto-rows:auto}
