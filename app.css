@@ -3507,3 +3507,7 @@ html.dk .bj-i:active{background:rgba(255,255,255,.26)}
 .yp-tkf{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.yp-tkf span{font:700 14px/1 Inter,sans-serif;color:#E7DFFF;width:100%}
 .yp-tkf b{font:800 64px/1 "Barlow Condensed",sans-serif;color:#00E58A}.yp-tkf small{font:700 16px/1 Inter,sans-serif;color:#fff}
 .yp-tk{margin-top:18px}.yp-tkf b{font-size:76px}
+
+
+.iddia{width:100%;min-width:0}
+.bpc button em{font:800 .7rem/1 var(--display);font-style:normal;letter-spacing:.04em;opacity:.7}
