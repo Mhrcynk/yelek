@@ -3974,3 +3974,10 @@ html.dk body.kb.tg #modal .sheet-bg::after{background:#0A2318}
 .oda-mu{flex:none;margin-left:auto;width:44px;height:44px;border:0;border-radius:50%;background:none;color:#fff;display:grid;place-items:center;cursor:pointer}
 .oda-mu svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.oda-mu.on{color:#FFD400;background:rgba(255,212,0,.14)}
 .oda-rb.ed{box-shadow:inset 3px 0 0 #FFD400}.oda-rb.ed small{color:#FFD400}
+/* klavye açıkken pencerenin arkasındaki sayfa tamamen gizlenir; klavye çubuğunun arkasında düz zemin kalır */
+body.kb:has(#modal .sheet-bg) main,body.kb:has(#modal .sheet-bg) .top,body.kb:has(#modal .sheet-bg) .nav,body.kb:has(#modal .sheet-bg) .phd{visibility:hidden!important}
+html:has(body.kb #modal .sheet-bg),html.dk body.kb:has(#modal .sheet-bg){background:var(--c-card)!important}
+html.dk body.kb:has(#modal .sheet-bg)::before,html.dk body.kb:has(#modal .sheet-bg)::after{display:none!important}
+html:has(body.kb.tg #modal .sheet-bg),html.dk body.kb.tg:has(#modal .sheet-bg){background:#0A2318!important}
+body.kb #modal .sheet-bg{background:var(--c-card)}
+html.dk body.kb.tg #modal .sheet-bg{background:#0A2318}
