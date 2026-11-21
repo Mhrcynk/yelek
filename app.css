@@ -3917,7 +3917,7 @@ body.kb .oda.pe .oda-m,body.kb .oda.pf .oda-m{display:none}
 #modal .sheet:has(.oda)>.grab{display:none}
 #sheetBody:has(.oda){height:100%;display:block}
 .oda{height:100%;display:flex!important;flex-direction:column;gap:0!important;background:var(--c-bg)}
-.oda-hd{flex:none;display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px 8px;background:var(--c-card);border-bottom:1px solid var(--c-line)}
+.oda-hd{flex:none;display:flex;align-items:center;gap:10px;padding:calc(8px + var(--sat,env(safe-area-inset-top,0px))) 14px 8px 8px;background:var(--c-card);border-bottom:1px solid var(--c-line)}
 .oda-bk{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:none;color:#fff;display:grid;place-items:center;cursor:pointer}
 .oda-bk svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .oda-hd>div{min-width:0;display:grid;gap:3px}.oda-hd b{font:800 1.2rem/1.1 var(--display);letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oda-hd small{font-size:.75rem;color:var(--ocL,var(--c-ink3))}
@@ -3950,7 +3950,7 @@ html.dk .oda-cr textarea,.oda-cr textarea{flex:1;min-width:0;min-height:44px;max
 .oda .oda-pf{padding:4px 2px}
 body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb #odaPinW,body.kb .oda .oda-best{display:none}
 body.kb .oda .oda-m{display:flex!important}
-body.kb .oda-hd{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:6px}
+body.kb .oda-hd{padding-top:calc(6px + var(--sat,env(safe-area-inset-top,0px)));padding-bottom:6px}
 /* klavye üstündeki sistem çubuğunun arkasında sayfa görünmesin: pencerenin altı düz renkle devam eder */
 body.kb #modal .sheet-bg::after{content:"";position:absolute;left:0;right:0;top:100%;height:260px;background:var(--c-card);pointer-events:none}
 html.dk body.kb.tg #modal .sheet-bg::after{background:#0A2318}
@@ -3982,7 +3982,7 @@ html:has(body.kb.tg #modal .sheet-bg),html.dk body.kb.tg:has(#modal .sheet-bg){b
 body.kb #modal .sheet-bg{background:var(--c-card)}
 html.dk body.kb.tg #modal .sheet-bg{background:#0A2318}
 /* klavye açıkken diğer pencereler de saat ve pil satırının altına girmesin */
-body.kb #modal .sheet:not(:has(.oda)){margin-top:env(safe-area-inset-top,0px);max-height:calc(100% - env(safe-area-inset-top,0px))!important}
+body.kb #modal .sheet:not(:has(.oda)){margin-top:var(--sat,env(safe-area-inset-top,0px));max-height:calc(100% - var(--sat,env(safe-area-inset-top,0px)))!important}
 
 /* kupon yorumları: soyunma odasıyla aynı sohbet düzeni, yeşil */
 .oda-T{--oc:#00E58A;--ocL:#00E58A;--ocI:#04130C;--ocT:rgba(0,229,138,.18)}
@@ -4013,3 +4013,5 @@ html.dk body.tg .oda .oda-m{background:#04110B}
 .oda-ok{flex:none;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--c-line);background:none;color:#fff;font:700 .78rem Inter,sans-serif;cursor:pointer}.oda-ok.on{border-color:#00E58A;color:#00E58A;background:rgba(0,229,138,.12)}
 .oda-okl{flex:none;font-style:normal;font-size:.78rem;font-weight:700;color:#00E58A}
 .oda-tq{flex-wrap:wrap;overflow:visible}.oda-tq button:last-child{border-color:var(--c-line);color:#fff;background:var(--c-card2)}
+
+.oda-hd>div{align-content:center;min-height:44px}
