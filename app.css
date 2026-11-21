@@ -3893,3 +3893,10 @@ body.kb .bmini{display:none}
 body.kb .nav{display:none!important}
 body.kb #modal .sheet{max-height:100%!important;overflow:auto;-webkit-overflow-scrolling:touch}
 body.kb #modal .sheet-bg{align-items:flex-end}
+
+/* kaptanın mesajı */
+.oda-m li.cap .oda-b,.oda-m li.me.cap .oda-b{background:linear-gradient(135deg,#FFD400,#FFB800);color:#2A1F00}
+.oda-m li.cap .oda-h b,.oda-m li.cap .oda-h time,.oda-m li.cap .oda-h em{color:#2A1F00;opacity:1}
+.oda-h em{font:800 .68rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.06em;text-transform:uppercase;font-size:.72rem}
+.oda-cb{flex:none;width:20px;height:20px;border-radius:6px;background:#2A1F00;color:#FFD400;font:800 .75rem/20px Inter,sans-serif;font-style:normal;text-align:center}
+.oda-m li.cap .oda-b q{background:rgba(42,31,0,.16)}
