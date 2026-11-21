@@ -1,3 +1,4 @@
+* { touch-action: manipulation }
 /* Tasarım değerleri: renk rolleri (zemin, kart, çizgi, yazı, vurgu, A takımı pembe, B takımı turkuaz, altın, olumlu yeşil).
    Yazı en az 11 px · boşluk 4/8/12/16/24 · köşe 10/16/24 · dokunma alanı en az 40-44 px. */
 :root{--c-bg:#120A2A;--c-card:#1E1442;--c-card2:#2C2060;--c-line:#3A2C78;--c-line2:#5B4A9E;--c-pink:#FF3EA5;--c-cyan:#5FE3F5;--c-gold:#FFD400;--c-green:#00E58A;--c-ink2:#D9D2F5;--c-ink3:#A99CD6}
@@ -3739,3 +3740,38 @@ html.dk .bs-i input,html.dk body.tg .bs-i input[type=number]{flex:1;min-width:0;
 .bs-i input::-webkit-outer-spin-button,.bs-i input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .bs-i span{flex:none}
 .bs-q button{min-height:48px!important;border-radius:14px!important}
+
+/* ===== paylaşım: tahmin yeşil tema ===== */
+.yp.yp-t{--ac:#00E58A;--acI:#04130C;background:radial-gradient(70% 45% at 100% 0%,rgba(255,212,0,.18),rgba(255,212,0,0) 62%),linear-gradient(160deg,#14B86E 0%,#0B5A37 46%,#05160E 100%)!important}
+.yp.yp-t .yp-tkh small{display:block;margin-top:6px;font:700 13px/1 Inter,sans-serif;color:#DDF7EA;letter-spacing:.04em}
+.yp.yp-t .yp-tkl{list-style:none;margin:0;padding:12px 16px;display:flex;flex-direction:column;gap:9px;background:rgba(3,26,16,.45);border-radius:18px}
+.yp.yp-t .yp-tkf span{font:700 14px/1 Inter,sans-serif;color:#DDF7EA;width:100%}
+.yp.yp-t .yp-tik{background:#fff;color:#06231A;border-radius:22px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 16px 40px rgba(0,0,0,.35);margin-top:8px;width:100%}
+.yp.yp-t .yp-tik .yp-bl{background:#E9FBF2}
+.yp.yp-t .yp-tik .yp-bl span{color:#06231A}
+.yp.yp-t .yp-tik .yp-bl b{color:#14B86E}
+.yp.yp-t .yp-bl{list-style:none;margin:0;padding:12px 16px;display:flex;flex-direction:column;gap:9px;background:rgba(3,26,16,.45);border-radius:16px}
+.yp.yp-t .yp-tikc{border-top:2px dashed #BFE6D1;margin:0 -22px}
+.yp.yp-t .yp-tiks small{display:block;font:700 11px/1 Inter,sans-serif;letter-spacing:.1em;color:#4E8A6C;margin-bottom:5px}
+.yp.yp-t .yp-tiks span{align-self:center;font:800 18px/1 "Barlow Condensed",sans-serif;color:#14B86E;background:#E4F8EE;border-radius:99px;padding:7px 12px}
+.yp.yp-t .yp-tiks .r b{font-size:52px;color:#14B86E}
+.yp.yp-t .yp-tutb small{display:block;font:700 14px/1 Inter,sans-serif;color:#DDF7EA}
+.yp.yp-t .yp-or3>div{flex:1;background:rgba(3,26,16,.45);border-radius:18px;padding:14px 8px;text-align:center}
+.yp.yp-t .yp-or3 small{display:block;font-family:Inter,sans-serif;font-weight:700;letter-spacing:.04em;white-space:nowrap;color:#DDF7EA}
+.yp.yp-t .yp-orr{background:rgba(3,26,16,.45);border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.yp.yp-t .yp-orr h4{margin:0;font:700 12px/1 Inter,sans-serif;letter-spacing:.14em;color:#9ED6BC}
+.yp.yp-t .yp-orr i{height:12px;border-radius:8px;background:linear-gradient(90deg,#FF3EA5,#14B86E);flex:none;max-width:230px}
+.yp.yp-t .yp-orf{display:flex;align-items:center;gap:14px;background:rgba(3,26,16,.45);border-radius:18px;padding:12px 18px}
+.yp.yp-t .yp-orf small{display:block;font:700 11px/1 Inter,sans-serif;letter-spacing:.12em;color:#9ED6BC;margin-bottom:5px}
+.yp.yp-t .yp-kn .x{background:#1E563B}
+.yp.yp-t .yp-knt>div{flex:1;background:rgba(3,26,16,.45);border-radius:18px;padding:14px;text-align:center}
+.yp.yp-t .yp-knt small{font:700 11px/1 Inter,sans-serif;letter-spacing:.1em;color:#9ED6BC}
+.yp.yp-t .yp-knc{display:flex;align-items:center;gap:12px;background:rgba(3,26,16,.45);border-radius:18px;padding:14px 18px}
+.yp.yp-t .yp-knc small{display:block;font:700 11px/1 Inter,sans-serif;letter-spacing:.12em;color:#9ED6BC;margin-bottom:5px}
+.yp.yp-t .yp-tt>div{display:flex;align-items:center;gap:12px;background:rgba(3,26,16,.45);border-radius:16px;padding:9px 16px}
+.yp.yp-t .yp-tt>div.f{background:linear-gradient(90deg,rgba(255,212,0,.3),rgba(3,26,16,.45));box-shadow:inset 0 0 0 2px rgba(255,212,0,.6)}
+.yp.yp-t .yp-tt .k{width:22px;font:800 24px/1 "Barlow Condensed",sans-serif;color:#9ED6BC;text-align:center}
+.yp.yp-t .yp-tt small{display:block;margin-top:4px;font:600 12px/1 Inter,sans-serif;color:#9ED6BC}
+.yp.yp-t .yp-du small{font:700 13px/1 Inter,sans-serif;color:#DDF7EA}
+.yp.yp-t .yp-ey{color:#FFD400}
+.yp.yp-t .yp-orr i{background:linear-gradient(90deg,#00E58A,#FFD400)!important}
