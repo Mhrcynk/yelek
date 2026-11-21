@@ -3775,3 +3775,10 @@ html.dk .bs-i input,html.dk body.tg .bs-i input[type=number]{flex:1;min-width:0;
 .yp.yp-t .yp-du small{font:700 13px/1 Inter,sans-serif;color:#DDF7EA}
 .yp.yp-t .yp-ey{color:#FFD400}
 .yp.yp-t .yp-orr i{background:linear-gradient(90deg,#00E58A,#FFD400)!important}
+/* kupon: beğen / beğenme / yorum */
+.bk-r button{gap:6px!important;padding:0 14px!important;min-height:42px!important;border-radius:21px!important}
+.bk-r button b{font:700 .85rem/1 Inter,sans-serif!important}
+.bk-r button.up.on{background:rgba(0,229,138,.16)!important;border-color:#00E58A!important}
+.bk-r button.down.on{background:rgba(255,107,139,.14)!important;border-color:#FF6B8B!important}
+.bk-r button.bk-cm{margin-left:auto;font-size:.82rem!important}
+.bk-r button svg{flex:none}

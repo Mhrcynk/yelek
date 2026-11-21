@@ -16,6 +16,9 @@ async function rpc(fn,args){
 /* ikonlar: uygulamada çift ton (çizgi + yumuşak dolgu), paylaşım görsellerinde çıkartma (beyaz kenarlı, hafif eğik).
    Her ikon [gövde yolu, ayrıntı yolu]; ikisi de 24×24 kutuda SVG yol verisi (tuvalde Path2D ile de çizilir). */
 const DI={
+  begen:["M7.5 10.5l3.7-6.3c.4-.7 1.3-1 2-.6 1.1.5 1.5 1.8 1.2 2.9L13.7 9.5h4.6a2 2 0 0 1 2 2.3l-1.2 6.9a2 2 0 0 1-2 1.7H7.5z","M3.5 10.5h4v9.8h-4z"],
+  begenme:["M7.5 13.5l3.7 6.3c.4.7 1.3 1 2 .6 1.1-.5 1.5-1.8 1.2-2.9L13.7 14.5h4.6a2 2 0 0 0 2-2.3l-1.2-6.9a2 2 0 0 0-2-1.7H7.5z","M3.5 13.5h4V3.7h-4z"],
+  yorum:["M5 4.5h14A2.5 2.5 0 0 1 21.5 7v8.5A2.5 2.5 0 0 1 19 18H10l-4.5 3.5V18H5a2.5 2.5 0 0 1-2.5-2.5V7A2.5 2.5 0 0 1 5 4.5z","M8 10h.01M12 10h.01M16 10h.01"],
   bilet:["M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5V9a3 3 0 0 0 0 6v1.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5V15a3 3 0 0 0 0-6z","M12 9l.95 1.9 2.1.3-1.5 1.5.35 2.1L12 13.8l-1.9 1 .35-2.1-1.5-1.5 2.1-.3z"],
   kombine:["M6 9.5A2 2 0 0 1 8 7.5h10a2 2 0 0 1 2 2v1a2.3 2.3 0 0 0 0 4.5v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1a2.3 2.3 0 0 0 0-4.5z","M4 14.5V6.5a2 2 0 0 1 2-2h10M14 10v1.2M14 13.5v1.2"],
   skor12:["M5.5 5h13A2.5 2.5 0 0 1 21 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5v-9A2.5 2.5 0 0 1 5.5 5z","M12 5v14M7 10l1.5-1v6M15 9.5h2.5v2.5H15v3h2.5"],
@@ -3666,7 +3669,7 @@ function betUnread(){const sn=betSeen();return (BET.notes||[]).filter(n=>+n.id>s
 function betBell(){const n=betUnread();return `<button class="bj-b" data-act="betNotes" aria-label="Bildirimler${n?`, ${n} yeni`:""}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.6 2H4.4z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>${n?`<b class="num">${n>9?"9+":n}</b>`:""}</button>`}
 function betNoteTxt(n){const nm=`<b>${esc(shortName(nameOf(n.a)))}</b>`,q=n.b?`<q>${esc(n.b)}</q>`:"";
   return ({kupon:`${nm} kupon yaptı <span>${esc(n.b||"")}</span>`,tuttu:`${nm} kuponunu tutturdu 🎉 <span>${esc(n.b||"")}</span>`,kazandi:`Kuponun tuttu 🎉 <span>${esc(n.b||"")}</span>`,kaybetti:`Kuponun yattı <span>${esc(n.b||"")}</span>`,
-    tepki:`${nm} kuponuna ${esc(n.e||"")} bıraktı`,yorum:`${nm} kuponuna yorum yaptı ${q}`,yorum2:`${nm} yorumladığın kupona yazdı ${q}`})[n.k]||esc(n.b||"")}
+    tepki:n.e==="down"?`${nm} kuponunu beğenmedi`:`${nm} kuponunu beğendi`,yorum:`${nm} kuponuna yorum yaptı ${q}`,yorum2:`${nm} yorumladığın kupona yazdı ${q}`})[n.k]||esc(n.b||"")}
 function sheetBetNotes(){const N=BET.notes;const sn=S.sheet.seen||0;
   const ic=n=>n.k==="kazandi"?`<span class="bn-ic ok">${dIcon("tuttu","green",22)}</span>`:n.k==="kaybetti"?`<span class="bn-ic bad">${dIcon("yatti","red",22)}</span>`:avatar(P(n.a)||{id:n.a,name:"?"},"sm");
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Bildirimler</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
@@ -3682,7 +3685,7 @@ function betRow(b,mine,who){const[z,c]=BET_ST[b.z]||["",""];const win=b.z==="kaz
   <div class="bk-h">${betHead(b,L,kb)}<span class="bk-z ${c}">${z}</span></div>
   ${kb?`<ul class="bk-l">${L.map(l=>`<li class="${(BET_ST[l.z]||[])[1]||""}"><i aria-hidden="true"></i><span>${esc(l.l)}</span><b class="num">${fO(l.odd)}</b></li>`).join("")}</ul>`:""}
   <div class="bk-f"><span class="bk-s"><small>Yatırılan</small><b class="num">${fJ(b.st)}</b></span><span class="bk-o num">× ${fO(b.odd)}</span><span class="bk-p"><small>${wl}</small><b class="num">${b.z==="kaybetti"?"0":fJ(win)}</b></span></div>
-  <div class="bk-r">${["🔥","😂","🤡","👏"].map(e=>{const n=(b.re||{})[e]||0;const my=(b.my||[]).includes(e);return `<button class="${my?"on":""}" data-act="betReact" data-id="${esc(b.id)}" data-v="${e}" aria-pressed="${my}" aria-label="${e} tepki">${e}${n?`<b>${n}</b>`:""}</button>`}).join("")}<button data-act="betCom" data-id="${esc(b.id)}" aria-label="Yorumlar">${dIcon("kalp","pink",16)}<span>${b.nc?b.nc+" yorum":"Yorum"}</span></button></div>
+  <div class="bk-r">${[["up","begen","green","Beğen"],["down","begenme","red","Beğenme"]].map(([e,ic,c,l])=>{const n=(b.re||{})[e]||0;const my=(b.my||[]).includes(e);return `<button class="${e}${my?" on":""}" data-act="betReact" data-id="${esc(b.id)}" data-v="${e}" aria-pressed="${my}" aria-label="${l}${n?", "+n:""}">${dIcon(ic,c,20)}${n?`<b class="num">${n}</b>`:""}</button>`}).join("")}<button class="bk-cm" data-act="betCom" data-id="${esc(b.id)}" aria-label="Yorumlar">${dIcon("yorum","cyan",20)}<span>${b.nc?b.nc+" yorum":"Yorum"}</span></button></div>
   ${who&&b.p!==myPid()&&b.z==="acik"&&betCopyOk(b)?`<button class="bk-cp" data-act="betCopy" data-id="${esc(b.id)}">${dIcon("kombine","gold",18)}Ben de oynarım</button>`:""}
   ${mine&&(b.z==="acik"||b.z==="kazandi")?`<button class="bk-sh" data-act="betShare" data-id="${esc(b.id)}" data-v="${b.z}" data-m="${esc(b.m)}" aria-label="Kuponu paylaş">${ICON.share||""}Paylaş</button>`:""}
   ${mine&&b.z==="acik"&&betCanUndo(b)?`<button class="bk-x" data-act="betCancel" data-id="${esc(b.id)}" aria-label="Kuponu geri al">Geri al · ${Math.max(1,Math.ceil((Date.parse(b.at)+BET_UNDO-Date.now())/60000))} dk</button>`:""}</li>`}
