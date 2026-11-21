@@ -3988,3 +3988,13 @@ body.kb #modal .sheet:not(:has(.oda)){margin-top:env(safe-area-inset-top,0px);ma
 .oda-T{--oc:#00E58A;--ocL:#00E58A;--ocI:#04130C;--ocT:rgba(0,229,138,.18)}
 .oda .bmini{flex:none;margin:8px 12px 0}
 html.dk body.tg .oda .oda-m{background:#04110B}
+
+/* tanıtım: soyunma odası */
+.ob-od{width:262px;margin:0 auto;border-radius:22px;background:#120A2A;border:2px solid #FF3EA5;overflow:hidden;box-shadow:0 22px 50px rgba(0,0,0,.45);transform:rotate(-2deg);color:#fff;text-align:left}
+.ob-odh{padding:12px 14px;background:#1E1442;display:grid;gap:3px}.ob-odh b{font:800 1.15rem/1 var(--display)}.ob-odh small{font-size:.6875rem;color:#FF9FD0}
+.ob-odm{display:flex;flex-direction:column;gap:6px;padding:10px 12px 14px}
+.ob-odm span{max-width:88%;padding:8px 11px;border-radius:6px 16px 16px 16px;background:#2C2060;font-size:.75rem;line-height:1.35}.ob-odm span b{font-weight:600;font-size:.8rem}
+.ob-odm .k{background:linear-gradient(135deg,#FFD400,#FFB800);color:#2A1F00;font-weight:700;font-size:.6875rem}.ob-odm .k i{display:inline-block;width:16px;height:16px;margin-right:5px;border-radius:5px;background:#2A1F00;color:#FFD400;font:800 .6875rem/16px Inter,sans-serif;font-style:normal;text-align:center}
+.ob-odm .p{max-width:100%;border-radius:14px;background:#1E1442;border:1px solid #3A2C78;display:grid;gap:5px}.ob-odm .p em{position:relative;overflow:hidden;font-style:normal;font-size:.6875rem;padding:6px 8px;border-radius:8px;background:#2C2060}.ob-odm .p u{position:absolute;left:0;top:0;bottom:0;background:rgba(255,62,165,.35)}
+.ob-odm .me{align-self:flex-end;border-radius:16px 6px 16px 16px;background:#FF3EA5;color:#2A0018}
+.ob-odl{padding:8px 14px 12px;font-size:.6875rem;color:#A99CD6}
