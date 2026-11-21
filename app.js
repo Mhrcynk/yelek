@@ -819,7 +819,7 @@ function routeTab(r,old){r=decodeURIComponent(r||"");const p=r.split("/");const 
 function routeAfter(){const r=S._route;if(!r||!S.loaded)return;S._route=null;const p=decodeURIComponent(r).split("/");
   try{history.replaceState(null,"",location.pathname+location.search+"#"+(p[0]==="m"?"gecmis":p[0]))}catch(_){}
   if(p[0]==="iddia"&&p[1]==="yorum"&&p[2]){const id=p[2];S.sheet={type:"betCom",id};BET.com=null;render(true);rpc("bet_comments",{p_coupon:id}).then(x=>{if(x&&x.ok){BET.com={id,rows:x.rows};if(S.sheet&&S.sheet.type==="betCom")render(true)}}).catch(()=>{});return}
-  if(p[0]==="mac"&&p[1]==="oda"){const me=myPid();const m=S.matches.filter(x=>!x.archived&&!isExt(x)&&x.state==="takim"&&sideOf(x,me)).sort((a,b)=>matchTs(a)-matchTs(b))[0];if(m){S.sheet={type:"oda",mid:m.id,tab:"sohbet"};render(true);odaLoad(m.id,true)}return}
+  if(p[0]==="mac"&&p[1]==="oda"){const me=myPid();const m=S.matches.filter(x=>!x.archived&&!isExt(x)&&x.state==="takim"&&sideOf(x,me)).sort((a,b)=>matchTs(a)-matchTs(b))[0];if(m){S.sheet={type:"oda",mid:m.id,tab:p[2]==="gorev"?"gorev":"sohbet"};render(true);odaLoad(m.id,true)}return}
   const el=p[0]==="iddia"&&p[2]?"bk-"+p[2]:(p[0]!=="m"&&p[1]?p[1]:null);if(!el){window.scrollTo(0,0);return}
   let n=0;const go=()=>{const e=document.getElementById(el);if(e){e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1800)}else if(n++<20)setTimeout(go,300)};setTimeout(go,150)}
 function routeGo(r){S._route=r;S.sheet=null;routeTab(r);render(true);routeAfter()}
@@ -3147,6 +3147,8 @@ document.addEventListener("click",async e=>{
     case"odaSend":{const t=$("#odaTxt");const v=(t&&t.value||"").trim();if(!v)break;t.value="";await odaDo("room_send",{p_match:S.sheet.mid,p_body:v});break}
     case"odaVote":await odaDo("room_vote",{p_msg:+id,p_opt:+el.dataset.v});break;
     case"odaDel":await odaDo("room_del",{p_msg:+el.dataset.v});break;
+    case"odaAssign":{const p=($("#odaTaskP")||{}).value||"",t=$("#odaTask");const v=(t&&t.value||"").trim();if(!p){toast("Önce oyuncu seç");break}if(v.length<2){toast("Görevi yaz");break}t.value="";$("#odaTaskP").value="";if(await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{assign:{t:v,p}}}))toast(p===myPid()?"Görev eklendi":"Görev verildi, bildirim gitti");break}
+    case"odaTaskDel":await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{deltask:+el.dataset.v}});break;
     case"odaPollT":if(S.sheet){S.sheet.poll=!S.sheet.poll;odaRender()}break;
     case"odaPollSend":{const q=($("#odaPq")||{}).value||"";const o=[0,1,2].map(i=>(($("#odaPo"+i)||{}).value||"").trim()).filter(Boolean);if(q.trim().length<2||o.length<2){toast("Soru ve en az iki seçenek yaz");break}S.sheet.poll=false;await odaDo("room_poll",{p_match:S.sheet.mid,p_q:q,p_opts:o});break}
     case"odaPinT":if(S.sheet){S.sheet.pinE=true;odaRender()}break;
@@ -3735,10 +3737,10 @@ async function odaDo(fn,args){const mid=S.sheet&&S.sheet.mid;try{const r=await r
 function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d[sh.mid];const X=`<button class="btn sm" data-act="close">Kapat</button>`;
   if(!m||!d0)return `<div class="ch"><div><div class="eyebrow">Soyunma odası</div><h2>Yükleniyor…</h2></div>${X}</div>`;
   if(!d0.after&&!d0.open)return `<div class="ch"><div><div class="eyebrow">Soyunma odası</div><h2>Oda kapalı</h2></div>${X}</div><p class="muted">Oda kadrolar açıklanınca açılır ve yalnızca o maçta oynayanlara görünür.</p>`;
-  const d=odaRoom(d0),live=!d0.after,sd=d.side,me=myPid(),cap=live&&d.cap,M=esc(m.id),tab=sh.tab==="taktik"?"taktik":"sohbet";
+  const d=odaRoom(d0),live=!d0.after,sd=d.side,me=myPid(),cap=live&&d.cap,M=esc(m.id),tab=["taktik","gorev"].includes(sh.tab)?sh.tab:"sohbet";
   let h=`<div class="oda oda-${sd}"><div class="ch"><div><div class="eyebrow">Soyunma odası${live?" · gizli":" · salt okunur"}</div><h2>${esc(nmOf(m,sd))}</h2></div>${X}</div>`;
   if(d0.after)h+=`<div class="mzseg oda-sd" role="group" aria-label="Takım">${["A","B"].map(k=>`<button data-act="odaSide" data-v="${k}" class="${sd===k?"on":""}" aria-pressed="${sd===k}">${esc(nmOf(m,k))}</button>`).join("")}</div>`;
-  h+=`<div class="mzseg oda-tb" role="tablist">${[["sohbet","Sohbet"],["taktik","Taktik"]].map(([k,l])=>`<button role="tab" data-act="odaTab" data-v="${k}" class="${tab===k?"on":""}" aria-selected="${tab===k}">${l}</button>`).join("")}</div>`;
+  h+=`<div class="mzseg oda-tb" role="tablist">${[["sohbet","Sohbet"],["taktik","Taktik"],["gorev","Görevler"]].map(([k,l])=>`<button role="tab" data-act="odaTab" data-v="${k}" class="${tab===k?"on":""}" aria-selected="${tab===k}">${l}</button>`).join("")}</div>`;
   if(tab==="sohbet"){
     if(sh.pinE&&cap)h+=`<div class="oda-f"><input id="odaPin" data-kp maxlength="140" value="${esc(d.pin||"")}" placeholder="Sabit mesaj (boş bırakırsan kalkar)" aria-label="Sabit mesaj"><button class="btn sm" data-act="odaPinSave">Kaydet</button></div>`;
     else if(d.pin||cap)h+=`<div class="oda-pin">${dIcon("yildiz","gold",18)}<span>${d.pin?esc(d.pin):"Sabit mesaj yok"}</span>${cap?`<button data-act="odaPinT">${d.pin?"Değiştir":"Ekle"}</button>`:""}</div>`;
@@ -3750,6 +3752,9 @@ function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d
       if(sh.poll)h+=`<div class="oda-pf"><input id="odaPq" data-kp maxlength="120" placeholder="Soru (ör. Kalede kim başlasın?)" aria-label="Anket sorusu">${[0,1,2].map(i=>`<input id="odaPo${i}" data-kp maxlength="40" placeholder="${i+1}. seçenek${i===2?" (isteğe bağlı)":""}" aria-label="${i+1}. seçenek">`).join("")}<div class="oda-pa"><button class="btn sm" data-act="odaPollT">Vazgeç</button><button class="btn primary sm" data-act="odaPollSend">Anketi aç</button></div></div>`;
       else h+=`<div class="oda-q"><button data-act="odaPollT">Anket aç</button></div>
         <div class="bcm-i"><input id="odaTxt" data-kp maxlength="300" placeholder="Takımına yaz…" aria-label="Mesaj" enterkeyhint="send" autocomplete="off"><button class="bcm-s" data-act="odaSend" aria-label="Gönder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-1z"/></svg></button></div>`}
+  }else if(tab==="gorev"){const T=d.tasks||[];const ids=plOf(m,sd).filter(id=>P(id));
+    h+=T.length?`<ul class="oda-g">${T.map((t,i)=>`<li>${t.p&&P(t.p)?avatar(P(t.p),"sm"):""}<span><b>${t.p===me?"Sen":esc(shortName(nameOf(t.p)))}</b><small>${esc(t.t)}</small></span>${cap?`<button class="oda-gx" data-act="odaTaskDel" data-v="${i}" aria-label="Görevi sil">×</button>`:""}</li>`).join("")}</ul>`:`<div class="bcm-e">${dIcon("kalkan","gold",30)}<b>Henüz görev yok</b><span>${cap?"Bir oyuncu seç, görevini yaz. Ona bildirim gider.":"Kaptan görev verince burada görünür."}</span></div>`;
+    if(cap)h+=`<div class="oda-gf"><label class="f" for="odaTaskP">Kime<select id="odaTaskP" data-kp><option value="">Oyuncu seç</option>${ids.map(id=>`<option value="${esc(id)}">${esc(nameOf(id))}</option>`).join("")}</select></label><label class="f" for="odaTask">Görev<input id="odaTask" data-kp maxlength="60" placeholder="ör. Eren'i tut, kornerleri at"></label><button class="btn primary" data-act="odaAssign">Görev ver</button></div>`;
   }else if(tab==="taktik"){const pos=odaPos(m,sd,d.tac||{});
     h+=`${cap?`<p class="muted small oda-n">${sh.tok?`<b>${esc(shortName(nameOf(sh.tok)))}</b> seçildi, sahada gideceği yere dokun.`:"Oyuncuya, sonra sahada gideceği yere dokun."}</p>`:""}
       <div class="oda-fd"${cap?` data-act="odaPlace"`:""}>${Object.entries(pos).map(([id,[x,y]])=>`<${cap?"button":"span"} class="oda-tk${sh.tok===id?" on":""}" style="left:${x}%;top:${y}%"${cap?` data-act="odaTok" data-v="${esc(id)}" aria-pressed="${sh.tok===id}"`:""}>${avatar(P(id),"sm")}<small>${esc(firstName(nameOf(id)))}</small></${cap?"button":"span"}>`).join("")}</div>`;
