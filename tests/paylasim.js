@@ -59,7 +59,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
       BET.tbl={ok:true,season:1,rows:S.players.slice(0,6).map((p,i)=>({p:p.id,bal:5300+i*90,net:[340,1250,-60,-420,880,0][i],n:4,won:2,open:0}))};BET.at.tbl=nw;
     const P0=S.players;S.stats[P0[0].id].streak={t:"5 maçtır gol atıyor",hot:true};S.stats[P0[3].id].streak={t:"3 maçtır not 6 altında",hot:false};S.stats[P0[5].id].series=[66,68,67,70,72,71,75,78,79];S.stats[P0[5].id].ovr=79});
   const plan=[];
-  const items={once:["ilk7","kupon","oran","kimne","gun","kadro","duel","out"],mac:["tkup","tuttu","skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tkral","ttab","tduel","tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
+  const items={once:["ilk7","kupon","oran","kimne","gun","kadro","duel","out"],mac:["tkup","tuttu","skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tkral","ttab","tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
   const ms=await run(()=>fin().map(m=>m.id));const pids=await run(()=>pmPlayers().map(p=>p.id));
   for(const [tab,L] of Object.entries(items))for(const it of L){
     if(tab==="mac"){for(const mid of ms)plan.push({tab,item:it,mid})}
