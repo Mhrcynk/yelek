@@ -3723,3 +3723,4 @@ html.dk .nav button.bdot .ic::after{content:"";position:absolute;top:-2px;right:
 .ob-tkf{display:flex;justify-content:space-between;align-items:flex-end;padding:8px 10px;border:1.5px dashed #1E563B;border-radius:12px}
 .ob-tkf span{display:grid;gap:3px}.ob-tkf .r{text-align:right}.ob-tkf small{font:700 .6875rem/1 Inter,sans-serif;color:#8CC3A7;letter-spacing:.06em;text-transform:uppercase}
 .ob-tkf b{font:800 1.1rem/1 var(--display)}.ob-tkf .r b{font-size:1.6rem;color:#00E58A}
+.bkg-r span{white-space:nowrap}
