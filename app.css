@@ -3850,3 +3850,4 @@ body.kb .bmini{display:none}
 .bmini .av{flex:none;width:34px!important;height:34px!important;min-width:34px;border-radius:50%;overflow:hidden}.bmini .av img{width:100%;height:100%;object-fit:cover}
 .bmini>span{flex:1;min-width:0;display:grid;gap:3px}.bmini b{font-size:.86rem;font-weight:700;overflow-wrap:anywhere}.bmini small{font-size:.75rem;color:var(--c-ink3);overflow-wrap:anywhere}
 .bn-c{display:block;margin-top:3px;font-style:normal;font-size:.76rem;color:var(--c-ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bxh .chip{min-height:44px}
