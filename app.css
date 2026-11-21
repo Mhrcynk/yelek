@@ -3526,3 +3526,6 @@ html.dk .bj-i:active{background:rgba(255,255,255,.26)}
 .bil{margin-top:16px;padding:14px 16px;border-radius:16px;background:var(--c-card2);display:grid;gap:8px}
 .bil h3{margin:0;font-size:.95rem}.bil p{margin:0;font-size:.85rem;line-height:1.5;color:var(--c-ink2)}
 .bil ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.85rem;line-height:1.45;color:var(--c-ink2)}
+.bk.bw{grid-template-areas:"w w" "t v" "l l" "z x"}
+.bk-w{grid-area:w;display:flex;align-items:center;gap:8px;margin-bottom:4px}.bk-w .av{width:30px;height:30px;font-size:.72rem}.bk-w b{font-size:.82rem;color:var(--c-ink2)}
+.mtabs.bt button{font-size:.82rem;padding-inline:6px}

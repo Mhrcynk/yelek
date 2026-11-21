@@ -3507,7 +3507,7 @@ async function betRateSync(){if(!S.admin||S.fol||S._brs)return;const m=betNext()
   const r0=m.bet_r||{};if(Math.abs((+r0.ra||0)-ra)<.3&&Math.abs((+r0.rb||0)-rb)<.3)return;S._brs=1;
   try{const r=await rpc("bet_rate",{p_match:m.id,p_ra:+ra.toFixed(1),p_rb:+rb.toFixed(1)});if(r&&r.ok){m.bet_r={ra:+ra.toFixed(1),rb:+rb.toFixed(1)};delete BET.board[m.id];delete BET.at["board"+m.id];if(S.tab==="iddia")render(true)}}catch(_){}S._brs=0}
 // ===== TAHMİN: sembolik jetonla maç tahminleri (iç adı "iddia") =====
-const BET={board:{},tbl:null,lists:{},kings:null,week:{},slip:[],amt:"",busy:0,at:{}};
+const BET={feed:null,board:{},tbl:null,lists:{},kings:null,week:{},slip:[],amt:"",busy:0,at:{}};
 const fJ=n=>(Math.round(+n||0)).toLocaleString("tr-TR");
 const fO=n=>(+n).toFixed(2).replace(".",",");
 const betNext=()=>S.matches.filter(m=>!m.archived&&!isExt(m)&&m.state==="takim").sort((a,b)=>matchTs(a)-matchTs(b))[0];
@@ -3521,6 +3521,7 @@ async function betLoad(k,arg,force,tries){const key=k+(arg||"");if(!force&&BET.a
     else if(k==="kings"){r=await rpc("bet_kings",{});if(r&&r.ok)BET.kings=r.rows}
     else if(k==="week"){r=await rpc("bet_week",{p_match:arg});if(r&&r.ok)BET.week[arg]=r}
     else if(k==="list"){r=await rpc("bet_list",{p_player:arg});if(r&&r.ok)BET.lists[arg]=r}
+    else if(k==="feed"){r=await rpc("bet_feed",{});if(r&&r.ok)BET.feed=r}
     ok=!!(r&&r.ok);BET.at[key]=ok?Date.now():0}catch(_){BET.at[key]=0}
   if(!ok&&(tries||0)<4){setTimeout(()=>betLoad(k,arg,true,(tries||0)+1),800*((tries||0)+1));return}
   betSave();
@@ -3532,8 +3533,8 @@ const betKick=mid=>{const m=S.matches.find(x=>x.id===mid);return m?matchTs(m):In
 // geri alma süresi dolunca düğme kendiliğinden kaybolsun
 setInterval(()=>{if(S.tab==="iddia"&&(S.f.bt||"oyna")==="kupon"&&!S.sheet){const me=myPid();const L=me&&BET.lists[me];if(L&&L.rows.some(b=>b.z==="acik"&&b.at&&Date.now()-Date.parse(b.at)<BET_UNDO+60000))render(true)}},30000);
 const BET_ST={acik:["Açık",""],kazandi:["Kazandı","ok"],kaybetti:["Kaybetti","bad"],iade:["İade","mid"]};
-function betRow(b,mine){const[z,c]=BET_ST[b.z]||["",""];const win=b.z==="kazandi"?b.py:b.z==="acik"?Math.round(b.st*b.odd):b.z==="iade"?b.st:0;const L=b.legs||[];const kb=L.length>1;
-  return `<li class="bk ${c}"><span class="bk-t">${kb?`<b>Kombine · ${L.length} seçim</b>`:`<b>${esc(L[0]?.l||"")}</b>`}<small>${fmtShort(b.d)}${b.sa!=null&&b.z!=="acik"?` · ${b.sa}–${b.sb}`:""} · oran ${fO(b.odd)}</small></span>
+function betRow(b,mine,who){const[z,c]=BET_ST[b.z]||["",""];const win=b.z==="kazandi"?b.py:b.z==="acik"?Math.round(b.st*b.odd):b.z==="iade"?b.st:0;const L=b.legs||[];const kb=L.length>1;
+  return `<li class="bk ${c}${who?" bw":""}">${who&&P(b.p)?`<span class="bk-w">${avatar(P(b.p),"sm")}<b>${esc(nameOf(b.p))}</b></span>`:""}<span class="bk-t">${kb?`<b>Kombine · ${L.length} seçim</b>`:`<b>${esc(L[0]?.l||"")}</b>`}<small>${fmtShort(b.d)}${b.sa!=null&&b.z!=="acik"?` · ${b.sa}–${b.sb}`:""} · oran ${fO(b.odd)}</small></span>
   <span class="bk-v"><small>${fJ(b.st)} →</small><b class="num">${b.z==="kaybetti"?"0":fJ(win)}</b></span>
   ${kb?`<ul class="bk-l">${L.map(l=>`<li class="${(BET_ST[l.z]||[])[1]||""}"><i aria-hidden="true"></i><span>${esc(l.l)}</span><b class="num">${fO(l.odd)}</b></li>`).join("")}</ul>`:""}
   <span class="bk-z ${c}">${z}</span>${mine&&b.z==="acik"&&betCanUndo(b)?`<button class="bk-x" data-act="betCancel" data-id="${esc(b.id)}" aria-label="Kuponu geri al">Geri al · ${Math.max(1,Math.ceil((Date.parse(b.at)+BET_UNDO-Date.now())/60000))} dk</button>`:""}</li>`}
@@ -3560,7 +3561,7 @@ function viewIddia(){
   h+=`<section class="bj"><button class="bj-i" data-act="betInfo" aria-label="Jeton ve kurallar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".9" fill="currentColor" stroke="none"/></svg></button><span class="bj-l">Bakiyen</span><b class="bj-v num">${sum?fJ(sum.bal):"…"}<small> jeton</small></b>
     <div class="bj-s"><span><b class="num ${sum&&sum.net<0?"neg":sum&&sum.net>0?"pos":""}">${sum?(sum.net>0?"+":"")+fJ(sum.net):"–"}</b>net kazanç</span><span><b class="num">${sum?fJ(sum.open):"–"}</b>açık kuponda</span><span><b class="num">${sum?`${sum.won}/${sum.n}`:"–"}</b>tutan</span></div>
 </section>`;
-  h+=`<div class="mtabs bt" role="tablist">${[["oyna","Oyna"],["kupon","Kuponlarım"],["sira","Sıralama"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
+  h+=`<div class="mtabs bt" role="tablist">${[["oyna","Oyna"],["kupon","Kuponlarım"],["herkes","Arkadaşlar"],["sira","Sıralama"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(tab==="oyna"){
     if(!m)h+=`<div class="card emp2">${empIc("takvim","cyan")}<p>Sıradaki maçın kadroları açıklanınca tahminler açılır.</p></div>`;
     else if(!bd)h+=`<div class="card"><p class="muted">Oranlar yükleniyor…</p></div>`;
@@ -3574,12 +3575,17 @@ function viewIddia(){
     if(!L)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
     else if(!L.rows.length)h+=`<div class="card emp2">${empIc("kart","pink")}<p>Bu sezon henüz kupon yapmadın.</p></div>`;
     else h+=`<ul class="card bkl">${L.rows.map(b=>betRow(b,true)).join("")}</ul>`}
+  else if(tab==="herkes"){betLoad("feed");const F=BET.feed;
+    if(!F)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
+    else{const R=F.rows.filter(b=>b.p!==me);
+      if(F.hidden)h+=`<p class="muted small bxn">${F.hp} arkadaşının ${F.hidden} kuponu tahminler kapanınca (maçtan 1 saat önce) görünecek.</p>`;
+      h+=R.length?`<ul class="card bkl">${R.map(b=>betRow(b,false,true)).join("")}</ul>`:`<div class="card emp2">${empIc("kart","cyan")}<p>Henüz görünen arkadaş kuponu yok.</p></div>`}}
   else{const T=BET.tbl;betLoad("kings");
     if(!T)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
     else{const R=T.rows.filter(r=>P(r.p)).sort((a,b)=>b.net-a.net||b.bal-a.bal||nameOf(a.p).localeCompare(nameOf(b.p),"tr"));const op=S.f.betOpen;
-      h+=`<p class="muted small bxn">Sezon ${T.season} · net kazanca göre. Başkalarının kuponları maç başlayınca görünür.</p><ol class="card brk">${R.map((r,i)=>{const o=op===r.p;if(o)betLoad("list",r.p);const L=BET.lists[r.p];
+      h+=`<p class="muted small bxn">Sezon ${T.season} · net kazanca göre. Başkalarının kuponları tahminler kapanınca görünür.</p><ol class="card brk">${R.map((r,i)=>{const o=op===r.p;if(o)betLoad("list",r.p);const L=BET.lists[r.p];
         return `<li class="${r.p===me?"me":""}"><button class="br" data-act="tog1" data-k="betOpen" data-v="${o?"":esc(r.p)}" aria-expanded="${o}"><span class="br-k num">${i===0&&r.net>0?dIcon("kupa","gold",20):i+1}</span>${avatar(P(r.p),"sm")}<span class="br-n"><b>${esc(nameOf(r.p))}</b><small>${fJ(r.bal)} jeton · ${r.won}/${r.n} tuttu</small></span><b class="br-v num ${r.net<0?"neg":r.net>0?"pos":""}">${r.net>0?"+":""}${fJ(r.net)}</b></button>
-          ${o?`<div class="br-d">${!L?`<p class="muted small">Yükleniyor…</p>`:L.rows.length?`<ul class="bkl">${L.rows.map(b=>betRow(b,false)).join("")}</ul>`:`<p class="muted small">Görünen kupon yok.</p>`}${L&&L.hidden?`<p class="muted small">${L.hidden} kupon maç başlayınca görünecek.</p>`:""}</div>`:""}</li>`}).join("")}</ol>`;
+          ${o?`<div class="br-d">${!L?`<p class="muted small">Yükleniyor…</p>`:L.rows.length?`<ul class="bkl">${L.rows.map(b=>betRow(b,false)).join("")}</ul>`:`<p class="muted small">Görünen kupon yok.</p>`}${L&&L.hidden?`<p class="muted small">${L.hidden} kupon tahminler kapanınca görünecek.</p>`:""}</div>`:""}</li>`}).join("")}</ol>`;
       const K=(BET.kings||[]).filter(k=>P(k.p));if(K.length)h+=`<section class="card bkg"><h3>Tahmin kralları</h3>${K.map(k=>`<div class="bkg-r">${dIcon("kupa","gold",22)}<span>Sezon ${k.s}</span><b>${esc(nameOf(k.p))}</b><em class="num pos">+${fJ(k.net)}</em></div>`).join("")}</section>`}}
   return h+`</div>`}
 function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board[m.id];const row=BET.tbl&&me?BET.tbl.rows.find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
