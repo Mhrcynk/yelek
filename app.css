@@ -3518,10 +3518,11 @@ html.dk .bj-i:active{background:rgba(255,255,255,.26)}
 .bk-z.bad{background:rgba(255,107,139,.16)!important;color:#FF8FA8!important}
 .bk-z.mid{background:var(--c-card2)!important;color:var(--c-ink2)!important}
 .bk-x{align-self:center}
-.bk.ok{box-shadow:inset 3px 0 0 var(--c-green)}.bk.bad{box-shadow:inset 3px 0 0 #FF6B8B}.bk:not(.ok):not(.bad):not(.mid){box-shadow:inset 3px 0 0 #FFD400}
-.bk{padding-left:12px!important;margin-left:-14px;margin-right:-14px;padding-right:14px}
 /* oyuncu tahmin kutuları eşit */
 .bpm .bo{grid-auto-rows:56px}
 .bpm .bo button{height:56px;font-size:.84rem}
 .bpm .bo button:last-child:nth-child(odd){grid-column:1/-1}
 .bo.n5 button:last-child,.bo.n3 button{grid-auto-rows:auto}
+.bil{margin-top:16px;padding:14px 16px;border-radius:16px;background:var(--c-card2);display:grid;gap:8px}
+.bil h3{margin:0;font-size:.95rem}.bil p{margin:0;font-size:.85rem;line-height:1.5;color:var(--c-ink2)}
+.bil ul{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.85rem;line-height:1.45;color:var(--c-ink2)}

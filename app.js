@@ -3576,7 +3576,13 @@ function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Jetonun ve kurallar</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
   ${sum?`<div class="bif">${R.map(([l,v,d])=>`<div class="bif-r"><span><b>${l}</b><small>${d}</small></span><em class="num ${v<0?"neg":""}">${v>0&&l!=="Başlangıç"?"+":""}${fJ(v)}</em></div>`).join("")}<div class="bif-r t"><span><b>Bakiyen</b></span><em class="num">${fJ(sum.bal)}</em></div></div>`:""}
   <ul class="bik">${K.map(([ic,c,t])=>`<li>${dIcon(ic,c,26)}<span>${t}</span></li>`).join("")}</ul>
-  <p class="muted small" style="margin:12px 2px 0">Oyun parasıdır, gerçek değeri yoktur; satın alınamaz, ödüle çevrilemez.</p>`}
+  <section class="bil"><h3>Jeton tamamen temsilidir</h3>
+    <p>Jeton, bu uygulamada yalnızca eğlence için kullanılan sanal bir puandır. Gerçek para değildir, herhangi bir parasal değeri yoktur.</p>
+    <ul><li>Jeton satın alınamaz, satılamaz, başkasına devredilemez ve paraya çevrilemez.</li>
+    <li>Tahmin oyununa katılmak ücretsizdir; hiçbir aşamada ödeme istenmez.</li>
+    <li>Kazanılan jetonların karşılığında para, hediye, ödül ya da herhangi bir menfaat verilmez.</li>
+    <li>Bu oyun bir bahis, şans oyunu ya da kumar hizmeti değildir. Tahminler arkadaşlar arasında sıralama ve sohbet konusu olsun diye vardır.</li></ul>
+    <p>Jetonlar her sezon başında sıfırlanır ve uygulama dışında hiçbir yerde geçerli değildir.</p></section>`}
 // Ben sayfasındaki küçük tahmin kartı
 function betBenCard(){if(!isMember())return"";const me=myPid();if(!me)return"";betLoad("tbl");const T=BET.tbl;if(!T)return"";
   const R=T.rows.filter(r=>P(r.p)).sort((a,b)=>b.net-a.net||b.bal-a.bal);const i=R.findIndex(r=>r.p===me);if(i<0)return"";const r=R[i];
