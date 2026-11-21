@@ -3523,12 +3523,17 @@ async function betLoad(k,arg,force,tries){const key=k+(arg||"");if(!force&&BET.a
   betSave();
   if(S.tab==="iddia"||S.tab==="ben"||(S.sheet&&S.sheet.type==="pm"))render(true)}
 const BET_ERR={closed:"Tahminler kapandı",own:"Kendi adına tahmin yapamazsın",min:"En az 10 jeton oynayabilirsin",bal:"Bakiyen yetmiyor",auth:"Önce giriş yapmalısın",market:"Bu seçenek artık yok",grp:"Bu iki seçim aynı kupona konamaz",legs:"Bir kupona en fazla 4 seçim"};
+const BET_UNDO=5*60000,BET_CLOSE=3600000;
+const betCanUndo=b=>b.at&&Date.now()<Date.parse(b.at)+BET_UNDO&&(!b.d||Date.now()<betKick(b.m)-BET_CLOSE);
+const betKick=mid=>{const m=S.matches.find(x=>x.id===mid);return m?matchTs(m):Infinity};
+// geri alma süresi dolunca düğme kendiliğinden kaybolsun
+setInterval(()=>{if(S.tab==="iddia"&&(S.f.bt||"oyna")==="kupon"&&!S.sheet){const me=myPid();const L=me&&BET.lists[me];if(L&&L.rows.some(b=>b.z==="acik"&&b.at&&Date.now()-Date.parse(b.at)<BET_UNDO+60000))render(true)}},30000);
 const BET_ST={acik:["Açık",""],kazandi:["Kazandı","ok"],kaybetti:["Kaybetti","bad"],iade:["İade","mid"]};
 function betRow(b,mine){const[z,c]=BET_ST[b.z]||["",""];const win=b.z==="kazandi"?b.py:b.z==="acik"?Math.round(b.st*b.odd):b.z==="iade"?b.st:0;const L=b.legs||[];const kb=L.length>1;
   return `<li class="bk ${c}"><span class="bk-t">${kb?`<b>Kombine · ${L.length} seçim</b>`:`<b>${esc(L[0]?.l||"")}</b>`}<small>${fmtShort(b.d)}${b.sa!=null&&b.z!=="acik"?` · ${b.sa}–${b.sb}`:""} · oran ${fO(b.odd)}</small></span>
   <span class="bk-v"><small>${fJ(b.st)} →</small><b class="num">${b.z==="kaybetti"?"0":fJ(win)}</b></span>
   ${kb?`<ul class="bk-l">${L.map(l=>`<li class="${(BET_ST[l.z]||[])[1]||""}"><i aria-hidden="true"></i><span>${esc(l.l)}</span><b class="num">${fO(l.odd)}</b></li>`).join("")}</ul>`:""}
-  <span class="bk-z ${c}">${z}</span>${mine&&b.z==="acik"?`<button class="bk-x" data-act="betCancel" data-id="${esc(b.id)}" aria-label="Kuponu geri al">Geri al</button>`:""}</li>`}
+  <span class="bk-z ${c}">${z}</span>${mine&&b.z==="acik"&&betCanUndo(b)?`<button class="bk-x" data-act="betCancel" data-id="${esc(b.id)}" aria-label="Kuponu geri al">Geri al · ${Math.max(1,Math.ceil((Date.parse(b.at)+BET_UNDO-Date.now())/60000))} dk</button>`:""}</li>`}
 function betPlayers(m,bd){const me=myPid();const P2=bd.players||[];if(!P2.length)return"";
   const sel=S.f.bpl&&P2.some(x=>x.p===S.f.bpl)?S.f.bpl:(P2.find(x=>x.p!==me)||P2[0]).p;const cur=P2.find(x=>x.p===sel);
   const chip=x=>`<button class="${x.p===sel?"on":""}${x.x?" me":""}" data-act="tog1" data-k="bpl" data-v="${esc(x.p)}" aria-pressed="${x.p===sel}">${avatar(P(x.p)||{id:x.p,name:"?"},"sm")}<span>${esc(shortName(nameOf(x.p)))}</span>${x.r?`<em>${x.r}</em>`:""}</button>`;
@@ -3557,7 +3562,7 @@ function viewIddia(){
     if(!m)h+=`<div class="card emp2">${empIc("takvim","cyan")}<p>Sıradaki maçın kadroları açıklanınca tahminler açılır.</p></div>`;
     else if(!bd)h+=`<div class="card"><p class="muted">Oranlar yükleniyor…</p></div>`;
     else{const t=matchTs(m);
-      h+=`<div class="bm"><b>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</b><small>${GKISA[new Date(t).getDay()]} ${fmtShort(m.date)} ${esc(String(m.time||"").slice(0,5))} · ${bd.open?"maç saatinde kapanır":"tahminler kapandı"}</small></div>`;
+      h+=`<div class="bm"><b>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</b><small>${GKISA[new Date(t).getDay()]} ${fmtShort(m.date)} ${esc(String(m.time||"").slice(0,5))} · ${bd.open?`tahminler ${new Date(t-BET_CLOSE).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}'da kapanır`:"tahminler kapandı"}</small></div>`;
       h+=bd.markets.map(k=>`<section class="card bmk"><h3>${esc(k.t)}</h3><div class="bo n${k.o.length}">${k.o.map(o=>{const on=BET.slip.some(l=>l.k===k.k&&l.s===o.s);
         return `<button class="${on?"on":""}" ${!bd.open?"disabled":""} data-act="betPick" data-k="${esc(k.k)}" data-v="${esc(o.s)}" data-l="${esc(k.t+" · "+o.l)}" data-o="${o.odd}" aria-pressed="${on}"><span>${esc(o.l)}</span><b class="num">${fO(o.odd)}</b></button>`}).join("")}</div></section>`).join("");
       h+=betPlayers(m,bd);
@@ -3576,7 +3581,7 @@ function viewIddia(){
   return h+`</div>`}
 function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board[m.id];const row=BET.tbl&&me?BET.tbl.rows.find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
   const R=sum?[["Başlangıç",sum.start||5000,"Sezon başında herkese"],["Harçlık",sum.harc,"Her maçtan sonra +100"],["Maça gelme",sum.oyn||0,"Maçta oynayana +50"],["Oy verme",sum.oy||0,"Maçtan sonra oy verene +25"],...(sum.kurt?[["Kurtarma",sum.kurt,"Bakiye 100'ün altına düşünce"]]:[]),["Kuponlar",sum.net,"Net kazanç ya da kayıp"],["Açık kuponda",-sum.open,"Maç bitince sonuçlanır"]]:[];
-  const K=[["kart","pink","Kupona 1–4 tahmin koyarsın. Birden fazlaysa kombine olur, oranlar çarpılır, hepsi tutarsa kazanırsın."],["takvim","cyan","Tahminler kadrolar açıklanınca açılır, maç saatinde kapanır. Maç başlamadan kuponu geri alabilirsin."],["kalkan","green","Bir kupon en az 10, en fazla bakiyenin yarısı kadar jeton olabilir. Kendi adına oyuncu tahmini yapılamaz."],["kupa","gold","Sıralama net kazanca göre. Sezon bitince bakiyeler sıfırlanır, en çok kazanan sezonun tahmin kralı olur."]];
+  const K=[["kart","pink","Kupona 1–4 tahmin koyarsın. Birden fazlaysa kombine olur, oranlar çarpılır, hepsi tutarsa kazanırsın."],["takvim","cyan","Tahminler kadrolar açıklanınca açılır, maçtan 1 saat önce kapanır. Yaptığın kuponu ilk 5 dakika içinde geri alabilirsin."],["kalkan","green","Bir kupon en az 10, en fazla bakiyenin yarısı kadar jeton olabilir. Kendi adına oyuncu tahmini yapılamaz."],["kupa","gold","Sıralama net kazanca göre. Sezon bitince bakiyeler sıfırlanır, en çok kazanan sezonun tahmin kralı olur."]];
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Jetonun ve kurallar</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
   ${sum?`<div class="bif">${R.map(([l,v,d])=>`<div class="bif-r"><span><b>${l}</b><small>${d}</small></span><em class="num ${v<0?"neg":""}">${v>0&&l!=="Başlangıç"?"+":""}${fJ(v)}</em></div>`).join("")}<div class="bif-r t"><span><b>Bakiyen</b></span><em class="num">${fJ(sum.bal)}</em></div></div>`:""}
   <ul class="bik">${K.map(([ic,c,t])=>`<li>${dIcon(ic,c,26)}<span>${t}</span></li>`).join("")}</ul>
