@@ -3998,3 +3998,18 @@ html.dk body.tg .oda .oda-m{background:#04110B}
 .ob-odm .p{max-width:100%;border-radius:14px;background:#1E1442;border:1px solid #3A2C78;display:grid;gap:5px}.ob-odm .p em{position:relative;overflow:hidden;font-style:normal;font-size:.6875rem;padding:6px 8px;border-radius:8px;background:#2C2060}.ob-odm .p u{position:absolute;left:0;top:0;bottom:0;background:rgba(255,62,165,.35)}
 .ob-odm .me{align-self:flex-end;border-radius:16px 6px 16px 16px;background:#FF3EA5;color:#2A0018}
 .ob-odl{padding:8px 14px 12px;font-size:.6875rem;color:#A99CD6}
+
+/* rakip: diziliş, eşleşme, not; görev: tamam, yarı, hazır görevler */
+.oda-fr{height:250px;flex:none}.oda-fr .oda-tk em{font:700 .72rem/1 Inter,sans-serif;font-style:normal;padding:2px 6px;border-radius:99px;background:var(--oc);color:var(--ocI);white-space:nowrap}
+.oda-mk li{display:block!important;padding:0!important}.oda-mr{display:flex;align-items:center;gap:8px;min-height:56px;padding:6px 8px 6px 4px}
+.oda-mb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:48px;padding:0 0 0 8px;border:0;background:none;color:#fff;text-align:left;font:inherit;cursor:pointer}
+.oda-mb>span{flex:1;min-width:0;display:grid;gap:3px}.oda-mb i{font-size:.76rem;color:#FFD400;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.oda-mk li.op{box-shadow:inset 0 0 0 1.5px var(--oc)}
+.oda-vs{display:grid;gap:7px;padding:4px 12px 12px}.oda-vh{display:flex;justify-content:space-between;align-items:center;font-size:.8rem}.oda-vh span{font:700 .72rem Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--c-ink3)}
+.oda-vr{display:grid;grid-template-columns:28px 1fr 64px 1fr 28px;align-items:center;gap:6px}.oda-vr small{text-align:center;font-size:.72rem;color:var(--c-ink2)}
+.oda-vr b{font:800 .95rem var(--display);text-align:center;color:var(--c-ink2)}.oda-vr b.w{color:#FFD400}
+.oda-vr span{height:6px;border-radius:3px;background:var(--c-bg);overflow:hidden;display:flex}.oda-vr span i{height:100%;border-radius:3px;background:var(--oc)}.oda-vr span i.l{margin-left:auto;background:#B9A8FF}
+.oda-g li>span b i{margin-left:6px;padding:2px 7px;border-radius:99px;background:var(--c-bg);font:700 .72rem/1 Inter,sans-serif;font-style:normal;color:var(--c-ink2)}
+.oda-ok{flex:none;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--c-line);background:none;color:#fff;font:700 .78rem Inter,sans-serif;cursor:pointer}.oda-ok.on{border-color:#00E58A;color:#00E58A;background:rgba(0,229,138,.12)}
+.oda-okl{flex:none;font-style:normal;font-size:.78rem;font-weight:700;color:#00E58A}
+.oda-tq{flex-wrap:wrap;overflow:visible}.oda-tq button:last-child{border-color:var(--c-line);color:#fff;background:var(--c-card2)}
