@@ -7,8 +7,11 @@ const SB_KEY="sb_publishable_ATJ8lPaPBzZEj-4k7Z5Ztw_YGevQCS3";
 let TID=(()=>{try{const s=localStorage.getItem("y_team");if(s!==null&&s!=="")return Math.max(0,+s||0);return localStorage.getItem("y_auth")?1:0}catch(_){return 0}})();
 const teamHdr=()=>TID!==1?{"x-team":String(TID)}:{};
 async function sbGet(path){const r=await fetch(SB_URL+"/rest/v1/"+path,{headers:{apikey:SB_KEY,Accept:"application/json",...teamHdr(),...authHdr()}});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
-async function rpc(fn,args){
+// süresi dolmuş oturum: tek bir yenileme isteği paylaşılır, istek bir kez tekrar denenir
+let _refP=null;function refreshOnce(){if(!_refP)_refP=(async()=>{try{if(typeof AUTH!=="undefined"&&AUTH.sb){const{data}=await AUTH.sb.auth.refreshSession();if(data&&data.session){S.session=data.session;return true}}}catch(_){}return false})().finally(()=>setTimeout(()=>{_refP=null},3000));return _refP}
+async function rpc(fn,args,_re){
   const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Accept:"application/json",...teamHdr(),...authHdr()},body:JSON.stringify(args||{})});
+  if(r.status===401&&!_re&&S.session&&await refreshOnce())return rpc(fn,args,true);
   let body=null;try{body=await r.json()}catch(_){}
   if(!r.ok)throw new Error((body&&body.message)||("HTTP "+r.status));return body;
 }
@@ -3618,7 +3621,7 @@ function stopTimer(){clearInterval(S.tick);S.tick=null}
 function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);d.turn=d.turn==="A"?"B":"A";d.deadline=Date.now()+20000;
   const m=S.matches.find(x=>x.id===d.mid);if(!rsvpLists(m).kadro.some(p=>!d.A.includes(p.id)&&!d.B.includes(p.id)))stopTimer();render(true)}
 
-(async()=>{
+setTimeout(async()=>{ // betiğin tamamı yüklendikten sonra başla (sonradan tanımlanan sabitler hazır olsun)
   // takım linki (?t=slug): takımı bul, telefonda hatırla, adres çubuğundan temizle
   {const q=new URLSearchParams(location.search);const sl=q.get("t");
     if(sl){S.viaLink=true;LS.set("y_int",q.has("katil")?"katil":"takip");q.delete("katil");try{const t=await rpc("team_by_slug",{p_slug:sl});if(t&&t.id){if(t.id!==TID){cacheClear();TID=t.id;LS.set("y_team",String(t.id));LS.del("y_me");S.me=""}}else S.badTeam=true}catch(_){}
@@ -3632,7 +3635,7 @@ function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);
   if(S.badTeam)toast("Takım linki geçersiz ya da takım kapatılmış");
   if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target&&e.target.id==="betComTxt"){e.preventDefault();const b=document.querySelector(".bcm-s");if(b)b.click()}});
-})();
+},0);
 
 // tahmin oranları için kadro reytingleri: yönetici cihazı hesaplayıp sunucuya yazar
 async function betRateSync(){if(!S.admin||S.fol||S._brs)return;const m=betNext();if(!m||matchTs(m)<=Date.now())return;
@@ -3647,7 +3650,7 @@ const betNext=()=>S.matches.filter(m=>!m.archived&&!isExt(m)&&m.state==="takim")
 const betGrp=k=>["sonuc","fark"].includes(k)?"sonuc":["aralik","t95","t125","t155","iki6"].includes(k)?"toplam":k.includes(":")?"p:"+k.split(":")[1]:k;
 const betOdd=()=>Math.min(999,BET.slip.reduce((t,l)=>t*l.odd,1));
 // oturum anahtarı süresi dolmak üzereyse önce tazele (ilk açılışta tahmin verisi takılmasın)
-async function freshAuth(){const e=S.session?.expires_at;if(!e||e*1000-Date.now()>60000||!AUTH.sb)return;try{const{data}=await AUTH.sb.auth.refreshSession();if(data&&data.session)S.session=data.session}catch(_){}}
+async function freshAuth(){const e=S.session?.expires_at;if(!e||e*1000-Date.now()>60000||!AUTH.sb)return;await refreshOnce()}
 async function betLoad(k,arg,force,tries){const key=k+(arg||"");if(!force&&BET.at[key]&&Date.now()-BET.at[key]<60000)return;if(BET.at[key]===-1)return;BET.at[key]=-1;
   let ok=false;try{await freshAuth();let r;if(k==="board"){r=await rpc("bet_board",{p_match:arg});if(r&&r.ok)BET.board[arg]=r}
     else if(k==="tbl"){r=await rpc("bet_table",{p_week:(betNext()||{}).date||null});if(r&&r.ok)BET.tbl=r}

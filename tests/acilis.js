@@ -18,7 +18,7 @@ const settings=[{id:1,group_name:"Test FC",field_name:"Saha",day:1,time:"21:00",
     const body=k==="settings"?settings:!authed?[]:k==="players"?players:[];r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(body)})});
   const pg=await ctx.newPage();const errs=[];pg.on("pageerror",e=>errs.push(e.message));
   const exp=mode==="gecerli"?Math.floor(Date.now()/1000)+3000:Math.floor(Date.now()/1000)-100;
-  await pg.addInitScript(([exp,pl,st])=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team","1");
+  await pg.addInitScript(([exp,pl,st])=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_tab","iddia");localStorage.setItem("y_team","1");
     localStorage.setItem("y_auth",JSON.stringify({access_token:"eski",refresh_token:"r1",expires_at:exp,expires_in:3600,token_type:"bearer",user:{id:"u1",email:"t@x",aud:"authenticated"}}));
     localStorage.setItem("y_cache",JSON.stringify({v:1,at:Date.now()-6e5,st,pl,ms:[],sv2:[],mem:{status:"onayli",role:"uye",player_id:pl[0].id}}))},[exp,players,settings]);
   await pg.goto(`http://localhost:${port}/`);
