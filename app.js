@@ -3145,9 +3145,10 @@ document.addEventListener("click",async e=>{
     case"odaOpen":S.sheet={type:"oda",mid:id,tab:"sohbet"};odaSeen(id);odaSeenSrv(id);render(true);setTimeout(odaBottom,60);odaLoad(id,true);{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===id);if(c&&m)c.outerHTML=odaCard(m)}break;
     case"odaTab":if(S.sheet){S.sheet.tab=el.dataset.v;S.sheet.plus=false;odaRender(true)}break;
     case"odaSide":if(S.sheet){S.sheet.side=el.dataset.v;odaRender(true)}break;
-    case"odaSend":{const t=$("#odaTxt");const v=(t&&t.value||"").trim();if(!v)break;t.value="";odaGrow(t);const sh=S.sheet,rp=sh.reply||null,an=!!sh.ann;sh.reply=null;sh.sel=null;sh.ann=false;sh.plus=false;
+    case"odaSend":{const t=$("#odaTxt");const v=(t&&t.value||"").trim();if(!v)break;t.value="";odaGrow(t);odaAtList(null);try{t.blur()}catch(_){}const sh=S.sheet,rp=sh.reply||null,an=!!sh.ann;sh.reply=null;sh.sel=null;sh.ann=false;sh.plus=false;
       const d=odaRoom(ODA.d[sh.mid]);if(d&&d.msgs&&!an){d.msgs.push({id:"t"+Date.now(),p:myPid(),k:"msg",b:v,t:new Date().toISOString(),r:rp,tmp:1});odaPatch();odaBottom()}
       if(await odaDo("room_send",{p_match:sh.mid,p_body:v,p_quick:an?"duyuru":null,p_reply:rp&&!an?+rp:null},an)){if(an)toast("Duyuru gönderildi");odaBottom()}else{const d2=odaRoom(ODA.d[sh.mid]);if(d2&&d2.msgs){d2.msgs=d2.msgs.filter(x=>!x.tmp);odaPatch()}if(t&&!t.value)t.value=v}break}
+    case"odaAtPick":{const t=$("#odaTxt");if(!t)break;const p=t.selectionStart??t.value.length;const a=t.value.slice(0,p).replace(/(^|\s)@[^\s@]*$/,"$1@"+firstName(nameOf(el.dataset.v))+" ");t.value=a+t.value.slice(p);try{t.focus();t.setSelectionRange(a.length,a.length)}catch(_){}odaGrow(t);odaAtList(null);break}
     case"odaSel":if(S.sheet){S.sheet.sel=String(S.sheet.sel)===String(el.dataset.v)?null:el.dataset.v;odaPatch()}break;
     case"odaLike":S.sheet.sel=null;await odaDo("room_like",{p_msg:+id,p_v:+el.dataset.v});break;
     case"odaReply":if(S.sheet){S.sheet.reply=el.dataset.v?+el.dataset.v:null;S.sheet.sel=null;odaPatch();const t=$("#odaTxt");if(t&&el.dataset.v)try{t.focus()}catch(_){}}break;
@@ -3790,7 +3791,7 @@ function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d
       else if(sh.poll)h+=`<div class="oda-pf"><input id="odaPq" data-kp maxlength="120" placeholder="Soru (ör. Maçtan sonra nereye?)" aria-label="Anket sorusu">${[0,1,2].map(i=>`<input id="odaPo${i}" data-kp maxlength="40" placeholder="${i+1}. seçenek${i===2?" (isteğe bağlı)":""}" aria-label="${i+1}. seçenek">`).join("")}<div class="oda-pa"><button class="btn sm" data-act="odaPollT">Vazgeç</button><button class="btn primary sm" data-act="odaPollSend">Anketi aç</button></div></div>`;
       else h+=`<div id="odaRb">${odaReplyHtml(c)}</div>${sh.plus?`<div class="oda-pm"><button data-act="odaPollT">${dIcon("grafik","cyan",20)}Anket aç</button><button data-act="odaAnnT">${dIcon("duduk","gold",20)}Duyuru yap</button>${cap?`<button data-act="odaPinT">${dIcon("yildiz","gold",20)}Sabit mesaj</button>`:""}</div>`:""}
         ${sh.ann?`<p class="oda-an">${dIcon("duduk","gold",18)}<span>Duyuru: herkese ayrı bildirim gider, kimin gördüğü görünür.</span><button class="kbkeep" data-act="odaAnnT" aria-label="Duyurudan vazgeç">×</button></p>`:""}
-        <div class="oda-cr"><button class="oda-pl${sh.plus?" on":""}" data-act="odaPlus" aria-label="Anket, duyuru" aria-expanded="${!!sh.plus}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><textarea id="odaTxt" data-kp rows="1" maxlength="300" placeholder="${sh.ann?"Duyurunu yaz":"Mesaj"}" aria-label="Mesaj" autocomplete="off"></textarea><button class="oda-send kbkeep" data-act="odaSend" aria-label="Gönder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-1z"/></svg></button></div>`;
+        <div id="odaAtL" class="oda-al"></div><div class="oda-cr"><button class="oda-pl${sh.plus?" on":""}" data-act="odaPlus" aria-label="Anket, duyuru" aria-expanded="${!!sh.plus}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button><textarea id="odaTxt" data-kp rows="1" maxlength="300" placeholder="${sh.ann?"Duyurunu yaz":"Mesaj"}" aria-label="Mesaj" autocomplete="off"></textarea><button class="oda-send kbkeep" data-act="odaSend" aria-label="Gönder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-1z"/></svg></button></div>`;
       h+=`</div>`}
   }else if(tab==="rakip"){h+=`<div class="oda-sc">${odaRakip(m,sd,d,cap)}</div>`
   }else{const T=d.tasks||[];
@@ -3798,7 +3799,10 @@ function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d
       ${cap?`<div class="oda-gf"><label class="f" for="odaTaskP">Kime<select id="odaTaskP" data-kp><option value="">Oyuncu seç</option>${team.map(id=>`<option value="${esc(id)}">${esc(nameOf(id))}</option>`).join("")}</select></label><label class="f" for="odaTask">Görev<input id="odaTask" data-kp maxlength="60" placeholder="ör. Eren'i tut, kornerleri at"></label><button class="btn primary" data-act="odaAssign">Görev ver</button></div>`:""}</div>`}
   return h+`</div>`}
 document.addEventListener("change",e=>{const t=e.target;if(t&&t.dataset&&t.dataset.odaMark&&S.sheet&&S.sheet.type==="oda")odaDo("room_set",{p_match:S.sheet.mid,p_patch:{mark:{r:t.dataset.odaMark,p:t.value||""}}},true)});
-document.addEventListener("input",e=>{if(e.target&&e.target.id==="odaTxt")odaGrow(e.target)});
+function odaAtList(t){const L=document.getElementById("odaAtL");if(!L)return;const c=odaCtx();const m=t&&/(^|\s)@([^\s@]*)$/.exec(t.value.slice(0,t.selectionStart??t.value.length));if(!c||!m){L.innerHTML="";return}
+  const q=m[2].toLocaleLowerCase("tr");const R=c.team.filter(i=>i!==c.me&&(!q||nameOf(i).toLocaleLowerCase("tr").split(/\s+/).some(w=>w.startsWith(q))));
+  L.innerHTML=R.map(i=>`<button class="kbkeep" data-act="odaAtPick" data-v="${esc(i)}">${avatar(P(i),"sm")}<span>${esc(nameOf(i))}</span></button>`).join("")}
+document.addEventListener("input",e=>{if(e.target&&e.target.id==="odaTxt"){odaGrow(e.target);odaAtList(e.target)}});
 // klavye açıkken düğmeye basınca klavye kapanmasın
 document.addEventListener("mousedown",e=>{if(e.target.closest&&e.target.closest(".kbkeep"))e.preventDefault()},true);
 document.addEventListener("touchend",e=>{const b=e.target.closest&&e.target.closest(".kbkeep");if(b&&document.activeElement&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){e.preventDefault();b.click()}},{capture:true,passive:false});
