@@ -173,7 +173,7 @@ const S={all:[],players:[],matches:[],settings:{...DEF_SET},seasonVotes:[],me:LS
   tab:"mac",sheet:null,guests:[],photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
 S.admin=false;S.pin="";LS.del("y_pin");
 {const old={hafta:"mac",oyuncular:"kartlar",kurallar:"ayarlar"};let t=LS.get("y_tab");t=old[t]||t;if(TABS.some(x=>x[0]===t))S.tab=t;
- const h=location.hash.slice(1);const hh=old[h]||h;if(TABS.some(x=>x[0]===hh))S.tab=hh;else if(hh==="uyeler"||hh==="platform"){S.tab="ben";S.f=S.f||{};S.f.setp=hh}}
+ S._route=location.hash.slice(1);routeTab(S._route,old)}
 
 /* ================= Yardımcılar ================= */
 const $=s=>document.querySelector(s);
@@ -807,7 +807,21 @@ function qkRender(){const old=$("#qk");if(old)old.innerHTML="";const el=$("#view
 // yatay kayan listeler yeniden çizilince yerinde kalsın
 function render(force){const _ks={};document.querySelectorAll("[data-ks]").forEach(e=>_ks[e.dataset.ks]=e.scrollLeft);_render(force);
   document.querySelectorAll("[data-ks]").forEach(e=>{if(_ks[e.dataset.ks]!=null)e.scrollLeft=_ks[e.dataset.ks]})}
-function _render(force){setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia");{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"?"#05160E":"#120A2A"}
+
+// ---- bildirim linkleri: #sekme, #sekme/öğe, #m/<maç>, #iddia/<alt>/<kupon>, #iddia/yorum/<kupon>
+function routeTab(r,old){r=decodeURIComponent(r||"");const p=r.split("/");const t=(old&&old[p[0]])||p[0];
+  if(t==="m"&&p[1]){S.tab="gecmis";S.view=p[1];return}
+  if(TABS.some(x=>x[0]===t)){S.tab=t;S.view=null;if(t==="iddia"&&p[1]){S.f=S.f||{};if(["oyna","kupon","herkes","sira"].includes(p[1]))S.f.bt=p[1];else if(p[1]==="yorum")S.f.bt=S.f.bt||"kupon"}}
+  else if(t==="uyeler"||t==="platform"){S.tab="ben";S.f=S.f||{};S.f.setp=t}}
+function routeAfter(){const r=S._route;if(!r||!S.loaded)return;S._route=null;const p=decodeURIComponent(r).split("/");
+  try{history.replaceState(null,"",location.pathname+location.search+"#"+(p[0]==="m"?"gecmis":p[0]))}catch(_){}
+  if(p[0]==="iddia"&&p[1]==="yorum"&&p[2]){const id=p[2];S.sheet={type:"betCom",id};BET.com=null;render(true);rpc("bet_comments",{p_coupon:id}).then(x=>{if(x&&x.ok){BET.com={id,rows:x.rows};if(S.sheet&&S.sheet.type==="betCom")render(true)}}).catch(()=>{});return}
+  const el=p[0]==="iddia"&&p[2]?"bk-"+p[2]:(p[0]!=="m"&&p[1]?p[1]:null);if(!el){window.scrollTo(0,0);return}
+  let n=0;const go=()=>{const e=document.getElementById(el);if(e){e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1800)}else if(n++<20)setTimeout(go,300)};setTimeout(go,150)}
+function routeGo(r){S._route=r;S.sheet=null;routeTab(r);render(true);routeAfter()}
+addEventListener("hashchange",()=>{const r=location.hash.slice(1);if(r&&r.includes("/")||r==="m")routeGo(r);else if(r&&TABS.some(x=>x[0]===r)&&S.tab!==r)routeGo(r)});
+navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.t==="nav"&&d.url){try{const u=new URL(d.url);if(u.hash)routeGo(u.hash.slice(1))}catch(_){}}});
+function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia");{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"?"#05160E":"#120A2A"}
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -3682,7 +3696,7 @@ function betHead(b,L,kb){const l0=L[0]||{};const lab=String(l0.l||"");const i=la
   return `${ic}<span class="bk-t"><small class="bk-e">${esc(mk)}</small><b>${esc(sel)}</b><small>${meta}</small></span>`}
 function betRow(b,mine,who){const[z,c]=BET_ST[b.z]||["",""];const win=b.z==="kazandi"?b.py:b.z==="acik"?Math.round(b.st*b.odd):b.z==="iade"?b.st:0;const L=b.legs||[];const kb=L.length>1;
   const wl=b.z==="kazandi"?"Kazandı":b.z==="kaybetti"?"Kaybetti":b.z==="iade"?"İade":"Olası kazanç";
-  return `<li class="bk ${c}">${who&&P(b.p)?`<span class="bk-w">${avatar(P(b.p),"sm")}<b>${esc(nameOf(b.p))}</b></span>`:""}
+  return `<li class="bk ${c}" id="bk-${esc(b.id)}">${who&&P(b.p)?`<span class="bk-w">${avatar(P(b.p),"sm")}<b>${esc(nameOf(b.p))}</b></span>`:""}
   <div class="bk-h">${betHead(b,L,kb)}<span class="bk-z ${c}">${z}</span></div>
   ${kb?`<ul class="bk-l">${L.map(l=>`<li class="${(BET_ST[l.z]||[])[1]||""}"><i aria-hidden="true"></i><span>${esc(l.l)}</span><b class="num">${fO(l.odd)}</b></li>`).join("")}</ul>`:""}
   <div class="bk-f"><span class="bk-s"><small>Yatırılan</small><b class="num">${fJ(b.st)}</b></span><span class="bk-o num">× ${fO(b.odd)}</span><span class="bk-p"><small>${wl}</small><b class="num">${b.z==="kaybetti"?"0":fJ(win)}</b></span></div>
