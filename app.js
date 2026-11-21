@@ -3642,7 +3642,10 @@ const betKick=mid=>{const m=S.matches.find(x=>x.id===mid);return m?matchTs(m):In
 setInterval(()=>{if(S.tab==="iddia"&&(S.f.bt||"oyna")==="kupon"&&!S.sheet){const me=myPid();const L=me&&BET.lists[me];if(L&&L.rows.some(b=>b.z==="acik"&&b.at&&Date.now()-Date.parse(b.at)<BET_UNDO+60000))render(true)}},30000);
 const BET_ST={acik:["Açık",""],kazandi:["Kazandı","ok"],kaybetti:["Kaybetti","bad"],iade:["İade","mid"]};
 function betRankW(T){return (T&&T.wrows||[]).filter(r=>P(r.p)&&(r.n>0||r.open>0)).sort((a,b)=>b.net-a.net||b.won-a.won||(b.best||0)-(a.best||0)||nameOf(a.p).localeCompare(nameOf(b.p),"tr"))}
-function betWkLabel(wk){if(!wk)return"Bu hafta";const a=parseYmd(String(wk).slice(0,10)),b=new Date(a);b.setDate(a.getDate()+6);const M=x=>AYLAR[x.getMonth()].slice(0,3);return a.getMonth()===b.getMonth()?`${a.getDate()}–${b.getDate()} ${M(b)}`:`${a.getDate()} ${M(a)} – ${b.getDate()} ${M(b)}`}
+function betMon(d){const x=parseYmd(String(d).slice(0,10));x.setDate(x.getDate()-((x.getDay()+6)%7));return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")}
+function betWkLabel(wk){if(!wk)return"Bu hafta";const w=betMon(wk);const sz=BET.tbl&&BET.tbl.season;
+  const W=[...new Set(S.matches.filter(m=>!isExt(m)&&!m.archived&&m.date&&(m.season==null||!sz||m.season===sz)).map(m=>betMon(m.date)))].filter(x=>x<=w);if(!W.includes(w))W.push(w);
+  return W.length+". Hafta"}
 function betRankHtml(R,me,sub,wk){const op=S.f.betOpen;const inW=b=>{if(!wk)return true;const d=String(b.d||"").slice(0,10),a=String(wk).slice(0,10);const e=parseYmd(a);e.setDate(e.getDate()+6);const z=e.getFullYear()+"-"+String(e.getMonth()+1).padStart(2,"0")+"-"+String(e.getDate()).padStart(2,"0");return d>=a&&d<=z};
   return `<ol class="card brk">${R.map((r,i)=>{const o=op===r.p;if(o)betLoad("list",r.p);const L=BET.lists[r.p];const LR=L?L.rows.filter(inW):[];
     return `<li class="${r.p===me?"me":""}"><button class="br" data-act="tog1" data-k="betOpen" data-v="${o?"":esc(r.p)}" aria-expanded="${o}"><span class="br-k num">${i===0&&r.net>0?dIcon("kupa","gold",20):i+1}</span>${avatar(P(r.p),"sm")}<span class="br-n"><b>${esc(nameOf(r.p))}${betBadges(r.p).map(x=>`<i class="bbg" title="${esc(x[1])}">${x[0]}</i>`).join("")}</b><small>${sub(r)}</small></span><b class="br-v num ${r.net<0?"neg":r.net>0?"pos":""}">${r.n?(r.net>0?"+":"")+fJ(r.net):"–"}</b></button>
@@ -3724,13 +3727,12 @@ function viewIddia(){
     h+=`<div class="mzseg brs" role="group" aria-label="Sıralama">${[["hafta","Bu hafta"],["sezon","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="brs" data-v="${k}" class="${rs===k?"on":""}" aria-pressed="${rs===k}">${l}</button>`).join("")}</div>`;
     if(!T)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
     else if(rs==="hafta"){const R=betRankW(T);const W=(T.wrows||[]);const nz=W.filter(r=>P(r.p)&&!(r.n>0||r.open>0)).length;
-      h+=`<div class="bxh"><span class="chip">${betWkLabel(T.wk)}</span><span>Haftalık yarış · herkes 5.000 sikkeyle başlar</span></div>`;
+      h+=`<div class="bxh"><span class="chip">${betWkLabel(T.wk)}</span></div>`;
       h+=R.length?betRankHtml(R,me,r=>`${fJ(r.bal)} sikke · ${r.won}/${r.n} tuttu${r.open?` · ${fJ(r.open)} açıkta`:""}`,T.wk):`<div class="card emp2">${empIc("kupa","gold")}<p>Bu haftanın yarışı ilk kuponla başlar. İlk tahmini sen yap.</p></div>`;
       if(nz&&R.length)h+=`<p class="muted small bxn">${nz} kişi bu hafta henüz kupon yapmadı.</p>`;
-      h+=`<p class="muted small bxn">Hafta pazar günü biter. Pazartesi herkesin bakiyesi yeniden 5.000 olur; kazançlar sezon yarışında kalır.</p>`;
       const Wn=(T.wins||[]).filter(w=>P(w.p));if(Wn.length)h+=`<section class="card bkg"><h3>Hafta birincileri</h3>${Wn.slice(0,6).map(w=>`<div class="bkg-r">${dIcon("kupa","gold",22)}<span>${betWkLabel(w.wk)}</span><b>${esc(nameOf(w.p))}</b><em class="num pos">+${fJ(w.net)}</em></div>`).join("")}</section>`}
     else{const R=betRank(T);const nz=T.rows.filter(r=>P(r.p)&&!(r.n>0||r.open>0)).length;
-      h+=`<div class="bxh"><span class="chip">Sezon ${T.season}</span><span>Bütün haftaların kupon kazançları toplanır</span></div>`;
+      h+=`<div class="bxh"><span class="chip">Sezon ${T.season}</span></div>`;
       h+=R.length?betRankHtml(R,me,r=>`${r.won}/${r.n} tuttu${r.ww?` · ${r.ww} hafta birinciliği`:""}${r.open?` · ${fJ(r.open)} açıkta`:""}`,null):`<div class="card emp2">${empIc("kupa","gold")}<p>Sezon yarışı ilk kuponla açılır. İlk tahmini sen yap.</p></div>`;
       if(nz&&R.length)h+=`<p class="muted small bxn">${nz} kişi henüz kupon yapmadı; ilk kuponlarıyla sıralamaya girerler.</p>`;
       const K=(BET.kings||[]).filter(k=>P(k.p));if(K.length)h+=`<section class="card bkg"><h3>Tahmin kralları</h3>${K.map(k=>`<div class="bkg-r">${dIcon("kupa","gold",22)}<span>Sezon ${k.s}</span><b>${esc(nameOf(k.p))}</b><em class="num pos">+${fJ(k.net)}</em></div>`).join("")}</section>`}}
