@@ -3698,7 +3698,7 @@ function viewIddia(){
   const bd=m&&BET.board[m.id];const row=BET.tbl&&me?(BET.tbl.wrows||[]).find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
   const tab=S.f.bt||"oyna";
   let h=`<div class="iddia">`;
-  h+=`<section class="bj">${betBell()}<button class="bj-i" data-act="betInfo" aria-label="Sikke ve kurallar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".9" fill="currentColor" stroke="none"/></svg></button><span class="bj-l">Bu haftaki bakiyen</span><b class="bj-v num">${sum?fJ(sum.bal):"…"}<small> sikke</small></b>
+  h+=`<section class="bj"><div class="bj-a">${betBell()}<button class="bj-i" data-act="betInfo" aria-label="Sikke ve kurallar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".9" fill="currentColor" stroke="none"/></svg></button></div><span class="bj-l">Bu haftaki bakiyen</span><b class="bj-v num">${sum?fJ(sum.bal):"…"}<small> sikke</small></b>
     <div class="bj-s"><span><b class="num ${sum&&sum.net<0?"neg":sum&&sum.net>0?"pos":""}">${sum?(sum.net>0?"+":"")+fJ(sum.net):"–"}</b>haftalık net</span><span><b class="num">${sum?fJ(sum.open):"–"}</b>açık kuponda</span><span><b class="num">${sum?`${sum.won}/${sum.n}`:"–"}</b>tutan</span></div>
 </section>`;
   h+=`<div class="mtabs bt" role="tablist">${[["oyna","Oyna"],["kupon","Kuponlarım"],["herkes","Arkadaşlar"],["sira","Sıralama"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
