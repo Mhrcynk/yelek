@@ -3782,3 +3782,10 @@ html.dk .bs-i input,html.dk body.tg .bs-i input[type=number]{flex:1;min-width:0;
 .bk-r button.down.on{background:rgba(255,107,139,.14)!important;border-color:#FF6B8B!important}
 .bk-r button.bk-cm{margin-left:auto;font-size:.82rem!important}
 .bk-r button svg{flex:none}
+/* kupon eylem satırı: hepsi paylaş düğmesi biçiminde */
+.bk-r{display:flex!important;gap:6px!important;flex-wrap:nowrap!important;align-items:center}
+.bk-r .bk-b{display:inline-flex!important;align-items:center;gap:6px!important;min-height:40px!important;min-width:44px;justify-content:center;padding:0 12px!important;margin:0!important;border-radius:12px!important;border:1px solid var(--c-line)!important;background:var(--c-card2)!important;color:#fff!important;font:700 .8rem/1 Inter,sans-serif!important}
+.bk-r .bk-b svg{width:16px;height:16px;flex:none}
+.bk-r .bk-b.up.on{background:rgba(0,229,138,.16)!important;border-color:#00E58A!important;color:#00E58A!important}
+.bk-r .bk-b.down.on{background:rgba(255,107,139,.14)!important;border-color:#FF6B8B!important;color:#FF6B8B!important}
+.bk-r .bk-b.up.on svg,.bk-r .bk-b.down.on svg{fill:currentColor;fill-opacity:.25}
