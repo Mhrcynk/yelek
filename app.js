@@ -3012,7 +3012,7 @@ document.addEventListener("click",async e=>{
         if(r&&r.ok){toast(`Kupon yapıldı · olası kazanç ${fJ(Math.round(amt*r.odd))} jeton`);BET.slip=[];if(S.sheet&&S.sheet.type==="betSlip")S.sheet=null;BET.amt="";const me=myPid();BET.at={};betLoad("board",id,1);betLoad("tbl",0,1);if(me)betLoad("list",me,1)}
         else toast(r&&r.error==="max"?`En fazla ${fJ(r.max)} jeton (bakiyenin yarısı)`:BET_ERR[r&&r.error]||"Kupon yapılamadı")}catch(_){toast("Bağlantı yok, kupon yapılamadı")}
       BET.busy=0;render(true);break}
-    case"betCancel":try{const r=await rpc("bet_cancel",{p_bet:id});if(r&&r.ok){toast("Kupon geri alındı, jeton iade edildi");BET.at={};const m=betNext();if(m)betLoad("board",m.id,1);betLoad("tbl",0,1);const me=myPid();if(me)betLoad("list",me,1)}else toast(BET_ERR[r&&r.error]||"Geri alınamadı")}catch(_){toast("Bağlantı yok")}break;
+    case"betCancel":try{const r=await rpc("bet_cancel",{p_bet:id});if(r&&r.ok){toast("Kupon geri alındı, jeton iade edildi");BET.at={};const m=betNext();if(m)betLoad("board",m.id,1);betLoad("tbl",0,1);const me=myPid();if(me)betLoad("list",me,1)}else toast(r&&r.error==="closed"?"Geri alma süresi doldu":BET_ERR[r&&r.error]||"Geri alınamadı")}catch(_){toast("Bağlantı yok")}break;
     case"pmX7":S.f.pm.x7k=el.dataset.v;S.f.pm.x7p=null;render(true);break;
     case"pmCopy":{const t=$("#pmCap");if(t){try{await navigator.clipboard.writeText(t.value);toast("Açıklama kopyalandı")}catch(_){t.select();document.execCommand&&document.execCommand("copy");toast("Açıklama kopyalandı")}}break}
     case"pmGo":await pmGo(el.dataset.v);break;
@@ -3562,7 +3562,7 @@ function viewIddia(){
     if(!m)h+=`<div class="card emp2">${empIc("takvim","cyan")}<p>Sıradaki maçın kadroları açıklanınca tahminler açılır.</p></div>`;
     else if(!bd)h+=`<div class="card"><p class="muted">Oranlar yükleniyor…</p></div>`;
     else{const t=matchTs(m);
-      h+=`<div class="bm"><b>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</b><small>${GKISA[new Date(t).getDay()]} ${fmtShort(m.date)} ${esc(String(m.time||"").slice(0,5))} · ${bd.open?`tahminler ${new Date(t-BET_CLOSE).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}'da kapanır`:"tahminler kapandı"}</small></div>`;
+      h+=`<div class="bm"><b>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</b><small>${GKISA[new Date(t).getDay()]} ${fmtShort(m.date)} ${esc(String(m.time||"").slice(0,5))} · ${bd.open?`tahminlerin kapanışı ${new Date(t-BET_CLOSE).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}`:"tahminler kapandı"}</small></div>`;
       h+=bd.markets.map(k=>`<section class="card bmk"><h3>${esc(k.t)}</h3><div class="bo n${k.o.length}">${k.o.map(o=>{const on=BET.slip.some(l=>l.k===k.k&&l.s===o.s);
         return `<button class="${on?"on":""}" ${!bd.open?"disabled":""} data-act="betPick" data-k="${esc(k.k)}" data-v="${esc(o.s)}" data-l="${esc(k.t+" · "+o.l)}" data-o="${o.odd}" aria-pressed="${on}"><span>${esc(o.l)}</span><b class="num">${fO(o.odd)}</b></button>`}).join("")}</div></section>`).join("");
       h+=betPlayers(m,bd);
