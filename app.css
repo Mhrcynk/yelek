@@ -3712,3 +3712,14 @@ html.dk .nav button.bdot .ic::after{content:"";position:absolute;top:-2px;right:
 .bcm-x{margin:-12px -10px -12px auto!important;min-height:40px!important;min-width:40px;padding:0 8px!important}
 .bn-t{display:block!important}.bn-t b{margin-right:4px}.bn-t span,.bn-t q,.bn-t time{display:block;margin-top:3px}
 .bcm-x{font:600 .74rem/1 Inter,sans-serif!important}
+/* tanıtım: tahmin */
+.ob-tk{position:relative;width:100%;height:100%;display:grid;place-items:center}
+.ob-tkb{position:absolute;top:6%;left:50%;width:230px;transform:translateX(-50%) rotate(-4deg) translateX(-26px);padding:14px 16px;border-radius:20px;background:linear-gradient(150deg,#14B86E,#0B7A4B 60%,#063D26);color:#fff;display:grid;gap:4px;box-shadow:0 14px 36px rgba(0,0,0,.35)}
+.ob-tkb small{font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.14em;color:#DDF7EA}.ob-tkb b{font:800 2rem/1 var(--display);color:#FFD400}.ob-tkb i{font:700 .8rem Inter,sans-serif;font-style:normal;color:#DDF7EA}
+.ob-tkc{position:relative;margin-top:22%;width:250px;transform:rotate(3deg) translateX(18px);padding:14px;border-radius:20px;background:#0C281B;border:2px solid #00E58A;color:#fff;display:grid;gap:10px;box-shadow:0 22px 50px rgba(0,0,0,.45)}
+.ob-tkh{display:flex;justify-content:space-between;align-items:center}.ob-tkh span{font:800 1.1rem/1 var(--display);letter-spacing:.02em}.ob-tkh em{font:800 .6875rem/1 Inter,sans-serif;font-style:normal;padding:5px 8px;border-radius:99px;background:rgba(255,212,0,.16);color:#FFD400;letter-spacing:.08em}
+.ob-tkc ul{list-style:none;margin:0;padding:8px 10px;border-radius:12px;background:#05160E;display:grid;gap:6px}
+.ob-tkc li{display:flex;justify-content:space-between;gap:8px;font-size:.78rem;color:#D2F1E1}.ob-tkc li b{font:800 .95rem/1 var(--display);color:#FFD400}
+.ob-tkf{display:flex;justify-content:space-between;align-items:flex-end;padding:8px 10px;border:1.5px dashed #1E563B;border-radius:12px}
+.ob-tkf span{display:grid;gap:3px}.ob-tkf .r{text-align:right}.ob-tkf small{font:700 .6875rem/1 Inter,sans-serif;color:#8CC3A7;letter-spacing:.06em;text-transform:uppercase}
+.ob-tkf b{font:800 1.1rem/1 var(--display)}.ob-tkf .r b{font-size:1.6rem;color:#00E58A}
