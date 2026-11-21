@@ -59,3 +59,7 @@ node tests/okunur.js   # 19 ekranda küçük yazı, düşük kontrast, küçük 
 
 ## Tahmin oyunu
 Sembolik sikkeyle maç tahmini (gerçek para yok). Veritabanında `private.coupons` (kuponlar) ve `private.bets` (kupondaki seçimler) tutulur; haftalık bakiye `private.bet_wsum` ile o haftanın maçlarından hesaplanır, sezon yarışı `private.bet_sum` ile kupon net kazançlarını toplar (her pazartesi 5.000 başlangıç, maç başına +100 harçlık, oynayana performansına göre prim (maçın oyuncusu 100, çok iyi 80, iyi 60, orta 40, kötü 20), oy verene +50, 100'ün altına düşene kurtarma). Oranlar `private.bet_markets` / `private.bet_pmarkets` ile sunucuda hesaplanır: takımın gol ortalaması, oyuncuların gol/asist hızı ve yöneticinin cihazından yazılan kadro reytingleri (`bet_rate`). Maç bitince `bet_settle` tetikleyicisi kuponları sonuçlandırır ve tutanlara bildirim gönderir. İstemci fonksiyonları: `bet_board`, `bet_place`, `bet_cancel`, `bet_table`, `bet_list`, `bet_kings`, `bet_week`.
+
+## Soyunma odası
+
+Kadrolar açıklanınca (maç `takim` durumuna geçince) iki takıma ayrı sohbet odası açılır. Veriler `private.room_msgs`, `private.room_votes` ve `private.room_state` tablolarında durur; erişim yalnızca `room_get`, `room_send`, `room_poll`, `room_vote`, `room_del`, `room_set` fonksiyonlarıyla olur ve oyuncunun o maçtaki tarafı sunucuda `private.room_side` ile belirlenir. Maç bitince odalar yazmaya kapanır, 1 gün boyunca takımın bütün üyeleri iki odayı da okuyabilir; sonra `yelek-oda-temizlik` görevi siler. Yeni maçın kadroları açıklanınca eski odalar da silinir.

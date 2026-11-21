@@ -819,6 +819,7 @@ function routeTab(r,old){r=decodeURIComponent(r||"");const p=r.split("/");const 
 function routeAfter(){const r=S._route;if(!r||!S.loaded)return;S._route=null;const p=decodeURIComponent(r).split("/");
   try{history.replaceState(null,"",location.pathname+location.search+"#"+(p[0]==="m"?"gecmis":p[0]))}catch(_){}
   if(p[0]==="iddia"&&p[1]==="yorum"&&p[2]){const id=p[2];S.sheet={type:"betCom",id};BET.com=null;render(true);rpc("bet_comments",{p_coupon:id}).then(x=>{if(x&&x.ok){BET.com={id,rows:x.rows};if(S.sheet&&S.sheet.type==="betCom")render(true)}}).catch(()=>{});return}
+  if(p[0]==="mac"&&p[1]==="oda"){const me=myPid();const m=S.matches.filter(x=>!x.archived&&!isExt(x)&&x.state==="takim"&&sideOf(x,me)).sort((a,b)=>matchTs(a)-matchTs(b))[0];if(m){S.sheet={type:"oda",mid:m.id,tab:"sohbet"};render(true);odaLoad(m.id,true)}return}
   const el=p[0]==="iddia"&&p[2]?"bk-"+p[2]:(p[0]!=="m"&&p[1]?p[1]:null);if(!el){window.scrollTo(0,0);return}
   let n=0;const go=()=>{const e=document.getElementById(el);if(e){e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1800)}else if(n++<20)setTimeout(go,300)};setTimeout(go,150)}
 function routeGo(r){S._route=r;S.sheet=null;routeTab(r);render(true);routeAfter()}
@@ -1338,7 +1339,7 @@ function sheetShare(){const m=S.matches.find(x=>x.id===S.sheet.mid);if(!m)return
     ${done&&inf.totw&&inf.totw.length?it("storyTotw","XI","Haftanın Takımı","En iyi 7 oyuncu ve notları"):""}
     ${(m.team_a||[]).length?it("shareImg","▦","Kadro ve diziliş","İki takım sahada"):""}</div>`})}
 function sheetHtml(){const em=S.sheet&&S.sheet.type==="eval"&&S.matches.find(x=>x.id===S.sheet.mid);return em?inM(em,_sheetHtml):_sheetHtml()}
-function _sheetHtml(){const t=S.sheet.type;if(t==="betInfo")return sheetBetInfo();if(t==="betNotes")return sheetBetNotes();if(t==="betCom")return sheetBetCom();if(t==="betSlip"){const m=betNext();const bd=m&&BET.board[m.id];if(!m||!bd||!bd.open||!BET.slip.length)return"";return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>`+betSlip(m,bd.sum)}if(t==="trk")return sheetTrk();if(t==="vote")return sheetVote();if(t==="vdet")return sheetVdet();if(t==="eval"){const m=S.matches.find(x=>x.id===S.sheet.mid);const ev=m&&S.f["ev_"+m.id];if(!m||!S.admin||!ev)return"";
+function _sheetHtml(){const t=S.sheet.type;if(t==="oda")return sheetOda();if(t==="betInfo")return sheetBetInfo();if(t==="betNotes")return sheetBetNotes();if(t==="betCom")return sheetBetCom();if(t==="betSlip"){const m=betNext();const bd=m&&BET.board[m.id];if(!m||!bd||!bd.open||!BET.slip.length)return"";return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>`+betSlip(m,bd.sum)}if(t==="trk")return sheetTrk();if(t==="vote")return sheetVote();if(t==="vdet")return sheetVdet();if(t==="eval"){const m=S.matches.find(x=>x.id===S.sheet.mid);const ev=m&&S.f["ev_"+m.id];if(!m||!S.admin||!ev)return"";
     return `<div class="ch"><div><div class="eyebrow">Maç değerlendirmesi · ${fmtShort(m.date)}</div><h2>${TEAM.A} ${m.score_a} – ${m.score_b} ${TEAM.B}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
       <p class="muted small">Gol, asist ve skor değişmez; sadece değerlendirme, penaltı ve çizgiden çıkarma kaydedilir.</p>${perfBlock(m,ev,"ev_"+m.id)}
       <button class="btn primary block" data-act="saveEval" data-id="${esc(m.id)}">${ICON.check} Kaydet, kartları güncelle</button>`}
@@ -1665,6 +1666,7 @@ function matchBody(m){
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`;
   }else{
     const ended=mEnded(m);if(ended)h+=voteCard(m);
+    h+=odaCard(m);
     h+=`<section class="card" id="kadrolar"><div class="ch"><h2 class="hic">${dIcon("yelek","pink",26)}Kadrolar</h2></div>${teamsView(m,true)}</section>`;
     if(!ended)h+=preview(m);
     if(S.admin)h+=finishCard(m);
@@ -2071,7 +2073,7 @@ function _resultPanel(m){
     return `<div class="maft${(k==="A"?sa>sb:sb>sa)?" win":""}"><span class="mafcap${ok?"":" crw"}">${ok?(ph?`<img src="${esc(ph)}" alt="">`:`<i>${esc(initials(nameOf(id)))}</i>`):crest(TEAM[k],k,64,TEAM[k==="A"?"B":"A"])}</span><b style="font-size:${mafFs(TEAM[k])}">${esc(TEAM[k])}</b><small>${ok?"KPT · "+esc(shortName(nameOf(id)))+" · ":""}ort. ${fN(avgN(k))}</small></div>`};
   const gl=k=>T(k).filter(id=>(+stt[id]?.g||0)>0).sort((x,y)=>stt[y].g-stt[x].g).map(id=>`<span>${esc(shortName(nameOf(id)))} · ${stt[id].g} gol</span>`).join("");
   const cpn=k=>{const id=k==="A"?m.cap_a:m.cap_b;return id&&P(id)?" · KPT "+esc(shortName(nameOf(id))):""};
-  let h=`<section class="mzh mzres"><div class="mzh-ey"><span>${GKISA[d0.getDay()]} ${d0.getDate()} ${AYLAR[d0.getMonth()]} · ${esc(mt||(sa===sb?"Beraberlik":"Maç sonu"))}</span>${S.admin?`<button class="mzh-y" data-act="mngOpen" data-id="${M}">Yönet</button>`:""}</div>
+  let h=odaCard(m)+`<section class="mzh mzres"><div class="mzh-ey"><span>${GKISA[d0.getDay()]} ${d0.getDate()} ${AYLAR[d0.getMonth()]} · ${esc(mt||(sa===sb?"Beraberlik":"Maç sonu"))}</span>${S.admin?`<button class="mzh-y" data-act="mngOpen" data-id="${M}">Yönet</button>`:""}</div>
     <div class="mzres-s"><span class="${sa>=sb?"":"lo"}"><b style="font-size:${mzFs(TEAM.A)}">${esc(TEAM.A)}</b><small>ort. ${fN(avgN("A"))}${cpn("A")}</small></span><em class="num">${sa}<i>–</i>${sb}</em><span class="r${sb>=sa?"":" lo"}"><b style="font-size:${mzFs(TEAM.B)}">${esc(TEAM.B)}</b><small>ort. ${fN(avgN("B"))}${cpn("B")}</small></span></div>
     ${scorers.length?`<div class="mzres-g"><div>${gl("A")}</div><div class="r">${gl("B")}</div></div>`:""}
     </section>
@@ -3139,6 +3141,23 @@ document.addEventListener("click",async e=>{
     case"betComDel":try{const r=await rpc("bet_comment_del",{p_id:el.dataset.v});if(r&&r.ok&&BET.com){BET.com.rows=BET.com.rows.filter(x=>x.id!==el.dataset.v);render(true)}}catch(_){}break;
     case"betFollow":{const on=!betFollows().includes(id);try{const r=await rpc("bet_follow",{p_target:id,p_on:on});if(r&&r.ok){if(BET.feed)BET.feed.f=r.f;toast(on?"Takip ediliyor: büyük kupon yapınca ve kuponu tutunca bildirim gelir":"Takipten çıkıldı");render(true)}}catch(_){toast("Bağlantı yok")}break}
     case"betDefAmt":{const v=Math.max(0,Math.floor(+($("#betDef")?.value)||0));try{if(v>=10)localStorage.setItem("y_bet_amt",String(v));else localStorage.removeItem("y_bet_amt")}catch(_){}toast(v>=10?`Varsayılan tutar ${fJ(v)} sikke`:"Varsayılan tutar kaldırıldı");break}
+    case"odaOpen":S.sheet={type:"oda",mid:id,tab:"sohbet"};odaSeen(id);render(true);setTimeout(odaBottom,60);odaLoad(id,true);{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===id);if(c&&m)c.outerHTML=odaCard(m)}break;
+    case"odaTab":if(S.sheet){S.sheet.tab=el.dataset.v;S.sheet.tok=null;odaRender()}break;
+    case"odaSide":if(S.sheet){S.sheet.side=el.dataset.v;odaRender()}break;
+    case"odaSend":{const t=$("#odaTxt");const v=(t&&t.value||"").trim();if(!v)break;t.value="";await odaDo("room_send",{p_match:S.sheet.mid,p_body:v});break}
+    case"odaQuick":await odaDo("room_send",{p_match:S.sheet.mid,p_body:null,p_quick:el.dataset.v});break;
+    case"odaVote":await odaDo("room_vote",{p_msg:+id,p_opt:+el.dataset.v});break;
+    case"odaDel":await odaDo("room_del",{p_msg:+el.dataset.v});break;
+    case"odaPollT":if(S.sheet){S.sheet.poll=!S.sheet.poll;odaRender()}break;
+    case"odaPollSend":{const q=($("#odaPq")||{}).value||"";const o=[0,1,2].map(i=>(($("#odaPo"+i)||{}).value||"").trim()).filter(Boolean);if(q.trim().length<2||o.length<2){toast("Soru ve en az iki seçenek yaz");break}S.sheet.poll=false;await odaDo("room_poll",{p_match:S.sheet.mid,p_q:q,p_opts:o});break}
+    case"odaPinT":if(S.sheet){S.sheet.pinE=true;odaRender()}break;
+    case"odaPinSave":{const v=($("#odaPin")||{}).value||"";S.sheet.pinE=false;await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{pin:v}});break}
+    case"odaPlanSave":{const v=($("#odaPlan")||{}).value||"";if(await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{plan:v}}))toast("Plan kaydedildi");break}
+    case"odaTok":if(S.sheet){S.sheet.tok=S.sheet.tok===el.dataset.v?null:el.dataset.v;odaRender()}break;
+    case"odaPlace":{const sh=S.sheet;if(!sh||!sh.tok)break;const m=S.matches.find(x=>x.id===sh.mid),d=ODA.d[sh.mid];if(!m||!d)break;const r=el.getBoundingClientRect();const tac=odaPos(m,d.side,d.tac||{});tac[sh.tok]=[Math.round((e.clientX-r.left)/r.width*100),Math.round((e.clientY-r.top)/r.height*100)];sh.tok=null;await odaDo("room_set",{p_match:sh.mid,p_patch:{tac}});break}
+    case"odaTake":await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{take:+el.dataset.v}});break;
+    case"odaTaskAdd":{const t=$("#odaTask");const v=(t&&t.value||"").trim();if(v.length<2)break;t.value="";await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{addtask:v}});break}
+    case"odaTaskDel":await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{deltask:+el.dataset.v}});break;
     case"betInfo":S.sheet={type:"betInfo"};render(true);break;
     case"betNotes":S.sheet={type:"betNotes",seen:betSeen()};betMarkSeen();render(true);betLoad("notes",null,true);break;
     case"betNoteGo":{const k=el.dataset.v,c=el.dataset.c;if((k==="yorum"||k==="yorum2")&&c){S.sheet={type:"betCom",id:c};BET.com=null;render(true);try{const r=await rpc("bet_comments",{p_coupon:c});if(r&&r.ok){BET.com={id:c,rows:r.rows};if(S.sheet&&S.sheet.type==="betCom")render(true)}}catch(_){}break}
@@ -3634,7 +3653,7 @@ setTimeout(async()=>{ // betiğin tamamı yüklendikten sonra başla (sonradan t
   await ap;pushInit().then(()=>render(true));
   if(S.badTeam)toast("Takım linki geçersiz ya da takım kapatılmış");
   if(S.loaded&&!S.me&&!S.session&&!gated()&&S.players.length&&!LS.get("y_asked")){LS.set("y_asked","1");S.sheet={type:"me"};render(true)}
-document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target&&e.target.id==="betComTxt"){e.preventDefault();const b=document.querySelector(".bcm-s");if(b)b.click()}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target&&(e.target.id==="betComTxt"||e.target.id==="odaTxt")){e.preventDefault();const b=document.querySelector(".bcm-s");if(b)b.click()}});
 },0);
 
 // tahmin oranları için kadro reytingleri: yönetici cihazı hesaplayıp sunucuya yazar
@@ -3691,6 +3710,61 @@ function sheetBetNotes(){const N=BET.notes;const sn=S.sheet.seen||0;
   const ic=n=>n.k==="kazandi"?`<span class="bn-ic ok">${dIcon("tuttu","green",22)}</span>`:n.k==="kaybetti"?`<span class="bn-ic bad">${dIcon("yatti","red",22)}</span>`:avatar(P(n.a)||{id:n.a,name:"?"},"sm");
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Bildirimler</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
   ${!N?`<p class="muted">Yükleniyor…</p>`:N.length?`<ul class="bn">${N.map(n=>`<li><button class="${+n.id>sn?"new":""}" data-act="betNoteGo" data-v="${esc(n.k)}" data-c="${esc(n.c||"")}">${ic(n)}<span class="bn-t">${betNoteTxt(n)}<time>${betAgo(n.t)}</time></span></button></li>`).join("")}</ul>`:`<div class="bcm-e">${dIcon("zil","gold",30)}<b>Henüz bildirim yok</b><span>Kupon, tepki ve yorumlar burada görünür.</span></div>`}`}
+// ===== Soyunma odası: takıma özel sohbet, taktik, görevler =====
+const ODA={d:{},at:{}};const ODA_ERR={closed:"Oda kapalı",cap:"Bunu kaptan ya da yönetici yapabilir",slow:"Biraz yavaş, çok hızlı yazıyorsun",value:"Eksik ya da hatalı",auth:"Önce giriş yapmalısın"};
+function odaLoad(mid,force){if(!mid||!myPid())return;const t=ODA.at[mid]||0;if(t===-1||(!force&&Date.now()-t<15000))return;ODA.at[mid]=-1;
+  rpc("room_get",{p_match:mid}).then(r=>{ODA.at[mid]=Date.now();if(r&&r.ok)odaPut(mid,r)}).catch(()=>{ODA.at[mid]=Date.now()-9000})}
+function odaPut(mid,r){const o=JSON.stringify(ODA.d[mid]||null),n=JSON.stringify(r);ODA.d[mid]=r;if(o===n)return;
+  if(S.sheet&&S.sheet.type==="oda"&&S.sheet.mid===mid){odaSeen(mid);odaRender()}
+  else{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===mid);if(c&&m)c.outerHTML=odaCard(m)}}
+function odaRoom(d){return d&&d.after?d[(S.sheet&&S.sheet.side)||d.side||"A"]:d}
+function odaSeen(mid){const d=ODA.d[mid];if(!d||!d.msgs)return;const mx=d.msgs.reduce((a,x)=>Math.max(a,+x.id||0),0);if(mx)LS.set("y_oda_"+mid,String(mx))}
+function odaUnread(mid){const d=ODA.d[mid];if(!d||!d.msgs)return 0;const sn=+LS.get("y_oda_"+mid)||0,me=myPid();return d.msgs.filter(x=>+x.id>sn&&x.p!==me&&x.k!=="sys").length}
+function odaCard(m){if(!m||!myPid()||isExt(m)||m.archived)return"";const fin=m.state==="bitti";
+  if(m.state!=="takim"&&!(fin&&m.finished_at&&Date.now()-Date.parse(m.finished_at)<864e5))return"";
+  odaLoad(m.id);const d=ODA.d[m.id];const M=esc(m.id);const ic=`<span class="oda-ci">${lIc("yorum")}</span>`;
+  if(!d)return fin?"":`<div id="odaCard"></div>`;
+  if(d.after)return `<div id="odaCard"><button class="oda-c oda-X" data-act="odaOpen" data-id="${M}">${ic}<span><b>Soyunma odaları açıldı</b><small>İki takım maçtan önce ne konuşmuş? Yarın silinir.</small></span></button></div>`;
+  if(!d.open)return `<div id="odaCard"></div>`;
+  const sd=d.side,ot=sd==="A"?"B":"A";const last=[...d.msgs].reverse().find(x=>x.k!=="sys");const un=odaUnread(m.id);
+  return `<div id="odaCard"><button class="oda-c oda-${sd}" data-act="odaOpen" data-id="${M}">${ic}<span><b>${esc(nmOf(m,sd))} soyunma odası</b><small>${last?esc(shortName(nameOf(last.p)))+": "+esc(last.b):"Sadece takımın görür. İlk mesajı sen yaz."}</small></span>${un?`<em class="num">${un>9?"9+":un}</em>`:""}</button>
+    <p class="oda-l"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${esc(nmOf(m,ot))} odası kilitli. Maç bitince iki oda da 1 gün herkese açılır, sonra silinir.</p></div>`}
+function odaPos(m,sd,tac){const ids=plOf(m,sd).filter(id=>P(id));const G={KL:[],DF:[],OS:[],FV:[]};const PG={Defans:"DF","Orta saha":"OS",Forvet:"FV",Kaleci:"KL",DF:"DF",OS:"OS",FV:"FV",KL:"KL"};
+  ids.forEach(id=>{const p=P(id);let g="OS";try{g=(p.epos&&EPOS[p.epos]?EPOS[p.epos][0]:PG[p.pos]||(EPOS[eposOf(p)]||[])[0])||"OS"}catch(_){}(G[g]||G.OS).push(id)});
+  const Y={KL:86,DF:66,OS:44,FV:20};const out={};for(const g in G)G[g].forEach((id,i)=>{out[id]=tac&&tac[id]?tac[id]:[Math.round((i+1)/(G[g].length+1)*100),Y[g]]});return out}
+function odaRender(){const keep={};document.querySelectorAll("#sheetBody [data-kp]").forEach(e=>keep[e.id]=e.value);const act=document.activeElement&&document.activeElement.id;render(true);
+  for(const k in keep){const e=document.getElementById(k);if(e)e.value=keep[k]}if(act){const e=document.getElementById(act);if(e&&e.dataset.kp!=null)try{e.focus({preventScroll:true})}catch(_){}}odaBottom()}
+function odaBottom(){const b=document.getElementById("odaMsgs");if(b)b.scrollTop=b.scrollHeight}
+async function odaDo(fn,args){const mid=S.sheet&&S.sheet.mid;try{const r=await rpc(fn,args);if(r&&r.ok){ODA.d[mid]=r;odaSeen(mid);odaRender();return true}toast(ODA_ERR[r&&r.error]||"Yapılamadı")}catch(_){toast("Bağlantı yok")}return false}
+function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d[sh.mid];const X=`<button class="btn sm" data-act="close">Kapat</button>`;
+  if(!m||!d0)return `<div class="ch"><div><div class="eyebrow">Soyunma odası</div><h2>Yükleniyor…</h2></div>${X}</div>`;
+  if(!d0.after&&!d0.open)return `<div class="ch"><div><div class="eyebrow">Soyunma odası</div><h2>Oda kapalı</h2></div>${X}</div><p class="muted">Oda kadrolar açıklanınca açılır ve yalnızca o maçta oynayanlara görünür.</p>`;
+  const d=odaRoom(d0),live=!d0.after,sd=d.side,me=myPid(),cap=live&&d.cap,M=esc(m.id),tab=sh.tab||"sohbet";
+  let h=`<div class="oda oda-${sd}"><div class="ch"><div><div class="eyebrow">Soyunma odası${live?" · gizli":" · salt okunur"}</div><h2>${esc(nmOf(m,sd))}</h2></div>${X}</div>`;
+  if(d0.after)h+=`<div class="mzseg oda-sd" role="group" aria-label="Takım">${["A","B"].map(k=>`<button data-act="odaSide" data-v="${k}" class="${sd===k?"on":""}" aria-pressed="${sd===k}">${esc(nmOf(m,k))}</button>`).join("")}</div>`;
+  h+=`<div class="mzseg oda-tb" role="tablist">${[["sohbet","Sohbet"],["taktik","Taktik"],["gorev","Görevler"]].map(([k,l])=>`<button role="tab" data-act="odaTab" data-v="${k}" class="${tab===k?"on":""}" aria-selected="${tab===k}">${l}</button>`).join("")}</div>`;
+  if(tab==="sohbet"){
+    if(sh.pinE&&cap)h+=`<div class="oda-f"><input id="odaPin" data-kp maxlength="140" value="${esc(d.pin||"")}" placeholder="Sabit mesaj (boş bırakırsan kalkar)" aria-label="Sabit mesaj"><button class="btn sm" data-act="odaPinSave">Kaydet</button></div>`;
+    else if(d.pin||cap)h+=`<div class="oda-pin">${dIcon("yildiz","gold",18)}<span>${d.pin?esc(d.pin):"Sabit mesaj yok"}</span>${cap?`<button data-act="odaPinT">${d.pin?"Değiştir":"Ekle"}</button>`:""}</div>`;
+    const msg=x=>{if(x.k==="sys")return `<li class="sys">${esc(x.b)}</li>`;const mine=x.p===me;const del=live&&(mine||S.admin)?`<button class="oda-x" data-act="odaDel" data-v="${x.id}" aria-label="Mesajı sil">Sil</button>`:"";const nm=mine?"Sen":esc(shortName(nameOf(x.p)));
+      if(x.k==="poll"){const tot=Object.values(x.v||{}).reduce((a,b)=>a+b,0);return `<li class="poll"><div class="oda-p"><span class="oda-h"><b>${esc(x.b)}</b>${del}</span><small>${nm} · anket · ${tot} oy</small>${(x.o||[]).map((o,i)=>{const n=(x.v||{})[i]||0;return `<button class="${x.my===i?"on":""}"${live?"":" disabled"} data-act="odaVote" data-id="${x.id}" data-v="${i}" aria-pressed="${x.my===i}"><i style="width:${tot?Math.round(n/tot*100):0}%"></i><span>${esc(o)}</span><em class="num">${n}</em></button>`}).join("")}</div></li>`}
+      return `<li class="${mine?"me":""}${x.k==="quick"?" q":""}">${mine?"":avatar(P(x.p)||{id:x.p,name:"?"},"sm")}<div class="oda-b"><span class="oda-h"><b>${nm}</b><time>${betAgo(x.t)}</time>${del}</span><p>${esc(x.b)}</p></div></li>`};
+    h+=`<ul class="oda-m" id="odaMsgs">${d.msgs.length?d.msgs.map(msg).join(""):`<li class="sys">Henüz mesaj yok</li>`}</ul>`;
+    if(live){
+      if(sh.poll)h+=`<div class="oda-pf"><input id="odaPq" data-kp maxlength="120" placeholder="Soru (ör. Kalede kim başlasın?)" aria-label="Anket sorusu">${[0,1,2].map(i=>`<input id="odaPo${i}" data-kp maxlength="40" placeholder="${i+1}. seçenek${i===2?" (isteğe bağlı)":""}" aria-label="${i+1}. seçenek">`).join("")}<div class="oda-pa"><button class="btn sm" data-act="odaPollT">Vazgeç</button><button class="btn primary sm" data-act="odaPollSend">Anketi aç</button></div></div>`;
+      else h+=`<div class="oda-q">${[["geliyorum","Geliyorum ✅"],["gec","Geç kalacağım"],["kaleci","Kaleye girerim"],["top","Top bende"]].map(([k,l])=>`<button data-act="odaQuick" data-v="${k}">${l}</button>`).join("")}<button data-act="odaPollT">Anket aç</button></div>
+        <div class="bcm-i"><input id="odaTxt" data-kp maxlength="300" placeholder="Takımına yaz…" aria-label="Mesaj" enterkeyhint="send" autocomplete="off"><button class="bcm-s" data-act="odaSend" aria-label="Gönder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-1z"/></svg></button></div>`}
+  }else if(tab==="taktik"){const pos=odaPos(m,sd,d.tac||{});
+    h+=`${cap?`<p class="muted small oda-n">${sh.tok?`<b>${esc(shortName(nameOf(sh.tok)))}</b> seçildi, sahada gideceği yere dokun.`:"Oyuncuya, sonra sahada gideceği yere dokun."}</p>`:""}
+      <div class="oda-fd"${cap?` data-act="odaPlace"`:""}>${Object.entries(pos).map(([id,[x,y]])=>`<${cap?"button":"span"} class="oda-tk${sh.tok===id?" on":""}" style="left:${x}%;top:${y}%"${cap?` data-act="odaTok" data-v="${esc(id)}" aria-pressed="${sh.tok===id}"`:""}>${avatar(P(id),"sm")}<small>${esc(firstName(nameOf(id)))}</small></${cap?"button":"span"}>`).join("")}</div>`;
+    if(cap)h+=`<div class="oda-f col"><textarea id="odaPlan" data-kp maxlength="300" rows="3" placeholder="Maç planı (ör. önde baskı, kornerleri Mert atar)" aria-label="Maç planı">${esc(d.plan||"")}</textarea><button class="btn sm" data-act="odaPlanSave">Planı kaydet</button></div>`;
+    else h+=`<div class="oda-pin">${dIcon("hedef","gold",18)}<span>${d.plan?esc(d.plan):"Kaptan henüz plan yazmadı."}</span></div>`;
+  }else{
+    h+=`<ul class="oda-g">${(d.tasks||[]).map((t,i)=>{const mine=t.p===me;return `<li><span>${esc(t.t)}</span>${t.p?`<b>${mine?"Sen":esc(shortName(nameOf(t.p)))}</b>`:`<em>Boşta</em>`}${live?(!t.p?`<button class="btn sm" data-act="odaTake" data-v="${i}">Üstlen</button>`:(mine||cap)?`<button class="btn sm" data-act="odaTake" data-v="${i}">Bırak</button>`:""):""}${cap?`<button class="oda-gx" data-act="odaTaskDel" data-v="${i}" aria-label="Görevi sil">×</button>`:""}</li>`}).join("")||`<li><span class="muted">Görev yok</span></li>`}</ul>`;
+    if(cap)h+=`<div class="oda-f"><input id="odaTask" data-kp maxlength="40" placeholder="Yeni görev (ör. Eren'i tutacak)" aria-label="Yeni görev"><button class="btn sm" data-act="odaTaskAdd">Ekle</button></div>`;
+  }
+  return h+`</div>`}
+setInterval(()=>{if(S.sheet&&S.sheet.type==="oda"&&document.visibilityState==="visible")odaLoad(S.sheet.mid,true)},7000);
 const lIc=k=>{const d=DI[k]||["",""];return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d[0]?`<path d="${d[0]}"/>`:""}${d[1]?`<path d="${d[1]}"/>`:""}</svg>`};
 function betHead(b,L,kb){const l0=L[0]||{};const lab=String(l0.l||"");const i=lab.indexOf(" · ");const mk=kb?"Kombine":i>0?lab.slice(0,i):"Tahmin";const sel=kb?`${L.length} seçim`:i>0?lab.slice(i+3):lab;
   const pid=!kb&&String(l0.k||"").includes(":")?String(l0.k).split(":")[1]:null;const pp=pid&&P(pid);
