@@ -72,9 +72,10 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   ok(await run(()=>document.querySelector(".vsend").disabled),"maçın adamı seçilmeden gönderilebiliyor");
   ok(await pg.locator('.vtl[data-act="vMotm"]').count()===3,"maçın adamı adayları çok iyi verilenler değil");
   await pg.click('.vtl[data-act="vMotm"]');await pg.waitForTimeout(100);
-  ok(await pg.locator('.vtl[data-act="vFiy"]').count()===3,"fiyasko adayları kötü verilenler + boş geç değil");
+  ok(await pg.locator('.vtl[data-act="vFiy"]').count()===2,"fiyasko adayları kötü verilenler değil");ok(await run(()=>document.querySelector(".vsend").disabled),"fiyasko seçilmeden gönderilebiliyor");
+  await pg.click('.vtl[data-act="vFiy"]');await pg.waitForTimeout(100);
   await pg.click(".vsend");await pg.waitForTimeout(600);
-  const sub=calls.find(c=>c[0]==="vote_submit");ok(sub&&Object.keys(sub[1].p_votes).length===13,"oy gönderilmedi");ok(sub&&sub[1].p_motm&&sub[1].p_votes[sub[1].p_motm]===1&&sub[1].p_fiy===null,"maçın adamı ya da fiyasko seçimi yanlış gitti");
+  const sub=calls.find(c=>c[0]==="vote_submit");ok(sub&&Object.keys(sub[1].p_votes).length===13,"oy gönderilmedi");ok(sub&&sub[1].p_motm&&sub[1].p_votes[sub[1].p_motm]===1&&sub[1].p_fiy&&sub[1].p_votes[sub[1].p_fiy]===4,"maçın adamı ya da fiyasko seçimi yanlış gitti");
   // 6 kişi daha oy versin (rastgele ama kotaya uygun)
   let sd=7;const rnd=()=>(sd=(sd*9301+49297)%233280)/233280;const tal=ids.slice(0,14).map((_,i)=>i);
   for(let v=0;v<6;v++){const f=ids[(v+4)%14];const pl=ids.slice(0,14).filter(x=>x!==f);const sc=pl.map(t=>({t,s:ids.indexOf(t)*-.25+rnd()*4})).sort((x,y)=>y.s-x.s);

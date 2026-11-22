@@ -564,7 +564,7 @@ async function act(fn,args,okMsg){
   try{const r=await rpc(fn,args);
     if(r&&r.ok===false){
       if(r.error==="pin"||r.error==="locked"){toast("Bu işlem için yönetici hesabıyla giriş yapmalısın");if(0)toast(r.error==="locked"?"":"Yönetici şifresi geçersiz, tekrar giriş yap.")}
-      else toast({closed:"Bu işlem için süre doldu ya da maç kapandı.",not_played:"Bu maçta oynamadığın için oy veremezsin.",self:"Kendine oy veremezsin.",incomplete:"Herkesi değerlendirmelisin.",quota:"En fazla 3 çok iyi ve 3 kötü verebilirsin.",short:"Yeni şifre en az 6 karakter olmalı."}[r.error]||"İşlem yapılamadı.");
+      else toast({closed:"Bu işlem için süre doldu ya da maç kapandı.",not_played:"Bu maçta oynamadığın için oy veremezsin.",self:"Kendine oy veremezsin.",incomplete:"Herkesi değerlendirmelisin.",quota:"En fazla 3 çok iyi ve 3 kötü verebilirsin.",motm:"Maçın adamını \"çok iyi\" dediklerin arasından seçmelisin.",fiy:"Fiyaskoyu \"kötü\" dediklerin arasından seçmelisin.",short:"Yeni şifre en az 6 karakter olmalı."}[r.error]||"İşlem yapılamadı.");
       await load(true);return null}
     if(okMsg)toast(okMsg);await load(true);return r||{ok:true};
   }catch(e){console.error(e);const net=e&&(e.name==="TypeError"||!navigator.onLine);if(!net)logErr("act "+fn+": "+(e&&e.message),"act",e&&e.stack);toast(net?"Kaydedilemedi. Bağlantını kontrol et.":"Kaydedilemedi. Bir aksilik oldu, biraz sonra tekrar dene.");return null}
@@ -1638,12 +1638,12 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
   const head=r=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyunu ver":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${r}</small></div></div>${seg}`;
   const tile=(id,act,on)=>{const p=P(id);return `<button class="vtl${on?" on":""}" data-act="${act}" data-p="${esc(id)}" aria-pressed="${on}">${p?avatar(p):""}<b>${esc(shortName(nameOf(id)))}</b></button>`};
   if(son){const c1=all.filter(id=>v[id]===1),c4=all.filter(id=>v[id]===4);if(vt.motm&&!c1.includes(vt.motm))vt.motm="";if(vt.fiy&&!c4.includes(vt.fiy))vt.fiy="";
-    const need=c1.length>0&&!vt.motm;const cnt=[1,2,3,4].map(k=>all.filter(id=>v[id]===k).length);
+    const need=!c1.length?"Önce birine \"çok iyi\" de":!c4.length?"Önce birine \"kötü\" de":!vt.motm?"Önce maçın adamını seç":!vt.fiy?"Önce fiyaskoyu seç":"";const cnt=[1,2,3,4].map(k=>all.filter(id=>v[id]===k).length);
     return `${head("Son adım · kimin ne verdiği gizli")}
-    <div class="vsec"><h3 class="gold">Maçın adamı</h3>${c1.length?`<p>"Çok iyi" dediklerin arasından birini seç.</p><div class="vtg">${c1.map(id=>tile(id,"vMotm",vt.motm===id)).join("")}</div>`:`<p>Kimseye "çok iyi" demedin, o yüzden maçın adamı seçmiyorsun. İstersen geri dönüp değiştirebilirsin.</p>`}</div>
-    <div class="vsec"><h3>Fiyasko</h3>${c4.length?`<p>"Kötü" dediklerin arasından. İstersen boş geç.</p><div class="vtg">${c4.map(id=>tile(id,"vFiy",vt.fiy===id)).join("")}<button class="vtl bos${vt.fiy?"":" on"}" data-act="vFiy" data-p="" aria-pressed="${!vt.fiy}"><b>Boş geç</b></button></div>`:`<p>Kimseye "kötü" demedin, fiyasko seçilmiyor.</p>`}</div>
+    <div class="vsec"><h3 class="gold">Maçın adamı</h3>${c1.length?`<p>"Çok iyi" dediklerin arasından birini seç.</p><div class="vtg">${c1.map(id=>tile(id,"vMotm",vt.motm===id)).join("")}</div>`:`<p>Maçın adamını seçebilmek için en az bir oyuncuya "çok iyi" demelisin. Geri dönüp değiştir.</p>`}</div>
+    <div class="vsec"><h3>Fiyasko</h3>${c4.length?`<p>"Kötü" dediklerin arasından birini seç.</p><div class="vtg">${c4.map(id=>tile(id,"vFiy",vt.fiy===id)).join("")}</div>`:`<p>Fiyaskoyu seçebilmek için en az bir oyuncuya "kötü" demelisin. Geri dönüp değiştir.</p>`}</div>
     <div class="vsum"><b>Verdiğin oylar</b><span>${cnt.map((x,i)=>`<em class="num">${x}</em> ${VL[i].toLocaleLowerCase("tr")}`).join(" · ")}</span></div>
-    <button class="btn primary block vsend" data-act="vSend"${need?" disabled":""}>${need?"Önce maçın adamını seç":"Oyları gönder"}</button>
+    <button class="btn primary block vsend" data-act="vSend"${need?" disabled":""}>${need||"Oyları gönder"}</button>
     <button class="btn ghost block" data-act="vBack">Geri dön, değiştir</button>`}
   const id=all[vt.i];const p=P(id);const side=plOf(m,"A").includes(id)?"A":"B";const cur=v[id];
   return `${head(`${vt.i+1} / ${all.length} · kimin ne verdiği gizli`)}
@@ -3371,7 +3371,7 @@ document.addEventListener("click",async e=>{
     case"vNext":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const all=voteList(m,vt.voter);if(all.every(x=>vt.v[x]))vt.son=true;else if(vt.i<all.length-1)vt.i++;render(true);break}
     case"vBack":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;if(vt.son){vt.son=false;vt.i=voteList(m,vt.voter).length-1}else if(vt.i>0)vt.i--;render(true);break}
     case"vMotm":{const vt=S.f.vt;if(!vt)break;vt.motm=vt.motm===el.dataset.p?"":el.dataset.p;render(true);break}
-    case"vFiy":{const vt=S.f.vt;if(!vt)break;vt.fiy=el.dataset.p||"";render(true);break}
+    case"vFiy":{const vt=S.f.vt;if(!vt)break;vt.fiy=vt.fiy===el.dataset.p?"":el.dataset.p;render(true);break}
     case"vSend":{const vt=S.f.vt;if(!vt)break;const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v,p_motm:vt.motm||null,p_fiy:vt.fiy||null},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
     case"vDet":{const r=await A("admin_votes",{p_match:id});if(!r)break;S.f.vd={mid:id,rows:r.rows||[],dir:"f",sel:plAll(S.matches.find(x=>x.id===id)||{}).includes(myPid())?myPid():null};S.sheet={type:"vdet",mid:id};render(true);break}
     case"vdDir":if(S.f.vd){S.f.vd.dir=el.dataset.v;render(true)}break;
