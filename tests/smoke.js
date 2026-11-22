@@ -48,6 +48,10 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
     const b=document.querySelector('#view [data-act="open"]');b.click();await new Promise(r=>setTimeout(r,500));document.querySelector('#modal [data-act="close"]').click();await new Promise(r=>setTimeout(r,800));
     return history.state&&history.state.sh?"düğmeyle kapatınca geçmiş kaydı kaldı":document.querySelector("#modal .sheet")?"düğme pencereyi kapatmadı":""});
   if(hb)fails.push("geri tuşu: "+hb);
+  // açık pencereden başka sekmeye yönlenince (bildirime dokunma) eski sekmeye geri düşmemeli
+  const rg=await pg.evaluate(async()=>{document.querySelector('.nav [data-tab="kartlar"]').click();await new Promise(r=>setTimeout(r,400));document.querySelector('#view [data-act="open"]').click();await new Promise(r=>setTimeout(r,500));
+    location.hash="#lig/x";await new Promise(r=>setTimeout(r,1200));const cur=document.querySelector('.nav [aria-current="page"]');return document.querySelector("#modal .sheet")?"pencere kapanmadı":cur&&cur.dataset.tab==="lig"?"":"yönlenme sonrası sekme "+(cur&&cur.dataset.tab)});
+  if(rg)fails.push("yönlenme: "+rg);
   if(errs.length)fails.push("JS hatası: "+errs.join(" | "));
   await b.close();srv.close();
   if(fails.length){console.log("HATA\n- "+fails.join("\n- "));process.exit(1)}console.log("Tamam: bütün ekranlar açılıyor.");

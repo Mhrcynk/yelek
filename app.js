@@ -828,7 +828,8 @@ function routeAfter(){const r=S._route;if(!r||!S.loaded)return;const p=decodeURI
   const el=p[0]==="iddia"&&p[2]?"bk-"+p[2]:(p[0]!=="m"&&p[1]?p[1]:null);if(!el){window.scrollTo(0,0);return}
   let n=0;const go=()=>{const e=document.getElementById(el);if(e){if(e.tagName==="DETAILS")e.open=true;e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1800)}else if(n++<20)setTimeout(go,300)};setTimeout(go,150)}
 function routeGo(r){S._route=r;S._r0=r;S._r0t=Date.now();S.sheet=null;routeTab(r);render(true);routeAfter()}
-addEventListener("hashchange",()=>{const r=location.hash.slice(1);if(r&&r.includes("/")||r==="m")routeGo(r);else if(r&&TABS.some(x=>x[0]===r)&&S.tab!==r)routeGo(r)});
+addEventListener("hashchange",()=>{if(typeof shHist==="function"&&Date.now()-(shHist.t||0)<700)return; // pencere kapanırken yapılan geri adımı sayfa değişimi sayma
+  const r=location.hash.slice(1);if(r&&r.includes("/")||r==="m")routeGo(r);else if(r&&TABS.some(x=>x[0]===r)&&S.tab!==r)routeGo(r)});
 navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.t==="nav"&&d.url){try{const u=new URL(d.url);if(u.hash)routeGo(u.hash.slice(1))}catch(_){}}});
 function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0);odaFab();if(S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom")&&scrollY>1&&!document.body.classList.contains("kb"))window.scrollTo(0,0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm"));{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm")?"#05160E":"#120A2A"}
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
@@ -2352,8 +2353,8 @@ function viewBen(){const k=S.f.setp||"";if(k)return setSub(k);return memCard()+_
 const isOwner=()=>!!(S.session&&S.session.user&&S.session.user.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273");
 // geri tuşu / geri kaydırma: açık pencereyi ya da alt ekranı kapatır
 function shHist(){try{const on=!!S.sheet||!!S.view;const st=!!(history.state&&history.state.sh);if(shHist.b)return;
-  if(on&&!st)history.pushState({sh:1},"");else if(!on&&st){shHist.b=1;history.back();setTimeout(()=>{shHist.b=0},500)}}catch(_){}}
-addEventListener("popstate",()=>{if(shHist.b){shHist.b=0;return}
+  if(on&&!st)history.pushState({sh:1},"");else if(!on&&st){shHist.b=1;shHist.t=Date.now();history.back();setTimeout(()=>{shHist.b=0},500)}}catch(_){}}
+addEventListener("popstate",()=>{if(shHist.b){shHist.b=0;try{const w="#"+S.tab;if(location.hash!==w&&TABS.some(x=>x[0]===S.tab))history.replaceState(null,"",location.pathname+location.search+w)}catch(_){}return}
   if(S.sheet){const c=document.querySelector('#modal [data-act="close"]');if(c)c.click();else shHist()}
   else if(S.view){const c=document.querySelector('[data-act="back"]');if(c)c.click();else{S.view=null;render(true)}}});
 
