@@ -2600,16 +2600,8 @@ function _viewSezon(){
   let h=`${oyTabs("sezon")}<!--TRK-->`;
   if(!F.length)h+=`<section class="card"><div class="empty emp2">${empIc("top","pink")}<h3>Sezon yeni başlıyor</h3><p>Krallık yarışı boş, ilk golü atan zirveye yerleşir.</p></div></section>`;
   const hasT=fin().some(trkHas);const VW=[["yelek","Yelek"],["kral","Krallıklar"],["mevki","Mevkiler"],...(hasT||S.admin?[["saha","Saha"]]:[])];
-  const sv=VW.some(x=>x[0]===S.f.sezV)?S.f.sezV:"ozet";
-  if(sv==="ozet"){if(!F.length&&!hasT)return h;
-    const top=(f,min)=>{const L=S.players.filter(p=>!p.guest&&ys[p.id]&&ys[p.id].games>0&&f(ys[p.id])>(min||0)).sort((a,b)=>f(ys[b.id])-f(ys[a.id])||ys[a.id].games-ys[b.id].games);return L[0]||null};
-    const mv=top(y=>y.pts),gk=top(y=>y.g),ak=top(y=>y.a);const tk=isMember()&&!S.fol&&BET.tbl?betRank(BET.tbl)[0]:null;
-    const tile=(c,l,p,v,act)=>p?`<button class="ist-t ${c}" ${act||`data-act="open" data-id="${esc(p.id)}"`}><small>${l}</small><b>${esc(firstName(p.name))}</b><span class="num">${v}</span></button>`:"";
-    const rowL=(t,sub,v)=>`<button class="ist-r" data-act="tog1" data-k="sezV" data-v="${v}"><b>${t}</b><span>${sub}</span><i aria-hidden="true">›</i></button>`;
-    h+=`<div class="ist-g">${tile("y","Sezonun oyuncusu",mv,mv?fN(ys[mv.id].pts)+" yelek puanı":"")}${tile("","Gol kralı",gk,gk?ys[gk.id].g+" gol":"")}${tile("","Asist kralı",ak,ak?ys[ak.id].a+" asist":"")}${tk&&tk.net>0&&P(tk.p)?tile("g","Tahmin kralı",P(tk.p),"+"+fJ(tk.net)+" sikke",'data-act="thkGo" data-v="sira"'):""}</div>
-      <section class="card ist-l">${F.length?rowL("Yelek puanı sıralaması","Sezonun oyuncusu yarışı","yelek"):""}${hasT||S.admin?rowL("Akıllı Saha kralları","Koşu · hız · pas · top kapma","saha"):""}${F.length?rowL("Mevki yarışı","Forvet · orta saha · defans · kaleci","mevki")+rowL("Diğer krallıklar","İkili, yükselen, fiyasko…","kral"):""}</section>`;
-    return h+champWall()}
-  h+=`<div class="sx3 sx3b" role="tablist" aria-label="İstatistik görünümü" style="--n:${VW.length+1}"><button class="bk" data-act="tog1" data-k="sezV" data-v="" aria-label="İstatistik özetine dön">‹ Özet</button>${VW.map(([k,l])=>`<button role="tab" aria-selected="${sv===k}" class="${sv===k?"on":""}" data-act="tog1" data-k="sezV" data-v="${k}">${l}</button>`).join("")}</div>`;
+  const sv=VW.some(x=>x[0]===S.f.sezV)?S.f.sezV:"yelek";
+  if(F.length||sv==="saha")h+=`<div class="sx3" role="tablist" aria-label="İstatistik görünümü" style="--n:${VW.length}">${VW.map(([k,l])=>`<button role="tab" aria-selected="${sv===k}" class="${sv===k?"on":""}" data-act="tog1" data-k="sezV" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(sv==="saha")return h+viewSaha().replace(oyTabs("saha"),"");
   if(F.length&&sv==="yelek")h+=mvpHtml(F);
   const ldCard=(t,c,val,fmt,filt,tie)=>{const v=p=>val(ys[p.id]);const all=S.players.filter(p=>!p.guest&&(ys[p.id]?.games||0)>0&&(filt?filt(ys[p.id]):v(p)>0)).sort((a,b)=>v(b)-v(a)||(ys[a.id].games-ys[b.id].games)||(tie?tie(ys[b.id])-tie(ys[a.id]):0)||a.name.localeCompare(b.name,"tr"));
