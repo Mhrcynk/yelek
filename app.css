@@ -4037,3 +4037,4 @@ html.dk .krl .eyebrow,html.dk .krl-t,html.dk .krl-n,html.dk .krl-l em{color:#3BE
 .krb .krl-tac{position:static;transform:none;width:38px;flex:none;animation:none}.krb span{flex:1;display:grid;min-width:0}.krb small{font:700 .72rem/1.3 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#3F5F4D}
 .krb b{font:800 1.05rem/1.2 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.krb em{font-style:normal;font-weight:800;color:#0B6B3A}.krb i{font-style:normal;color:#3F5F4D;font-size:1.2rem}
 .sbox .setr.setsub{min-height:52px;padding-left:62px}.setr.setsub b{font-weight:600}
+.vtog.pmt button{white-space:nowrap;padding-inline:4px;font-size:.84rem;min-width:0}

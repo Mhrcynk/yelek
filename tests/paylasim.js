@@ -59,10 +59,10 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
       BET.kral={ok:true,wk:"2030-01-07",p:S.players[1].id,net:1250,top:[{p:S.players[1].id,net:1250,n:3,won:2},{p:S.players[4].id,net:880,n:2,won:1},{p:S.players[0].id,net:-340,n:4,won:1}]};BET.tbl={ok:true,season:1,rows:S.players.slice(0,6).map((p,i)=>({p:p.id,bal:5300+i*90,net:[340,1250,-60,-420,880,0][i],n:4,won:2,open:0})),wk:"2030-01-07",wrows:S.players.slice(0,6).map((p,i)=>({p:p.id,bal:5000+i*90,net:[340,1250,-60,-420,880,0][i],n:3,won:2,open:0}))};BET.at.tbl=nw;
     const P0=S.players;S.stats[P0[0].id].streak={t:"5 maçtır gol atıyor",hot:true};S.stats[P0[3].id].streak={t:"3 maçtır not 6 altında",hot:false};S.stats[P0[5].id].series=[66,68,67,70,72,71,75,78,79];S.stats[P0[5].id].ovr=79});
   const plan=[];
-  const items={once:["ilk7","kupon","oran","kimne","gun","kadro","duel","out"],mac:["tkup","tuttu","skor","motm","totw","gol","fiy","kadro","veri"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tkral","ttab","thafta","tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
+  const items={once:["ilk7","gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro","veri"],tahmin:["kupon","oran","kimne","tkup","tuttu","tkral","ttab","thafta"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","ikili","sadik","karne","yaris","final"]};
   const ms=await run(()=>fin().map(m=>m.id));const pids=await run(()=>pmPlayers().map(p=>p.id));
   for(const [tab,L] of Object.entries(items))for(const it of L){
-    if(tab==="mac"){for(const mid of ms)plan.push({tab,item:it,mid})}
+    if(tab==="mac"||(tab==="tahmin"&&(it==="tkup"||it==="tuttu"))){for(const mid of ms)plan.push({tab,item:it,mid})}
     else if(tab==="oyuncu"){for(const pid of pids.slice(0,8))plan.push({tab,item:it,pid})}
     else if(it==="ilk7"){plan.push({tab,item:it,x7k:"A"});plan.push({tab,item:it,x7k:"B"})}
     else if(it==="yaris"){for(const race of["FV","OS","DF","KL"])plan.push({tab,item:it,race})}
