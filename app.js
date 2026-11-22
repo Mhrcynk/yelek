@@ -929,7 +929,7 @@ function ypPost(o){const wk=o.wkH||(o.wk?`<div class="yp-wk" data-b>${esc(TRU(o.
   return `<div class="yp${o.c?" yp-"+o.c:""}" lang="tr">${o.rays===false?"":YP_RAYS}${o.bg||""}
 <div class="yp-hd" data-b><div class="yp-hdl"><div class="yp-ey${ic?" yp-eyi":""}" style="font-size:${ypFit(ey,12,tw-(ic?36:0),{w:700,fam:INF,ls:.22})}px">${ic}<span>${esc(ey)}</span></div><div class="yp-ti" style="font-size:${ypFit(ti,o.tiMax||54,tw,{ls:.01})}px">${esc(ti)}</div></div>${wk}</div>
 <div class="yp-hero${o.hc?" yp-"+o.hc:""}">${o.hero||""}</div>${o.pn?`<div class="yp-pn" data-b>${o.pn}</div>`:""}
-<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div>${o.c==="t"?`<div class="yp-tem" data-b>Sikke temsilidir, gerçek para değildir.</div>`:""}</div>`}
+<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div>${o.c==="t"?`<div class="yp-tem" data-b><div><b>PARA YOK</b><b>BAHİS DEĞİL</b><span>Sadece keyfine oynanan bir tahmin oyunu</span></div><small>Sikke temsilidir; gerçek para değildir, satın alınamaz, ödül karşılığı yoktur.</small></div>`:""}</div>`}
 const ypBdg=(b,ic)=>`<div class="yp-bdg" data-b>${ic||`<strong style="font-size:${ypFit(TRU(b[0]),42,72)}px">${esc(TRU(b[0]))}</strong>`}<small style="font-size:${ypFit(TRU(b[1]),13,80,{ls:.1})}px">${esc(TRU(b[1]))}</small></div>`;
 const ypSts=L=>{const w=(476-10*(L.length-1))/L.length-24;return `<div class="yp-sts">${L.map(([v,l,on])=>`<div class="${on?"yp-on":""}"><strong style="font-size:${ypFit(TRU(v),32,w)}px">${esc(TRU(v))}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`};
 const ypBig=(nm,age)=>{nm=TRU(nm);return `<div class="yp-big" style="font-size:${ypFit(nm+(age!=null?"    ("+age+")":""),44,476,{ls:.01})}px">${esc(nm)}${age!=null?`<span>(${age})</span>`:""}</div>`};
@@ -1292,8 +1292,9 @@ const pmNewest=()=>S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>String
 const pmPid=(f,it)=>f.pid||(it==="yeni"?pmNewest()?.id:null)||S.me||pmPlayers()[0]?.id;
 function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));const m=S.matches.find(x=>x.id===f.mid&&x.state==="bitti")||ms[0];
   const k=f.item||PM_ITEMS[f.tab][0][0];
-  if(f.tab==="tahmin"){if(k==="kupon"||k==="oran"||k==="kimne"){const b=betNext();if(!b)return null;return k==="kupon"?ypKupon(b,f.cid):k==="oran"?ypOran(b):ypKimne(b)}
-    if(k==="tuttu"||k==="tkup"){if(!m)return null;return k==="tuttu"?ypTuttu(m,f.cid):ypTkup(m)}return k==="thafta"?ypThafta():k==="tkral"?ypTkral():ypTtab()}
+  if(f.tab==="tahmin"){const not=x=>{if(x&&x.cap&&!x.cap.includes("bahis değil"))x.cap=x.cap.replace(/\n([^\n]*)$/,"\nPara yok, bahis değil: sadece keyfine oynanan bir tahmin oyunu. Sikke temsilidir.\n$1");return x};
+    if(k==="kupon"||k==="oran"||k==="kimne"){const b=betNext();if(!b)return null;return not(k==="kupon"?ypKupon(b,f.cid):k==="oran"?ypOran(b):ypKimne(b))}
+    if(k==="tuttu"||k==="tkup"){if(!m)return null;return not(k==="tuttu"?ypTuttu(m,f.cid):ypTkup(m))}return not(k==="thafta"?ypThafta():k==="tkral"?ypTkral():ypTtab())}
   if(f.tab==="mac"){if(!m)return null;if(k==="tuttu")return ypTuttu(m,f.cid);return({skor:ypScore,motm:ypMotm,totw:ypTotw,gol:ypGoal,fiy:ypFiy,veri:ypData,tkup:ypTkup,kadro:mm=>ypKadro(mm,true)}[k]||ypScore)(m)}
   if(f.tab==="once"){if(k==="gun")return ypMatchDay();if(k==="out")return ypOut();if(k==="kupon"||k==="oran"||k==="kimne"){const b=betNext();if(!b)return null;return k==="kupon"?ypKupon(b,f.cid):k==="oran"?ypOran(b):ypKimne(b)}const n=hkNext();if(!n)return null;if(k==="ilk7")return ypIlk7(n,f.x7k||"A",f.x7p);return k==="duel"?ypDuel(n):ypKadro(n,false)}
   if(f.tab==="oyuncu"){const p=P(pmPid(f,k))||pmPlayers()[0];if(!p)return null;
