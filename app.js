@@ -1659,8 +1659,8 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
     <div class="vpc">${p?avatar(p):""}<h3>${esc(nameOf(id))}</h3><p>${tDot(side)}${esc(TEAM[side])}${p&&!p.guest?" · "+esc(EPOS[eposOf(p)]?.[1]||""):" · Misafir"}</p>${voteStats(m,id,side)}</div>
     <p class="vq2">${esc(firstName(nameOf(id)))} bu maçta nasıldı?</p>
     <div class="vg4">${[1,2,3,4].map(k=>{const on=cur===k;return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}">${VL[k-1]}</button>`}).join("")}</div>
-    <p class="vhint">Seçince sıradaki oyuncuya geçer · şimdiye kadar ${n1} çok iyi, ${n4} kötü</p>
-    <div class="vnav"><button class="btn" data-act="vBack"${vt.i===0?" disabled":""}>Geri</button>${cur?`<button class="btn" data-act="vNext">${dn===all.length?"Son adıma geç":"İleri"}</button>`:""}</div>`}
+    <p class="vhint">Şimdiye kadar ${n1} çok iyi, ${n4} kötü</p>
+    <div class="vnav"><button class="btn" data-act="vBack"${vt.i===0?" disabled":""}>Geri</button>${cur?`<button class="btn primary" data-act="vNext">${dn===all.length?"Son adıma geç":"İleri"}</button>`:""}</div>`}
 function sheetVdet(){const d=S.f.vd;const m=d&&S.matches.find(x=>x.id===d.mid);if(!m||!S.admin)return"";const pl=plAll(m);const sel=d.sel||pl[0];const dir=d.dir||"f";
   const R=(d.rows||[]).filter(r=>dir==="f"?r.f===sel:r.t===sel).sort((a,b)=>a.v-b.v);const oth=r=>dir==="f"?r.t:r.f;const c=[1,2,3,4].map(k=>R.filter(r=>r.v===k).length);
   return `<div class="ch"><div style="min-width:0"><div class="eyebrow">Sadece yönetici görür</div><h2>Kim kime ne verdi</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
@@ -3395,8 +3395,8 @@ document.addEventListener("click",async e=>{
       const all=voteList(m,voter);const first=all.findIndex(x=>!v[x]);S.f.vt={mid:id,voter,v,motm,fiy,i:first<0?0:first,son:first<0&&all.length>0};S.sheet={type:"vote",mid:id};render(true);break}
     case"voteDemo":{const m=S.matches.find(x=>x.id===id);const me=myPid();if(!m||!me)break;S.f.vt={mid:id,voter:me,v:{},motm:"",fiy:"",i:0,son:false,demo:true};S.sheet={type:"vote",mid:id};render(true);break}
     case"vPick":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const p=el.dataset.p,k=+el.dataset.v;vt.v[p]=k;if(vt.motm===p&&k!==1)vt.motm="";if(vt.fiy===p&&k!==4)vt.fiy="";
-      const all=voteList(m,vt.voter);let n=-1;for(let j=1;j<=all.length;j++){const q=(vt.i+j)%all.length;if(!vt.v[all[q]]){n=q;break}}if(n<0){if(vt.i<all.length-1)vt.i++;else vt.son=true}else vt.i=n;render(true);break}
-    case"vNext":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const all=voteList(m,vt.voter);if(all.every(x=>vt.v[x]))vt.son=true;else if(vt.i<all.length-1)vt.i++;render(true);break}
+      render(true);break}
+    case"vNext":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const all=voteList(m,vt.voter);if(all.every(x=>vt.v[x]))vt.son=true;else if(vt.i<all.length-1)vt.i++;else{const q=all.findIndex(x=>!vt.v[x]);if(q>=0)vt.i=q}render(true);break}
     case"vBack":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;if(vt.son){vt.son=false;vt.i=voteList(m,vt.voter).length-1}else if(vt.i>0)vt.i--;render(true);break}
     case"vMotm":{const vt=S.f.vt;if(!vt)break;vt.motm=vt.motm===el.dataset.p?"":el.dataset.p;render(true);break}
     case"vFiy":{const vt=S.f.vt;if(!vt)break;vt.fiy=vt.fiy===el.dataset.p?"":el.dataset.p;render(true);break}

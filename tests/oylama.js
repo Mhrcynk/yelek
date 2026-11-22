@@ -67,7 +67,9 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   ok(await pg.locator(".vsg i").count()===13,"oylanacak oyuncu sayısı "+await pg.locator(".vsg i").count());
   for(let i=0;i<13;i++){const k=i<3?1:i<7?2:i<11?3:4;
     if(i===5)ok(await run(()=>!document.querySelector(".vg4 .p1").disabled),"çok iyi sınırı hâlâ duruyor");
-    await pg.click(`.vg4 button:nth-child(${k})`);await pg.waitForTimeout(60)}
+    const b0=await run(()=>S.f.vt.i);await pg.click(`.vg4 button:nth-child(${k})`);await pg.waitForTimeout(60);
+    if(i===0)ok(await run(()=>S.f.vt.i)===b0,"oy verince kendiliğinden sonraki oyuncuya geçiyor");
+    await pg.click('.vnav [data-act="vNext"]');await pg.waitForTimeout(60)}
   await pg.waitForTimeout(200);await shot("2_oyla");
   ok(await run(()=>document.querySelector(".vsend").disabled),"maçın adamı seçilmeden gönderilebiliyor");
   ok(await pg.locator('.vtl[data-act="vMotm"]').count()===3,"maçın adamı adayları çok iyi verilenler değil");
