@@ -1582,7 +1582,7 @@ html{background:var(--bg)}body.gated{min-height:100vh;padding-bottom:calc(env(sa
 .pk i svg{width:14px;height:14px}
 .kph{margin-bottom:8px}
 /* her telefona otomatik ölçek: 375px ve üstü 16px,daha dar ekranlarda orantılı küçülür */
-html{font-size:clamp(13.5px,4.27vw,16px)}
+html{font-size:clamp(14.5px,4.45vw,16px)}
 .maft b{overflow-wrap:break-word;word-break:normal;hyphens:manual}
 .mafcap{width:clamp(60px,21vw,84px);height:clamp(60px,21vw,84px)}
 .mafcap.crw{width:auto;height:auto}
@@ -1592,7 +1592,7 @@ html{font-size:clamp(13.5px,4.27vw,16px)}
 .se .big{font-size:clamp(2.6rem,14vw,3.6rem)}
 .sb .sc{font-size:clamp(2.8rem,15vw,4rem)}
 .xsbt>b{font-size:clamp(2.2rem,12vw,3rem)}
-.xsbp button{width:clamp(34px,10.5vw,40px);height:clamp(34px,10.5vw,40px)}
+.xsbp button{width:40px;height:40px}
 @media (max-width:360px){
   .brand .t{display:none}
   .meBtn{max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -3784,7 +3784,7 @@ html.dk .bs-i input,html.dk body.tg .bs-i input[type=number]{flex:1;min-width:0;
 .bk-r button svg{flex:none}
 /* kupon eylem satırı: hepsi paylaş düğmesi biçiminde */
 .bk-r{display:flex!important;gap:6px!important;flex-wrap:nowrap!important;align-items:center}
-.bk-r .bk-b{display:inline-flex!important;align-items:center;gap:6px!important;min-height:40px!important;min-width:44px;justify-content:center;padding:0 12px!important;margin:0!important;border-radius:12px!important;border:1px solid var(--c-line)!important;background:var(--c-card2)!important;color:#fff!important;font:700 .8rem/1 Inter,sans-serif!important}
+.bk-r .bk-b{display:inline-flex!important;align-items:center;gap:6px!important;min-height:44px!important;min-width:44px;justify-content:center;padding:0 12px!important;margin:0!important;border-radius:12px!important;border:1px solid var(--c-line)!important;background:var(--c-card2)!important;color:#fff!important;font:700 .8rem/1 Inter,sans-serif!important}
 .bk-r .bk-b svg{width:16px;height:16px;flex:none}
 .bk-r .bk-b.up.on{background:rgba(0,229,138,.16)!important;border-color:#00E58A!important;color:#00E58A!important}
 .bk-r .bk-b.down.on{background:rgba(255,107,139,.14)!important;border-color:#FF6B8B!important;color:#FF6B8B!important}
@@ -4127,3 +4127,9 @@ body.uye #meBtn{display:none}
 .bsk-t>span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.82rem;font-weight:700}
 .bsk-s{display:flex;align-items:center;gap:6px}.bsk-s b{min-width:44px;text-align:center;font:800 2rem/1 var(--display)}
 .bsk-s button{width:44px;height:44px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card);color:#fff;font:700 1.3rem/1 Inter,sans-serif;cursor:pointer}.bsk-s button:disabled{opacity:.35}
+
+html.tn1 .oda-hd{margin-top:70px}
+html.tn2 *,html.tn2 *::before,html.tn2 *::after{filter:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;animation:none!important;transition:none!important;-webkit-mask-image:none!important;mask-image:none!important}
+html.tn2 #modal .sheet,html.tn2 #modal .sheet-bg{transform:none!important}
+html.tn3,html.tn3 body{position:fixed!important;inset:0;overflow:hidden!important;height:100%!important;width:100%!important}
+

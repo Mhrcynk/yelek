@@ -42,6 +42,12 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
   await pg.evaluate(()=>document.querySelector('.nav [data-tab="kartlar"]').click());await pg.waitForTimeout(500);
   const opened=await pg.evaluate(async()=>{const b=document.querySelector('#view [data-act="open"]');if(!b)return "düğme yok";b.click();await new Promise(r=>setTimeout(r,500));return document.getElementById("modal").innerText.length>20?"":"modal boş"});
   if(opened)fails.push("oyuncu kartı açılmadı ("+opened+")");
+  // telefonun geri tuşu / geri kaydırma açık pencereyi kapatmalı, uygulamadan çıkmamalı
+  const hb=await pg.evaluate(async()=>{if(!(history.state&&history.state.sh))return "pencere açılınca geçmişe kayıt düşmedi";history.back();await new Promise(r=>setTimeout(r,600));
+    if(document.querySelector("#modal .sheet"))return "geri tuşu pencereyi kapatmadı";if(history.state&&history.state.sh)return "geçmiş kaydı kaldı";
+    const b=document.querySelector('#view [data-act="open"]');b.click();await new Promise(r=>setTimeout(r,500));document.querySelector('#modal [data-act="close"]').click();await new Promise(r=>setTimeout(r,800));
+    return history.state&&history.state.sh?"düğmeyle kapatınca geçmiş kaydı kaldı":document.querySelector("#modal .sheet")?"düğme pencereyi kapatmadı":""});
+  if(hb)fails.push("geri tuşu: "+hb);
   if(errs.length)fails.push("JS hatası: "+errs.join(" | "));
   await b.close();srv.close();
   if(fails.length){console.log("HATA\n- "+fails.join("\n- "));process.exit(1)}console.log("Tamam: bütün ekranlar açılıyor.");
