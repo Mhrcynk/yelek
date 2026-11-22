@@ -4089,3 +4089,29 @@ html.dk body.tg .sback{background:#0F3222;color:#7DF2BE}
 .pcd{border-top:1px solid var(--c-line)}.pcd summary{list-style:none;min-height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 62px;font:700 .85rem/1 Inter,sans-serif;color:var(--c-ink2);cursor:pointer}
 .pcd summary::-webkit-details-marker{display:none}.pcd summary::after{content:"›";font-size:1.2rem;transition:transform .2s}.pcd[open] summary::after{transform:rotate(90deg)}
 body.uye #meBtn{display:none}
+
+/* maç detayı: açılır alt bölümler ve tahmin sekmesi */
+.mdx{margin-top:14px;border-top:1px solid var(--c-line);padding-top:4px}
+.mdx>summary{list-style:none;min-height:46px;display:flex;align-items:center;justify-content:space-between;font:800 .95rem/1 Inter,sans-serif;cursor:pointer}
+.mdx>summary::-webkit-details-marker{display:none}.mdx>summary::after{content:"›";font-size:1.3rem;color:var(--c-ink3);transition:transform .2s}.mdx[open]>summary::after{transform:rotate(90deg)}
+.mdx[open]>summary{margin-bottom:8px}
+.mth{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-bottom:14px}
+.mth>div{display:grid;gap:4px;justify-items:center;padding:12px 4px;border-radius:14px;background:var(--c-card2)}.mth b{font:800 1.5rem/1 var(--display)}.mth b.pos{color:#3BE08E}.mth b.neg{color:#FF9DB3}.mth span{font-size:.75rem;color:var(--c-ink2)}
+.mtl{display:grid;margin:8px 0 14px}.mtr{display:flex;align-items:center;gap:10px;min-height:54px}.mtr+.mtr{border-top:1px solid var(--c-line)}
+.mtr span{flex:1;min-width:0;display:grid;gap:3px}.mtr small{font-size:.75rem;color:var(--c-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mtr em{font:800 1.2rem/1 var(--display);font-style:normal;color:#3BE08E}
+
+/* tahmin: alttaki beyaz fiş */
+.bbar{border:0!important;background:#fff!important;color:#06231A!important;min-height:66px;padding:12px 12px 12px 16px;border-radius:22px;box-shadow:0 14px 34px rgba(0,0,0,.55)}
+.bbar small{color:#2F6A4E!important}.bbar b{font-size:.95rem;font-weight:800;color:#06231A}
+.bbar i{background:#06231A!important;color:#fff!important;border-radius:14px;padding:13px 16px;font-size:.85rem}
+
+/* Bu hafta: kadrolar kapalı kart olarak gelir */
+.kdd>summary{list-style:none;display:grid;gap:10px;cursor:pointer}.kdd>summary::-webkit-details-marker{display:none}
+.kdd-h{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px}.kdd-h b{font:800 1.3rem/1 var(--display);text-transform:uppercase}
+.kdd-h em{font:700 .82rem/1 Inter,sans-serif;font-style:normal;color:var(--c-pink);padding:10px 0}
+.kdd-h em .o,.kdd[open] .kdd-h em .c{display:none}.kdd[open] .kdd-h em .o{display:inline}
+.kdd-n{display:grid;gap:6px;font-size:.82rem;color:var(--c-ink2);line-height:1.35}.kdd-n>span{display:flex;gap:8px;align-items:baseline}
+.kdd[open] .kdd-n{display:none}.kdd[open]>summary{margin-bottom:12px}
+.pmi .pmg{flex:none;align-self:center;font:800 .72rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c-ink3);padding:0 2px 0 6px}.pmi .pmg:first-child{padding-left:0}
+.kdd>summary::before,.pcd>summary::before{display:none}
+.mdx>summary{justify-content:flex-start}.mdx>summary::after{display:none}
