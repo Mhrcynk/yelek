@@ -4372,3 +4372,44 @@ html.dk .mg-h h2{font:800 1.75rem/1 var(--display)!important}
 .ltb-r>span.num{font-size:.82rem}.ltb-r .ltp{font-size:1.25rem!important}
 .ltb-r .nm{font-size:.88rem}
 .ltb-n{margin:8px 4px 0;font-size:.72rem;line-height:1.4;color:var(--c-ink3)}
+/* Lig tablosu: O G B M AV P Form */
+.lt2 .ltb-h,.lt2 .ltb-r{grid-template-columns:30px 30px minmax(0,1fr) repeat(4,16px) 26px 24px 36px!important;gap:3px!important}
+.lt2 .ltb-h span:nth-child(3){text-align:left!important}.lt2 .ltb-h span:nth-child(n+4),.lt2 .ltb-r>*:nth-child(n+4){text-align:right}
+.lt2 .ltb-h span:last-child{text-align:right}
+html.dk .lt2 .ltb-r{height:56px;min-height:56px!important}
+.lt2 .ltb-r .rk{display:grid!important;justify-items:center;gap:1px;align-content:center}
+.lt2 .ltb-r .rk b{font:700 .9rem/1 Inter,sans-serif!important;color:var(--c-ink3)}
+.lt2 .ltb-r .rk.m1 b,.lt2 .ltb-r .rk.m2 b,.lt2 .ltb-r .rk.m3 b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:800!important;color:#1A1300}
+.lt2 .ltb-r .rk.m1 b{background:#FFD400}.lt2 .ltb-r .rk.m2 b{background:#C9CEDA}.lt2 .ltb-r .rk.m3 b{background:#E09A5C}
+.lt2 .ltb-r .av{width:30px!important;height:30px!important;min-width:30px;border-radius:50%!important;overflow:hidden}
+.lt2 .ltb-r .nm{font-size:.9rem;font-weight:700;padding-left:4px}
+.lt2 .ltb-r>span.num{font-size:.84rem;color:#fff}
+.lt2 .ltb-r>span.num.avj{color:var(--c-ink3)}.lt2 .ltb-r>span.num.avj.p{color:#00E58A}.lt2 .ltb-r>span.num.avj.n{color:#FF9DB3}
+.lt2 .ltb-r .nm{text-align:left!important}
+.lt2 .lfs .lf{opacity:1!important;transform:none!important;animation:none!important;box-shadow:none!important;margin:0!important}
+.lt2 .lfs .lf.G{background:#00E58A}.lt2 .lfs .lf.B{background:#FFB020}.lt2 .lfs .lf.M{background:#FF4D6D}
+.lt2 .ltb-r .ltp{font:800 1.35rem/1 var(--display)!important}
+.lt2 .lfs{display:flex;justify-content:flex-end;gap:3px}.lt2 .lfs .lf{width:9px;height:9px;border-radius:50%;flex:none}
+html.dk .lt2 .ltb-r.me{background:#2E2260;box-shadow:inset 3px 0 0 #FF3EA5;border-radius:0}
+/* Paylaşım merkezi */
+html.dk .pmi button{background:#1C1240!important;color:#fff!important;border-radius:99px;min-height:44px!important;padding:0 16px!important;font-weight:700}
+html.dk .pmi button.on{background:#FF3EA5!important;color:#2A0519!important;font-weight:800}
+html.dk .pmprev{background:none!important;padding:8px 0 4px!important;margin-bottom:8px}
+html.dk .pmprev>*{border-radius:18px;overflow:hidden}
+html.dk .pmf{margin:0 auto 12px!important;width:max-content;background:#1C1240!important;border-radius:14px;padding:4px}
+html.dk .pmf button{min-height:44px!important;padding:0 18px!important;font:600 .82rem/1 Inter,sans-serif!important;border-radius:10px!important}
+html.dk .pmf button.on{font-weight:800!important}
+.pmact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:10px;position:sticky;bottom:0;padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px));background:var(--c-bg);z-index:3}
+html.dk .pmact .btn{height:52px;border-radius:16px!important;border:0!important;background:#1C1240!important;color:#fff!important;font:800 .95rem/1 Inter,sans-serif}
+html.dk .pmact .btn.pmgo{background:#fff!important;color:#120A2A!important}
+.pmx{display:grid;gap:4px;justify-items:center;padding-bottom:6px}
+.pmx .lnk{min-height:44px;border:0;background:none;color:#FF9FD0;font:700 .86rem/1 Inter,sans-serif;cursor:pointer}
+.pmd{width:100%}.pmd>summary{list-style:none;min-height:44px;display:flex;align-items:center;justify-content:center;font:600 .82rem/1 Inter,sans-serif;color:var(--c-ink3);cursor:pointer}.pmd>summary::-webkit-details-marker{display:none}html.dk .pmd>summary::before{display:none}
+.pmd textarea{width:100%;border:0;border-radius:14px;background:#1C1240;color:#fff;resize:none;font:500 .82rem/1.45 Inter,sans-serif;padding:12px;outline:none}
+html.dk .pmi button{background:#2E2260!important}
+html.dk .pmi button.on{background:#FF3EA5!important}
+html.dk .pmt,html.dk .pmf{background:#120A2A!important}
+.pmact{background:#1C1240}
+html.dk #modal .pmact .btn{background:#2E2260!important;border:0!important;color:#fff!important;box-shadow:none!important}
+html.dk #modal .pmact .btn.pmgo{background:#fff!important;color:#120A2A!important}
+html.dk .pmd textarea{background:#120A2A}
