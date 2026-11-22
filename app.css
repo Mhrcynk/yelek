@@ -4423,3 +4423,6 @@ html.dk #modal .pmact.p4 .btn.on{background:#FF3EA5!important;color:#2A0519!impo
 /* tahmin görselleri: hikâye modunda çevresi de yeşil, görselle tek parça */
 .yp-story.st-t{background:radial-gradient(70% 30% at 100% 12%,rgba(255,212,0,.14),rgba(255,212,0,0) 62%),linear-gradient(170deg,#14B86E 0%,#0B5A37 38%,#05160E 100%)!important}
 .yp-story.st-t .yp{box-shadow:none!important;background:none!important}
+.pmact.p3{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr);gap:8px}
+html.dk #modal .pmact.p3 .btn{height:50px;border-radius:14px!important;padding:0 4px!important;font:700 .88rem/1 Inter,sans-serif!important;min-width:0}
+html.dk #modal .pmact.p3 .btn.on{background:#FF3EA5!important;color:#2A0519!important;font-weight:800!important}
