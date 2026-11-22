@@ -3843,7 +3843,7 @@ body.kb #modal .sheet{max-height:100%!important;border-radius:18px 18px 0 0;padd
 body.kb .oda .ch,body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb .oda .oda-pin{display:none}
 body.kb .oda-m{height:max(80px,calc(var(--vvh,400px) - 190px))}
 body.kb .bcm{max-height:max(70px,calc(var(--vvh,400px) - 250px))!important}
-body.kb .bmini{display:none}
+
 .oda-m{height:min(42vh,calc(var(--vvh,100vh) - 380px));min-height:120px}
 /* yorum penceresinde ve bildirimde kupon özeti */
 .bmini{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:10px 12px;border-radius:14px;background:var(--c-card2);border:1px solid var(--c-line)}

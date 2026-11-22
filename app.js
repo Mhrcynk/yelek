@@ -830,7 +830,7 @@ function routeAfter(){const r=S._route;if(!r||!S.loaded)return;const p=decodeURI
 function routeGo(r){S._route=r;S._r0=r;S._r0t=Date.now();S.sheet=null;routeTab(r);render(true);routeAfter()}
 addEventListener("hashchange",()=>{const r=location.hash.slice(1);if(r&&r.includes("/")||r==="m")routeGo(r);else if(r&&TABS.some(x=>x[0]===r)&&S.tab!==r)routeGo(r)});
 navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.t==="nav"&&d.url){try{const u=new URL(d.url);if(u.hash)routeGo(u.hash.slice(1))}catch(_){}}});
-function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0);odaFab()},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm"));{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm")?"#05160E":"#120A2A"}
+function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0);odaFab();if(S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom")&&scrollY>1&&!document.body.classList.contains("kb"))window.scrollTo(0,0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm"));{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm")?"#05160E":"#120A2A"}
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -1631,7 +1631,11 @@ function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=e
   return h}
 // Oylama: oyuncular tek tek gelir; sonda maçın adamı ("çok iyi" dediklerinden) ve fiyasko ("kötü" dediklerinden, isteğe bağlı) seçilir.
 function voteList(m,me){const oth=k=>plOf(m,k).filter(id=>id!==me);return[...oth("A"),...oth("B")]}
-function voteStats(m,id,side){const fin=m.state==="bitti"&&m.score_a!=null;const o=(m.stats||{})[id]||{};const t=trkOf(m,id)||{};const T=[];
+function voteStats(m,id,side){
+  if(S.f.vt&&S.f.vt.demo){let h=7;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))%100003;const r=n=>{h=(h*9301+49297)%233280;return h/233280*n};const us=side==="A"?9:7,th=side==="A"?7:9;
+    const T=[[us+"–"+th,us>th?"Kazandı":"Kaybetti"],[Math.floor(r(4)),"Gol"],[Math.floor(r(3)),"Asist"],[(3.8+r(2)).toFixed(1).replace(".",","),"km"],[(21+r(7)).toFixed(1).replace(".",","),"Maks hız"],[Math.round(15+r(45)),"Pas"]];
+    return `<div class="vstt">${T.map(([v,l])=>`<span><b class="num">${v}</b><small>${l}</small></span>`).join("")}</div><p class="vst0">Deneme: bu rakamlar uydurma.</p>`}
+  const fin=m.state==="bitti"&&m.score_a!=null;const o=(m.stats||{})[id]||{};const t=trkOf(m,id)||{};const T=[];
   if(fin){const us=side==="A"?+m.score_a:+m.score_b,th=side==="A"?+m.score_b:+m.score_a;T.push([us+"–"+th,us>th?"Kazandı":us<th?"Kaybetti":"Berabere"],[+o.g||0,"Gol"],[+o.a||0,"Asist"]);
     if(+o.cl)T.push([+o.cl,"Çizgiden"]);if(+o.ps)T.push([+o.ps,"Pen. kurtardı"]);if(+o.og)T.push([+o.og,"Kendi kalesine"]);if(+o.pm)T.push([+o.pm,"Pen. kaçırdı"])}
   [["km","km"],["hiz","Maks hız"],["pas","Pas"],["tk","Top kapma"]].forEach(([k,l])=>{if(t[k]!=null&&T.length<6)T.push([fTrk(k,t[k]),l])});
@@ -3920,10 +3924,11 @@ setInterval(()=>{if(S.sheet&&S.sheet.type==="oda"&&document.visibilityState==="v
   setTimeout(satM,0);addEventListener("orientationchange",()=>setTimeout(satM,400));addEventListener("pageshow",()=>setTimeout(satM,50))}
 if(window.visualViewport){let kbT=0;const show=()=>{const a=document.activeElement;if(!a||!/^(INPUT|TEXTAREA)$/.test(a.tagName))return;if(a.id==="odaTxt"){odaBottom();return}if(a.id==="betComTxt"){odaBottom();return}try{a.scrollIntoView({block:"center"})}catch(_){}};
   const vvFix=()=>{const v=visualViewport;const kb=v.height<innerHeight*.78;document.documentElement.style.setProperty("--vvh",Math.round(v.height)+"px");const was=document.body.classList.contains("kb");document.body.classList.toggle("kb",kb);
-    const bg=document.querySelector("#modal .sheet-bg");if(bg){if(kb||(S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom"))){bg.style.top=Math.round(v.offsetTop)+"px";bg.style.height=Math.round(v.height)+"px";bg.style.bottom="auto"}else{bg.style.top=bg.style.height=bg.style.bottom=""}}
+    const tam=S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");if(tam&&(v.offsetTop>1||scrollY>1)&&(vvFix.n=(vvFix.n||0)+1)<=4){try{window.scrollTo(0,0)}catch(_){}}
+    const bg=document.querySelector("#modal .sheet-bg");if(bg){if(kb||tam){bg.style.top=Math.round(v.offsetTop)+"px";bg.style.height=Math.round(v.height)+"px";bg.style.bottom="auto"}else{bg.style.top=bg.style.height=bg.style.bottom=""}}
     if(kb){clearTimeout(kbT);kbT=setTimeout(show,was?40:120)}};
   visualViewport.addEventListener("resize",vvFix);visualViewport.addEventListener("scroll",vvFix);
-  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName||"")){setTimeout(vvFix,60);setTimeout(()=>{vvFix();show()},380)}});
+  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName||"")){vvFix.n=0;setTimeout(vvFix,60);setTimeout(()=>{vvFix();show()},380)}});
   document.addEventListener("focusout",()=>setTimeout(vvFix,120))}
 
 const lIc=k=>{const d=DI[k]||["",""];return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d[0]?`<path d="${d[0]}"/>`:""}${d[1]?`<path d="${d[1]}"/>`:""}</svg>`};
