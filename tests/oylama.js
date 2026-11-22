@@ -59,7 +59,7 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1500);
   const shot=async n=>{if(shots)await pg.screenshot({path:path.join(shots,n+".png"),fullPage:true})};
   await run(i=>{S.admin=true;S.pin="x";S.mem={status:"onayli",role:"yonetici",player_id:i};S.me=i;S.tab="mac";render(true)},ids[2]);await pg.waitForTimeout(800);
-  const t=await pg.textContent("#view");ok(t.includes("MAÇ BİTTİ"),"maç bitti görünmüyor");ok(t.includes("Oyuncuları değerlendir"),"oylama kartı yok");ok(t.includes("Onun adına oy ver"),"yönetici paneli yok");
+  const t=await pg.textContent("#view");ok(/maç bitti/i.test(t),"maç bitti görünmüyor");ok(/oyunu ver|Oylama sürüyor|Oyunu verdin/i.test(t),"oylama kartı yok");ok(t.includes("Onun adına oy ver"),"yönetici paneli yok");
   ok(await run(()=>!fin().some(m=>m.id===S.matches.find(x=>x.vote_on).id)),"oylama bitmeden maç sonuçlanmış sayılıyor");
   await shot("1_mac");
   await pg.click(".vhero .vbtn");await pg.waitForTimeout(300);

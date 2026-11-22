@@ -49,7 +49,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
       if(u.includes("/rpc/")){const fn=u.split("/rpc/")[1].split("?")[0];calls.push([fn,r.request().postData()]);return r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(fn in RPC?RPC[fn]:{})})}
       const k=Object.keys(db).find(k=>u.includes("/rest/v1/"+k+"?"));return r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(k?db[k]:[])})});
     const pg=await ctx.newPage();pg.errs=[];pg.on("pageerror",e=>pg.errs.push(e.message));
-    await pg.addInitScript(t=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team",t)},String(db.tid||db.settings[0].id));
+    await pg.addInitScript(t=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_kv","list");localStorage.setItem("y_hos","1");localStorage.setItem("y_team",t)},String(db.tid||db.settings[0].id));
     await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1300);pg.ctx=ctx;return pg};
   const E=(pg,s)=>pg.evaluate(s=>window.__E(s),s);
   const login=(pg,uidv,role)=>E(pg,`AUTH.ready=true;S.session={access_token:"x",user:{id:"${uidv}",email:"t@x"}};S.mem={status:"onayli",role:"${role}",player_id:"${ids[4]}"};S.me="${ids[4]}";S.admin=${role==="yonetici"};render(true)`);
