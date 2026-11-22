@@ -4149,7 +4149,8 @@ html.dk body::before,html.dk body::after{display:none!important}
 html.dk .top{background:#120A2A!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-bottom:0!important;box-shadow:none!important}
 html.dk body.tg .top{background:#05160E!important}
 html.dk .top .in{height:72px!important;gap:8px;align-items:center}
-html.dk .top .logo{display:none!important}
+html.dk .top .logo{display:block!important;flex:none;width:40px!important;height:40px!important}
+html.dk .brand{display:flex!important;align-items:center;gap:10px}
 html.dk .brand{min-width:0;flex:1}
 html.dk .brand .t{display:flex!important;flex-direction:column;gap:5px;min-width:0}
 html.dk .brand .bsub{display:flex!important;align-items:center;gap:4px;font:700 .72rem/1 Inter,sans-serif!important;letter-spacing:.14em!important;text-transform:uppercase!important;color:var(--c-ink3)!important;margin:0!important;white-space:nowrap;min-width:0}
@@ -4298,9 +4299,7 @@ html.dk .oda .oda-tb button{flex:1;height:44px;border-radius:0!important;backgro
 html.dk .oda .oda-tb button.on{color:#fff!important;font-weight:800!important;border-bottom-color:var(--oc,#FF3EA5)!important}
 html.dk body.tg .oda-hd{background:#05160E!important}
 /* maç detayı */
-html.dk .motmc{background:#3A2E00!important;box-shadow:none!important;border:0!important;border-radius:18px!important}
 html.dk .mzres{background:#24165A!important}
-html.dk .aw{border:0!important;border-radius:18px!important}
 /* paylaşım merkezi */
 html.dk .pmh{margin-bottom:10px}
 html.dk .mzvh h2,.onb-w{text-transform:uppercase!important}
