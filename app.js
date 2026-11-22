@@ -2535,7 +2535,8 @@ function sheetPEdit(){const p=P(S.sheet.id);if(!p||!S.admin)return"";const ph=ph
     <label class="pe-r" for="edAlt"><span>Alternatif</span>${posSelect("edAlt","ed.alt",a.alt,true,a.epos)}</label>
   </div>
   ${attrInputs("ed",a.pos,a.attrs)}
-  <div class="phrow"><span class="av ${tierOf(o0)}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?"Yükleniyor…":""}</p></div>
+  ${S.f.phPrev&&S.f.phPrev.id===p.id?`<div class="phpv"><span class="phpv-i"><img src="${esc(S.f.phPrev.d)}" alt="Yeni fotoğrafın önizlemesi"></span><div class="phpv-t"><b>Böyle görünecek</b><p class="muted small">Arka plan silindi. Beğenmediysen başka bir fotoğraf seç.</p><div class="phpv-b"><button class="btn sm primary" data-act="phUse"${S.f.phBusy?" disabled":""}>Kullan</button><label class="btn sm ghost" for="phFile">Başka fotoğraf</label><button class="btn sm ghost" data-act="phCancel">Vazgeç</button></div><button class="phpv-r" data-act="phRaw">Arka planı silmeden kullan</button></div></div>`:""}
+  <div class="phrow"><span class="av ${tierOf(o0)}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?(S.f.phPrev?"Yükleniyor…":"Arka plan siliniyor… İlk seferde biraz sürebilir."):ph?"":"Arka plan kendiliğinden silinir."}</p></div>
     <label class="btn sm primary" for="phFile">${ph?"Değiştir":"Yükle"}</label><input class="vh" id="phFile" type="file" accept="image/*" data-photo="${esc(p.id)}">${ph?`<button class="btn sm ghost" data-act="delPhoto" data-id="${esc(p.id)}" aria-label="Fotoğrafı kaldır">${ICON.x}</button>`:""}</div>
   <button class="pe-del" data-act="delPlayer">${S.f.delP===p.id?"Kadrodan çıkarmak için tekrar bas":"Kadrodan çıkar"}</button>`}
 const sparkData=s=>{const h=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.gx!=null);return h.length?[s.baseX??s.base,...h.map(x=>x.gx)]:[]};
@@ -3437,7 +3438,7 @@ document.addEventListener("click",async e=>{
     case"reopen":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f.confReopen=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.f.stTab="gol";S.f.confirmFinish=null;S.sheet={type:"stats",mid:id};render(true);break}
     case"stType":S.f.st.type=el.dataset.v;render(true);break;
     case"stOpen":S.f.stOpen=!S.f.stOpen;S.f.st=null;render(true);break;
-    case"peditOpen":S.f.ed=null;S.f.delP=null;S.sheet={type:"pedit",id:S.sheet.id};render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
+    case"peditOpen":S.f.ed=null;S.f.phPrev=null;S.f.delP=null;S.sheet={type:"pedit",id:S.sheet.id};render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"pback":S.sheet={type:"player",id:S.sheet.id};render(true);break;
     case"edSq":S.f.ed.yedek=el.dataset.v;render(true);break;
     case"mePos":S.f.mePos=el.dataset.v;document.querySelectorAll(".mepos button").forEach(b=>b.classList.toggle("on",b.dataset.v===S.f.mePos));meFilter($("#meQ")?.value||"");break;
@@ -3453,6 +3454,9 @@ document.addEventListener("click",async e=>{
       if(ok&&!!a2.yedek!==!!p.yedek)await A("admin_set_yedek",{p_id:p.id,p_yedek:!!a2.yedek},a2.yedek?"Yedek kadroya alındı":"As kadroya alındı");S.f.ed=null;if(ok)S.sheet={type:"player",id:p.id};render(true);break}
     case"delPlayer":{const p=P(S.sheet.id);if(S.f.delP!==p.id){S.f.delP=p.id;render(true);break}const r=await A("admin_archive_player",{p_id:p.id},"Oyuncu kadrodan çıkarıldı");if(r){S.sheet=null;render(true)}break}
     case"atVote":{const v=S.f.atVote||(S.seasonVotes.find(x=>x.voter===S.me)||{}).target;if(!v){toast("Bir oyuncu seç");break}await act("season_vote",{p_year:new Date().getFullYear(),p_voter:S.me,p_target:v},"Altın Top oyun kaydedildi");break}
+    case"phUse":await phSave(false);break;
+    case"phRaw":await phSave(true);break;
+    case"phCancel":S.f.phPrev=null;render(true);break;
     case"delPhoto":{const r=await A("admin_set_photo",{p_id:id,p_data:""},"Fotoğraf kaldırıldı");if(r){delete S.photos[id];render(true)}break}
     case"rulesSheet":S.sheet={type:"rules"};render(true);break;
   }
@@ -3465,6 +3469,41 @@ function tapSlot(k,i){const t=S.teams;const L=t["l"+k.toLowerCase()];const s=t.s
 function tapBench(k,pid){const t=S.teams;const s=t.sel;
   if(s&&s.kind==="slot"&&s.team===k){t["l"+k.toLowerCase()][s.idx]=pid;t.sel=null;return}
   t.sel=(s&&s.kind==="bench"&&s.pid===pid)?null:{kind:"bench",team:k,pid}}
+/* fotoğraf: arka planı telefonda sil, baş-omuz hizala (model ilk kullanımda iner) */
+const PHC={p:null};
+function phLib(){return PHC.p||(PHC.p=(async()=>{
+  if(!window.ort)await new Promise((ok,no)=>{const s=document.createElement("script");s.src="vendor/ort/ort.wasm.min.js";s.onload=ok;s.onerror=()=>no(new Error("lib"));document.head.appendChild(s)});
+  ort.env.wasm.wasmPaths=new URL("vendor/ort/",location.href).href;ort.env.wasm.numThreads=1;
+  return ort.InferenceSession.create(new URL("vendor/ort/u2netp.onnx",location.href).href,{executionProviders:["wasm"]})})().catch(e=>{PHC.p=null;throw e}))}
+async function phCut(img){
+  const ses=await phLib(),N=320,iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,k=Math.min(1,900/Math.max(iw,ih)),W=Math.round(iw*k),H=Math.round(ih*k);
+  const wc=document.createElement("canvas");wc.width=W;wc.height=H;const wx=wc.getContext("2d");wx.imageSmoothingQuality="high";wx.drawImage(img,0,0,W,H);
+  const sc=document.createElement("canvas");sc.width=sc.height=N;const sx=sc.getContext("2d",{willReadFrequently:true});sx.imageSmoothingQuality="high";sx.drawImage(wc,0,0,N,N);
+  const px=sx.getImageData(0,0,N,N).data,f=new Float32Array(3*N*N);let mx=1;for(let i=0;i<px.length;i+=4)mx=Math.max(mx,px[i],px[i+1],px[i+2]);
+  const mu=[.485,.456,.406],sd=[.229,.224,.225];for(let i=0,p=0;i<N*N;i++,p+=4)for(let c=0;c<3;c++)f[c*N*N+i]=(px[p+c]/mx-mu[c])/sd[c];
+  const out=await ses.run({[ses.inputNames[0]]:new ort.Tensor("float32",f,[1,3,N,N])}),o=out[ses.outputNames[0]].data;
+  let lo=1e9,hi=-1e9;for(let i=0;i<N*N;i++){if(o[i]<lo)lo=o[i];if(o[i]>hi)hi=o[i]}
+  const md=sx.createImageData(N,N),a=new Float32Array(N*N);
+  for(let i=0;i<N*N;i++){let v=(o[i]-lo)/((hi-lo)||1);v=Math.max(0,Math.min(1,(v-.3)/.55));a[i]=v;md.data[i*4+3]=Math.round(v*255)}
+  sx.putImageData(md,0,0);wx.globalCompositeOperation="destination-in";wx.drawImage(sc,0,0,W,H);wx.globalCompositeOperation="source-over";
+  /* baş: üstten tara; en geniş yer baş, daralan yer boyun, yeniden genişleyen yer omuz */
+  const rx=W/N,ry=H/N,R=[];let y0=-1,y1=-1,bl=N,br=0,tot=0;
+  for(let y=0;y<N;y++){let n=0,s=0;for(let x=0;x<N;x++)if(a[y*N+x]>.5){n++;s+=x;if(x<bl)bl=x;if(x>br)br=x}R.push({n,c:n?s/n:0});tot+=n;if(n>=3){if(y0<0)y0=y;y1=y}}
+  if(y0<0||tot<N*N*.02)throw new Error("bos");
+  let peak=0,py=y0,val=1e9,vy=-1,found=false;
+  for(let y=y0;y<=y1;y++){const w=R[y].n*rx;
+    if(vy<0&&w>=peak){peak=w;py=y}
+    else if(w<peak*.93||vy>=0){if(w<val){val=w;vy=y}if(w>Math.max(val*1.3,peak*1.08)){found=true;break}}}
+  const hh=found?(vy-y0)*ry:0;let hw,cx;
+  if(found&&hh>peak*.8&&hh<peak*2.2){hw=peak;let s=0,n=0;for(let y=y0;y<=vy;y++){s+=R[y].c*R[y].n;n+=R[y].n}cx=s/n*rx}
+  else{hw=(br-bl+1)*rx*.45;cx=(bl+br+1)/2*rx}
+  const OW=256,OH=320,c=document.createElement("canvas");c.width=OW;c.height=OH;const g=c.getContext("2d");g.imageSmoothingQuality="high";
+  const z=OW*.47/hw,ty=24-y0*ry*z;g.drawImage(wc,OW/2-cx*z,ty,W*z,H*z);
+  const fe=Math.min(288,Math.floor(ty+y1*ry*z)),gr=g.createLinearGradient(0,fe-70,0,fe);gr.addColorStop(0,"rgba(0,0,0,1)");gr.addColorStop(1,"rgba(0,0,0,0)");
+  g.globalCompositeOperation="destination-in";g.fillStyle=gr;g.fillRect(0,0,OW,OH);
+  let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");
+  if(d.length>=240000){const c2=document.createElement("canvas");c2.width=192;c2.height=240;c2.getContext("2d").drawImage(c,0,0,192,240);d=c2.toDataURL("image/png")}
+  return d}
 async function photoData(file){
   const url=URL.createObjectURL(file);
   try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error("img"));i.src=url});
@@ -3476,11 +3515,19 @@ async function photoData(file){
 }
 async function uploadPhoto(id,file){
   if(!/^image\//.test(file.type||"image/")){toast("Lütfen bir fotoğraf seç");return}
-  S.f.phBusy=true;render(true);
-  try{const d=await photoData(file);const r=await A("admin_set_photo",{p_id:id,p_data:d},"Fotoğraf yüklendi");if(r){S.photos[id]=d}}
+  S.f.phPrev=null;S.f.phBusy=true;render(true);
+  try{const url=URL.createObjectURL(file);let d="";
+    try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error("img"));i.src=url});d=await phCut(img)}
+    catch(e){console.warn(e)}finally{URL.revokeObjectURL(url)}
+    if(d)S.f.phPrev={id,d,file};
+    else{const raw=await photoData(file);const r=await A("admin_set_photo",{p_id:id,p_data:raw},"Arka plan silinemedi, fotoğraf olduğu gibi yüklendi");if(r)S.photos[id]=raw}}
   catch(_){toast("Fotoğraf okunamadı, başka bir fotoğraf dene")}
   S.f.phBusy=false;render(true);
 }
+async function phSave(raw){const v=S.f.phPrev;if(!v||S.f.phBusy)return;S.f.phBusy=true;render(true);
+  try{const d=raw?await photoData(v.file):v.d;const r=await A("admin_set_photo",{p_id:v.id,p_data:d},"Fotoğraf yüklendi");if(r){S.photos[v.id]=d;S.f.phPrev=null}}
+  catch(_){toast("Fotoğraf yüklenemedi, tekrar dene")}
+  S.f.phBusy=false;render(true)}
 function cleanAttrs(pos,a){const o={};for(const[k,,,subs]of attrSet(pos)){for(const[sk]of subs)o[k+"_"+sk]=clamp(subVal(a,k,sk),30,95);o[k]=mainVal(o,k,pos)}return o}
 document.addEventListener("submit",async e=>{
   const f=e.target.closest("[data-form]");if(!f)return;e.preventDefault();const kind=f.dataset.form;
