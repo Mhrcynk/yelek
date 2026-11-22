@@ -4159,18 +4159,6 @@ html.dk .brand b{display:block!important;font:800 1.9rem/1 var(--display)!import
 html.dk body.tg .brand .bsub{color:#BFEBD6!important}
 html.dk .pmBtn,html.dk .gearBtn{width:44px!important;height:44px!important;background:#24165A!important}
 html.dk body.tg .pmBtn{background:#0C281B!important}
-/* alt menü: yazılı, seçili olan beyaz */
-html.dk .nav{height:68px!important;border-radius:24px!important;background:#1C1240!important;border:0!important;box-shadow:0 10px 30px rgba(0,0,0,.45)!important;padding:0 8px!important}
-html.dk .nav .in{height:52px!important;gap:0!important}
-html.dk .nav button,html.dk .nav button.ctr{flex:1 1 0!important;min-width:0!important;height:52px!important;border-radius:18px!important;padding:0 4px!important;color:var(--c-ink3)!important;position:relative}
-html.dk .nav button .ic{display:none!important}
-html.dk .nav .tl{max-width:none!important;opacity:1!important;font:600 .84rem/1 Inter,sans-serif!important;overflow:visible!important}
-html.dk .nav button[aria-current="page"],html.dk .nav button.ctr[aria-current="page"],html.dk .nav button[data-tab="iddia"][aria-current="page"]{background:#fff!important;color:#120A2A!important;box-shadow:none!important;padding:0 4px!important}
-html.dk .nav button[aria-current="page"] .tl{font-weight:800!important}
-html.dk .nav button[data-tab="iddia"]{color:var(--c-ink3)!important}
-html.dk .nav button.bdot::after{content:"";position:absolute;top:10px;right:calc(50% - 34px);width:9px;height:9px;border-radius:50%;background:#FFD400}
-html.dk body.tg .nav{background:#0C281B!important}html.dk body.tg .nav button{color:#BFEBD6!important}html.dk body.tg .nav button[aria-current="page"]{color:#063D26!important}
-html.dk .navfade{display:none!important}
 /* düz yüzeyler */
 html.dk .card,html.dk .lrow,html.dk .grow,html.dk .slide,html.dk .rth,html.dk .psh>div,html.dk .pwl2,html.dk .pmini>div,html.dk .glist2{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important}
 html.dk .card{background:#1C1240;border:0!important;border-radius:20px}
@@ -4319,3 +4307,61 @@ html.dk .mzvh h2,.onb-w{text-transform:uppercase!important}
 html.dk .vg4 button{background:#24165A}
 html.dk .vg4 button.on{background:#fff!important;color:#120A2A!important}
 .oda .oda-b{min-height:44px;display:flex;flex-direction:column;justify-content:center}
+/* Tahminler listesi */
+html.dk .iddia ul.bkl{background:none!important;padding:0!important;gap:10px;border-radius:0}
+html.dk .iddia .bk{display:flex!important;flex-direction:column;gap:10px;background:#0C281B;border:0!important;border-radius:20px;padding:14px 16px!important}
+html.dk .iddia .bk>*{grid-area:auto!important}
+.bk-h2{display:flex;align-items:center;justify-content:space-between;gap:10px}.bk-h2 b{font-size:.95rem;font-weight:800;min-width:0}
+html.dk .bk-h2 .bk-z{flex:none;font:800 .7rem/1 Inter,sans-serif;padding:6px 10px;border-radius:99px}
+html.dk .bk-z.ok{background:#00E58A!important;color:#04130C!important}html.dk .bk-z.bad{background:#4A1420!important;color:#FF9DB3!important}
+.bk-l2{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:.86rem;color:#D2F1E1}
+.bk-l2 li.ok::before{content:"✓ ";color:#00E58A;font-weight:800}.bk-l2 li.bad{color:#FF9DB3;text-decoration:line-through}
+.bk-f2{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;border-top:1px solid #1E563B;padding-top:10px}
+.bk-f2>span:first-child{display:grid;gap:3px;font-size:.82rem;color:#BFEBD6}.bk-f2 small{font-size:.75rem;color:#BFEBD6}
+.bk-p2{display:grid;justify-items:end;gap:2px}.bk-p2 small{font:700 .7rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.bk-p2 b{font:800 1.75rem/1 var(--display);color:#00E58A}.bk-p2.neg b{color:#FF9DB3}
+html.dk .iddia .bk-r{display:flex;gap:8px;flex-wrap:wrap}
+html.dk .iddia .bk-r .bk-b{flex:1 1 auto;background:#133B29!important;border:0!important;border-radius:12px!important;color:#fff!important;font:700 .82rem/1 Inter,sans-serif}
+html.dk .iddia .bk-r .bk-b.on{background:#00E58A!important;color:#04130C!important}
+/* İstatistikler özeti */
+.ist-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.ist-t{display:grid;gap:6px;text-align:left;padding:14px;border:0;border-radius:18px;background:#1C1240;color:#fff;font:inherit;cursor:pointer;min-width:0}
+.ist-t small{font:800 .72rem/1.15 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--c-ink3)}
+.ist-t b{font:800 1.75rem/1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ist-t span{font-size:.82rem;color:var(--c-ink3)}
+.ist-t.y{background:#3A2E00}.ist-t.y small{color:#FFD400}.ist-t.y span{color:#E9DDA6}
+.ist-t.g{background:#0C281B}.ist-t.g small{color:#00E58A}.ist-t.g span{color:#BFEBD6}
+.ist-l{padding:2px 16px!important;display:block!important}
+.ist-r{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;border:0;border-top:1px solid var(--c-line);background:none;color:#fff;font:inherit;text-align:left;cursor:pointer;padding:0}
+.ist-r:first-child{border-top:0}.ist-r b{font-size:.95rem;font-weight:700;flex:none}.ist-r span{flex:1;min-width:0;text-align:right;font-size:.8rem;color:var(--c-ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ist-r i{flex:none;font-style:normal;color:var(--c-ink3)}
+html.dk .sx3b{display:flex!important;gap:6px;overflow-x:auto;scrollbar-width:none}html.dk .sx3b::-webkit-scrollbar{display:none}
+html.dk .sx3b button{flex:1 0 auto;padding:0 12px;min-height:44px;border:0;background:#1C1240}html.dk .sx3b button.bk{display:inline-flex;align-items:center;background:none;color:#FF9FD0}
+/* Maç detayı: maçın adamı ve fiyasko kutuları */
+.mdk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 12px}
+.mdk-t{display:grid;gap:6px;text-align:left;padding:14px;border:0;border-radius:18px;background:#1C1240;color:#fff;font:inherit;min-width:0}button.mdk-t{cursor:pointer}
+.mdk-t small{font:800 .72rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--c-ink3)}
+.mdk-t b{font:800 1.75rem/1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mdk-t span{font-size:.82rem;color:var(--c-ink3)}
+.mdk-t.y{background:#3A2E00}.mdk-t.y small{color:#FFD400}.mdk-t.y span{color:#E9DDA6}
+/* Fikstür */
+html.dk .mzfx{border-radius:16px}html.dk .mzfx.nx{background:#24165A!important;border-radius:22px;padding:16px;box-shadow:none!important}
+html.dk body[data-fs] .mzfx.nx{background:#24165A!important;box-shadow:none!important}
+.bk-f2>span:first-child{display:block!important;line-height:1.4}.bk-f2 small{display:block}
+/* Kartlar: ızgara kutuları */
+html.dk .mzc2{height:auto!important;min-height:150px;background:#1C1240!important;border-radius:18px;padding:10px 8px 12px!important;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff!important;filter:none!important;opacity:1!important;box-shadow:none!important}
+html.dk .mzc2.hi{background:#3A2E00!important}
+html.dk .mzc2 .mzc-o{align-self:flex-start;display:grid;gap:2px;padding-left:4px}
+html.dk .mzc2 .mzc-o b{font:800 1.75rem/.95 var(--display)}html.dk .mzc2.hi .mzc-o b{color:#FFD400}
+html.dk .mzc2 .mzc-o small{font:700 .7rem/1 Inter,sans-serif;color:var(--c-ink3)}html.dk .mzc2.hi .mzc-o small{color:#E9DDA6}
+html.dk .mzc2 .mzc-a{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;background:#fff;color:#120A2A;display:grid;place-items:center;font:800 1.05rem/1 Inter,sans-serif;margin-top:-14px}
+html.dk .mzc2.hi .mzc-a{background:#FFD400;color:#2A1F00}
+html.dk .mzc2 .mzc-a img{position:static!important;width:100%!important;height:100%!important;object-fit:cover;object-position:center 15%;-webkit-mask-image:none!important;mask-image:none!important}
+html.dk .mzc2 .mzc-n{position:static!important;font:700 .82rem/1.15 Inter,sans-serif!important;text-align:center;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:none!important}
+html.dk .mzc2 .mzc-s{font-size:.72rem;color:var(--c-ink3)}html.dk .mzc2.hi .mzc-s{color:#E9DDA6}html.dk .mzc2 .mzc-s.w{color:#FF9DB3}
+html.dk .mzc2.me{box-shadow:inset 0 0 0 2px #fff!important}
+/* Oyuncu kartı başlığı */
+html.dk .pv-h{background:#24165A;border-radius:22px;padding:14px;margin-top:0}
+/* Yönetici: maçı yönet */
+html.dk .mg-h{display:flex;align-items:center;justify-content:space-between;flex-direction:row-reverse;gap:10px}
+html.dk .mg-h span{flex:none;font:800 .7rem/1 Inter,sans-serif!important;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:#FFD400;color:#2A1F00!important}
+html.dk .mg-h h2{font:800 1.75rem/1 var(--display)!important}
