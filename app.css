@@ -4463,3 +4463,15 @@ html.dk .iosband{display:block;position:fixed;top:0;left:0;right:0;height:max(12
 html.dk body.tg .iosband{background:#05160E}
 /* alt menü: yazının alt uzantısı (g, ş) kesilmesin */
 html.dk .nav .tl{line-height:1.35!important;padding-bottom:1px}
+/* ödül: haftanın tahmin kralı yelek giymez */
+.ymf{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:20px;background:#3A2E00;color:#fff;padding:12px 16px;margin:0 0 12px;font:inherit;cursor:pointer}
+.ymf .krl-tac{flex:none;width:40px;height:26px;position:static;transform:none}
+.ymf span{flex:1;min-width:0;display:grid;gap:3px}.ymf b{font-size:.95rem;font-weight:800}.ymf small{font-size:.8rem;color:#E9DDA6}.ymf i{flex:none;font-style:normal;color:#E9DDA6}
+.krl-o{display:inline-flex;align-items:center;gap:8px;margin:10px auto 0;padding:8px 14px;border-radius:99px;background:#FFD400;color:#1A1300;font:700 .86rem/1.2 Inter,sans-serif}
+.krl-o b{font:800 .7rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:4px 7px;border-radius:99px;background:#1A1300;color:#FFD400}
+.kro{display:flex;align-items:center;gap:10px;margin:0;padding:10px 14px;border-radius:16px;background:#0C281B;font-size:.82rem;line-height:1.35;color:#BFEBD6}
+.kro .krl-tac{flex:none;width:30px;height:20px;position:static;transform:none}.kro span{display:grid;gap:2px}.kro b{color:#FFD400;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.yp-odl{display:flex;align-items:center;justify-content:center;gap:10px;font:700 15px/1.2 Inter,sans-serif;color:#fff}
+.yp-odl b{font:800 11px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:6px 9px;border-radius:99px;background:#FFD400;color:#1A1300}
+html.dk .krl .krl-o{color:#1A1300!important}
+html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}

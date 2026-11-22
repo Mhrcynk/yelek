@@ -933,7 +933,7 @@ function ypPost(o){const wk=o.wkH||(o.wk?`<div class="yp-wk" data-b>${esc(TRU(o.
   return `<div class="yp${o.c?" yp-"+o.c:""}" lang="tr">${o.rays===false?"":YP_RAYS}${o.bg||""}
 <div class="yp-hd" data-b><div class="yp-hdl"><div class="yp-ey${ic?" yp-eyi":""}" style="font-size:${ypFit(ey,12,tw-(ic?36:0),{w:700,fam:INF,ls:.22})}px">${ic}<span>${esc(ey)}</span></div><div class="yp-ti" style="font-size:${ypFit(ti,o.tiMax||54,tw,{ls:.01})}px">${esc(ti)}</div></div>${wk}</div>
 <div class="yp-hero${o.hc?" yp-"+o.hc:""}">${o.hero||""}</div>${o.pn?`<div class="yp-pn" data-b>${o.pn}</div>`:""}
-<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div>${o.c==="t"?`<div class="yp-tem" data-b><div><b>PARA YOK</b><b>BAHİS DEĞİL</b><span>Sadece keyfine oynanan bir tahmin oyunu</span></div><small>Sikke temsilidir; gerçek para değildir, satın alınamaz, ödül karşılığı yoktur.</small></div>`:""}</div>`}
+<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div>${o.c==="t"?`<div class="yp-tem" data-b><div><b>PARA YOK</b><b>BAHİS DEĞİL</b><span>Sadece keyfine oynanan bir tahmin oyunu</span></div><small>Sikke temsilidir; gerçek para değildir, satın alınamaz, parasal karşılığı yoktur.</small></div>`:""}</div>`}
 const ypBdg=(b,ic)=>`<div class="yp-bdg" data-b>${ic||`<strong style="font-size:${ypFit(TRU(b[0]),42,72)}px">${esc(TRU(b[0]))}</strong>`}<small style="font-size:${ypFit(TRU(b[1]),13,80,{ls:.1})}px">${esc(TRU(b[1]))}</small></div>`;
 const ypSts=L=>{const w=(476-10*(L.length-1))/L.length-24;return `<div class="yp-sts">${L.map(([v,l,on])=>`<div class="${on?"yp-on":""}"><strong style="font-size:${ypFit(TRU(v),32,w)}px">${esc(TRU(v))}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`};
 const ypBig=(nm,age)=>{nm=TRU(nm);return `<div class="yp-big" style="font-size:${ypFit(nm+(age!=null?"    ("+age+")":""),44,476,{ls:.01})}px">${esc(nm)}${age!=null?`<span>(${age})</span>`:""}</div>`};
@@ -1051,7 +1051,8 @@ function betBadges(pid){const F=BET.feed;if(!F)return[];const C=F.rows.filter(c=
   if(C.some(c=>c.z==="kazandi"&&c.odd>=5))out.push(["🎯","Sürpriz avcısı"]);
   let st=0,mx=0;for(const c of C){if(c.z==="kazandi"){st++;mx=Math.max(mx,st)}else if(c.z==="kaybetti")st=0}if(mx>=3)out.push(["🔥",mx+" tahmin üst üste"]);
   if(C.some(c=>c.z==="kazandi"&&(c.legs||[]).length>=3))out.push(["🧩","Kombine ustası"]);
-  const lm=fin().slice(-1)[0];if(lm){const net={};F.rows.filter(c=>c.m===lm.id&&c.z!=="acik").forEach(c=>net[c.p]=(net[c.p]||0)+c.py-c.st);const best=Object.entries(net).sort((a,b)=>b[1]-a[1])[0];if(best&&best[0]===pid&&best[1]>0)out.push(["👑","Haftanın kralı"])}
+  const lm=fin().slice(-1)[0];if(lm){const net={};F.rows.filter(c=>c.m===lm.id&&c.z!=="acik").forEach(c=>net[c.p]=(net[c.p]||0)+c.py-c.st);const best=Object.entries(net).sort((a,b)=>b[1]-a[1])[0];if(best&&best[0]===pid&&best[1]>0&&!(BET.kral&&BET.kral.hist))out.push(["👑","Haftanın kralı"])}
+  {const H=(BET.kral&&BET.kral.hist||[]).filter(x=>x.p===pid).length;if(H)out.push(["👑",H>1?H+" kez haftanın tahmin kralı":"Haftanın tahmin kralı"]);const om=typeof openMatch==="function"?openMatch():null;if(om&&yelekMuaf(om)===pid)out.push(["🦺","Bu maçta yelek giymiyor"])}
   return out}
 const betCopyOk=b=>{const m=betNext();return m&&b.m===m.id&&BET.board[m.id]&&BET.board[m.id].open};
 // düello: iki oyuncunun net kazancı
@@ -1460,7 +1461,7 @@ function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];
 const openMatch=()=>S.matches.filter(m=>!mDone(m)&&!isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b))[0];
 function viewMac(){
   if(!S.players.length)return `<section class="card"><div class="empty emp2">${empIc("kisi","pink")}<h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
-  const om=openMatch();let h=om?hero(om)+matchBody(om):(S.admin?createHero():noMatchHero());
+  const om=openMatch();let h=om?hero(om)+muafKart(om)+matchBody(om):(S.admin?createHero():noMatchHero());
   return h;
 }
 function lastCard(m,...r){return inM(m,()=>_lastCard(m,...r))}
@@ -4039,9 +4040,10 @@ function viewIddia(){
       h+=R.length?`<ul class="card bkl">${R.map(b=>betRow(b,false,true)).join("")}</ul>`:`<div class="card emp2">${empIc("kombine","gold")}<p>Henüz görünen arkadaş tahmini yok.</p></div>`}}
   else{const T=BET.tbl;betLoad("feed");const rs=S.f.brs==="sezon"?"sezon":"hafta";
     h+=`<div class="mzseg brs" role="group" aria-label="Sıralama">${[["hafta","Bu hafta"],["sezon","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="brs" data-v="${k}" class="${rs===k?"on":""}" aria-pressed="${rs===k}">${l}</button>`).join("")}</div>`;
-    if(rs==="hafta"&&BET.kral&&P(BET.kral.p))h+=`<button class="krb" data-act="kralOpen">${KRL_TAC}<span><small>Geçen haftanın kralı</small><b>${esc(nameOf(BET.kral.p))}</b></span><em class="num">+${fJ(BET.kral.net)}</em><i aria-hidden="true">›</i></button>`;
+    if(rs==="hafta"&&BET.kral&&P(BET.kral.p))h+=`<button class="krb" data-act="kralOpen">${KRL_TAC}<span><small>Geçen haftanın kralı · ödülü: yelek giymiyor</small><b>${esc(nameOf(BET.kral.p))}</b></span><em class="num">+${fJ(BET.kral.net)}</em><i aria-hidden="true">›</i></button>`;
     if(!T)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
     else if(rs==="hafta"){const R=betRankW(T);const W=(T.wrows||[]);const nz=W.filter(r=>P(r.p)&&!(r.n>0||r.open>0)).length;
+      h+=`<p class="kro">${KRL_TAC}<span><b>Bu haftanın ödülü</b>Haftayı lider bitiren, gelecek maçta yelek giymez.</span></p>`;
       h+=R.length?betRankHtml(R,me,r=>`${fJ(r.bal)} sikke · ${r.won}/${r.n} tuttu${r.open?` · ${fJ(r.open)} açıkta`:""}`,T.wk):`<div class="card emp2">${empIc("podyum","gold")}<p>Bu haftanın yarışı ilk tahminle başlar. İlk tahmini sen yap.</p></div>`;
       if(nz&&R.length)h+=`<p class="muted small bxn">${nz} kişi bu hafta henüz tahmin yapmadı.</p>`;}
     else{const R=betRank(T);const nz=T.rows.filter(r=>P(r.p)&&!(r.n>0||r.open>0)).length;
@@ -4051,7 +4053,7 @@ function viewIddia(){
   return h+`</div>`}
 function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board[m.id];const row=BET.tbl&&me?(BET.tbl.wrows||[]).find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
   const R=sum?[["Başlangıç",sum.start||5000,"Her hafta herkese"],["Maç primi",sum.oyn||0,"Geçen maçtan: oynadıysan 200 · notun çok iyi +300, iyi +200, orta +100 · maçın adamı +300"],["Oy verme",sum.oy||0,"Geçen maçta oy verdiysen +200"],...(sum.kurt?[["Kurtarma",sum.kurt,"Bakiye 100'ün altına düşünce"]]:[]),["Tahminler",sum.net,"Net kazanç ya da kayıp"],["Açık tahminde",-sum.open,"Maç bitince sonuçlanır"]]:[];
-  const K=[["kombine","gold","Bir tahmine 1–4 seçim koyarsın. Birden fazlaysa kombine olur, oranlar çarpılır, hepsi tutarsa kazanırsın."],["simsek","gold","Handikap: bir takıma kâğıt üstünde gol avansı verilir. \"-1,5\" yazan takım en az 2 farkla kazanırsa tutar. \"+1,5\" yazan takım kazanır, berabere kalır ya da 1 farkla kaybederse tutar. 2,5'te bu sınır 3 fark olur."],["yildiz","gold","Skor tahmini: iki takımın golünü seçersin, skor tam tutarsa kazanırsın. Oranı yüksektir."],["kombine","cyan","Aynı şeyi iki kez oynatmamak için bazı seçimler birlikte konamaz: maç sonucu, handikap ve fark birbirleriyle; skor tahmini ise oyuncu seçimleri dışındaki hiçbir seçimle aynı tahmine girmez."],["takvim","cyan","Tahminler kadrolar açıklanınca açılır, maçtan 1 saat önce kapanır. Yaptığın tahmini ilk 5 dakika içinde geri alabilirsin."],["kalkan","green","Bir tahmine en az 10 sikke oynanır, üst sınır yok: istersen bütün haftalık bakiyeni tek tahmine koyabilirsin. Kendi adına oyuncu tahmini yapılamaz."],["podyum","gold","Her hafta ayrı bir yarış: pazartesi herkes 5.000 sikkeyle başlar, kalan sikke ertesi haftaya geçmez. Haftalık sıralama o haftanın tahmin kazancına göre. Bütün haftaların tahmin kazançları sezon yarışında toplanır. Sıralamaya sadece tahmin yapanlar girer."],["kupa","gold","Haftanın bütün tahminleri sonuçlanınca en çok kazanan haftanın tahmin kralı ilan edilir."],["yildiz","pink","Maç primi ve oy bonusu maçtan sonra gelir, bir sonraki haftanın 5.000 sikkesine eklenir; ikisi birlikte haftada en fazla 1.000 sikke eder. Sıralamayı etkilemez, sadece oynayacak sikken artar."]];
+  const K=[["kombine","gold","Bir tahmine 1–4 seçim koyarsın. Birden fazlaysa kombine olur, oranlar çarpılır, hepsi tutarsa kazanırsın."],["simsek","gold","Handikap: bir takıma kâğıt üstünde gol avansı verilir. \"-1,5\" yazan takım en az 2 farkla kazanırsa tutar. \"+1,5\" yazan takım kazanır, berabere kalır ya da 1 farkla kaybederse tutar. 2,5'te bu sınır 3 fark olur."],["yildiz","gold","Skor tahmini: iki takımın golünü seçersin, skor tam tutarsa kazanırsın. Oranı yüksektir."],["kombine","cyan","Aynı şeyi iki kez oynatmamak için bazı seçimler birlikte konamaz: maç sonucu, handikap ve fark birbirleriyle; skor tahmini ise oyuncu seçimleri dışındaki hiçbir seçimle aynı tahmine girmez."],["takvim","cyan","Tahminler kadrolar açıklanınca açılır, maçtan 1 saat önce kapanır. Yaptığın tahmini ilk 5 dakika içinde geri alabilirsin."],["kalkan","green","Bir tahmine en az 10 sikke oynanır, üst sınır yok: istersen bütün haftalık bakiyeni tek tahmine koyabilirsin. Kendi adına oyuncu tahmini yapılamaz."],["podyum","gold","Her hafta ayrı bir yarış: pazartesi herkes 5.000 sikkeyle başlar, kalan sikke ertesi haftaya geçmez. Haftalık sıralama o haftanın tahmin kazancına göre. Bütün haftaların tahmin kazançları sezon yarışında toplanır. Sıralamaya sadece tahmin yapanlar girer."],["kupa","gold","Haftanın bütün tahminleri sonuçlanınca en çok kazanan haftanın tahmin kralı ilan edilir. Ödülü: bir sonraki maçta yelek giymez."],["yildiz","pink","Maç primi ve oy bonusu maçtan sonra gelir, bir sonraki haftanın 5.000 sikkesine eklenir; ikisi birlikte haftada en fazla 1.000 sikke eder. Sıralamayı etkilemez, sadece oynayacak sikken artar."]];
   return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>Sikke ve kurallar</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
   ${sum?`<div class="bif">${R.map(([l,v,d])=>`<div class="bif-r"><span><b>${l}</b><small>${d}</small></span><em class="num ${v<0?"neg":""}">${v>0&&l!=="Başlangıç"?"+":""}${fJ(v)}</em></div>`).join("")}<div class="bif-r t"><span><b>Bu haftaki bakiyen</b></span><em class="num">${fJ(sum.bal)}</em></div></div>`:""}
   <div class="bdef"><label><span>Varsayılan tahmin tutarı</span><input id="betDef" type="number" inputmode="numeric" min="10" step="10" value="${esc(betDefAmt())}" placeholder="Boş"></label><button class="btn sm" data-act="betDefAmt">Kaydet</button></div>
@@ -4060,7 +4062,7 @@ function sheetBetInfo(){const me=myPid();const m=betNext();const bd=m&&BET.board
     <p>Sikke, yalnızca eğlence için kullanılan sanal bir puandır. Gerçek para değildir, herhangi bir parasal değeri yoktur.</p>
     <ul><li>Sikke satın alınamaz, satılamaz, başkasına devredilemez ve paraya çevrilemez.</li>
     <li>Tahmin oyununa katılmak ücretsizdir; hiçbir aşamada ödeme istenmez.</li>
-    <li>Kazanılan sikkelerin karşılığında para, hediye, ödül ya da herhangi bir menfaat verilmez.</li>
+    <li>Kazanılan sikkelerin karşılığında para, hediye ya da parasal değeri olan herhangi bir ödül verilmez. Haftanın tahmin kralının tek kazancı, bir sonraki maçta yelek giymemektir.</li>
     <li>Bu oyun bir bahis, şans oyunu ya da kumar hizmeti değildir. Tahminler arkadaşlar arasında sıralama ve sohbet konusu olsun diye vardır.</li></ul>
     <p>Sikkeler her hafta başında yenilenir ve uygulama dışında hiçbir yerde geçerli değildir.</p></section>`}
 // tahmin verisini cihazda sakla: sekme ilk açılışta da anında dolu gelsin
@@ -4068,8 +4070,12 @@ function betSave(){try{const m=betNext();const me=myPid();localStorage.setItem("
 function betRestore(){try{const d=JSON.parse(localStorage.getItem("y_bet_"+(TID))||"null");if(!d)return;Object.assign(BET.board,d.b||{});if(!BET.tbl)BET.tbl=d.t||null;Object.assign(BET.lists,d.l||{});if(!BET.kings)BET.kings=d.k||null}catch(_){}}
 // uygulama açılınca arka planda yükle
 const kralSeen=()=>{try{if(BET.kral)LS.set("y_kral_"+TID,BET.kral.wk)}catch(_){}};
+// ödül: haftanın tahmin kralı, bir sonraki haftanın maçında yelek giymez
+function yelekMuaf(m){const k=BET.kral;if(!k||!k.wk||!m||!P(k.p))return null;const d=parseYmd(String(k.wk).slice(0,10));d.setDate(d.getDate()+7);const w=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return betMon(m.date)===w?k.p:null}
+function muafKart(m){if(!isMember()||S.fol)return"";const id=yelekMuaf(m);if(!id||!plAll(m).includes(id))return"";const me=id===myPid();
+  return `<button class="ymf" data-act="kralOpen">${KRL_TAC}<span><b>${me?"Bu maçta yelek giymiyorsun":esc(firstName(nameOf(id)))+" bu maçta yelek giymiyor"}</b><small>Geçen haftanın tahmin kralının ödülü</small></span><i aria-hidden="true">›</i></button>`}
 function kralLoad(open){return rpc("bet_kral",{}).then(r=>{if(!r||!r.ok)return;BET.kral=r.wk&&P(r.p)?r:null;if(!BET.kral)return;
-  if(open||(LS.get("y_kral_"+TID)!==BET.kral.wk&&!S.sheet&&!S._route&&!S.story)){S.sheet={type:"kral"};render(true)}else if(S.tab==="iddia")render(true)}).catch(()=>{})}
+  if(open||(LS.get("y_kral_"+TID)!==BET.kral.wk&&!S.sheet&&!S._route&&!S.story)){S.sheet={type:"kral"};render(true)}else if(S.tab==="iddia"||S.tab==="mac")render(true)}).catch(()=>{})}
 const KRL_TAC='<svg class="krl-tac" viewBox="0 0 64 40" aria-hidden="true"><path d="M6 34 2 10l16 12L32 3l14 19 16-12-4 24z" fill="#FFD400" stroke="#B8860B" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="3.5" r="3.5" fill="#FF3EA5"/><circle cx="2.5" cy="10" r="2.5" fill="#12C46B"/><circle cx="61.5" cy="10" r="2.5" fill="#12C46B"/></svg>';
 function sheetKral(){const k=BET.kral;if(!k)return"";const T=(k.top||[]).filter(r=>P(r.p));const w=T.find(r=>r.p===k.p)||{p:k.p,net:k.net,n:0,won:0};const ph=photoOf(w.p);const me=myPid()===w.p;
   const C=["#FFD400","#12C46B","#FF3EA5","#3EC6FF","#B9A8FF"];const cf=Array.from({length:22},(_,i)=>`<i style="left:${(i*37+11)%100}%;background:${C[i%5]};animation-delay:${((i*53)%24)/10}s;animation-duration:${2.6+((i*29)%14)/10}s"></i>`).join("");
@@ -4077,12 +4083,12 @@ function sheetKral(){const k=BET.kral;if(!k)return"";const T=(k.top||[]).filter(
   return `<div class="krl"><div class="krl-cf" aria-hidden="true">${cf}</div><div class="eyebrow">Haftalık tahmin yarışı</div>
   <div class="krl-av">${KRL_TAC}${ph?`<img src="${esc(ph)}" alt="">`:`<span>${esc(initials(nameOf(w.p)))}</span>`}</div>
   <h2>${esc(nameOf(w.p))}</h2><p class="krl-t">${me?"Bu haftanın tahmin kralı sensin!":"Haftanın tahmin kralı"}</p>
-  <div class="krl-n num">+${fJ(k.net)}<small>sikke kazanç</small></div>${w.n?`<p class="muted small">${w.n} tahmininden ${w.won} tanesi tuttu</p>`:""}
+  <div class="krl-n num">+${fJ(k.net)}<small>sikke kazanç</small></div><p class="krl-o"><b>Ödül</b>${me?"Gelecek maçta yelek giymiyorsun":"Gelecek maçta yelek giymiyor"}</p>${w.n?`<p class="muted small">${w.n} tahmininden ${w.won} tanesi tuttu</p>`:""}
   ${rest.length?`<ol class="krl-l">${rest.map((r,i)=>`<li><b>${i+2}</b><span>${esc(shortName(nameOf(r.p)))}</span><em class="num ${r.net<0?"neg":""}">${r.net>0?"+":""}${fJ(r.net)}</em></li>`).join("")}</ol>`:""}
   <div class="krl-b"><button class="btn" data-act="kralShare">${ICON.share||""} Paylaş</button><button class="btn primary" data-act="kralOk">Tamam</button></div></div>`}
 function ypThafta(){if(!isMember())return null;const k=BET.kral;if(!k){kralLoad();return null}const L=(k.top||[]).filter(r=>P(r.p)).slice(0,3);if(!L.length)return null;
-  const html=ypPost({c:"t",ey:"Haftalık yarış · Tahmin",ti:"Haftanın tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:"sikke · "+r.won+"/"+r.n+" tuttu"}))),ft:"Her hafta 5.000 sikkeyle yeni yarış"});
-  return{html,cap:`Haftanın tahmin kralı: ${nameOf(k.p)} 👑 +${fJ(k.net)} sikke\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)).join("\n")}\n${HT()} #tahmin`,name:"haftanin-tahmin-krali"}}
+  const html=ypPost({c:"t",ey:"Haftalık yarış · Tahmin",ti:"Haftanın tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:"sikke · "+r.won+"/"+r.n+" tuttu"}))),pn:`<div class="yp-odl"><b>Ödül</b><span>${esc(firstName(nameOf(k.p)))} gelecek maçta yelek giymiyor</span></div>`,ft:"Her hafta 5.000 sikkeyle yeni yarış"});
+  return{html,cap:`Haftanın tahmin kralı: ${nameOf(k.p)} 👑 +${fJ(k.net)} sikke\nÖdülü: gelecek maçta yelek giymiyor\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)).join("\n")}\n${HT()} #tahmin`,name:"haftanin-tahmin-krali"}}
 function betPrefetch(){if(!isMember()||S.fol)return;betRestore();kralLoad();const m=betNext();if(m)betLoad("board",m.id);betLoad("tbl");betLoad("feed");betLoad("notes");const me=myPid();if(me)betLoad("list",me)}
 function betFind(id){if(!id)return null;const L=[BET.feed,...Object.values(BET.lists||{})];for(const x of L){const c=x&&x.rows&&x.rows.find(r=>r.id===id);if(c)return c}return null}
 function betMini(id){const c=betFind(id);if(!c){betLoad("feed");return""}const L=c.legs||[];const [z,cl]=BET_ST[c.z]||["",""];
