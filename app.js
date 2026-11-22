@@ -1632,9 +1632,6 @@ function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=e
 // Oylama: oyuncular tek tek gelir; sonda maçın adamı ("çok iyi" dediklerinden) ve fiyasko ("kötü" dediklerinden, isteğe bağlı) seçilir.
 function voteList(m,me){const oth=k=>plOf(m,k).filter(id=>id!==me);return[...oth("A"),...oth("B")]}
 function voteStats(m,id,side){
-  if(S.f.vt&&S.f.vt.demo){let h=7;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))%100003;const r=n=>{h=(h*9301+49297)%233280;return h/233280*n};const us=side==="A"?9:7,th=side==="A"?7:9;
-    const T=[[us+"–"+th,us>th?"Kazandı":"Kaybetti"],[Math.floor(r(4)),"Gol"],[Math.floor(r(3)),"Asist"]];
-    return `<div class="vstt">${T.map(([v,l])=>`<span><b class="num">${v}</b><small>${l}</small></span>`).join("")}</div><p class="vst0">Deneme: bu rakamlar uydurma.</p>`}
   const fin=m.state==="bitti"&&m.score_a!=null;const o=(m.stats||{})[id]||{};const T=[];
   if(fin){const us=side==="A"?+m.score_a:+m.score_b,th=side==="A"?+m.score_b:+m.score_a;T.push([us+"–"+th,us>th?"Kazandı":us<th?"Kaybetti":"Berabere"],[+o.g||0,"Gol"],[+o.a||0,"Asist"]);
     if(+o.cl)T.push([+o.cl,"Çizgiden"]);if(+o.ps)T.push([+o.ps,"Pen. kurtardı"]);if(+o.og)T.push([+o.og,"Kendi kalesine"]);if(+o.pm)T.push([+o.pm,"Pen. kaçırdı"])}
@@ -1644,7 +1641,7 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
   const n1=all.filter(id=>v[id]===1).length,n4=all.filter(id=>v[id]===4).length,dn=all.filter(id=>v[id]).length;
   if(!(vt.i>=0&&vt.i<all.length))vt.i=0;const son=!!vt.son&&dn===all.length;
   const seg=`<div class="vsg" aria-hidden="true">${all.map((id,i)=>`<i class="${v[id]?"ok":""}${!son&&i===vt.i?" on":""}"></i>`).join("")}</div>`;
-  const head=r=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyunu ver":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${vt.demo?"DENEME · kaydedilmez · ":""}${r}</small></div></div>${seg}`;
+  const head=r=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyunu ver":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${r}</small></div></div>${seg}`;
   const tile=(id,act,on)=>{const p=P(id);return `<button class="vtl${on?" on":""}" data-act="${act}" data-p="${esc(id)}" aria-pressed="${on}">${p?avatar(p):""}<b>${esc(shortName(nameOf(id)))}</b></button>`};
   if(son){const c1=all.filter(id=>v[id]===1),c4=all.filter(id=>v[id]===4);if(vt.motm&&!c1.includes(vt.motm))vt.motm="";if(vt.fiy&&!c4.includes(vt.fiy))vt.fiy="";
     const need=!c1.length?"Önce birine \"çok iyi\" de":!c4.length?"Önce birine \"kötü\" de":!vt.motm?"Önce maçın adamını seç":!vt.fiy?"Önce fiyaskoyu seç":"";const cnt=[1,2,3,4].map(k=>all.filter(id=>v[id]===k).length);
@@ -1658,8 +1655,8 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
   return `${head(`${vt.i+1} / ${all.length} · kimin ne verdiği gizli`)}
     <div class="vpc">${p?avatar(p):""}<h3>${esc(nameOf(id))}</h3><p>${tDot(side)}${esc(TEAM[side])}${p&&!p.guest?" · "+esc(EPOS[eposOf(p)]?.[1]||""):" · Misafir"}</p>${voteStats(m,id,side)}</div>
     <p class="vq2">${esc(firstName(nameOf(id)))} bu maçta nasıldı?</p>
-    <div class="vg4">${[1,2,3,4].map(k=>{const on=cur===k;return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}">${VL[k-1]}</button>`}).join("")}</div>
-    <p class="vhint">Şimdiye kadar ${n1} çok iyi, ${n4} kötü</p>
+    <div class="vg4">${[1,2,3,4].map(k=>{const on=cur===k;const dol=!on&&((k===1&&n1>=3)||(k===4&&n4>=3));return `<button class="p${k}${on?" on":""}"${dol?" disabled":""} data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}">${VL[k-1]}</button>`}).join("")}</div>
+    <p class="vhint">En fazla 3 çok iyi ve 3 kötü verebilirsin · şimdiye kadar ${n1} çok iyi, ${n4} kötü</p>
     <div class="vnav"><button class="btn" data-act="vBack"${vt.i===0?" disabled":""}>Geri</button>${cur?`<button class="btn primary" data-act="vNext">${dn===all.length?"Son adıma geç":"İleri"}</button>`:""}</div>`}
 function sheetVdet(){const d=S.f.vd;const m=d&&S.matches.find(x=>x.id===d.mid);if(!m||!S.admin)return"";const pl=plAll(m);const sel=d.sel||pl[0];const dir=d.dir||"f";
   const R=(d.rows||[]).filter(r=>dir==="f"?r.f===sel:r.t===sel).sort((a,b)=>a.v-b.v);const oth=r=>dir==="f"?r.t:r.f;const c=[1,2,3,4].map(k=>R.filter(r=>r.v===k).length);
@@ -1712,7 +1709,6 @@ function matchBody(m){
     h+=`<details class="card kdd" id="kadrolar"><summary><span class="kdd-h"><b class="hic">${dIcon("yelek","pink",26)}Kadrolar</b><em><span class="c">Dizilişi gör</span><span class="o">Kapat</span></em></span><span class="kdd-n"><span>${tDot("A")}${nm("A")}</span><span>${tDot("B")}${nm("B")}</span></span></summary>${teamsView(m,true)}</details>`}
     if(!ended)h+=preview(m);
     if(S.admin)h+=finishCard(m);
-    if(S.session&&S.session.user?.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273"&&myPid()&&plAll(m).includes(myPid()))h+=`<button class="btn ghost block vdemo" data-act="voteDemo" data-id="${esc(m.id)}">Oylamayı dene · sadece sen görürsün, kaydedilmez</button>`;
   }
   return h;
 }
@@ -3395,14 +3391,13 @@ document.addEventListener("click",async e=>{
       if(voter!==myPid()&&S.admin){const r=await A("admin_votes",{p_match:id});if(r){for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v;const pk=(r.picks||[]).find(x=>x.f===voter);if(pk){motm=pk.m||"";fiy=pk.y||""}}}
       else if(S.admin&&!(S.vst[id]&&S.vst[id].mine)){const r=await A("admin_votes",{p_match:id});if(r)for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v}if(voter===myPid()&&S.vst[id]&&S.vst[id].pick){motm=S.vst[id].pick.motm||"";fiy=S.vst[id].pick.fiy||""}
       const all=voteList(m,voter);const first=all.findIndex(x=>!v[x]);S.f.vt={mid:id,voter,v,motm,fiy,i:first<0?0:first,son:first<0&&all.length>0};S.sheet={type:"vote",mid:id};render(true);break}
-    case"voteDemo":{const m=S.matches.find(x=>x.id===id);const me=myPid();if(!m||!me)break;S.f.vt={mid:id,voter:me,v:{},motm:"",fiy:"",i:0,son:false,demo:true};S.sheet={type:"vote",mid:id};render(true);break}
     case"vPick":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const p=el.dataset.p,k=+el.dataset.v;vt.v[p]=k;if(vt.motm===p&&k!==1)vt.motm="";if(vt.fiy===p&&k!==4)vt.fiy="";
       render(true);break}
     case"vNext":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const all=voteList(m,vt.voter);if(all.every(x=>vt.v[x]))vt.son=true;else if(vt.i<all.length-1)vt.i++;else{const q=all.findIndex(x=>!vt.v[x]);if(q>=0)vt.i=q}render(true);break}
     case"vBack":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;if(vt.son){vt.son=false;vt.i=voteList(m,vt.voter).length-1}else if(vt.i>0)vt.i--;render(true);break}
     case"vMotm":{const vt=S.f.vt;if(!vt)break;vt.motm=vt.motm===el.dataset.p?"":el.dataset.p;render(true);break}
     case"vFiy":{const vt=S.f.vt;if(!vt)break;vt.fiy=vt.fiy===el.dataset.p?"":el.dataset.p;render(true);break}
-    case"vSend":{const vt=S.f.vt;if(!vt)break;if(vt.demo){S.f.vt=null;S.sheet=null;render(true);toast("Deneme bitti · maçın adamı "+firstName(nameOf(vt.motm))+", fiyasko "+firstName(nameOf(vt.fiy))+". Hiçbir şey kaydedilmedi.");break}const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v,p_motm:vt.motm||null,p_fiy:vt.fiy||null},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
+    case"vSend":{const vt=S.f.vt;if(!vt)break;const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v,p_motm:vt.motm||null,p_fiy:vt.fiy||null},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
     case"vDet":{const r=await A("admin_votes",{p_match:id});if(!r)break;S.f.vd={mid:id,rows:r.rows||[],dir:"f",sel:plAll(S.matches.find(x=>x.id===id)||{}).includes(myPid())?myPid():null};S.sheet={type:"vdet",mid:id};render(true);break}
     case"vdDir":if(S.f.vd){S.f.vd.dir=el.dataset.v;render(true)}break;
     case"vdSel":if(S.f.vd){S.f.vd.sel=el.dataset.p;render(true)}break;

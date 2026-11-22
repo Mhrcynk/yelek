@@ -66,7 +66,7 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   // oyuncular tek tek gelir: 3 çok iyi, 4 iyi, 4 orta, 2 kötü; 4. oyuncuda "çok iyi" kapalı olmalı
   ok(await pg.locator(".vsg i").count()===13,"oylanacak oyuncu sayısı "+await pg.locator(".vsg i").count());
   for(let i=0;i<13;i++){const k=i<3?1:i<7?2:i<11?3:4;
-    if(i===5)ok(await run(()=>!document.querySelector(".vg4 .p1").disabled),"çok iyi sınırı hâlâ duruyor");
+    if(i===5)ok(await run(()=>document.querySelector(".vg4 .p1").disabled&&!document.querySelector(".vg4 .p4").disabled&&!document.querySelector(".vg4 .p2").disabled),"3 çok iyiden sonra çok iyi hâlâ seçilebiliyor");
     const b0=await run(()=>S.f.vt.i);await pg.click(`.vg4 button:nth-child(${k})`);await pg.waitForTimeout(60);
     if(i===0)ok(await run(()=>S.f.vt.i)===b0,"oy verince kendiliğinden sonraki oyuncuya geçiyor");
     await pg.click('.vnav [data-act="vNext"]');await pg.waitForTimeout(60)}

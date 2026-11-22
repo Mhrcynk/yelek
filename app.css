@@ -4115,7 +4115,6 @@ body.uye #meBtn{display:none}
 .pmi .pmg{flex:none;align-self:center;font:800 .72rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c-ink3);padding:0 2px 0 6px}.pmi .pmg:first-child{padding-left:0}
 .kdd>summary::before,.pcd>summary::before{display:none}
 .mdx>summary{justify-content:flex-start}.mdx>summary::after{display:none}
-.vdemo{margin-bottom:12px;min-height:46px}
 .vstt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%;margin-top:6px}
 .vstt span{display:grid;gap:3px;justify-items:center;padding:9px 2px;border-radius:12px;background:var(--c-card)}.vstt b{font:800 1.3rem/1 var(--display)}.vstt small{font-size:.72rem;color:var(--c-ink2)}
 .vst0{font-size:.78rem!important;color:var(--c-ink3)!important;text-align:center;display:block!important}
