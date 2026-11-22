@@ -4047,12 +4047,6 @@ html.dk .krl .eyebrow,html.dk .krl-t,html.dk .krl-n,html.dk .krl-l em{color:#3BE
 .yp-tem small{font:500 10px/12px Inter,sans-serif;color:rgba(255,255,255,.8);white-space:nowrap}
 .yp-tt .v i,.yp-tutb b i{display:block;margin-top:3px;font:700 10px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-style:normal;text-align:right;color:rgba(255,255,255,.72)}
 .yp-tutb b i{text-align:inherit;display:inline;margin-left:8px;font-size:14px}
-/* soyunma odası yüzen tuşu */
-.ofab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(var(--nav) + 26px + env(safe-area-inset-bottom,0px));z-index:24;width:56px;height:56px;padding:0;border-radius:50%;border:0;background:var(--oc,#7B3FF2);color:var(--ocI,#fff);display:grid;place-items:center;box-shadow:0 8px 22px rgba(0,0,0,.5),0 0 0 3px rgba(255,255,255,.14);cursor:pointer}
-.ofab svg{width:26px;height:26px}
-.ofab b{position:absolute;top:-5px;right:-5px;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#fff;color:#120A2A;font:800 12px/22px Inter,sans-serif;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
-body.kb .ofab{display:none}
-@media (prefers-reduced-motion:no-preference){.ofab{animation:up .3s cubic-bezier(.2,.8,.2,1)}}
 /* Pencere açıkken arkadaki üst çubuğun bulanıklık katmanı iOS'ta pencerenin üstüne taşıyordu (aynı katman sırası). Pencere açıkken kapat; tam ekran sohbette arkayı hiç çizme. */
 body.lock .top,body:has(#modal .sheet-bg) .top{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 #modal .sheet-bg{z-index:41}
