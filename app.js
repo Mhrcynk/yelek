@@ -508,6 +508,7 @@ async function load(force){
     {const am={};(Array.isArray(ag)?ag:[]).forEach(r=>am[r.id]=r.age);pl.forEach(p=>{if(am[p.id]!=null)p.age=am[p.id]})}
     const sig=JSON.stringify([st,pl,ms,sv2]);const same=S.loaded&&!S.err&&!S.offline&&sig===S.sig;S.sig=sig;
     applyData(st,pl,ms,sv2);S.offline=0;setBrand();
+    logoSync();
     await photosSync(pl);
     cacheSave(st,pl,ms,sv2);
     // arka plan yenilemesinde veri değişmediyse ekranı yeniden çizme (açık bölümler kapanmasın)
@@ -536,6 +537,20 @@ async function idbSet(k,v){const db=await idbOpen();if(!db)return;try{db.transac
 async function photosLoadCache(){try{let c=await idbGet("ph");
     if(!c){const old=JSON.parse(localStorage.getItem("y_cph")||"null");if(old){c={ph:old,v:{}};LS.del("y_cph");LS.del("y_cpv")}}
     if(c&&c.ph&&!Object.keys(S.photos||{}).length){S.photos=c.ph;S.phv=c.v||{};render(true)}}catch(_){}}
+/* takım logosu: sürümü değişince bir kez iner, telefonda saklanır */
+async function logoSync(){if(S.logoT!==TID){S.logo="";S.logoV=0;S.logoT=TID}const v=+(S.settings&&S.settings.logo_v)||0;
+  if(!v){if(S.logo){S.logo="";S.logoV=0;idbSet("lg","");phdRender()}return}
+  if(S.logoV===v&&S.logo)return;
+  if(!S.logo){const c=await idbGet("lg");if(c&&c.v===v&&c.d){S.logo=c.d;S.logoV=v;phdRender();return}}
+  try{const r=await sbGet("team_logos?select=data&team_id=eq."+TID);S.logo=(r&&r[0]&&r[0].data)||"";S.logoV=v;idbSet("lg",{v,d:S.logo});phdRender();if(S.tab==="ben")render(true)}catch(_){}}
+async function uploadLogo(file){if(!/^image\//.test(file.type||"image/")){toast("Lütfen bir görsel seç");return}
+  S.f.lgBusy=true;render(true);const url=URL.createObjectURL(file);
+  try{const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error("img"));i.src=url});
+    const mk=N=>{const c=document.createElement("canvas");c.width=c.height=N;const g=c.getContext("2d");g.imageSmoothingQuality="high";const k=Math.min(N/img.naturalWidth,N/img.naturalHeight),w=img.naturalWidth*k,h=img.naturalHeight*k;g.drawImage(img,(N-w)/2,(N-h)/2,w,h);let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");return d};
+    let d=mk(192);if(d.length>=110000)d=mk(128);if(d.length>=110000)d=mk(96);
+    const r=await A("admin_set_logo",{p_data:d},"Logo yüklendi");if(r){S.logo=d;S.logoT=TID;S.logoV=S.settings.logo_v=(+S.settings.logo_v||0)+1;idbSet("lg",{v:S.logoV,d});phdRender()}}
+  catch(_){toast("Görsel okunamadı, başka bir görsel dene")}finally{URL.revokeObjectURL(url)}
+  S.f.lgBusy=false;render(true)}
 async function photosSync(pl){S.phv=S.phv||{};const want={};pl.forEach(p=>{if(p.photo_v)want[p.id]=p.photo_v});
   let ch=false;for(const id of Object.keys(S.photos||{}))if(!want[id]){delete S.photos[id];delete S.phv[id];ch=true}
   const need=Object.keys(want).filter(id=>S.phv[id]!==want[id]);
@@ -609,7 +624,7 @@ function yrSel(){const y=selYr();const L=yrList();
 function seasonProg(){const y=selYr();if(y==="all")return"";const n=seasonCount(y),L=sLen(),done=seasonDone(y);const fin2=!done&&n>=L-2;
   return `<div class="sprog"><div class="sprt"><b>${done?"Sezon tamamlandı":`Hafta ${n}/${L}`}</b>${fin2?'<span class="sfin">Final haftaları</span>':""}</div><span class="sbar"><i style="width:${Math.min(100,Math.round((done?L:n)/L*100))}%"></i></span></div>`}
 const PHD={gecmis:["Fikstür",1],lig:["Lig",1],kartlar:["Oyuncular",0],sezon:["Lig",1],saha:["Lig",1],ben:["Ben",0],kurallar:["Puanlama",0],ayarlar:[null,0]};
-function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const gen=!S.session&&!S.viaLink;const tn=(S.settings&&S.settings.group_name)||"Yelek";const pt=S.tab==="ben"&&S.f.setp?(SUBT[S.f.setp]||"Ben"):({mac:"Bu hafta",iddia:"Tahmin",lig:"Lig",gecmis:"Lig",sezon:"Lig",saha:"Lig",kartlar:"Kartlar",ben:"Ben",kurallar:"Puanlama",ayarlar:"Ayarlar"})[S.tab]||tn;const n=gen?"Yelek":pt;if(bt&&bt.textContent!==n)bt.textContent=n;const bs=document.getElementById("brS");if(bs){const st=gen?"Halı saha ligi":tn;if(bs.textContent!==st)bs.textContent=st}document.body.classList.toggle("genb",gen||!S.session)}const t=S.tab;let c=PHD[t];
+function phdRender(){const el=$("#phd");if(!el)return;{const bt=$("#brT");const gen=!S.session&&!S.viaLink;const tn=(S.settings&&S.settings.group_name)||"Yelek";const pt=S.tab==="ben"&&S.f.setp?(SUBT[S.f.setp]||"Ben"):({mac:"Bu hafta",iddia:"Tahmin",lig:"Lig",gecmis:"Lig",sezon:"Lig",saha:"Lig",kartlar:"Kartlar",ben:"Ben",kurallar:"Puanlama",ayarlar:"Ayarlar"})[S.tab]||tn;const n=gen?"Yelek":pt;if(bt&&bt.textContent!==n)bt.textContent=n;const bs=document.getElementById("brS");if(bs){const st=gen?"Halı saha ligi":tn;if(bs.textContent!==st)bs.textContent=st}{const bl=document.getElementById("brL");if(bl){const u=gen?"":(S.logo||"");if((bl.getAttribute("src")||"")!==u){if(u){bl.src=u;bl.hidden=false}else{bl.removeAttribute("src");bl.hidden=true}}}}document.body.classList.toggle("genb",gen||!S.session)}const t=S.tab;let c=PHD[t];
   if(t==="gecmis"&&S.view)c=null;if(typeof gated==="function"&&gated())c=null;if(t==="ben"&&S.f.setp)c=[SUBT[S.f.setp]||"Ben",0];if(typeof gated==="function"&&gated())c=null;
   // alt barda adı yazan ana sekmelerde büyük başlık yok (sade); alt sayfalar ve Puanlama başlığını korur
   const navT=["gecmis","lig","kartlar","sezon","saha","ben"].includes(t)&&!(t==="ben"&&S.f.setp);
@@ -3059,7 +3074,7 @@ function setSub(k){const url=teamLink();
     {const b=typeof S.pbk==="object"?S.pbk:{};h+=`<section class="sgrp"><h3>Dış yedek</h3><div class="sbox"><div class="setr nolink"><span class="seti">${SI.platform}</span><span class="setx"><b>Haftalık şifreli yedek</b><small>${b.last_used?"Son yedek: "+esc(fmtShort(String(b.last_used).slice(0,10)))+" · toplam "+b.uses:"Henüz yedek alınmadı"}</small></span><button class="btn sm" data-act="bkKey">Anahtar oluştur</button></div></div><p class="snote">Her salı GitHub bütün veriyi şifreleyip Supabase dışında saklar (90 gün). Anahtar sadece bir kez gösterilir; yeni anahtar eskisini geçersiz yapar.</p></section>`}
     if(!S.perr){S.perr="…";rpc("platform_errors",{}).then(r=>{S.perr=(r&&r.rows)||[];render(true)}).catch(()=>{S.perr=[];render(true)})}
     if(Array.isArray(S.perr))h+=`<section class="sgrp"><h3>Hatalar · ${S.perr.length}</h3>${S.perr.length?`<div class="sbox perl">${S.perr.map(e=>`<div class="per"><b>${esc(e.msg)}</b><small>${esc([e.n>1?e.n+" kez":"",fmtShort(String(e.at).slice(0,10)),e.tab,e.src,e.team,"sürüm "+(e.ver||"?")].filter(Boolean).join(" · "))}</small><small class="perua">${esc(uaShort(e.ua))}</small></div>`).join("")}</div><button class="lnk" data-act="perrClear">Listeyi temizle</button>`:`<p class="snote">Kayıtlı hata yok. Birinin telefonunda beklenmeyen bir hata olursa burada görünür.</p>`}</section>`}
-  else if(k==="grup"&&S.admin){const s=S.f.set||(S.f.set={...S.settings});h+=`<section class="card"><form data-form="settings" style="display:grid;gap:12px">
+  else if(k==="grup"&&S.admin){const s=S.f.set||(S.f.set={...S.settings});if("logo_v" in S.settings)h+=`<div class="phrow lgrow"><span class="lgv">${S.logo?`<img src="${esc(S.logo)}" alt="">`:SI.grup}</span><div style="flex:1;min-width:0"><b>Takım logosu</b><p class="muted small">${S.f.lgBusy?"Yükleniyor…":S.logo?"":"Kare görsel en iyi sonucu verir."}</p></div><label class="btn sm primary" for="lgFile">${S.logo?"Değiştir":"Yükle"}</label><input class="vh" id="lgFile" type="file" accept="image/*" data-logo="1">${S.logo?`<button class="btn sm ghost" data-act="delLogo" aria-label="Logoyu kaldır">${ICON.x}</button>`:""}</div>`;h+=`<section class="card"><form data-form="settings" style="display:grid;gap:12px">
       <label class="f" for="sGroup">Ekip adı<input id="sGroup" type="text" maxlength="40" data-bind="set.group_name" value="${esc(s.group_name)}"></label>
       <label class="f" for="sField">Halı saha adı<input id="sField" type="text" maxlength="60" data-bind="set.field_name" value="${esc(s.field_name)}" placeholder="Örn. Yıldız Halı Saha"></label>
       <div class="grid2"><label class="f" for="sDay">Maç günü<select id="sDay" data-bind="set.day">${GUNLER.map((g,i)=>`<option value="${i}"${+s.day===i?" selected":""}>${g}</option>`).join("")}</select></label>
@@ -3485,6 +3500,7 @@ document.addEventListener("click",async e=>{
       if(r&&r.ok){S.reps=(S.reps||[]).filter(x=>String(x.id)!==el.dataset.v);if(S.mem)S.mem.reports=S.reps.length;toast("Şikâyet kapatıldı")}else toast("Kapatılamadı, tekrar dene");render(true);break}
     case"kfrT":LS.set("y_kfr",kfrOn()?"0":"1");render(true);break;
     case"mailCopy":try{await navigator.clipboard.writeText("yelek.destek@gmail.com");toast("Adres kopyalandı")}catch(_){toast("yelek.destek@gmail.com")}break;
+    case"delLogo":{const r=await A("admin_set_logo",{p_data:""},"Logo kaldırıldı");if(r){S.logo="";S.logoV=0;S.settings.logo_v=(+S.settings.logo_v||0)+1;idbSet("lg","");phdRender();render(true)}break}
     case"delPhoto":{const r=await A("admin_set_photo",{p_id:id,p_data:""},"Fotoğraf kaldırıldı");if(r){delete S.photos[id];render(true)}break}
     case"rulesSheet":S.sheet={type:"rules"};render(true);break;
   }
@@ -3603,6 +3619,7 @@ document.addEventListener("change",e=>{const t=e.target;
     if(["sort","wrapP","ap.epos","ed.epos","newDate","newTime","ext.motm","ext.date"].includes(bd)||bd.startsWith("when_"))render(true);return}
   if(t.dataset.cmp&&S.sheet&&S.sheet.type==="cmp"){S.sheet[t.dataset.cmp]=t.value;render(true);return}
   if(t.dataset.vote){const k="v_"+t.dataset.m;(S.f[k]||(S.f[k]={}))[t.dataset.vote]=t.value;return}
+  if(t.dataset.logo&&t.files&&t.files[0]){uploadLogo(t.files[0]);t.value="";return}
   if(t.dataset.photo&&t.files&&t.files[0]){uploadPhoto(t.dataset.photo,t.files[0]);t.value="";return}
   if(t.dataset.actChange==="sahaK"){S.f.sahaK=t.value;render(true);return}
   if(t.dataset.actChange==="yr"){S.yr=t.value==="all"?"all":+t.value;S.f.ptab=S.f.ptab;S.view=null;render(true);return}

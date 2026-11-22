@@ -4491,3 +4491,9 @@ html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}
 .dmail{margin:6px 0 10px;font-size:1.05rem;font-weight:800;user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
 .repc q{display:block;margin:6px 0;padding:8px 10px;border-radius:12px;background:var(--c-card2);quotes:none;overflow-wrap:anywhere}
 .repc .btn{margin-top:10px}
+
+/* takım logosu */
+#brL{width:18px;height:18px;border-radius:5px;object-fit:contain;flex:none}
+.lgrow{margin-bottom:12px}
+.lgv{flex:none;width:52px;height:52px;border-radius:14px;background:var(--c-card2);display:grid;place-items:center;overflow:hidden;color:var(--c-ink3)}
+.lgv img{width:100%;height:100%;object-fit:contain}.lgv svg{width:26px;height:26px}
