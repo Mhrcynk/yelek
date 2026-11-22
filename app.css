@@ -4417,3 +4417,6 @@ html.dk .pmd textarea{background:#120A2A}
 #modal .sheet:has(.pmact){padding-bottom:0!important}
 .pmact{bottom:0;padding:10px 0 calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -14px 16px -6px #1C1240}
 .pmx{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.pmact.p4{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+html.dk #modal .pmact.p4 .btn{height:50px;border-radius:14px!important;padding:0 2px!important;font:700 .82rem/1 Inter,sans-serif!important;min-width:0}
+html.dk #modal .pmact.p4 .btn.on{background:#FF3EA5!important;color:#2A0519!important;font-weight:800!important}
