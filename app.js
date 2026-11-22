@@ -4016,9 +4016,7 @@ function viewIddia(){
     else h+=`<ul class="card bkl">${L.rows.map(b=>betRow(b,true)).join("")}</ul>`}
   else if(tab==="herkes"){betLoad("feed");const F=BET.feed;
     if(!F)h+=`<div class="card"><p class="muted">Yükleniyor…</p></div>`;
-    else{const fo=S.f.bfo&&(F.f||[]).length;const R=F.rows.filter(b=>b.p!==me&&(!fo||(F.f||[]).includes(b.p)));
-      h+=`<div class="bxh">${[["","Herkes"],["1",`Takip ettiklerim${(F.f||[]).length?" · "+F.f.length:""}`]].map(([v,l])=>`<button class="chip${(S.f.bfo?"1":"")===v?" on":""}" data-act="tog1" data-k="bfo" data-v="${v}">${l}</button>`).join("")}</div>`;
-      if(S.f.bfo&&!(F.f||[]).length)h+=`<p class="muted small bxn">Henüz kimseyi takip etmiyorsun. Sıralama'da bir arkadaşına dokunup "Takip et" diyebilirsin.</p>`;
+    else{const fo=false;const R=F.rows.filter(b=>b.p!==me&&(!fo||(F.f||[]).includes(b.p)));
       h+=R.length?`<ul class="card bkl">${R.map(b=>betRow(b,false,true)).join("")}</ul>`:`<div class="card emp2">${empIc("kombine","gold")}<p>Henüz görünen arkadaş tahmini yok.</p></div>`}}
   else{const T=BET.tbl;betLoad("feed");const rs=S.f.brs==="sezon"?"sezon":"hafta";
     h+=`<div class="mzseg brs" role="group" aria-label="Sıralama">${[["hafta","Bu hafta"],["sezon","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="brs" data-v="${k}" class="${rs===k?"on":""}" aria-pressed="${rs===k}">${l}</button>`).join("")}</div>`;
