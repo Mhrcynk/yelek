@@ -827,7 +827,7 @@ function routeAfter(){const r=S._route;if(!r||!S.loaded)return;const p=decodeURI
 function routeGo(r){S._route=r;S._r0=r;S._r0t=Date.now();S.sheet=null;routeTab(r);render(true);routeAfter()}
 addEventListener("hashchange",()=>{const r=location.hash.slice(1);if(r&&r.includes("/")||r==="m")routeGo(r);else if(r&&TABS.some(x=>x[0]===r)&&S.tab!==r)routeGo(r)});
 navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.t==="nav"&&d.url){try{const u=new URL(d.url);if(u.hash)routeGo(u.hash.slice(1))}catch(_){}}});
-function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia");{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"?"#05160E":"#120A2A"}
+function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm"));{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm")?"#05160E":"#120A2A"}
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
