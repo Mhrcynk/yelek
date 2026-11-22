@@ -4435,3 +4435,11 @@ html.dk .pmi.pmw button{flex:1 1 auto!important;white-space:nowrap;padding:0 14p
 html.dk .pm2 button{flex:1!important}
 .pmi.pmw{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))}
 html.dk .pmi.pmw button{padding:0 8px!important;overflow:hidden;text-overflow:ellipsis}
+/* paylaşım: görsel kaydırılarak seçilir */
+.pmn{display:flex;align-items:center;gap:8px;margin:0 0 6px}
+.pmn>div{flex:1;min-width:0;display:grid;justify-items:center;gap:8px}
+.pmn b{font:800 1.05rem/1.15 Inter,sans-serif;text-align:center}
+.pmn button{flex:none;width:44px;height:44px;border:0;border-radius:50%;background:#2E2260;color:#fff;display:grid;place-items:center;cursor:pointer}
+.pmn button svg{width:20px;height:20px}.pmn button.r svg{transform:rotate(180deg)}
+.pmdots{display:flex;gap:5px}.pmdots i{width:6px;height:6px;border-radius:50%;background:#3A2C78}.pmdots i.on{background:#FF3EA5;width:16px;border-radius:3px}
+html.dk .pmprev{touch-action:pan-y}

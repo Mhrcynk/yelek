@@ -1324,10 +1324,14 @@ function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"
   return `<div class="mzvh pmh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>Paylaş</h2></div></div>
    <div class="vtog pmt">${tabs.map(([k,l])=>`<button data-act="pmTab" data-v="${k}" class="${f.tab===k||(k==="mac"&&macG)?"on":""}">${l}</button>`).join("")}</div>${sel}
    ${macG?`<div class="vtog pm2" role="group" aria-label="Maç önü ya da maç sonu">${[["once","Maç önü"],["mac","Maç sonu"]].map(([t,g])=>`<button data-act="pmTab" data-v="${t}" class="${f.tab===t?"on":""}" aria-pressed="${f.tab===t}">${g}</button>`).join("")}</div>`:""}
-    <div class="pmi pmw">${items.map(([k,l])=>`<button data-act="pmItem" data-v="${k}" class="${it===k?"on":""}" aria-pressed="${it===k}">${l}</button>`).join("")}</div>
+    ${items.length>1?`<div class="pmn"><button data-act="pmStep" data-v="-1" aria-label="Önceki görsel">${ICON_BACK}</button><div><b aria-live="polite">${(items.find(x=>x[0]===it)||["",""])[1]}</b><span class="pmdots" aria-hidden="true">${items.map(([k])=>`<i class="${it===k?"on":""}"></i>`).join("")}</span></div><button class="r" data-act="pmStep" data-v="1" aria-label="Sonraki görsel">${ICON_BACK}</button></div>`:""}
    ${x?`<div class="pmprev" id="pmPrev">${igFrame(x,f.fmt)}</div>
     <div class="pmact p3"><button class="btn${f.fmt!=="story"?" on":""}" data-act="pmFmt" data-v="post" aria-pressed="${f.fmt!=="story"}">Gönderi</button><button class="btn${f.fmt==="story"?" on":""}" data-act="pmFmt" data-v="story" aria-pressed="${f.fmt==="story"}">Hikâye</button><button class="btn pmgo" data-act="pmGo" data-v="share">Paylaş</button></div>`
     :`<div class="empty emp2 pmemp">${empIc("yelek","pink")}<p>${esc(emp)}</p></div>`}`}
+function pmStep(d){const f=S.f.pm;if(!f||!S.sheet||S.sheet.type!=="pm")return;const L=(PM_ITEMS[f.tab]||[]).filter(x=>isMember()||!TAHMIN_PM.includes(x[0]));if(L.length<2)return;const i=Math.max(0,L.findIndex(x=>x[0]===f.item));f.item=L[(i+d+L.length)%L.length][0];render(true)}
+// paylaşım: görseli sağa sola kaydırınca bir sonraki / önceki görsel gelir
+{let x0=0,y0=0,on=0;document.addEventListener("touchstart",e=>{const p=e.target.closest&&e.target.closest("#pmPrev");on=p&&e.touches.length===1?1:0;if(on){x0=e.touches[0].clientX;y0=e.touches[0].clientY}},{passive:true});
+ document.addEventListener("touchend",e=>{if(!on)return;on=0;const t=e.changedTouches[0];const dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.4)pmStep(dx<0?1:-1)},{passive:true})}
 let _h2c=null;const h2c=()=>_h2c||(_h2c=new Promise((ok,no)=>{if(window.html2canvas)return ok(window.html2canvas);const s=document.createElement("script");s.src="vendor/html2canvas-1.4.1.min.js";s.onload=()=>ok(window.html2canvas);s.onerror=()=>{_h2c=null;no(new Error("yüklenemedi"))};document.head.appendChild(s)}));
 function trUp(root){const L=[...root.querySelectorAll("*")].filter(e=>getComputedStyle(e).textTransform==="uppercase");L.forEach(e=>{for(const n of e.childNodes)if(n.nodeType===3)n.nodeValue=n.nodeValue.toLocaleUpperCase("tr")});L.forEach(e=>e.style.textTransform="none")}
 const ypFonts=()=>Promise.race([Promise.all([document.fonts.load('800 40px "Barlow Condensed"'),document.fonts.load('700 12px Inter'),document.fonts.load('600 11px Inter')]),new Promise(r=>setTimeout(r,2500))]).catch(()=>{});
@@ -3187,6 +3191,7 @@ document.addEventListener("click",async e=>{
     case"pmOpen":S.f.pm=S.f.pm||{tab:"mac",fmt:"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
     case"pmTab":S.f.pm.tab=el.dataset.v;S.f.pm.item=null;render(true);break;
     case"pmItem":if(el.dataset.t)S.f.pm.tab=el.dataset.t;S.f.pm.item=el.dataset.v;render(true);break;
+    case"pmStep":pmStep(+el.dataset.v);break;
     case"pmFmt":S.f.pm.fmt=el.dataset.v;render(true);break;
     case"pmRace":S.f.pm.race=el.dataset.v;render(true);break;
     case"betPick":{if(!BET.amt)BET.amt=betDefAmt();const k=el.dataset.k,v=el.dataset.v;const ix=BET.slip.findIndex(l=>l.k===k&&l.s===v);
