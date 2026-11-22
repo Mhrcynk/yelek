@@ -4128,8 +4128,6 @@ body.uye #meBtn{display:none}
 .bsk-s{display:flex;align-items:center;gap:6px}.bsk-s b{min-width:44px;text-align:center;font:800 2rem/1 var(--display)}
 .bsk-s button{width:44px;height:44px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card);color:#fff;font:700 1.3rem/1 Inter,sans-serif;cursor:pointer}.bsk-s button:disabled{opacity:.35}
 
-html.tn1 .oda-hd{margin-top:70px}
-html.tn2 *,html.tn2 *::before,html.tn2 *::after{filter:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;animation:none!important;transition:none!important;-webkit-mask-image:none!important;mask-image:none!important}
-html.tn2 #modal .sheet,html.tn2 #modal .sheet-bg{transform:none!important}
-html.tn3,html.tn3 body{position:fixed!important;inset:0;overflow:hidden!important;height:100%!important;width:100%!important}
-
+html.tn4 #modal .sheet,html.tn4 #modal .sheet-bg{animation:none!important;transform:none!important;will-change:auto!important;transition:none!important}
+html.tn5 .oda-hd{transform:translateZ(0);-webkit-transform:translateZ(0)}
+html.tn6 .oda-bk{background:none!important;border:0!important}html.tn6 .oda-hd b{font:700 18px/1.2 -apple-system,system-ui,sans-serif!important;letter-spacing:0!important}

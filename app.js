@@ -2356,8 +2356,8 @@ addEventListener("popstate",()=>{if(shHist.b){shHist.b=0;return}
 // ekran tanısı (yalnız sahip): sohbet pencerelerinde ölçümler ve deneme tuşları
 function taniTick(){let b=document.getElementById("tani");const on=LS.get("y_tani")&&isOwner()&&S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");
   if(!on){if(b)b.remove();return}
-  if(!b){b=document.createElement("div");b.id="tani";b.style.cssText="position:fixed;left:8px;right:8px;top:130px;z-index:99;padding:8px;border-radius:10px;background:rgba(0,0,0,.86);color:#fff;font:12px/1.35 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all";
-    b.innerHTML='<div id="taniT"></div><div style="display:flex;gap:6px;margin-top:6px">'+[["1","Başlık aşağı"],["2","Efekt yok"],["3","Sayfa sabit"]].map(([k,l])=>`<button data-tn="${k}" style="flex:1;min-height:40px;border:1px solid #fff;border-radius:8px;background:none;color:#fff;font:700 12px Inter,sans-serif">${k} ${l}</button>`).join("")+"</div>";
+  if(!b){b=document.createElement("div");b.id="tani";b.style.cssText="position:fixed;left:8px;right:8px;top:250px;z-index:99;padding:8px;border-radius:10px;background:rgba(0,0,0,.86);color:#fff;font:12px/1.35 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-all";
+    b.innerHTML='<div id="taniT"></div><div style="display:flex;gap:6px;margin-top:6px">'+[["4","Katmansız"],["5","Başlık katmanı"],["6","Sade başlık"]].map(([k,l])=>`<button data-tn="${k}" style="flex:1;min-height:40px;border:1px solid #fff;border-radius:8px;background:none;color:#fff;font:700 12px Inter,sans-serif">${k} ${l}</button>`).join("")+"</div>";
     const tg=e=>{const t=e.target.closest("[data-tn]");if(!t)return;e.preventDefault();e.stopPropagation();if(Date.now()-(tg.t||0)<400)return;tg.t=Date.now();document.documentElement.classList.toggle("tn"+t.dataset.tn);taniTick()};b.addEventListener("touchend",tg,{passive:false});b.addEventListener("click",tg);document.body.appendChild(b)}
   const v=window.visualViewport||{},d=document.documentElement,hd=document.querySelector("#modal .oda-hd"),sh=document.querySelector("#modal .sheet"),r=hd&&hd.getBoundingClientRect(),q=sh&&sh.getBoundingClientRect();
   b.style.visibility="hidden";const el=r?document.elementFromPoint(30,Math.max(1,r.top+r.height/2)):null;b.style.visibility="";
@@ -2369,7 +2369,10 @@ sayfa kaydırma ${Math.round(scrollY)} · belge ${d.clientHeight} · ekran ${scr
 başlık ${r?Math.round(r.top)+"→"+Math.round(r.bottom):"yok"} · üst boşluk ${hd?getComputedStyle(hd).paddingTop:"-"}
 pencere kutusu ${q?Math.round(q.top)+"→"+Math.round(q.bottom):"yok"}
 başlığın üstündeki: ${el?(el.tagName+"."+String(el.className).slice(0,40)):"-"}
-sınıflar: ${document.body.className} | ${[1,2,3].filter(k=>d.classList.contains("tn"+k)).join(",")||"deneme yok"}`}
+oran ${devicePixelRatio} · başlık sayısı ${document.querySelectorAll(".oda-hd").length} · pencere sayısı ${document.querySelectorAll("#modal .sheet-bg").length}
+yazı ${(()=>{const t=hd&&hd.querySelector("b");if(!t)return"-";const z=t.getBoundingClientRect();return z.left.toFixed(2)+","+z.top.toFixed(2)+" "+z.height.toFixed(2)+" "+getComputedStyle(t).fontFamily.slice(0,18)+" yüklü:"+(document.fonts&&document.fonts.check("800 19px 'Barlow Condensed'"))})()}
+pencere dönüşümü ${sh?getComputedStyle(sh).transform+" "+getComputedStyle(sh).animationName:"-"}
+sınıflar: ${document.body.className} | ${[4,5,6].filter(k=>d.classList.contains("tn"+k)).join(",")||"deneme yok"}`}
 setInterval(taniTick,600);
 function verTxt(){const v=APP_V;if(!/^\d{12}$/.test(v))return"";const d=new Date(Date.UTC(2000+ +v.slice(0,2),+v.slice(2,4)-1,+v.slice(4,6),+v.slice(6,8),+v.slice(8,10)));const p=n=>String(n).padStart(2,"0");return `<p class="vtx">Sürüm ${p(d.getDate())}.${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}</p>`}
 function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div class="empty emp2">${empIc("kisi","lila")}<h3>Kim olduğunu seç</h3><p>Kendi kartını, formunu ve maçlarını görmek için oyuncunu seç.</p><button class="btn primary" data-act="meSheet">Kimsin?</button></div></section>`;
@@ -3213,7 +3216,7 @@ document.addEventListener("click",async e=>{
         if(j>=0)BET.slip[j]=leg;else if(BET.slip.length>=4){toast(BET_ERR.legs);break}else BET.slip.push(leg)}
       render(true);break}
     case"betSk":{const m=betNext();const bd=m&&BET.board[m.id];if(!bd||!bd.skor)break;const c=betSk(bd);const t=el.dataset.t;c[t]=Math.max(0,Math.min(20,c[t]+(+el.dataset.d)));BET.sk=c;render(true);break}
-    case"taniTog":if(LS.get("y_tani")){LS.del("y_tani");["tn1","tn2","tn3"].forEach(c=>document.documentElement.classList.remove(c))}else LS.set("y_tani","1");render(true);break;
+    case"taniTog":if(LS.get("y_tani")){LS.del("y_tani");["tn1","tn2","tn3","tn4","tn5","tn6"].forEach(c=>document.documentElement.classList.remove(c))}else LS.set("y_tani","1");render(true);break;
     case"betClear":BET.slip=[];if(S.sheet&&S.sheet.type==="betSlip")S.sheet=null;render(true);break;
     case"kralOpen":if(BET.kral){S.sheet={type:"kral"};render(true)}break;
     case"kralOk":kralSeen();S.sheet=null;render(true);break;
