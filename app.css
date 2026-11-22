@@ -4038,3 +4038,7 @@ html.dk .krl .eyebrow,html.dk .krl-t,html.dk .krl-n,html.dk .krl-l em{color:#3BE
 .krb b{font:800 1.05rem/1.2 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.krb em{font-style:normal;font-weight:800;color:#0B6B3A}.krb i{font-style:normal;color:#3F5F4D;font-size:1.2rem}
 .sbox .setr.setsub{min-height:52px;padding-left:62px}.setr.setsub b{font-weight:600}
 .vtog.pmt button{white-space:nowrap;padding-inline:4px;font-size:.84rem;min-width:0}
+/* tahmin paylaşımları: sikke temsilidir notu ve birim */
+.yp-tem{position:relative;z-index:3;flex:none;margin-top:9px;text-align:center;font:600 11px/13px Inter,sans-serif;letter-spacing:.04em;color:rgba(255,255,255,.78);white-space:nowrap}
+.yp-tt .v i,.yp-tutb b i{display:block;margin-top:3px;font:700 10px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;font-style:normal;text-align:right;color:rgba(255,255,255,.72)}
+.yp-tutb b i{text-align:inherit;display:inline;margin-left:8px;font-size:14px}

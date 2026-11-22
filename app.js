@@ -929,7 +929,7 @@ function ypPost(o){const wk=o.wkH||(o.wk?`<div class="yp-wk" data-b>${esc(TRU(o.
   return `<div class="yp${o.c?" yp-"+o.c:""}" lang="tr">${o.rays===false?"":YP_RAYS}${o.bg||""}
 <div class="yp-hd" data-b><div class="yp-hdl"><div class="yp-ey${ic?" yp-eyi":""}" style="font-size:${ypFit(ey,12,tw-(ic?36:0),{w:700,fam:INF,ls:.22})}px">${ic}<span>${esc(ey)}</span></div><div class="yp-ti" style="font-size:${ypFit(ti,o.tiMax||54,tw,{ls:.01})}px">${esc(ti)}</div></div>${wk}</div>
 <div class="yp-hero${o.hc?" yp-"+o.hc:""}">${o.hero||""}</div>${o.pn?`<div class="yp-pn" data-b>${o.pn}</div>`:""}
-<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div></div>`}
+<div class="yp-ft" data-b><span>${esc(ig)}</span><span style="font-size:${ypFit(ft,11,fw,{w:700,fam:INF,ls:.16})}px">${esc(ft)}</span></div>${o.c==="t"?`<div class="yp-tem" data-b>Sikke temsilidir, gerçek para değildir.</div>`:""}</div>`}
 const ypBdg=(b,ic)=>`<div class="yp-bdg" data-b>${ic||`<strong style="font-size:${ypFit(TRU(b[0]),42,72)}px">${esc(TRU(b[0]))}</strong>`}<small style="font-size:${ypFit(TRU(b[1]),13,80,{ls:.1})}px">${esc(TRU(b[1]))}</small></div>`;
 const ypSts=L=>{const w=(476-10*(L.length-1))/L.length-24;return `<div class="yp-sts">${L.map(([v,l,on])=>`<div class="${on?"yp-on":""}"><strong style="font-size:${ypFit(TRU(v),32,w)}px">${esc(TRU(v))}</strong><small>${esc(TRU(l))}</small></div>`).join("")}</div>`};
 const ypBig=(nm,age)=>{nm=TRU(nm);return `<div class="yp-big" style="font-size:${ypFit(nm+(age!=null?"    ("+age+")":""),44,476,{ls:.01})}px">${esc(nm)}${age!=null?`<span>(${age})</span>`:""}</div>`};
@@ -1066,11 +1066,11 @@ function betMine(mid,z){const me=myPid();if(!me)return[];const L=BET.lists[me];i
 const ypLegs=(L,ok)=>`<ul class="yp-bl">${L.map(l=>`<li data-b>${ok?`<i>✓</i>`:""}<span style="font-size:${ypFit(l.l,16,ok?340:370,{w:600,fam:INF})}px">${esc(l.l)}</span><b>${fO(l.odd)}</b></li>`).join("")}</ul>`;
 function ypKupon(m,cid){if(!isMember())return null;const L=betMine(m.id,"acik");const c=L.find(x=>x.id===cid)||L[0];if(!c)return null;const me=myPid();const nm=TRU(shortName(nameOf(me)));const lg=c.legs||[];
   const hero=`<div class="yp-tik"><div class="yp-tikh" data-b>${ypAv(me,"","width:56px;height:56px")}<div><b style="font-size:${ypFit(nm,28,300)}px">${esc(nm)}</b><small>${lg.length>1?"Kombine · "+lg.length+" seçim":"Tek tahmin"}</small></div></div>${ypLegs(lg)}
-    <div class="yp-tikc"></div><div class="yp-tiks" data-b><div><small>YATIRILAN</small><b>${fJ(c.st)}</b></div><span>× ${fO(c.odd)}</span><div class="r"><small>OLASI KAZANÇ</small><b>${fJ(Math.round(c.st*c.odd))}</b></div></div></div>`;
-  return{html:ypPost({c:"t",ey:igDate(m.date)+" · Tahmin",ti:"Kuponum",hc:"mid",hero,ft:"Sikke · oyun parası"}),cap:`Kuponum hazır 🎟️ ${nmOf(m,"A")} – ${nmOf(m,"B")}\n${lg.map(l=>"• "+l.l+" ("+fO(l.odd)+")").join("\n")}\nOran ${fO(c.odd)} · ${fJ(c.st)} sikke → ${fJ(Math.round(c.st*c.odd))}\n${HT()} #tahmin`,name:"kuponum-"+m.date}}
+    <div class="yp-tikc"></div><div class="yp-tiks" data-b><div><small>OYNANAN SİKKE</small><b>${fJ(c.st)}</b></div><span>× ${fO(c.odd)}</span><div class="r"><small>OLASI KAZANÇ · SİKKE</small><b>${fJ(Math.round(c.st*c.odd))}</b></div></div></div>`;
+  return{html:ypPost({c:"t",ey:igDate(m.date)+" · Tahmin",ti:"Kuponum",hc:"mid",hero,ft:"Oran "+fO(c.odd)}),cap:`Kuponum hazır 🎟️ ${nmOf(m,"A")} – ${nmOf(m,"B")}\n${lg.map(l=>"• "+l.l+" ("+fO(l.odd)+")").join("\n")}\nOran ${fO(c.odd)} · ${fJ(c.st)} sikke → ${fJ(Math.round(c.st*c.odd))}\n${HT()} #tahmin`,name:"kuponum-"+m.date}}
 function ypTuttu(m,cid){if(!isMember())return null;const L=betMine(m.id,"kazandi");const c=L.find(x=>x.id===cid)||L.slice().sort((a,b)=>(b.py-b.st)-(a.py-a.st))[0];if(!c)return null;const me=myPid();const nm=TRU(shortName(nameOf(me)));
   const hero=`<div class="yp-tut"><div class="yp-tikh">${ypAv(me,"","width:56px;height:56px")}<div data-b><b style="font-size:${ypFit(nm,28,200)}px">${esc(nm)}</b><small>${(c.legs||[]).length>1?"Kombine · "+c.legs.length+" seçim":"Tek tahmin"} · oran ${fO(c.odd)}</small></div><span class="yp-stamp" data-b>TUTTU</span></div>${ypLegs(c.legs||[],1)}
-    <div class="yp-tutb" data-b><small>${fJ(c.st)} sikke oynadı, kazandı</small><b>+${fJ(c.py-c.st)}</b></div></div>`;
+    <div class="yp-tutb" data-b><small>${fJ(c.st)} sikke oynadı, kazandı</small><b>+${fJ(c.py-c.st)}<i>sikke</i></b></div></div>`;
   return{html:ypPost({ey:igDate(m.date)+` · ${TRU(nmOf(m,"A"))} ${m.score_a}–${m.score_b} ${TRU(nmOf(m,"B"))}`,c:"t",ti:"Kupon tuttu",hc:"mid",hero,ft:"Oran "+fO(c.odd)}),cap:`Kupon tuttu! 🎉 ${fJ(c.st)} sikke → ${fJ(c.py)} sikke\n${(c.legs||[]).map(l=>"✅ "+l.l).join("\n")}\n${HT()} #tahmin`,name:"kupon-tuttu-"+m.date}}
 function ypOran(m){if(!isMember())return null;const bd=BET.board[m.id];if(!bd){betLoad("board",m.id);return null}const mk=k=>bd.markets.find(x=>x.k===k);const so=mk("sonuc"),ar=mk("aralik");if(!so)return null;
   let fav=null;for(const p of bd.players||[])for(const o of p.o)if(o.k.startsWith("g2:")&&(!fav||o.odd<fav.odd))fav={p:p.p,odd:o.odd};
@@ -1095,7 +1095,7 @@ function ypTduel(){if(!isMember())return null;const me=myPid();const T=BET.tbl;i
   const lead=d.a===d.b?"Berabere":(d.a>d.b?shortName(nameOf(me)):shortName(nameOf(riv)))+" önde";
   return{html:ypPost({ey:"Sezon "+T.season+" · Tahmin",ti:"Tahmin düellosu",hc:"mid",hero,ft:lead}),cap:`Tahmin düellosu ⚔️ ${nameOf(me)} ${d.a>0?"+":""}${fJ(d.a)} – ${nameOf(riv)} ${d.b>0?"+":""}${fJ(d.b)}\n${HT()} #tahmin`,name:"tahmin-duellosu"}}
 function ypTtab(){if(!isMember())return null;const T=BET.tbl;if(!T){betLoad("tbl");return null}const L=betRankW(T).slice(0,6);if(!L.length)return null;
-  const hero=`<div class="yp-tt">${L.map((r,i)=>`<div class="${i?"":"f"}" data-b><b class="k">${i+1}</b>${ypAv(r.p,"","width:44px;height:44px")}<span><em style="font-size:${ypFit(TRU(shortName(nameOf(r.p))),17,200,{w:700,fam:INF})}px">${esc(shortName(nameOf(r.p)))}</em><small>${r.won}/${r.n} tuttu</small></span><b class="v ${r.net>0?"pos":r.net<0?"neg":""}">${r.net>0?"+":""}${fJ(r.net)}</b></div>`).join("")}</div>`;
+  const hero=`<div class="yp-tt">${L.map((r,i)=>`<div class="${i?"":"f"}" data-b><b class="k">${i+1}</b>${ypAv(r.p,"","width:44px;height:44px")}<span><em style="font-size:${ypFit(TRU(shortName(nameOf(r.p))),17,200,{w:700,fam:INF})}px">${esc(shortName(nameOf(r.p)))}</em><small>${r.won}/${r.n} tuttu</small></span><b class="v ${r.net>0?"pos":r.net<0?"neg":""}">${r.net>0?"+":""}${fJ(r.net)}<i>sikke</i></b></div>`).join("")}</div>`;
   return{html:ypPost({c:"t",ey:betWkLabel(T.wk)+" · Tahmin",ti:"Haftanın tahmin tablosu",hc:"mid",hero,ft:"Her hafta 5.000 sikkeyle yeni yarış"}),cap:`Haftanın tahmin tablosu 📈\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)).join("\n")}\n${HT()} #tahmin`,name:"tahmin-tablosu"}}
 // paylaşım: haftanın kuponu ve tahmin kralı
 function ypTkup(m){if(!isMember())return null;const W=BET.week[m.id];if(!W){betLoad("week",m.id);return null}const c=(W.rows||[])[0];if(!c||!P(c.p))return null;
@@ -1107,7 +1107,7 @@ function ypTkup(m){if(!isMember())return null;const W=BET.week[m.id];if(!W){betL
   return{html,cap:`Haftanın kuponu: ${nameOf(c.p)} ${fJ(c.st)} sikkeyle ${fJ(c.py)} sikke aldı 🎯\n${L.map(l=>"• "+l.l).join("\n")}\n${HT()} #halısaha`,name:"haftanin-kuponu-"+m.date}}
 function ypTkral(){if(!isMember())return null;const T=BET.tbl;if(!T){betLoad("tbl");return null}
   const L=betRank(T).slice(0,3);if(!L.length)return null;
-  const html=ypPost({c:"t",ey:"Sezon "+T.season+" · Tahmin",ti:"Sezonun tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:r.won+"/"+r.n+" tuttu"}))),ft:"#tahminkralı"});
+  const html=ypPost({c:"t",ey:"Sezon "+T.season+" · Tahmin",ti:"Sezonun tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:"sikke · "+r.won+"/"+r.n+" tuttu"}))),ft:"#tahminkralı"});
   return{html,cap:`Tahmin kralı yarışı 🎯\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)+" sikke").join("\n")}\n${HT()} #halısaha`,name:"tahmin-krali"}}
 function ypDuel(m){const PG={Defans:"DF","Orta saha":"OS",Forvet:"FV",Kaleci:"KL",DF:"DF",OS:"OS",FV:"FV",KL:"KL"};const grp=id=>{const p=P(id);return p.epos&&EPOS[p.epos]?EPOS[p.epos][0]:PG[p.pos]||EPOS[eposOf(p)]?.[0]};
   const best=(k,g)=>plOf(m,k).filter(id=>P(id)&&!P(id).guest&&grp(id)===g).sort((a,b)=>ovrOf(b)-ovrOf(a))[0];
@@ -3960,7 +3960,7 @@ function sheetKral(){const k=BET.kral;if(!k)return"";const T=(k.top||[]).filter(
   ${rest.length?`<ol class="krl-l">${rest.map((r,i)=>`<li><b>${i+2}</b><span>${esc(shortName(nameOf(r.p)))}</span><em class="num ${r.net<0?"neg":""}">${r.net>0?"+":""}${fJ(r.net)}</em></li>`).join("")}</ol>`:""}
   <div class="krl-b"><button class="btn" data-act="kralShare">${ICON.share||""} Paylaş</button><button class="btn primary" data-act="kralOk">Tamam</button></div></div>`}
 function ypThafta(){if(!isMember())return null;const k=BET.kral;if(!k){kralLoad();return null}const L=(k.top||[]).filter(r=>P(r.p)).slice(0,3);if(!L.length)return null;
-  const html=ypPost({c:"t",ey:"Haftalık yarış · Tahmin",ti:"Haftanın tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:r.won+"/"+r.n+" tuttu"}))),ft:"Her hafta 5.000 sikkeyle yeni yarış"});
+  const html=ypPost({c:"t",ey:"Haftalık yarış · Tahmin",ti:"Haftanın tahmin kralı",hero:ypPod(L.map(r=>({id:r.p,v:(r.net>0?"+":"")+fJ(r.net),l:"sikke · "+r.won+"/"+r.n+" tuttu"}))),ft:"Her hafta 5.000 sikkeyle yeni yarış"});
   return{html,cap:`Haftanın tahmin kralı: ${nameOf(k.p)} 👑 +${fJ(k.net)} sikke\n${L.map((r,i)=>(i+1)+". "+nameOf(r.p)+" "+(r.net>0?"+":"")+fJ(r.net)).join("\n")}\n${HT()} #tahmin`,name:"haftanin-tahmin-krali"}}
 function betPrefetch(){if(!isMember()||S.fol)return;betRestore();kralLoad();const m=betNext();if(m)betLoad("board",m.id);betLoad("tbl");betLoad("feed");betLoad("notes");const me=myPid();if(me)betLoad("list",me)}
 function betFind(id){if(!id)return null;const L=[BET.feed,...Object.values(BET.lists||{})];for(const x of L){const c=x&&x.rows&&x.rows.find(r=>r.id===id);if(c)return c}return null}
