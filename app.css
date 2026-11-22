@@ -4015,3 +4015,25 @@ html.dk body.tg .oda .oda-m{background:#04110B}
 .oda-tq{flex-wrap:wrap;overflow:visible}.oda-tq button:last-child{border-color:var(--c-line);color:#fff;background:var(--c-card2)}
 
 .oda-hd>div{align-content:center;min-height:44px}
+
+/* Haftanın tahmin kralı: tören ve sıralama şeridi */
+.krl{position:relative;display:grid;justify-items:center;text-align:center;gap:6px;padding:18px 4px 4px;overflow:hidden}
+.krl>*{position:relative}.krl .eyebrow{color:#0E8F4E}
+.krl-cf{position:absolute;inset:0;pointer-events:none}.krl-cf i{position:absolute;top:-14px;width:8px;height:14px;border-radius:2px;opacity:0}
+@media (prefers-reduced-motion:no-preference){.krl-cf i{animation:krlf 3s linear infinite}.krl-av{animation:krlp .7s cubic-bezier(.2,1.4,.4,1) both}.krl-tac{animation:krlt .6s .45s cubic-bezier(.2,1.6,.4,1) both}}
+@keyframes krlf{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(460px) rotate(540deg);opacity:0}}
+@keyframes krlp{from{transform:scale(.4);opacity:0}}@keyframes krlt{from{transform:translate(-50%,-26px) rotate(-18deg);opacity:0}}
+.krl-av{position:relative;width:132px;height:132px;margin:46px 0 6px;border-radius:50%;background:linear-gradient(135deg,#FFD400,#12C46B);padding:5px}
+.krl-av img,.krl-av>span{width:100%;height:100%;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:#0B3D24;color:#fff;font:900 2.6rem/1 var(--display)}
+.krl-tac{position:absolute;left:50%;top:-34px;width:76px;height:auto;transform:translateX(-50%) rotate(-6deg)}
+.krl h2{margin:0;font:900 1.9rem/1.05 var(--display)}.krl-t{margin:0;font:700 .86rem/1.2 Inter,sans-serif;color:#0E8F4E}
+.krl-n{display:grid;font:900 3rem/1 var(--display);color:#0E8F4E;margin-top:6px}.krl-n small{font:700 .72rem/1.4 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.krl-l{list-style:none;margin:10px 0 0;padding:4px 14px;width:100%;background:var(--c-card2);border-radius:16px;text-align:left}
+.krl-l li{display:flex;align-items:center;gap:10px;min-height:44px}.krl-l li+li{border-top:1px solid var(--c-line)}
+.krl-l b{width:22px;font:800 .9rem/1 var(--display);color:var(--muted)}.krl-l span{flex:1;font-weight:600}.krl-l em{font-style:normal;font-weight:800;color:#0E8F4E}.krl-l em.neg{color:#D9334F}
+.krl-b{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:14px}.krl-b .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.krl-b .btn svg{width:18px;height:18px}
+html.dk .krl .eyebrow,html.dk .krl-t,html.dk .krl-n,html.dk .krl-l em{color:#3BE08E}
+.krb{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;margin:0 0 10px;padding:10px 14px;border:0;border-radius:18px;background:linear-gradient(100deg,#FFF3B8,#D9F7E6);color:#12301F;font:inherit;text-align:left;cursor:pointer}
+.krb .krl-tac{position:static;transform:none;width:38px;flex:none;animation:none}.krb span{flex:1;display:grid;min-width:0}.krb small{font:700 .72rem/1.3 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#3F5F4D}
+.krb b{font:800 1.05rem/1.2 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.krb em{font-style:normal;font-weight:800;color:#0B6B3A}.krb i{font-style:normal;color:#3F5F4D;font-size:1.2rem}
+.sbox .setr.setsub{min-height:52px;padding-left:62px}.setr.setsub b{font-weight:600}
