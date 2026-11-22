@@ -63,15 +63,18 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   ok(await run(()=>!fin().some(m=>m.id===S.matches.find(x=>x.vote_on).id)),"oylama bitmeden maç sonuçlanmış sayılıyor");
   await shot("1_mac");
   await pg.click(".vhero .vbtn");await pg.waitForTimeout(300);
-  // 3 çok iyi seç, 4.'sü kapalı olmalı
-  const rows=await pg.$$(".vr2");ok(rows.length===13,"oylanacak oyuncu sayısı "+rows.length);
-  for(let i=0;i<rows.length;i++){const k=i<3?1:i<7?2:i<11?3:4;await pg.click(`.vr2:nth-of-type(1)`).catch(()=>{});
-    await run(([i,k])=>{const b=document.querySelectorAll(".vr2")[i].querySelectorAll(".vb2 button")[k-1];b.click()},[i,k])}
-  await pg.waitForTimeout(200);
-  ok(await run(()=>{const r=document.querySelectorAll(".vr2")[5];return r.querySelector(".vb2 .p1").disabled}),"4. çok iyi açık kaldı");
-  await shot("2_oyla");
+  // oyuncular tek tek gelir: 3 çok iyi, 4 iyi, 4 orta, 2 kötü; 4. oyuncuda "çok iyi" kapalı olmalı
+  ok(await pg.locator(".vsg i").count()===13,"oylanacak oyuncu sayısı "+await pg.locator(".vsg i").count());
+  for(let i=0;i<13;i++){const k=i<3?1:i<7?2:i<11?3:4;
+    if(i===5)ok(await run(()=>document.querySelector(".vg4 .p1").disabled),"4. çok iyi açık kaldı");
+    await pg.click(`.vg4 button:nth-child(${k})`);await pg.waitForTimeout(60)}
+  await pg.waitForTimeout(200);await shot("2_oyla");
+  ok(await run(()=>document.querySelector(".vsend").disabled),"maçın adamı seçilmeden gönderilebiliyor");
+  ok(await pg.locator('.vtl[data-act="vMotm"]').count()===3,"maçın adamı adayları çok iyi verilenler değil");
+  await pg.click('.vtl[data-act="vMotm"]');await pg.waitForTimeout(100);
+  ok(await pg.locator('.vtl[data-act="vFiy"]').count()===3,"fiyasko adayları kötü verilenler + boş geç değil");
   await pg.click(".vsend");await pg.waitForTimeout(600);
-  const sub=calls.find(c=>c[0]==="vote_submit");ok(sub&&Object.keys(sub[1].p_votes).length===13,"oy gönderilmedi");
+  const sub=calls.find(c=>c[0]==="vote_submit");ok(sub&&Object.keys(sub[1].p_votes).length===13,"oy gönderilmedi");ok(sub&&sub[1].p_motm&&sub[1].p_votes[sub[1].p_motm]===1&&sub[1].p_fiy===null,"maçın adamı ya da fiyasko seçimi yanlış gitti");
   // 6 kişi daha oy versin (rastgele ama kotaya uygun)
   let sd=7;const rnd=()=>(sd=(sd*9301+49297)%233280)/233280;const tal=ids.slice(0,14).map((_,i)=>i);
   for(let v=0;v<6;v++){const f=ids[(v+4)%14];const pl=ids.slice(0,14).filter(x=>x!==f);const sc=pl.map(t=>({t,s:ids.indexOf(t)*-.25+rnd()*4})).sort((x,y)=>y.s-x.s);

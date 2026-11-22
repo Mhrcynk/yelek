@@ -4067,3 +4067,25 @@ html.dk body:has(#modal .sheet .oda)::before,html.dk body:has(#modal .sheet .oda
 .thk-n{margin:6px 4px 0;font-size:.75rem;color:var(--c-ink3,var(--muted))}
 .oyt2{gap:0}.oyt2 button{flex:1;min-height:44px}
 html.dk body.tg .sback{background:#0F3222;color:#7DF2BE}
+
+/* Oylama: tek tek oyuncu ve son adım */
+.vsg{display:flex;gap:3px;margin:0 0 14px}.vsg i{flex:1;height:5px;border-radius:3px;background:var(--c-card2)}.vsg i.ok{background:#FFD400}.vsg i.on{background:#fff}
+.vpc{display:grid;justify-items:center;gap:8px;text-align:center;padding:20px 12px;border-radius:22px;background:var(--c-card2);margin-bottom:14px}
+.vpc .av{width:96px;height:96px;font-size:2rem}
+.vpc h3{margin:0;font:800 1.9rem/1 var(--display);text-transform:uppercase}.vpc p{margin:0;font-size:.82rem;color:var(--c-ink2);display:flex;align-items:center;gap:6px}
+.vq2{margin:0 0 10px;text-align:center;font-weight:700}
+.vg4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vg4 button{min-height:62px;border-radius:16px;border:0;background:var(--c-card2);color:var(--c-ink);font:700 1.05rem/1 Inter,sans-serif;cursor:pointer}
+.vg4 button.on{background:#fff;color:#120A2A}.vg4 button:disabled{opacity:.35}
+.vhint{margin:10px 0 0;text-align:center;font-size:.78rem;color:var(--c-ink3)}
+.vnav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}.vnav .btn{min-height:46px;padding:0 20px}
+.vsec{margin-bottom:16px}.vsec h3{margin:0 0 4px;font:800 1.5rem/1 var(--display);text-transform:uppercase}.vsec h3.gold{color:#FFD400}.vsec p{margin:0 0 10px;font-size:.82rem;color:var(--c-ink2)}
+.vtg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vtl{min-height:96px;border:2px solid transparent;border-radius:16px;background:var(--c-card2);color:var(--c-ink);display:grid;justify-items:center;align-content:center;gap:8px;font:inherit;padding:8px 4px;cursor:pointer}
+.vtl b{font-size:.85rem}.vtl.on{background:#FFD400;color:#2A1F00}.vtl.bos{border:2px dashed var(--c-line2);background:none}.vtl.bos.on{background:#fff;color:#120A2A;border-style:solid;border-color:#fff}
+.vsum{display:grid;gap:4px;padding:12px 14px;border-radius:16px;background:var(--c-card2);margin-bottom:12px;font-size:.85rem}.vsum span{color:var(--c-ink2)}.vsum em{font-style:normal;font-weight:800;color:var(--c-ink)}
+.vpk{margin:0 0 10px;font-size:.85rem;color:var(--c-ink2)}.vpk b{color:var(--c-ink)}
+/* Ben: bildirim türleri kapalı gelir; üye için üstteki profil tuşu gereksiz (Ben alt barda) */
+.pcd{border-top:1px solid var(--c-line)}.pcd summary{list-style:none;min-height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 62px;font:700 .85rem/1 Inter,sans-serif;color:var(--c-ink2);cursor:pointer}
+.pcd summary::-webkit-details-marker{display:none}.pcd summary::after{content:"›";font-size:1.2rem;transition:transform .2s}.pcd[open] summary::after{transform:rotate(90deg)}
+body.uye #meBtn{display:none}

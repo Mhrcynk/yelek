@@ -845,7 +845,7 @@ function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeou
   if(S.fol&&!FTABS.includes(S.tab))S.tab="lig";document.body.classList.toggle("fol",!!S.fol);
   {const ni=$("#navIn");const nk=(S.fol?"f":"n")+(isMember()?"m":"");if(!ni.firstChild||ni.dataset.k!==nk){ni.dataset.k=nk;{const nd=$("#nind");if(nd)delete nd.dataset.on}ni.innerHTML=(S.fol?TABS.filter(x=>FTABS.includes(x[0])):NAV).map(([k,l,ic])=>`<button data-tab="${k}"><span class="ic">${ic==="lig"?LIG_SVG:ICON[ic]||""}</span><span class="tl">${l}</span></button>`).join("")}
     const cur=S.fol?(S.tab==="sezon"||S.tab==="saha"?"lig":S.tab):navOf(S.tab);ni.querySelectorAll("button").forEach(b=>{if(b.dataset.tab===cur)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});navInd()}
-  document.body.classList.toggle("gated",gated());document.body.classList.toggle("fol",!!S.fol);
+  document.body.classList.toggle("gated",gated());document.body.classList.toggle("fol",!!S.fol);document.body.classList.toggle("uye",isMember()&&!S.fol);
   let h="";if(S.err)h+=`<div class="note warn">${esc(S.err)}</div>`;
   if(S.offline&&S.loaded)h+=`<button class="offl" data-act="retry">${SI.bulut}<span><b>İnternet yok</b> · son güncelleme ${new Date(S.offline).toDateString()===new Date().toDateString()?hhmm(S.offline):fmtShort(new Date(S.offline).toISOString().slice(0,10))+" "+hhmm(S.offline)}</span><i>Yenile</i></button>`;
   if(!S.loaded&&!S.err)h+=`<div class="skl"><i class="sk h"></i><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div><div class="skl"><i class="sk"></i><i class="sk"></i><i class="sk s"></i></div>`;
@@ -1629,15 +1629,29 @@ function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=e
       ${yes.length?`<div class="vchips">${yes.map(id=>`<button class="chip ok" data-act="voteOpen" data-id="${M}" data-v="${esc(id)}">${esc(shortName(nameOf(id)))}</button>`).join("")}</div>`:""}
       <div class="grid2"><button class="btn" data-act="vDet" data-id="${M}">Kim kime ne verdi</button><button class="btn ${conf?"primary":""}" data-act="vClose" data-id="${M}">${conf?(vt.size<6?"6'dan az oy var, yine de kapat":"Onayla ve kapat"):"Oylamayı kapat"}</button></div></section>`}
   return h}
-function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.vt;if(!m||!vt)return"";const me=vt.voter;const v=vt.v;
-  const oth=k=>plOf(m,k).filter(id=>id!==me);const all=[...oth("A"),...oth("B")];
+// Oylama: oyuncular tek tek gelir; sonda maçın adamı ("çok iyi" dediklerinden) ve fiyasko ("kötü" dediklerinden, isteğe bağlı) seçilir.
+function voteList(m,me){const oth=k=>plOf(m,k).filter(id=>id!==me);return[...oth("A"),...oth("B")]}
+function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.vt;if(!m||!vt)return"";const me=vt.voter;const v=vt.v;const all=voteList(m,me);
   const n1=all.filter(id=>v[id]===1).length,n4=all.filter(id=>v[id]===4).length,dn=all.filter(id=>v[id]).length;
-  const row=id=>{const p=P(id);return `<div class="vr2">${p?avatar(p,"sm"):""}<span class="vrn"><b>${esc(nameOf(id))}</b><small>${p&&!p.guest?esc(EPOS[eposOf(p)]?.[1]||""):"Misafir"}</small></span><div class="vb2">${[1,2,3,4].map(k=>{const on=v[id]===k;const dis=!on&&((k===1&&n1>=3)||(k===4&&n4>=3));return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}"${dis?" disabled":""}>${VL[k-1]}</button>`}).join("")}</div></div>`};
-  const grp=k=>{const L=oth(k);return L.length?`<div class="eyebrow trkh">${tDot(k)}${esc(TEAM[k])}</div><div class="vcard">${L.map(row).join("")}</div>`:""};
-  return `<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyuncuları değerlendir":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${esc(nmOf(m,"A"))} ${+m.score_a||0}–${+m.score_b||0} ${esc(nmOf(m,"B"))} · kimin ne verdiği gizli</small></div></div>
-    <div class="mzvp"><div><span>${dn} / ${all.length} oyuncu</span><span>Çok iyi ${n1}/3 · Kötü ${n4}/3</span></div><i><i style="width:${all.length?Math.round(dn/all.length*100):0}%"></i></i></div>
-    ${grp("A")}${grp("B")}
-    <button class="btn primary block vsend" data-act="vSend"${dn<all.length?" disabled":""}>${dn<all.length?`Gönder · ${all.length-dn} oyuncu kaldı`:"Gönder"}</button>`}
+  if(!(vt.i>=0&&vt.i<all.length))vt.i=0;const son=!!vt.son&&dn===all.length;
+  const seg=`<div class="vsg" aria-hidden="true">${all.map((id,i)=>`<i class="${v[id]?"ok":""}${!son&&i===vt.i?" on":""}"></i>`).join("")}</div>`;
+  const head=r=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyunu ver":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${r}</small></div></div>${seg}`;
+  const tile=(id,act,on)=>{const p=P(id);return `<button class="vtl${on?" on":""}" data-act="${act}" data-p="${esc(id)}" aria-pressed="${on}">${p?avatar(p):""}<b>${esc(shortName(nameOf(id)))}</b></button>`};
+  if(son){const c1=all.filter(id=>v[id]===1),c4=all.filter(id=>v[id]===4);if(vt.motm&&!c1.includes(vt.motm))vt.motm="";if(vt.fiy&&!c4.includes(vt.fiy))vt.fiy="";
+    const need=c1.length>0&&!vt.motm;const cnt=[1,2,3,4].map(k=>all.filter(id=>v[id]===k).length);
+    return `${head("Son adım · kimin ne verdiği gizli")}
+    <div class="vsec"><h3 class="gold">Maçın adamı</h3>${c1.length?`<p>"Çok iyi" dediklerin arasından birini seç.</p><div class="vtg">${c1.map(id=>tile(id,"vMotm",vt.motm===id)).join("")}</div>`:`<p>Kimseye "çok iyi" demedin, o yüzden maçın adamı seçmiyorsun. İstersen geri dönüp değiştirebilirsin.</p>`}</div>
+    <div class="vsec"><h3>Fiyasko</h3>${c4.length?`<p>"Kötü" dediklerin arasından. İstersen boş geç.</p><div class="vtg">${c4.map(id=>tile(id,"vFiy",vt.fiy===id)).join("")}<button class="vtl bos${vt.fiy?"":" on"}" data-act="vFiy" data-p="" aria-pressed="${!vt.fiy}"><b>Boş geç</b></button></div>`:`<p>Kimseye "kötü" demedin, fiyasko seçilmiyor.</p>`}</div>
+    <div class="vsum"><b>Verdiğin oylar</b><span>${cnt.map((x,i)=>`<em class="num">${x}</em> ${VL[i].toLocaleLowerCase("tr")}`).join(" · ")}</span></div>
+    <button class="btn primary block vsend" data-act="vSend"${need?" disabled":""}>${need?"Önce maçın adamını seç":"Oyları gönder"}</button>
+    <button class="btn ghost block" data-act="vBack">Geri dön, değiştir</button>`}
+  const id=all[vt.i];const p=P(id);const side=plOf(m,"A").includes(id)?"A":"B";const cur=v[id];
+  return `${head(`${vt.i+1} / ${all.length} · kimin ne verdiği gizli`)}
+    <div class="vpc">${p?avatar(p):""}<h3>${esc(nameOf(id))}</h3><p>${tDot(side)}${esc(TEAM[side])}${p&&!p.guest?" · "+esc(EPOS[eposOf(p)]?.[1]||""):" · Misafir"}</p></div>
+    <p class="vq2">${esc(firstName(nameOf(id)))} bu maçta nasıldı?</p>
+    <div class="vg4">${[1,2,3,4].map(k=>{const on=cur===k;const dis=!on&&((k===1&&n1>=3)||(k===4&&n4>=3));return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}"${dis?" disabled":""}>${VL[k-1]}</button>`}).join("")}</div>
+    <p class="vhint">Çok iyi ${n1}/3 · Kötü ${n4}/3 · seçince sıradaki oyuncuya geçer</p>
+    <div class="vnav"><button class="btn" data-act="vBack"${vt.i===0?" disabled":""}>Geri</button>${cur?`<button class="btn" data-act="vNext">${dn===all.length?"Son adıma geç":"İleri"}</button>`:""}</div>`}
 function sheetVdet(){const d=S.f.vd;const m=d&&S.matches.find(x=>x.id===d.mid);if(!m||!S.admin)return"";const pl=plAll(m);const sel=d.sel||pl[0];const dir=d.dir||"f";
   const R=(d.rows||[]).filter(r=>dir==="f"?r.f===sel:r.t===sel).sort((a,b)=>a.v-b.v);const oth=r=>dir==="f"?r.t:r.f;const c=[1,2,3,4].map(k=>R.filter(r=>r.v===k).length);
   return `<div class="ch"><div style="min-width:0"><div class="eyebrow">Sadece yönetici görür</div><h2>Kim kime ne verdi</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
@@ -1650,7 +1664,7 @@ function voteResults(m,inf){const vs=m.vsum;const stt=m.stats||{};const M=esc(m.
   const n=vs._n||0;const pl=plAll(m).filter(id=>Array.isArray(vs[id]));const sc=id=>{const c=vs[id],t=c[0]+c[1]+c[2]+c[3];return t?(3*c[0]+2*c[1]+c[2])/t:-1};
   const row=id=>{const c=vs[id];const mx=Math.max(...c);const p=P(id);const r=inf&&inf.pts[id];return `<button class="degr" data-act="open" data-id="${esc(id)}">${p?avatar(p,"sm"):""}<span class="degn"><b>${esc(nameOf(id))}</b>${r?`<span class="muted small">${tDot(r.side)}${esc(TEAM[r.side])}</span>`:""}</span><span class="vdist">${c.map((x,i)=>`<span class="q${i+1}${x===mx&&x>0?" h":""}" title="${VL[i]}">${x}</span>`).join("")}</span></button>`};
   const by=v=>pl.filter(id=>+stt[id]?.k===v).sort((a,b)=>sc(b)-sc(a));
-  let h="";
+  let h="";if(vs._motm&&P(vs._motm))h+=`<p class="vpk">Oylamada maçın adamı: <b>${esc(shortName(nameOf(vs._motm)))}</b> (${vs._motmN||1} oy)${vs._fiy&&P(vs._fiy)?` · fiyasko: <b>${esc(shortName(nameOf(vs._fiy)))}</b> (${vs._fiyN} oy)`:""}</p>`;
   if(n<6)h+=`<p class="muted small">6'dan az oy geldiği için değerlendirme notları etkilemedi.</p><div class="degc">${pl.sort((a,b)=>sc(b)-sc(a)).map(row).join("")}</div>`;
   else h+=`<div class="degs">${[1,2,3,4].map(v=>{const ids=by(v);return ids.length?`<div class="degc"><div class="degh"><span class="pfc p${v}">${VL[v-1]}</span></div>${ids.map(row).join("")}</div>`:""}).join("")}</div>`;
   if(S.admin)h+=`<button class="btn ghost sm" data-act="vReopen" data-id="${M}">${S.f.vReopen===m.id?"Yeniden açmak için tekrar bas":"Oylamayı yeniden aç"}</button>`;
@@ -1914,8 +1928,9 @@ function statsOf(sd){const o={};const add=(id,k)=>{if(id){const x=o[id]||(o[id]=
   for(const k of EXK)for(const[id,v]of Object.entries(sd[k]||{}))if(v)ens(id)[k]=v;return o}
 function goalSums(m,sd){let a=0,b=0;for(const e of sd.events){if(e.t==="g")sideOf(m,e.g)==="A"?a++:b++;else if(e.t==="og")sideOf(m,e.p)==="A"?b++:a++}return[a,b]}
 function sdOf(m){const k="sd_"+m.id;if(S.f[k])return S.f[k];let sv=null;try{sv=JSON.parse(LS.get("y_sd_"+m.id)||"null")}catch(_){}
-  if(sv&&Array.isArray(sv.events))return S.f[k]={...exFrom({}),...sv,undo:sv.undo||[],step:null};
-  const sd={a:+m.score_a||0,b:+m.score_b||0,touched:m.score_a!=null,manual:false,motm:m.motm||"",gol:m.gol_id||"",fiy:m.fiy_id||"",events:eventsFrom(m),...exFrom(m.stats),undo:[],step:null};
+  const vsm=(m.vsum&&m.vsum._motm)||"",vsf=(m.vsum&&m.vsum._fiy)||"";
+  if(sv&&Array.isArray(sv.events))return S.f[k]={...exFrom({}),...sv,motm:sv.motm||vsm,fiy:sv.fiy||vsf,undo:sv.undo||[],step:null};
+  const sd={a:+m.score_a||0,b:+m.score_b||0,touched:m.score_a!=null,manual:false,motm:m.motm||vsm,gol:m.gol_id||"",fiy:m.fiy_id||vsf,events:eventsFrom(m),...exFrom(m.stats),undo:[],step:null};
   const[ga,gb]=goalSums(m,sd);if(m.score_a!=null&&(ga!==sd.a||gb!==sd.b))sd.manual=true;return S.f[k]=sd}
 function sdSave(m,sd){try{LS.set("y_sd_"+m.id,JSON.stringify({a:sd.a,b:sd.b,touched:sd.touched,manual:sd.manual,motm:sd.motm,gol:sd.gol||"",fiy:sd.fiy||"",events:sd.events,perf:sd.perf||{},pen:sd.pen||{},cl:sd.cl||{},pm:sd.pm||{},ps:sd.ps||{},undo:sd.undo.slice(-25)}))}catch(_){}}
 function syncScore(m,sd){if(sd.manual)return;const[a,b]=goalSums(m,sd);sd.a=a;sd.b=b;if(a||b)sd.touched=true}
@@ -2922,12 +2937,12 @@ async function pushOff(){PUSH.busy=true;render(true);
   try{const reg=PUSH.reg||await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();
     if(sub){const j=sub.toJSON();try{await rpc("push_subscribe",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_on:false})}catch(_){}await sub.unsubscribe()}
     PUSH.st="kapali";toast("Bildirimler kapandı")}catch(_){toast("Kapatılamadı")}finally{PUSH.busy=false;render(true)}}
-const pushSub=()=>({acik:"Açık · türleri aşağıdan seç",kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:isIOS()&&!isStandalone()?"Önce Telefona ekle ile ana ekrana ekle":"Desteklenmiyor · Chrome ya da Safari ile aç","?":"…"}[PUSH.st]||"");
+const pushSub=()=>({acik:`Açık · ${PUSH_CATS.length} türden ${PUSH_CATS.length-(PUSH.off||[]).length}\u2019${["ı","i","si","ü","ü","i","sı"][PUSH_CATS.length-(PUSH.off||[]).length]||"i"}`,kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:isIOS()&&!isStandalone()?"Önce Telefona ekle ile ana ekrana ekle":"Desteklenmiyor · Chrome ya da Safari ile aç","?":"…"}[PUSH.st]||"");
 function waitPush(){const st=PUSH.st;if(st==="acik")return `<p class="wpush on">${SI.zil} Onaylanınca bildirim gelecek.</p>`;
   if(st==="kapali")return `<button class="btn block wpush" data-act="pushOn">${SI.zil} Onaylanınca bana haber ver</button>`;
   if(st==="ios")return `<p class="wpush">${SI.zil} Onaylanınca haber almak için önce uygulamayı ana ekrana ekle: Paylaş → Ana Ekrana Ekle.</p>`;return""}
 function pushRow(){if(!S.session||!isMember())return"";const on=PUSH.st==="acik",can=PUSH.st==="acik"||PUSH.st==="kapali"||PUSH.st==="ios";
-  return `<div class="setr nolink"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimler</b><small>${pushSub()}</small></span>${can?`<button class="sw ${on?"on":""}" data-act="${on?"pushOff":"pushOn"}" role="switch" aria-checked="${on}" aria-label="Bildirimler" ${PUSH.busy?"disabled":""}><i></i></button>`:""}</div>${on?PUSH_CATS.map(([k,t,d])=>{const o=!(PUSH.off||[]).includes(k);return `<div class="setr nolink setsub"><span class="setx"><b>${t}</b><small>${d}</small></span><button class="sw ${o?"on":""}" data-act="pushCat" data-k="${k}" role="switch" aria-checked="${o}" aria-label="${t}"><i></i></button></div>`}).join(""):""}`}
+  return `<div class="setr nolink"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimler</b><small>${pushSub()}</small></span>${can?`<button class="sw ${on?"on":""}" data-act="${on?"pushOff":"pushOn"}" role="switch" aria-checked="${on}" aria-label="Bildirimler" ${PUSH.busy?"disabled":""}><i></i></button>`:""}</div>${on?`<details class="pcd"><summary>Bildirim türleri</summary>`+PUSH_CATS.map(([k,t,d])=>{const o=!(PUSH.off||[]).includes(k);return `<div class="setr nolink setsub"><span class="setx"><b>${t}</b><small>${d}</small></span><button class="sw ${o?"on":""}" data-act="pushCat" data-k="${k}" role="switch" aria-checked="${o}" aria-label="${t}"><i></i></button></div>`}).join("")+`</details>`:""}`}
 const PUSH_CATS=[["mac","Maç","Kadrolar, maç sonucu ve oylama"],["kupon","Kuponlarım","Kuponun tuttu, kuponuna yorum ve beğeni"],["arkadas","Arkadaşların kuponları","Yeni kuponlar ve tutan kuponlar"],["yaris","Haftanın tahmin kralı","Haftalık yarışın kazananı"],["sohbet","Soyunma odası sohbeti","Yeni mesajlar ve anketler"],["oda","Duyuru, görev ve etiket","Duyuru, dürtme, sana verilen görev, senden bahsedilmesi"]];
 function pushAsk(){if(!S.session||!(isMember()||S.fol)||LS.get("y_pushask")||!(PUSH.st==="kapali"||PUSH.st==="ios"))return"";
   return `<section class="card pask"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimleri aç</b><small>${PUSH.st==="ios"?"iPhone'da önce ana ekrana ekle, sonra buradan aç.":"Takımlar belli olunca ve maç sonucunda haber verelim."}</small></span><div class="pab"><button class="btn sm primary" data-act="pushOn">${PUSH.st==="ios"?"Nasıl?":"Aç"}</button><button class="btn sm ghost" data-act="pushNo" aria-label="Kapat">${ICON.x}</button></div></section>`}
@@ -3347,10 +3362,17 @@ document.addEventListener("click",async e=>{
     case"fillScore":{const m=S.matches.find(x=>x.id===id);const sd=S.f["sd_"+id];if(!sd)break;snap(sd,"skor düzeltme");sd.manual=false;sd.touched=true;syncScore(m,sd);sdSave(m,sd);render(true);break}
     case"voteOpen":{const m=S.matches.find(x=>x.id===id);const voter=el.dataset.v;if(!m||!voter)break;let v={};
       if(voter===myPid()&&S.vst[id]&&S.vst[id].mine)v={...S.vst[id].mine};
-      else if(S.admin){const r=await A("admin_votes",{p_match:id});if(r)for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v}
-      S.f.vt={mid:id,voter,v};S.sheet={type:"vote",mid:id};render(true);break}
-    case"vPick":{const vt=S.f.vt;if(!vt)break;const p=el.dataset.p,k=+el.dataset.v;vt.v[p]=vt.v[p]===k?undefined:k;if(!vt.v[p])delete vt.v[p];render(true);break}
-    case"vSend":{const vt=S.f.vt;if(!vt)break;const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
+      let motm="",fiy="";
+      if(voter!==myPid()&&S.admin){const r=await A("admin_votes",{p_match:id});if(r){for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v;const pk=(r.picks||[]).find(x=>x.f===voter);if(pk){motm=pk.m||"";fiy=pk.y||""}}}
+      else if(S.admin&&!(S.vst[id]&&S.vst[id].mine)){const r=await A("admin_votes",{p_match:id});if(r)for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v}if(voter===myPid()&&S.vst[id]&&S.vst[id].pick){motm=S.vst[id].pick.motm||"";fiy=S.vst[id].pick.fiy||""}
+      const all=voteList(m,voter);const first=all.findIndex(x=>!v[x]);S.f.vt={mid:id,voter,v,motm,fiy,i:first<0?0:first,son:first<0&&all.length>0};S.sheet={type:"vote",mid:id};render(true);break}
+    case"vPick":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const p=el.dataset.p,k=+el.dataset.v;vt.v[p]=k;if(vt.motm===p&&k!==1)vt.motm="";if(vt.fiy===p&&k!==4)vt.fiy="";
+      const all=voteList(m,vt.voter);let n=-1;for(let j=1;j<=all.length;j++){const q=(vt.i+j)%all.length;if(!vt.v[all[q]]){n=q;break}}if(n<0){if(vt.i<all.length-1)vt.i++;else vt.son=true}else vt.i=n;render(true);break}
+    case"vNext":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const all=voteList(m,vt.voter);if(all.every(x=>vt.v[x]))vt.son=true;else if(vt.i<all.length-1)vt.i++;render(true);break}
+    case"vBack":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;if(vt.son){vt.son=false;vt.i=voteList(m,vt.voter).length-1}else if(vt.i>0)vt.i--;render(true);break}
+    case"vMotm":{const vt=S.f.vt;if(!vt)break;vt.motm=vt.motm===el.dataset.p?"":el.dataset.p;render(true);break}
+    case"vFiy":{const vt=S.f.vt;if(!vt)break;vt.fiy=el.dataset.p||"";render(true);break}
+    case"vSend":{const vt=S.f.vt;if(!vt)break;const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v,p_motm:vt.motm||null,p_fiy:vt.fiy||null},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
     case"vDet":{const r=await A("admin_votes",{p_match:id});if(!r)break;S.f.vd={mid:id,rows:r.rows||[],dir:"f",sel:plAll(S.matches.find(x=>x.id===id)||{}).includes(myPid())?myPid():null};S.sheet={type:"vdet",mid:id};render(true);break}
     case"vdDir":if(S.f.vd){S.f.vd.dir=el.dataset.v;render(true)}break;
     case"vdSel":if(S.f.vd){S.f.vd.sel=el.dataset.p;render(true)}break;
