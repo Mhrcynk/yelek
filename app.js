@@ -1631,6 +1631,12 @@ function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=e
   return h}
 // Oylama: oyuncular tek tek gelir; sonda maçın adamı ("çok iyi" dediklerinden) ve fiyasko ("kötü" dediklerinden, isteğe bağlı) seçilir.
 function voteList(m,me){const oth=k=>plOf(m,k).filter(id=>id!==me);return[...oth("A"),...oth("B")]}
+function voteStats(m,id,side){const fin=m.state==="bitti"&&m.score_a!=null;const o=(m.stats||{})[id]||{};const t=trkOf(m,id)||{};const T=[];
+  if(fin){const us=side==="A"?+m.score_a:+m.score_b,th=side==="A"?+m.score_b:+m.score_a;T.push([us+"–"+th,us>th?"Kazandı":us<th?"Kaybetti":"Berabere"],[+o.g||0,"Gol"],[+o.a||0,"Asist"]);
+    if(+o.cl)T.push([+o.cl,"Çizgiden"]);if(+o.ps)T.push([+o.ps,"Pen. kurtardı"]);if(+o.og)T.push([+o.og,"Kendi kalesine"]);if(+o.pm)T.push([+o.pm,"Pen. kaçırdı"])}
+  [["km","km"],["hiz","Maks hız"],["pas","Pas"],["tk","Top kapma"]].forEach(([k,l])=>{if(t[k]!=null&&T.length<6)T.push([fTrk(k,t[k]),l])});
+  if(!T.length)return `<p class="vst0">Skor ve goller henüz girilmedi; şimdilik gördüğüne göre oyla.</p>`;
+  return `<div class="vstt">${T.slice(0,6).map(([v,l])=>`<span><b class="num">${esc(String(v))}</b><small>${l}</small></span>`).join("")}</div>`}
 function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.vt;if(!m||!vt)return"";const me=vt.voter;const v=vt.v;const all=voteList(m,me);
   const n1=all.filter(id=>v[id]===1).length,n4=all.filter(id=>v[id]===4).length,dn=all.filter(id=>v[id]).length;
   if(!(vt.i>=0&&vt.i<all.length))vt.i=0;const son=!!vt.son&&dn===all.length;
@@ -1647,10 +1653,10 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
     <button class="btn ghost block" data-act="vBack">Geri dön, değiştir</button>`}
   const id=all[vt.i];const p=P(id);const side=plOf(m,"A").includes(id)?"A":"B";const cur=v[id];
   return `${head(`${vt.i+1} / ${all.length} · kimin ne verdiği gizli`)}
-    <div class="vpc">${p?avatar(p):""}<h3>${esc(nameOf(id))}</h3><p>${tDot(side)}${esc(TEAM[side])}${p&&!p.guest?" · "+esc(EPOS[eposOf(p)]?.[1]||""):" · Misafir"}</p></div>
+    <div class="vpc">${p?avatar(p):""}<h3>${esc(nameOf(id))}</h3><p>${tDot(side)}${esc(TEAM[side])}${p&&!p.guest?" · "+esc(EPOS[eposOf(p)]?.[1]||""):" · Misafir"}</p>${voteStats(m,id,side)}</div>
     <p class="vq2">${esc(firstName(nameOf(id)))} bu maçta nasıldı?</p>
-    <div class="vg4">${[1,2,3,4].map(k=>{const on=cur===k;const dis=!on&&((k===1&&n1>=3)||(k===4&&n4>=3));return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}"${dis?" disabled":""}>${VL[k-1]}</button>`}).join("")}</div>
-    <p class="vhint">Çok iyi ${n1}/3 · Kötü ${n4}/3 · seçince sıradaki oyuncuya geçer</p>
+    <div class="vg4">${[1,2,3,4].map(k=>{const on=cur===k;return `<button class="p${k}${on?" on":""}" data-act="vPick" data-p="${esc(id)}" data-v="${k}" aria-pressed="${on}">${VL[k-1]}</button>`}).join("")}</div>
+    <p class="vhint">Seçince sıradaki oyuncuya geçer · şimdiye kadar ${n1} çok iyi, ${n4} kötü</p>
     <div class="vnav"><button class="btn" data-act="vBack"${vt.i===0?" disabled":""}>Geri</button>${cur?`<button class="btn" data-act="vNext">${dn===all.length?"Son adıma geç":"İleri"}</button>`:""}</div>`}
 function sheetVdet(){const d=S.f.vd;const m=d&&S.matches.find(x=>x.id===d.mid);if(!m||!S.admin)return"";const pl=plAll(m);const sel=d.sel||pl[0];const dir=d.dir||"f";
   const R=(d.rows||[]).filter(r=>dir==="f"?r.f===sel:r.t===sel).sort((a,b)=>a.v-b.v);const oth=r=>dir==="f"?r.t:r.f;const c=[1,2,3,4].map(k=>R.filter(r=>r.v===k).length);
@@ -2004,9 +2010,10 @@ function statEntry(m){
     const scorers=[...new Set(sd.events.filter(e=>e.t==="g").map(e=>e.g))];
     const grp=(k,ids)=>ids.map(id=>ptile(id,"awPick",M,sd[k]===id,` data-k="${k}"`)).join("");
     const byT=k=>[["A",team("A")],["B",team("B")]].map(([t,T])=>`<div class="grp">${dot(t)} ${esc(TEAM[t])}</div><div class="ptiles c4">${grp(k,T)}</div>`).join("");
-    body=`<div class="aws"><div class="awh"><b>★ Maçın Adamı</b><span class="muted small">+${fN(NOTE.motm)} not${sd.motm?" · "+esc(shortName(nameOf(sd.motm))):""}</span></div>${byT("motm")}</div>
+    const oyAcik=vOn(m)&&!m.vote_closed_at;const oyNot=t=>`<div class="aws"><div class="awh"><b>${t}</b></div><p class="muted small" style="margin:0">Oylama sürüyor. Oylamayı kapatınca en çok seçilen oyuncu otomatik yazılır.</p></div>`;
+    body=(oyAcik?oyNot("★ Maçın Adamı"):`<div class="aws"><div class="awh"><b>★ Maçın Adamı</b><span class="muted small">+${fN(NOTE.motm)} not${sd.motm?" · "+esc(shortName(nameOf(sd.motm))):""}</span></div>${byT("motm")}</div>`)+`
       <div class="aws"><div class="awh"><b>⚽ Haftanın Golü</b><span class="muted small">${sd.gol?esc(shortName(nameOf(sd.gol))):"gol atanlardan seç"}</span></div>${scorers.length?`<div class="ptiles c4">${grp("gol",scorers)}</div>`:`<p class="muted small" style="margin:0">Önce golleri gir.</p>`}</div>
-      <div class="aws"><div class="awh"><b>🙈 Haftanın Fiyaskosu</b><span class="muted small">${sd.fiy?esc(shortName(nameOf(sd.fiy))):"isteğe bağlı"}</span></div>${byT("fiy")}</div>`}
+      `+(oyAcik?oyNot("🙈 Haftanın Fiyaskosu"):`<div class="aws"><div class="awh"><b>🙈 Haftanın Fiyaskosu</b><span class="muted small">${sd.fiy?esc(shortName(nameOf(sd.fiy))):"isteğe bağlı"}</span></div>${byT("fiy")}</div>`)}
   else body=perfBlock(m,sd);
   const last=sd.undo.length?JSON.parse(sd.undo[sd.undo.length-1]).l:"";
   const bot=`<div class="stBot">${conf?`<div class="stSum">${esc(TEAM.A)} <b>${sd.a} – ${sd.b}</b> ${esc(TEAM.B)} · ${gA+gB} gol${sd.motm?" · ★ "+esc(shortName(nameOf(sd.motm))):" · Maçın Adamı yok"} · ${nPerf} değerlendirme</div>`:""}
@@ -2635,7 +2642,7 @@ function viewKurallar(inSheet){
    <p class="muted small">İlk 3 gol tam, 4. ve 5. gol ×0,6, 6. golden sonrası ×0,3 sayılır. Penaltı golü normal golün yarısıdır. Bol gollü maçta orta saha ve forvetin gol ve asist değeri düşer: maçta 12 gol varsa ×1, 16 gol ×0,75 (en az ×0,7), 10 gol ×1,15 (en fazla).</p></details>
   <details class="card rdet"><summary>${dIcon("eldiven","cyan",28)}<h2>Yenilen gol</h2></summary><p class="muted small">Grubun maç başı gol ortalamasına göre bakılır (şu an <b>${fN(gyOrt())}</b>). Ortalamanın altında gol yiyen savunma artı alır, üstünde yiyen eksi.</p><div class="scroll-x"><table class="tbl"><thead><tr><th>Ortalamaya göre</th><th>Kaleci</th><th>Defans</th><th>Def. orta saha</th></tr></thead><tbody>
    ${n.savunma.map(([lim,v],i)=>`<tr><td>${i===0?Math.abs(lim)+"+ az":i===n.savunma.length-1?(n.savunma[i-1][0]+1)+"+ fazla":(()=>{const a=n.savunma[i-1][0]+1,b=lim;const t=x=>x<0?Math.abs(x)+" az":x>0?x+" fazla":"aynı";return a===b?t(a):t(a)+" – "+t(b)})()}</td><td>${f(v.KL)}</td><td>${f(v.DF)}</td><td>${f(v.DOS)}</td></tr>`).join("")}</tbody></table></div><p class="muted small">Kalecinin yediği penaltı golleri yarım gol sayılır.</p></details>
-  <details class="card rdet"><summary>${dIcon("grafik","lila",28)}<h2>Maç değerlendirmesi</h2></summary><p class="muted small">Maç başladıktan 1 saat sonra oylama açılır. Oynayan herkes kendisi hariç tüm oyuncuları çok iyi, iyi, orta veya kötü diye oylar; en fazla 3 çok iyi ve 3 kötü verilebilir. Yönetici oylamayı kapatınca oyuncular aldıkları oyların ortalamasına göre sıralanır: 14 kişilik maçta ilk 3 çok iyi, sonraki 4 iyi, sonraki 4 orta, son 3 kötü olur. 6'dan az kişi oy verirse değerlendirme notu etkilemez. Kimin kime ne oy verdiğini sadece yönetici görür. Kurtarış sayısı tutulmadığı için kalecide değerlendirme daha ağır sayılır.</p>
+  <details class="card rdet"><summary>${dIcon("grafik","lila",28)}<h2>Maç değerlendirmesi</h2></summary><p class="muted small">Maç başladıktan 1 saat sonra oylama açılır. Oynayan herkes kendisi hariç tüm oyuncuları çok iyi, iyi, orta veya kötü diye oylar; sonunda "çok iyi" dediklerinden birini maçın adamı, "kötü" dediklerinden birini fiyasko seçer. En çok seçilen oyuncular maçın adamı ve fiyasko olur. Yönetici oylamayı kapatınca oyuncular aldıkları oyların ortalamasına göre sıralanır: 14 kişilik maçta ilk 3 çok iyi, sonraki 4 iyi, sonraki 4 orta, son 3 kötü olur. 6'dan az kişi oy verirse değerlendirme notu etkilemez. Kimin kime ne oy verdiğini sadece yönetici görür. Kurtarış sayısı tutulmadığı için kalecide değerlendirme daha ağır sayılır.</p>
    <div class="scroll-x"><table class="tbl"><thead><tr><th></th><th>Saha oyuncusu</th><th>Kaleci</th></tr></thead><tbody>${[1,2,3,4].map(k=>`<tr><td>${n.perf[k][1]}</td><td>${f(n.perf[k][0])}</td><td>${f(n.perfKL[k])}</td></tr>`).join("")}</tbody></table></div>
    <div class="rules">${row("Çizgiden çıkarma","+ forvetin o maçtaki gol değeri")}${row("Penaltı yaptırma","− forvet gol değerinin yarısı")}${row("Penaltı kaçırma","− atsaydı kazanacağı kadar")}${row("Penaltı kurtarma","+ forvetin o maçtaki gol değeri")}</div></details>
   <details class="card rdet"><summary>${dIcon("kisi","lila",28)}<h2>Herkes için</h2></summary><div class="rules">${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy)+" (Kötü de seçildiyse "+f(n.fiy*n.fiyKotu)+")")}${row("Kendi kalesine gol",f(n.kk))}</div></details>
