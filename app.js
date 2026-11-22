@@ -1633,12 +1633,11 @@ function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=e
 function voteList(m,me){const oth=k=>plOf(m,k).filter(id=>id!==me);return[...oth("A"),...oth("B")]}
 function voteStats(m,id,side){
   if(S.f.vt&&S.f.vt.demo){let h=7;for(const ch of String(id))h=(h*31+ch.charCodeAt(0))%100003;const r=n=>{h=(h*9301+49297)%233280;return h/233280*n};const us=side==="A"?9:7,th=side==="A"?7:9;
-    const T=[[us+"–"+th,us>th?"Kazandı":"Kaybetti"],[Math.floor(r(4)),"Gol"],[Math.floor(r(3)),"Asist"],[(3.8+r(2)).toFixed(1).replace(".",","),"km"],[(21+r(7)).toFixed(1).replace(".",","),"Maks hız"],[Math.round(15+r(45)),"Pas"]];
+    const T=[[us+"–"+th,us>th?"Kazandı":"Kaybetti"],[Math.floor(r(4)),"Gol"],[Math.floor(r(3)),"Asist"]];
     return `<div class="vstt">${T.map(([v,l])=>`<span><b class="num">${v}</b><small>${l}</small></span>`).join("")}</div><p class="vst0">Deneme: bu rakamlar uydurma.</p>`}
-  const fin=m.state==="bitti"&&m.score_a!=null;const o=(m.stats||{})[id]||{};const t=trkOf(m,id)||{};const T=[];
+  const fin=m.state==="bitti"&&m.score_a!=null;const o=(m.stats||{})[id]||{};const T=[];
   if(fin){const us=side==="A"?+m.score_a:+m.score_b,th=side==="A"?+m.score_b:+m.score_a;T.push([us+"–"+th,us>th?"Kazandı":us<th?"Kaybetti":"Berabere"],[+o.g||0,"Gol"],[+o.a||0,"Asist"]);
     if(+o.cl)T.push([+o.cl,"Çizgiden"]);if(+o.ps)T.push([+o.ps,"Pen. kurtardı"]);if(+o.og)T.push([+o.og,"Kendi kalesine"]);if(+o.pm)T.push([+o.pm,"Pen. kaçırdı"])}
-  [["km","km"],["hiz","Maks hız"],["pas","Pas"],["tk","Top kapma"]].forEach(([k,l])=>{if(t[k]!=null&&T.length<6)T.push([fTrk(k,t[k]),l])});
   if(!T.length)return `<p class="vst0">Skor ve goller henüz girilmedi; şimdilik gördüğüne göre oyla.</p>`;
   return `<div class="vstt">${T.slice(0,6).map(([v,l])=>`<span><b class="num">${esc(String(v))}</b><small>${l}</small></span>`).join("")}</div>`}
 function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.vt;if(!m||!vt)return"";const me=vt.voter;const v=vt.v;const all=voteList(m,me);
