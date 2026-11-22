@@ -3069,7 +3069,7 @@ document.addEventListener("click",async e=>{
     case"storyRes":case"storyMotm":{if(S.story)stPause(true);const m=S.matches.find(x=>x.id===id);if(S.sheet&&S.sheet.type==="share"){S.sheet=null;render(true)}if(m)shareStory(m,a==="storyMotm"?"motm":"res");break}
     case"addSheet":S.sheet={type:"add"};render(true);break;
     case"pickMe":if(!id&&S.me)LS.set("y_me_last",S.me);S.me=id||"";if(S.me){LS.set("y_me",S.me);LS.set("y_me_last",S.me)}if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
-    case"close":case"closeBg":if(S.sheet&&S.sheet.type==="hos")LS.set("y_hos","1");if(S.sheet&&S.sheet.type==="kral")kralSeen();S.f.tnSent=null;S.f.bk=null;S.sheet=null;render(true);break;
+    case"close":case"closeBg":if(S.sheet&&S.sheet.type==="hos")LS.set("y_hos","1");if(S.sheet&&S.sheet.type==="kral")kralSeen();{const tam=S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");S.f.tnSent=null;S.f.bk=null;S.sheet=null;if(tam&&document.activeElement&&document.activeElement.blur)document.activeElement.blur();render(true);if(tam){window.scrollTo(0,0);requestAnimationFrame(()=>window.scrollTo(0,0));setTimeout(()=>window.scrollTo(0,0),320)}}break;
     case"hosOk":LS.set("y_hos","1");S.sheet=null;render(true);break;
     case"audLoad":S.audit=null;render(true);break;
     case"oauth":signIn(el.dataset.v);break;
