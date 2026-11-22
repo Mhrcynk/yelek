@@ -827,7 +827,7 @@ function routeAfter(){const r=S._route;if(!r||!S.loaded)return;const p=decodeURI
 function routeGo(r){S._route=r;S._r0=r;S._r0t=Date.now();S.sheet=null;routeTab(r);render(true);routeAfter()}
 addEventListener("hashchange",()=>{const r=location.hash.slice(1);if(r&&r.includes("/")||r==="m")routeGo(r);else if(r&&TABS.some(x=>x[0]===r)&&S.tab!==r)routeGo(r)});
 navigator.serviceWorker&&navigator.serviceWorker.addEventListener("message",e=>{const d=e.data||{};if(d.t==="nav"&&d.url){try{const u=new URL(d.url);if(u.hash)routeGo(u.hash.slice(1))}catch(_){}}});
-function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0)},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm"));{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm")?"#05160E":"#120A2A"}
+function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeout(()=>{const nb=document.querySelector('#navIn button[data-tab="iddia"]');if(nb)nb.classList.toggle("bdot",S.tab!=="iddia"&&betUnread()>0);odaFab()},0);document.body.dataset.fs=S.f.fs||"";document.body.classList.toggle("tg",S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm"));{const tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.content=S.tab==="iddia"&&!(S.sheet&&S.sheet.type==="pm")?"#05160E":"#120A2A"}
   if(S.tab==="ayarlar")S.tab="ben";if(S.tab==="saha"){S.tab="sezon";S.f.sezV="saha"}
   if(!force&&isEditing()){S.pending=true;return}
   S.pending=false;compute();
@@ -3752,11 +3752,23 @@ function odaLoad(mid,force){if(!mid||!myPid())return;const t=ODA.at[mid]||0;if(t
   rpc("room_get",{p_match:mid}).then(r=>{ODA.at[mid]=Date.now();if(r&&r.ok)odaPut(mid,r)}).catch(()=>{ODA.at[mid]=Date.now()-9000})}
 function odaPut(mid,r){const o=JSON.stringify(ODA.d[mid]||null),n=JSON.stringify(r);ODA.d[mid]=r;if(o===n)return;
   if(S.sheet&&S.sheet.type==="oda"&&S.sheet.mid===mid){odaSeen(mid);odaRender();odaSeenSrv(mid)}
-  else{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===mid);if(c&&m)c.outerHTML=odaCard(m)}}
+  else{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===mid);if(c&&m)c.outerHTML=odaCard(m)}odaFab()}
 function odaSeenSrv(mid){const d=ODA.d[mid],me=myPid();if(!d||!d.open||!d.msgs||!me)return;if(!d.msgs.some(x=>x.k==="duyuru"&&!(x.sn||[]).includes(me)))return;if(ODA.sn===mid+":"+d.msgs.length)return;ODA.sn=mid+":"+d.msgs.length;rpc("room_seen",{p_match:mid}).then(r=>{if(r&&r.ok)odaPut(mid,r)}).catch(()=>{})}
 function odaRoom(d){return d&&d.after?d[(S.sheet&&S.sheet.side)||d.side||"A"]:d}
 function odaSeen(mid){const d=ODA.d[mid];if(!d||!d.msgs)return;const mx=d.msgs.reduce((a,x)=>Math.max(a,+x.id||0),0);if(mx)LS.set("y_oda_"+mid,String(mx))}
 function odaUnread(mid){const d=ODA.d[mid];if(!d||!d.msgs)return 0;const sn=+LS.get("y_oda_"+mid)||0,me=myPid();return d.msgs.filter(x=>+x.id>sn&&x.p!==me&&x.k!=="sys").length}
+// soyunma odası: her sekmede yüzen tuş ve Maç simgesinde okunmamış noktası
+function odaCur(){if(!S.session||!isMember()||S.fol||!myPid())return null;const ok=m=>!isExt(m)&&!m.archived;
+  return S.matches.find(m=>ok(m)&&m.state==="takim")||S.matches.find(m=>ok(m)&&m.state==="bitti"&&m.finished_at&&Date.now()-Date.parse(m.finished_at)<864e5)||null}
+function odaFab(){let f=document.getElementById("odaFab");const m=odaCur();const d=m&&ODA.d[m.id];if(m)odaLoad(m.id);
+  const on=!!(m&&d&&(d.open||d.after))&&!S.sheet&&!S.story;const un=on&&!d.after?odaUnread(m.id):0;
+  const nb=document.querySelector('#navIn button[data-tab="mac"]');if(nb)nb.classList.toggle("bdot",un>0&&S.tab!=="mac");
+  if(!on){if(f)f.hidden=true;return}
+  if(!f){f=document.createElement("button");f.id="odaFab";f.dataset.act="odaOpen";document.body.appendChild(f)}
+  const sd=d.after?"X":d.side;const key=m.id+sd+un;if(f.dataset.k!==key){f.dataset.k=key;f.dataset.id=m.id;f.className="ofab oda-"+sd;
+    f.setAttribute("aria-label",d.after?"Soyunma odaları":"Soyunma odası"+(un?", "+un+" yeni mesaj":""));f.innerHTML=lIc("yorum")+(un?`<b class="num">${un>9?"9+":un}</b>`:"")}
+  f.hidden=false}
+setInterval(()=>{if(document.visibilityState!=="visible"||(S.sheet&&S.sheet.type==="oda"))return;const m=odaCur();if(m)odaLoad(m.id,true)},30000);
 function odaCard(m){if(!m||!myPid()||isExt(m)||m.archived)return"";const fin=m.state==="bitti";
   if(m.state!=="takim"&&!(fin&&m.finished_at&&Date.now()-Date.parse(m.finished_at)<864e5))return"";
   odaLoad(m.id);const d=ODA.d[m.id];const M=esc(m.id);const ic=`<span class="oda-ci">${lIc("yorum")}</span>`;
