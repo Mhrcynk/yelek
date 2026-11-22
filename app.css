@@ -4443,3 +4443,18 @@ html.dk .pmi.pmw button{padding:0 8px!important;overflow:hidden;text-overflow:el
 .pmn button svg{width:20px;height:20px}.pmn button.r svg{transform:rotate(180deg)}
 .pmdots{display:flex;gap:5px}.pmdots i{width:6px;height:6px;border-radius:50%;background:#3A2C78}.pmdots i.on{background:#FF3EA5;width:16px;border-radius:3px}
 html.dk .pmprev{touch-action:pan-y}
+/* soyunma odası: misafir */
+.oda-h em.gs{background:#2E2260;color:#C9BFE6}
+.oda-gp{display:grid;gap:8px;max-height:min(52vh,420px);overflow-y:auto}
+.oda-gh{display:grid;gap:4px}.oda-gh b{font-size:.95rem;font-weight:800}.oda-gh small{font-size:.78rem;line-height:1.4;color:var(--c-ink3)}
+.oda-gl{font:800 .72rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c-ink3);margin-top:4px}
+.oda-gs2{display:grid;gap:6px}
+.oda-gr{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:6px 12px;border:0;border-radius:14px;background:var(--c-card2);color:#fff;font:inherit;text-align:left;cursor:pointer}
+.oda-gr b{flex:1;min-width:0;font-size:.9rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oda-gr span{flex:none;font:800 .8rem/1 Inter,sans-serif;color:var(--oc,#FF3EA5)}
+.oda-h em.gs{background:rgba(0,0,0,.22)!important;color:inherit!important}
+/* paylaşım: seçim değişince görsel yerinden oynamaz; ek seçenekler görselin altında */
+.pmopt{display:grid;gap:8px;margin:0 0 10px}.pmopt .pmsel,.pmopt .vtog{margin:0!important}.pmopt p{margin:0!important;text-align:center}
+html.dk .pmemp{box-sizing:border-box;width:calc(100% - 16px);aspect-ratio:4/5;margin:0!important;padding:16px!important;display:grid!important;place-content:center;justify-items:center;border-radius:18px;background:#120A2A!important}
+html.dk .pmemp.st{aspect-ratio:9/16}
+html.dk #modal .pmact .btn.pmgo:disabled{opacity:.4}
