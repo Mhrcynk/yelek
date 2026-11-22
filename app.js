@@ -1323,7 +1323,8 @@ function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"
   const x=igBuild();const emp=PM_EMPTY[it]||(f.tab==="once"&&it!=="out"?PM_EMPTY.once:"Bunun için henüz yeterli veri yok.");
   return `<div class="mzvh pmh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>Paylaş</h2></div></div>
    <div class="vtog pmt">${tabs.map(([k,l])=>`<button data-act="pmTab" data-v="${k}" class="${f.tab===k||(k==="mac"&&macG)?"on":""}">${l}</button>`).join("")}</div>${sel}
-   <div class="pmi">${macG?[["once","Maç önü"],["mac","Maç sonu"]].map(([t,g])=>`<span class="pmg">${g}</span>`+PM_ITEMS[t].map(([k,l])=>`<button data-act="pmItem" data-t="${t}" data-v="${k}" class="${f.tab===t&&it===k?"on":""}">${l}</button>`).join("")).join(""):items.map(([k,l])=>`<button data-act="pmItem" data-v="${k}" class="${it===k?"on":""}">${l}</button>`).join("")}</div>
+   ${macG?`<div class="vtog pm2" role="group" aria-label="Maç önü ya da maç sonu">${[["once","Maç önü"],["mac","Maç sonu"]].map(([t,g])=>`<button data-act="pmTab" data-v="${t}" class="${f.tab===t?"on":""}" aria-pressed="${f.tab===t}">${g}</button>`).join("")}</div>`:""}
+    <div class="pmi pmw">${items.map(([k,l])=>`<button data-act="pmItem" data-v="${k}" class="${it===k?"on":""}" aria-pressed="${it===k}">${l}</button>`).join("")}</div>
    ${x?`<div class="pmprev" id="pmPrev">${igFrame(x,f.fmt)}</div>
     <div class="pmact p3"><button class="btn${f.fmt!=="story"?" on":""}" data-act="pmFmt" data-v="post" aria-pressed="${f.fmt!=="story"}">Gönderi</button><button class="btn${f.fmt==="story"?" on":""}" data-act="pmFmt" data-v="story" aria-pressed="${f.fmt==="story"}">Hikâye</button><button class="btn pmgo" data-act="pmGo" data-v="share">Paylaş</button></div>`
     :`<div class="empty emp2 pmemp">${empIc("yelek","pink")}<p>${esc(emp)}</p></div>`}`}
