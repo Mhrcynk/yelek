@@ -2535,7 +2535,7 @@ function sheetPEdit(){const p=P(S.sheet.id);if(!p||!S.admin)return"";const ph=ph
     <label class="pe-r" for="edAlt"><span>Alternatif</span>${posSelect("edAlt","ed.alt",a.alt,true,a.epos)}</label>
   </div>
   ${attrInputs("ed",a.pos,a.attrs)}
-  ${S.f.phPrev&&S.f.phPrev.id===p.id?`<div class="phpv"><span class="phpv-i"><img src="${esc(S.f.phPrev.d)}" alt="Yeni fotoğrafın önizlemesi"></span><div class="phpv-t"><b>Böyle görünecek</b><p class="muted small">Arka plan silindi. Beğenmediysen başka bir fotoğraf seç.</p><div class="phpv-b"><button class="btn sm primary" data-act="phUse"${S.f.phBusy?" disabled":""}>Kullan</button><label class="btn sm ghost" for="phFile">Başka fotoğraf</label><button class="btn sm ghost" data-act="phCancel">Vazgeç</button></div><button class="phpv-r" data-act="phRaw">Arka planı silmeden kullan</button></div></div>`:""}
+  ${S.f.phPrev&&S.f.phPrev.id===p.id?`<div class="phpv"><span class="phpv-i"><img src="${esc(S.f.phPrev.d)}" alt="Yeni fotoğrafın önizlemesi"></span><div class="phpv-t"><b>Böyle görünecek</b><p class="muted small">Arka plan silindi. Beğenmediysen başka bir fotoğraf seç.</p><div class="phpv-b"><button class="btn sm primary" data-act="phUse"${S.f.phBusy?" disabled":""}>Kullan</button><label class="btn sm ghost" for="phFile">Başka fotoğraf</label><button class="btn sm ghost" data-act="phCancel">Vazgeç</button></div></div></div>`:""}
   <div class="phrow"><span class="av ${tierOf(o0)}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><div style="flex:1;min-width:0"><b>Oyuncu fotoğrafı</b><p class="muted small">${S.f.phBusy?(S.f.phPrev?"Yükleniyor…":"Arka plan siliniyor… İlk seferde biraz sürebilir."):ph?"":"Arka plan kendiliğinden silinir."}</p></div>
     <label class="btn sm primary" for="phFile">${ph?"Değiştir":"Yükle"}</label><input class="vh" id="phFile" type="file" accept="image/*" data-photo="${esc(p.id)}">${ph?`<button class="btn sm ghost" data-act="delPhoto" data-id="${esc(p.id)}" aria-label="Fotoğrafı kaldır">${ICON.x}</button>`:""}</div>
   <button class="pe-del" data-act="delPlayer">${S.f.delP===p.id?"Kadrodan çıkarmak için tekrar bas":"Kadrodan çıkar"}</button>`}
@@ -3455,7 +3455,6 @@ document.addEventListener("click",async e=>{
     case"delPlayer":{const p=P(S.sheet.id);if(S.f.delP!==p.id){S.f.delP=p.id;render(true);break}const r=await A("admin_archive_player",{p_id:p.id},"Oyuncu kadrodan çıkarıldı");if(r){S.sheet=null;render(true)}break}
     case"atVote":{const v=S.f.atVote||(S.seasonVotes.find(x=>x.voter===S.me)||{}).target;if(!v){toast("Bir oyuncu seç");break}await act("season_vote",{p_year:new Date().getFullYear(),p_voter:S.me,p_target:v},"Altın Top oyun kaydedildi");break}
     case"phUse":await phSave(false);break;
-    case"phRaw":await phSave(true);break;
     case"phCancel":S.f.phPrev=null;render(true);break;
     case"delPhoto":{const r=await A("admin_set_photo",{p_id:id,p_data:""},"Fotoğraf kaldırıldı");if(r){delete S.photos[id];render(true)}break}
     case"rulesSheet":S.sheet={type:"rules"};render(true);break;
