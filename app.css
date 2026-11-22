@@ -4420,3 +4420,6 @@ html.dk .pmd textarea{background:#120A2A}
 .pmact.p4{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 html.dk #modal .pmact.p4 .btn{height:50px;border-radius:14px!important;padding:0 2px!important;font:700 .82rem/1 Inter,sans-serif!important;min-width:0}
 html.dk #modal .pmact.p4 .btn.on{background:#FF3EA5!important;color:#2A0519!important;font-weight:800!important}
+/* tahmin görselleri: hikâye modunda çevresi de yeşil, görselle tek parça */
+.yp-story.st-t{background:radial-gradient(70% 30% at 100% 12%,rgba(255,212,0,.14),rgba(255,212,0,0) 62%),linear-gradient(170deg,#14B86E 0%,#0B5A37 38%,#05160E 100%)!important}
+.yp-story.st-t .yp{box-shadow:none!important;background:none!important}
