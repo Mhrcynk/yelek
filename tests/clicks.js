@@ -66,7 +66,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
     await E(pg,`S.sheet={type:"me"};render(true)`);await pg.waitForTimeout(300);await click(pg,'#modal .grab');ok(!(await sheetOpen(pg)),"Tutamaca dokununca kapanmadı")});
 
   await T("Geri sayım",async()=>{await click(pg,'.nav [data-tab="mac"]');ok(!(await pg.evaluate(()=>!!document.querySelector(".mafcd"))),"Maç sekmesinde geri sayım olmamalı");
-    await click(pg,'.nav [data-tab="gecmis"]');const t=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");
+    await click(pg,'.nav [data-tab="lig"]');await click(pg,'.oyt2 [data-tab="gecmis"]');const t=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");
     ok(/^\d\d:\d\d:\d\d$/.test(t),"24 saat içindeki maçta geri sayım yok ("+t+")");await pg.waitForTimeout(1200);
     const t2=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");ok(t2!==t,"geri sayım ilerlemiyor");await click(pg,'.nav [data-tab="mac"]')});
 
@@ -77,7 +77,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   await T("Seçim menüsü uygulamanın kendi listesiyle açılıyor",async()=>{await E(pg,"window._t=S.tab;S.sheet=null;S.tab='lig';render(true)");await pg.waitForTimeout(300);await click(pg,'.yrsel select');ok(await pg.locator('.csel').count()===1,"menü açılmadı");const v0=await pg.evaluate(()=>document.querySelector('.yrsel select').value);await click(pg,'.csel button:not(.on)');ok(await pg.locator('.csel').count()===0,"menü kapanmadı");ok(await pg.evaluate(()=>document.querySelector('.yrsel select').value)!==v0,"seçim uygulanmadı");await E(pg,"S.yr='all';render(true)");await pg.evaluate(()=>{const s=document.querySelector('.yrsel select');s.value=s.options[0].value;s.dispatchEvent(new Event('change',{bubbles:true}))});await E(pg,"S.tab=window._t;render(true)");await pg.waitForTimeout(300)});
   await T("Oyuncu ekle butonu",async()=>{await click(pg,'.mzib[data-act="kmenu"]');await click(pg,'[data-act="addSheet"]');ok(await sheetOpen(pg),"Oyuncu ekle açılmadı");await click(pg,'#modal [data-act="close"]')});
 
-  await T("Dış maç formu",async()=>{await click(pg,'.nav [data-tab="gecmis"]');await click(pg,'[data-act="extNew"]');ok(await sheetOpen(pg),"Dış maç açılmadı");
+  await T("Dış maç formu",async()=>{await click(pg,'.nav [data-tab="lig"]');await click(pg,'.oyt2 [data-tab="gecmis"]');await click(pg,'[data-act="extNew"]');ok(await sheetOpen(pg),"Dış maç açılmadı");
     await click(pg,'#modal [data-act="extSc"][data-k="us"][data-d="1"]');const v=await pg.evaluate(()=>document.querySelector("#modal .xsbt b")?.textContent);ok(v==="1","skor artmadı ("+v+")");
     await click(pg,'#modal [data-act="close"]')});
 

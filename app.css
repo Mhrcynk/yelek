@@ -4052,3 +4052,18 @@ body.lock .top,body:has(#modal .sheet-bg) .top{-webkit-backdrop-filter:none!impo
 #modal .sheet-bg{z-index:41}
 body:has(#modal .sheet .oda) main,body:has(#modal .sheet .oda) .top,body:has(#modal .sheet .oda) .nav,body:has(#modal .sheet .oda) .navfade{visibility:hidden!important}
 html.dk body:has(#modal .sheet .oda)::before,html.dk body:has(#modal .sheet .oda)::after{display:none!important}
+
+/* Bu hafta: akış çizgisi ve tahmin kartı */
+.hak{list-style:none;margin:0 0 12px;padding:0;display:flex;gap:6px}
+.hak li{flex:1;display:grid;gap:6px;font:600 .75rem/1 Inter,sans-serif;color:var(--c-ink3,var(--muted))}
+.hak li i{height:4px;border-radius:2px;background:var(--c-line,#D9D2E3)}
+.hak li.ok i{background:#12C46B}.hak li.on{color:var(--c-ink,inherit);font-weight:800}.hak li.on i{background:currentColor}
+.thk{margin:0 0 12px}
+.thk-b{display:flex;align-items:center;gap:12px;width:100%;min-height:68px;padding:12px 14px;border:0;border-radius:18px;background:#0C281B;color:#fff;font:inherit;text-align:left;cursor:pointer}
+.thk-i{flex:none;width:46px;height:46px;border-radius:14px;background:rgba(0,229,138,.16);display:grid;place-items:center}
+.thk-x{flex:1;min-width:0;display:grid;gap:4px}.thk-x b{display:flex;align-items:center;gap:8px;font-size:1rem}.thk-x small{font-size:.8rem;color:#BFEBD6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thk-x em{font-style:normal;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:#FFD400;color:#2A1F00;font:800 .72rem/20px Inter,sans-serif;text-align:center}
+.thk-c{flex:none;padding:10px 14px;border-radius:12px;background:#00E58A;color:#04130C;font:800 .82rem/1 Inter,sans-serif}
+.thk-n{margin:6px 4px 0;font-size:.75rem;color:var(--c-ink3,var(--muted))}
+.oyt2{gap:0}.oyt2 button{flex:1;min-height:44px}
+html.dk body.tg .sback{background:#0F3222;color:#7DF2BE}
