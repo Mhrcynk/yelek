@@ -4413,3 +4413,7 @@ html.dk .pmt,html.dk .pmf{background:#120A2A!important}
 html.dk #modal .pmact .btn{background:#2E2260!important;border:0!important;color:#fff!important;box-shadow:none!important}
 html.dk #modal .pmact .btn.pmgo{background:#fff!important;color:#120A2A!important}
 html.dk .pmd textarea{background:#120A2A}
+/* paylaşım: alttaki tuşlar pencerenin en altına yapışır, altından içerik görünmez */
+#modal .sheet:has(.pmact){padding-bottom:0!important}
+.pmact{bottom:0;padding:10px 0 calc(12px + env(safe-area-inset-bottom,0px));box-shadow:0 -14px 16px -6px #1C1240}
+.pmx{padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
