@@ -2277,7 +2277,7 @@ function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.se
   t+=`\nKadro ve kartlar: ${location.origin+location.pathname}`;return t}
 
 /* ================= Kartlar ================= */
-const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Lig">${[["lig","Puan"],["gecmis","Fikstür"],["sezon","Krallar"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
+const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Lig">${[["lig","Puan"],["gecmis","Fikstür"],["sezon","İstatistikler"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
 function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
   const kv=S.f.kv||LS.get("y_kv")||"list";
@@ -3932,14 +3932,36 @@ setInterval(()=>{if(S.sheet&&S.sheet.type==="oda"&&document.visibilityState==="v
 // üst güvenli alan (saat ve pil satırı) bir kez ölçülür; klavye açıkken sistem bu değeri sıfır verebildiği için sabit tutulur
 {const satM=()=>{if(document.body.classList.contains("kb"))return;const p=document.createElement("div");p.style.cssText="position:fixed;top:0;left:0;height:env(safe-area-inset-top,0px);width:1px;visibility:hidden";document.body.appendChild(p);const h=p.getBoundingClientRect().height;p.remove();const cur=parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sat"))||0;if(h>0||!cur)document.documentElement.style.setProperty("--sat",Math.max(h,0)+"px")};
   setTimeout(satM,0);addEventListener("orientationchange",()=>setTimeout(satM,400));addEventListener("pageshow",()=>setTimeout(satM,50))}
+const KB={ios:!!window.__ios||/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1),open:0,full:0,hold:0,want:false,hedef:null};
+{const m=/^(\d+)\/(\d+)$/.exec(LS.get("y_kbh")||"");if(m&&+m[2]===Math.round(screen.height))KB.open=+m[1]}
+const kbYazi=t=>!!t&&(t.tagName==="TEXTAREA"||(t.tagName==="INPUT"&&["text","number","search","tel",""].includes((t.getAttribute("type")||"").toLowerCase())));
+// klavye açılıp kapanırken pencereyi klavyeyle aynı anda, yumuşak bir geçişle boyutlandırır (sistem ölçüyü ancak geçiş bitince bildirir)
+function kbGit(ac){if(!KB.ios||!window.visualViewport)return;const bg=document.querySelector("#modal .sheet-bg");if(!bg)return;const on=document.body.classList.contains("kb");if(ac===KB.want&&Date.now()<KB.hold)return;if(ac===on&&!(Date.now()<KB.hold))return;
+  const full=KB.full||Math.round(visualViewport.height);const hedef=ac?(KB.open&&KB.open<full*.8?KB.open:Math.round(full*.6)):full;const b=document.getElementById("odaMsgs");const dip=b&&b.scrollHeight-b.scrollTop-b.clientHeight<90;
+  KB.want=ac;KB.hold=Date.now()+900;document.body.classList.toggle("kbs",ac);if(!ac)document.body.classList.add("kbk");
+  bg.style.top="0px";bg.style.bottom="auto";if(!bg.style.height)bg.style.height=Math.round(bg.getBoundingClientRect().height)+"px";void bg.offsetHeight;bg.style.height=hedef+"px";
+  const t0=Date.now();const tik=()=>{if(dip&&b.isConnected)b.scrollTop=b.scrollHeight;if(Date.now()-t0<380)requestAnimationFrame(tik)};requestAnimationFrame(tik);
+  clearTimeout(KB.tm);KB.tm=setTimeout(()=>{KB.hold=0;document.body.classList.remove("kbk");if(KB.fix)KB.fix()},950)}
 if(window.visualViewport){let kbT=0;const show=()=>{const a=document.activeElement;if(!a||!/^(INPUT|TEXTAREA)$/.test(a.tagName))return;if(a.id==="odaTxt"){odaBottom();return}if(a.id==="betComTxt"){odaBottom();return}try{a.scrollIntoView({block:"center"})}catch(_){}};
   const vvFix=()=>{const v=visualViewport;const kb=v.height<innerHeight*.78;document.documentElement.style.setProperty("--vvh",Math.round(v.height)+"px");const was=document.body.classList.contains("kb");document.body.classList.toggle("kb",kb);
     const tam=S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");if(tam&&(v.offsetTop>1||scrollY>1)&&(vvFix.n=(vvFix.n||0)+1)<=4){try{window.scrollTo(0,0)}catch(_){}}
-    const bg=document.querySelector("#modal .sheet-bg");if(bg){if(kb||tam){bg.style.top=Math.round(v.offsetTop)+"px";bg.style.height=Math.round(v.height)+"px";bg.style.bottom="auto"}else{bg.style.top=bg.style.height=bg.style.bottom=""}}
+    if(kb){KB.open=Math.round(v.height);LS.set("y_kbh",String(KB.open)+"/"+Math.round(screen.height))}else KB.full=Math.round(v.height);
+    const bek=Date.now()<KB.hold&&kb!==KB.want;if(!bek&&kb===KB.want)KB.hold=0;if(!kb&&!bek)document.body.classList.remove("kbs","kbk");
+    const bg=document.querySelector("#modal .sheet-bg");if(bg&&!bek){if(kb||tam){bg.style.top=Math.round(v.offsetTop)+"px";bg.style.height=Math.round(v.height)+"px";bg.style.bottom="auto"}else{bg.style.top=bg.style.height=bg.style.bottom=""}}
     if(kb){clearTimeout(kbT);kbT=setTimeout(show,was?40:120)}};
-  visualViewport.addEventListener("resize",vvFix);visualViewport.addEventListener("scroll",vvFix);
-  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName||"")){vvFix.n=0;setTimeout(vvFix,60);setTimeout(()=>{vvFix();show()},380)}});
-  document.addEventListener("focusout",()=>setTimeout(vvFix,120))}
+  KB.fix=vvFix;visualViewport.addEventListener("resize",vvFix);visualViewport.addEventListener("scroll",vvFix);
+  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName||"")){vvFix.n=0;if(kbYazi(e.target)&&e.target.closest("#modal"))kbGit(true);setTimeout(vvFix,60);setTimeout(()=>{vvFix();show()},380)}});
+  document.addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(!a||!/^(INPUT|TEXTAREA)$/.test(a.tagName))kbGit(false)},0);setTimeout(vvFix,120)});
+  // iOS: yazı alanına dokununca klavye, ekranın tepesindeki görünmez bir alan üzerinden açılır; böylece sistem sayfayı yukarı itmez,
+  // pencere klavyeyle birlikte tek harekette kısalır. Klavye yerleşince asıl alana geçilir.
+  if(KB.ios){let mv=0;const px=document.createElement("input");px.id="kbpx";px.setAttribute("aria-hidden","true");px.tabIndex=-1;px.autocomplete="off";px.style.cssText="position:fixed;top:0;left:0;width:2px;height:2px;opacity:0;border:0;padding:0;margin:0;font-size:16px;background:none;color:transparent;caret-color:transparent;pointer-events:none;z-index:-1";document.body.appendChild(px);
+    px.addEventListener("input",()=>{const t=KB.hedef;if(!t||!t.isConnected){px.value="";return}const v=px.value;px.value="";if(!v)return;t.value+=v;t.dispatchEvent(new Event("input",{bubbles:true}))});
+    document.addEventListener("touchstart",()=>{mv=0},{passive:true,capture:true});document.addEventListener("touchmove",()=>{mv=1},{passive:true,capture:true});
+    document.addEventListener("touchend",e=>{const t=e.target;if(mv||!t||!t.closest||!kbYazi(t)||!t.closest("#modal .sheet")||t.disabled||t.readOnly)return;const a=document.activeElement;if(a===t)return;
+      if(a&&a!==px&&/^(INPUT|TEXTAREA)$/.test(a.tagName))return; // klavye zaten açık: sistem kendi geçişini yapar
+      e.preventDefault();KB.hedef=t;px.inputMode=t.inputMode||(t.type==="number"?"decimal":"text");px.setAttribute("enterkeyhint",t.getAttribute("enterkeyhint")||"");px.autocapitalize=t.tagName==="TEXTAREA"?"sentences":(t.autocapitalize||"off");
+      try{px.focus({preventScroll:true})}catch(_){px.focus()}kbGit(true);
+      const gec=()=>{if(!t.isConnected||document.activeElement!==px)return;try{t.focus({preventScroll:true})}catch(_){t.focus()}try{const n=t.value.length;t.setSelectionRange(n,n)}catch(_){}};setTimeout(gec,330);setTimeout(gec,700)},{passive:false,capture:true})}}
 
 const lIc=k=>{const d=DI[k]||["",""];return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d[0]?`<path d="${d[0]}"/>`:""}${d[1]?`<path d="${d[1]}"/>`:""}</svg>`};
 function betHead(b,L,kb){const l0=L[0]||{};const lab=String(l0.l||"");const i=lab.indexOf(" · ");const mk=kb?"Kombine":i>0?lab.slice(0,i):"Tahmin";const sel=kb?`${L.length} seçim`:i>0?lab.slice(i+3):lab;

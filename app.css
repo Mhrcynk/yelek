@@ -3840,7 +3840,7 @@ html.dk .bs-i input,html.dk body.tg .bs-i input[type=number]{flex:1;min-width:0;
 .oda-g .btn{min-height:40px}.oda-gx{width:40px;height:40px;border:0;background:none;color:var(--c-ink3);font-size:1.2rem;cursor:pointer}
 /* klavye açıkken pencereler */
 body.kb #modal .sheet{max-height:100%!important;border-radius:18px 18px 0 0;padding-bottom:10px!important}
-body.kb .oda .ch,body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb .oda .oda-pin{display:none}
+body.kb .oda .ch{display:none}
 body.kb .oda-m{height:max(80px,calc(var(--vvh,400px) - 190px))}
 body.kb .bcm{max-height:max(70px,calc(var(--vvh,400px) - 250px))!important}
 
@@ -3948,7 +3948,7 @@ html.dk .oda-cr textarea,.oda-cr textarea{flex:1;min-width:0;min-height:44px;max
 .oda-pm button{display:flex;align-items:center;gap:12px;min-height:46px;padding:0 12px;border:0;border-radius:12px;background:none;color:#fff;font:600 .92rem Inter,sans-serif;text-align:left;cursor:pointer}
 .oda-an span{flex:1}.oda-an button{flex:none;width:40px;height:40px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--c-ink2);font-size:1.2rem;cursor:pointer}
 .oda .oda-pf{padding:4px 2px}
-body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb #odaPinW,body.kb .oda .oda-best{display:none}
+
 body.kb .oda .oda-m{display:flex!important}
 body.kb .oda-hd{padding-top:calc(6px + var(--sat,env(safe-area-inset-top,0px)));padding-bottom:6px}
 /* klavye üstündeki sistem çubuğunun arkasında sayfa görünmesin: pencerenin altı düz renkle devam eder */
@@ -4134,3 +4134,11 @@ body.uye #meBtn{display:none}
 @media (max-width:719px){#modal .sheet-bg:has(.oda){background:var(--c-card)}
 html.dk body.tg #modal .sheet-bg:has(.oda){background:#0C281B}}
 #modal .oda-hd{position:sticky;top:0;z-index:3}
+
+/* klavye geçişi: pencere klavyeyle birlikte yumuşakça kısalır; sekmeler ve sabit not kaybolmak yerine kapanır */
+#modal .sheet-bg{transition:height .3s cubic-bezier(.22,.9,.3,1)}
+.oda .oda-tb,.oda .oda-sd,#odaPinW,.oda .oda-best{max-height:140px;overflow:hidden;transition:max-height .28s cubic-bezier(.22,.9,.3,1),opacity .2s ease,margin .28s cubic-bezier(.22,.9,.3,1)}
+body.kb .oda .oda-tb,body.kb .oda .oda-sd,body.kb #odaPinW,body.kb .oda .oda-best,body.kbs .oda .oda-tb,body.kbs .oda .oda-sd,body.kbs #odaPinW,body.kbs .oda .oda-best{max-height:0!important;opacity:0;margin-top:0!important;margin-bottom:0!important;padding-top:0!important;padding-bottom:0!important;border-width:0!important;pointer-events:none}
+body.kbs .oda-cmp{padding-bottom:8px}
+@media (prefers-reduced-motion:reduce){#modal .sheet-bg,.oda .oda-tb,.oda .oda-sd,#odaPinW,.oda .oda-best{transition:none}}
+body.kbk .oda .oda-tb,body.kbk .oda .oda-sd,body.kbk #odaPinW,body.kbk .oda .oda-best{max-height:140px!important;opacity:1!important;pointer-events:auto}
