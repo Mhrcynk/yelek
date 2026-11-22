@@ -1635,7 +1635,7 @@ function sheetVote(){const m=S.matches.find(x=>x.id===S.sheet.mid);const vt=S.f.
   const n1=all.filter(id=>v[id]===1).length,n4=all.filter(id=>v[id]===4).length,dn=all.filter(id=>v[id]).length;
   if(!(vt.i>=0&&vt.i<all.length))vt.i=0;const son=!!vt.son&&dn===all.length;
   const seg=`<div class="vsg" aria-hidden="true">${all.map((id,i)=>`<i class="${v[id]?"ok":""}${!son&&i===vt.i?" on":""}"></i>`).join("")}</div>`;
-  const head=r=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyunu ver":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${r}</small></div></div>${seg}`;
+  const head=r=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>${me===myPid()?"Oyunu ver":esc(shortName(nameOf(me)))+" adına oyla"}</h2><small>${vt.demo?"DENEME · kaydedilmez · ":""}${r}</small></div></div>${seg}`;
   const tile=(id,act,on)=>{const p=P(id);return `<button class="vtl${on?" on":""}" data-act="${act}" data-p="${esc(id)}" aria-pressed="${on}">${p?avatar(p):""}<b>${esc(shortName(nameOf(id)))}</b></button>`};
   if(son){const c1=all.filter(id=>v[id]===1),c4=all.filter(id=>v[id]===4);if(vt.motm&&!c1.includes(vt.motm))vt.motm="";if(vt.fiy&&!c4.includes(vt.fiy))vt.fiy="";
     const need=!c1.length?"Önce birine \"çok iyi\" de":!c4.length?"Önce birine \"kötü\" de":!vt.motm?"Önce maçın adamını seç":!vt.fiy?"Önce fiyaskoyu seç":"";const cnt=[1,2,3,4].map(k=>all.filter(id=>v[id]===k).length);
@@ -1703,6 +1703,7 @@ function matchBody(m){
     h+=`<details class="card kdd" id="kadrolar"><summary><span class="kdd-h"><b class="hic">${dIcon("yelek","pink",26)}Kadrolar</b><em><span class="c">Dizilişi gör</span><span class="o">Kapat</span></em></span><span class="kdd-n"><span>${tDot("A")}${nm("A")}</span><span>${tDot("B")}${nm("B")}</span></span></summary>${teamsView(m,true)}</details>`}
     if(!ended)h+=preview(m);
     if(S.admin)h+=finishCard(m);
+    if(S.session&&S.session.user?.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273"&&myPid()&&plAll(m).includes(myPid()))h+=`<button class="btn ghost block vdemo" data-act="voteDemo" data-id="${esc(m.id)}">Oylamayı dene · sadece sen görürsün, kaydedilmez</button>`;
   }
   return h;
 }
@@ -3381,13 +3382,14 @@ document.addEventListener("click",async e=>{
       if(voter!==myPid()&&S.admin){const r=await A("admin_votes",{p_match:id});if(r){for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v;const pk=(r.picks||[]).find(x=>x.f===voter);if(pk){motm=pk.m||"";fiy=pk.y||""}}}
       else if(S.admin&&!(S.vst[id]&&S.vst[id].mine)){const r=await A("admin_votes",{p_match:id});if(r)for(const x of r.rows||[])if(x.f===voter)v[x.t]=x.v}if(voter===myPid()&&S.vst[id]&&S.vst[id].pick){motm=S.vst[id].pick.motm||"";fiy=S.vst[id].pick.fiy||""}
       const all=voteList(m,voter);const first=all.findIndex(x=>!v[x]);S.f.vt={mid:id,voter,v,motm,fiy,i:first<0?0:first,son:first<0&&all.length>0};S.sheet={type:"vote",mid:id};render(true);break}
+    case"voteDemo":{const m=S.matches.find(x=>x.id===id);const me=myPid();if(!m||!me)break;S.f.vt={mid:id,voter:me,v:{},motm:"",fiy:"",i:0,son:false,demo:true};S.sheet={type:"vote",mid:id};render(true);break}
     case"vPick":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const p=el.dataset.p,k=+el.dataset.v;vt.v[p]=k;if(vt.motm===p&&k!==1)vt.motm="";if(vt.fiy===p&&k!==4)vt.fiy="";
       const all=voteList(m,vt.voter);let n=-1;for(let j=1;j<=all.length;j++){const q=(vt.i+j)%all.length;if(!vt.v[all[q]]){n=q;break}}if(n<0){if(vt.i<all.length-1)vt.i++;else vt.son=true}else vt.i=n;render(true);break}
     case"vNext":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;const all=voteList(m,vt.voter);if(all.every(x=>vt.v[x]))vt.son=true;else if(vt.i<all.length-1)vt.i++;render(true);break}
     case"vBack":{const vt=S.f.vt;const m=vt&&S.matches.find(x=>x.id===vt.mid);if(!vt||!m)break;if(vt.son){vt.son=false;vt.i=voteList(m,vt.voter).length-1}else if(vt.i>0)vt.i--;render(true);break}
     case"vMotm":{const vt=S.f.vt;if(!vt)break;vt.motm=vt.motm===el.dataset.p?"":el.dataset.p;render(true);break}
     case"vFiy":{const vt=S.f.vt;if(!vt)break;vt.fiy=vt.fiy===el.dataset.p?"":el.dataset.p;render(true);break}
-    case"vSend":{const vt=S.f.vt;if(!vt)break;const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v,p_motm:vt.motm||null,p_fiy:vt.fiy||null},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
+    case"vSend":{const vt=S.f.vt;if(!vt)break;if(vt.demo){S.f.vt=null;S.sheet=null;render(true);toast("Deneme bitti · maçın adamı "+firstName(nameOf(vt.motm))+", fiyasko "+firstName(nameOf(vt.fiy))+". Hiçbir şey kaydedilmedi.");break}const r=await act("vote_submit",{p_match:vt.mid,p_voter:vt.voter,p_votes:vt.v,p_motm:vt.motm||null,p_fiy:vt.fiy||null},"Oyların kaydedildi");if(r){S.f.vt=null;S.sheet=null;await vsLoad(vt.mid,true);render(true)}break}
     case"vDet":{const r=await A("admin_votes",{p_match:id});if(!r)break;S.f.vd={mid:id,rows:r.rows||[],dir:"f",sel:plAll(S.matches.find(x=>x.id===id)||{}).includes(myPid())?myPid():null};S.sheet={type:"vdet",mid:id};render(true);break}
     case"vdDir":if(S.f.vd){S.f.vd.dir=el.dataset.v;render(true)}break;
     case"vdSel":if(S.f.vd){S.f.vd.sel=el.dataset.p;render(true)}break;
