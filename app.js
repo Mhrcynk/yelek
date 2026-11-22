@@ -2517,6 +2517,7 @@ function sheetPlayer(pid,inline){
   {const L=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r&&x.r.pts!=null);if(L.length)h+=`<div class="pv-nt"><b>Son ${Math.min(5,L.length)} maç notu</b>${formNotes(s)}</div>`}
   h+=trophyCase(p.id);
   if(inline)return h;
+  h+=modRow(pid);
   if(S.admin)h+=`<div class="pv-ad"><button data-act="peditOpen"><span class="pv-ai">${ICON_PEN}</span><span>Kartı düzenle</span><small>Yönetici</small><i>${CHVR}</i></button></div>`;
   return h;
 }
@@ -2684,6 +2685,17 @@ const authHdr=()=>S.session?.access_token?{Authorization:"Bearer "+S.session.acc
 const SBJS="vendor/supabase-2.117.3.js";
 const authLib=()=>AUTH.lib||(AUTH.lib=new Promise((ok,no)=>{if(window.supabase)return ok(window.supabase);const s=document.createElement("script");s.src=SBJS;s.onload=()=>ok(window.supabase);s.onerror=()=>{AUTH.lib=null;no(new Error("lib"))};document.head.appendChild(s)}));
 // hesap oturumu yoksa (saklı oturum da yoksa) önbellekteki üyelik geçmez: çıkış yapmış biri uygulamayı görmesin
+/* topluluk: engelleme, şikâyet, uygunsuz kelime süzgeci */
+const isBlk=p=>!!(p&&S.mem&&(S.mem.blocks||[]).includes(p));
+const KFR=/(^|[^\p{L}])((?:amına|amina|amcık|amcik|siktir|sikeyim|sikerim|sikik|sikim|sikiş|orospu|oruspu|yarrak|yarak|pezevenk|kahpe|ibne|gavat|puşt|şerefsiz)[\p{L}]{0,6}|amk|aq|piç|piçler|piçlik|göt|götü|götün|götveren|götlek)(?![\p{L}])/giu;
+const kfrOn=()=>LS.get("y_kfr")!=="0";
+const temiz=t=>{t=String(t??"");return kfrOn()?t.replace(KFR,(m,a,w)=>a+w[0]+"*".repeat(Math.max(2,w.length-1))):t};
+const REPW=["Hakaret ya da küfür","Taciz ya da zorbalık","Uygunsuz fotoğraf ya da içerik","Diğer"];
+const repBtns=(k,ref,pid,snap)=>`<span class="rpq">Neden şikâyet ediyorsun?</span>${REPW.map(w=>`<button class="kbkeep" data-act="repSend" data-k="${k}" data-ref="${esc(ref)}" data-id="${esc(pid)}" data-s="${esc(String(snap||"").slice(0,200))}" data-v="${esc(w)}">${w}</button>`).join("")}<button class="kbkeep" data-act="repAsk" data-v="">Vazgeç</button>`;
+const modBtns=(ref,pid)=>`<button class="kbkeep" data-act="repAsk" data-v="${esc(ref)}">Şikâyet et</button><button class="kbkeep" data-act="blkSet" data-id="${esc(pid)}" data-v="1">Engelle</button>`;
+function modRow(pid){if(!isMember()||!pid||pid===myPid())return"";const b=isBlk(pid),sh=S.sheet||{};
+  return `<div class="modr">${sh.rep==="p"?repBtns("oyuncu","",pid,nameOf(pid)):`<button data-act="repAsk" data-v="p">Şikâyet et</button><button data-act="blkSet" data-id="${esc(pid)}" data-v="${b?0:1}">${b?"Engeli kaldır":"Engelle"}</button>`}</div>`}
+function modPatch(){const t=S.sheet&&S.sheet.type;if(t==="oda")odaPatch();else if(t==="betCom")betComPatch();else render(true)}
 const isMember=()=>!!(S.mem&&S.mem.status==="onayli"&&(S.session||S.sessionStale));
 const gated=()=>TID===0||(!!S.gate&&!isMember()&&!S.fol);
 async function authInit(){
@@ -3025,7 +3037,7 @@ function audAgo(t){const d=(Date.now()-new Date(t))/6e4;return d<1?"şimdi":d<60
 function adminAudit(){if(!S.admin)return"";if(!S.audit){audLoad();return `<div class="vskl"><i style="height:240px"></i></div>`}
   if(!S.audit.length)return `<p class="snote">Henüz kayıt yok. Bundan sonra yöneticilerin yaptığı değişiklikler burada görünecek.</p>`;
   return `<section class="sgrp"><h3 class="mh3">Son değişiklikler<button class="mref" data-act="audLoad">Yenile</button></h3><div class="sbox">${S.audit.map(r=>`<div class="setr nolink aud"><span class="setx"><b>${esc(audText(r))}</b><small>${esc(r.who||"Yönetici")} · ${audAgo(r.at)}</small></span></div>`).join("")}</div></section><p class="snote">Son 60 değişiklik. Oyuncuların kendi işlemleri burada görünmez.</p>`}
-const SUBT={kullanim:"Kullanım",hesap:"Hesabı sil",sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
+const SUBT={destek:"Destek ve şikâyet",sikayet:"Şikâyetler",kullanim:"Kullanım",hesap:"Hesabı sil",sil:"Takımı sil",platform:"Platform",gecmis:"Değişiklik geçmişi",uyeler:"Üyeler",grup:"Ekip ve saha",sezon:"Sezon",tel:"Telefona ekle",pay:"Linkler",pin:"Yönetici girişi"};
 const APPL=location.origin+location.pathname;
 const teamLink=()=>APPL;
 function setSub(k){const url=teamLink();
@@ -3034,6 +3046,11 @@ function setSub(k){const url=teamLink();
   else if(k==="kullanim")h+=usageView();
   else if(k==="hesap")h+=`<section class="card szx"><b>Hesabını silmek istiyor musun?</b><p class="snote" style="margin:0">Giriş hesabın, takım üyeliklerin, takip ettiğin ligler ve bildirim kayıtların kalıcı olarak silinir; geri alınamaz. Oyuncu kartın takımda kalır, yönetici isterse siler.</p><button class="btn ghost danger block" data-act="delAcc">Hesabımı kalıcı olarak sil</button></section>`;
   else if(k==="gecmis")h+=adminAudit();
+  else if(k==="destek"){const B=(S.mem&&S.mem.blocks)||[];h+=`<section class="card szx"><b>Bize ulaş</b><p class="snote" style="margin:0">Soru, sorun ya da şikâyet için yaz:</p><p class="dmail">yelek.destek@gmail.com</p><div class="phpv-b"><button class="btn sm primary" data-act="mailCopy">Adresi kopyala</button><a class="btn sm ghost" href="mailto:yelek.destek@gmail.com">E-posta yaz</a></div></section>
+    <section class="card szx"><b>Bir içeriği şikâyet et</b><p class="snote" style="margin:0">Sohbet mesajına ya da yoruma dokun, Şikâyet et'i seç. Bir oyuncuyu ya da fotoğrafını şikâyet etmek için kartını aç; Şikâyet et kartın altındadır. Şikâyetler takım yöneticisine gider ve en kısa sürede incelenir. Yöneticiyle ilgili bir şikâyetin varsa yukarıdaki adrese yaz.</p></section>
+    <section class="sgrp"><h3>Engellediklerin · ${B.length}</h3><div class="sbox">${B.length?B.map(i=>`<div class="setr nolink"><span class="setx"><b>${esc(nameOf(i))}</b><small>Mesajları ve yorumları sana görünmüyor</small></span><button class="btn sm ghost" data-act="blkSet" data-id="${esc(i)}" data-v="0">Engeli kaldır</button></div>`).join(""):`<div class="setr nolink"><span class="setx"><small>Kimseyi engellemedin. Engellemek için mesaja, yoruma ya da oyuncu kartına dokun.</small></span></div>`}</div></section>`}
+  else if(k==="sikayet"&&S.admin){if(!S.reps||S._repsT!==TID){S._repsT=TID;S.reps=null;rpc("report_list",{}).then(r=>{S.reps=(r&&r.rows)||[];if(S.mem)S.mem.reports=S.reps.length;render(true)}).catch(()=>{S.reps=[];render(true)});h+=`<div class="vskl"><i style="height:200px"></i></div>`}
+    else h+=`<section class="card szx"><p class="snote" style="margin:0">Üyelerin şikâyet ettiği içerikler. Mesajı sohbetten, yorumu tahminin altından silebilir; fotoğrafı oyuncu kartından kaldırabilirsin. İşin bitince şikâyeti kapat.</p></section>`+(S.reps.length?S.reps.map(x=>`<section class="card szx repc"><b>${({mesaj:"Sohbet mesajı",yorum:"Yorum",oyuncu:"Oyuncu ya da fotoğraf"})[x.k]||"İçerik"}${x.p?" · "+esc(nameOf(x.p)):""}</b>${x.snap&&x.k!=="oyuncu"?`<q>${esc(x.snap)}</q>`:""}<p class="snote" style="margin:0">Neden: ${esc(x.why)} · Şikâyet eden: ${x.by?esc(nameOf(x.by)):"üye"} · ${new Date(x.at).toLocaleDateString("tr-TR",{day:"numeric",month:"long"})}</p><button class="btn sm ghost" data-act="repClose" data-v="${x.id}">Şikâyeti kapat</button></section>`).join(""):`<section class="card szx"><b>Açık şikâyet yok</b></section>`)}
   else if(k==="sil"&&S.admin&&TID!==1)h+=`<section class="card szx"><b>${esc(S.settings.group_name)} silinsin mi?</b><p class="snote" style="margin:0">Oyuncular, maçlar, kartlar, fotoğraflar ve üyelikler kalıcı olarak silinir; geri alınamaz. Onaylamak için takımın adını aynen yaz.</p>
     <input type="text" data-bind="tdel" value="${esc(S.f.tdel||"")}" placeholder="${esc(S.settings.group_name)}" autocomplete="off"><button class="btn danger block" data-act="teamDel">Takımı kalıcı olarak sil</button></section>`;
   else if(k==="platform"){if(!S.plat){rpc("platform_teams",{}).then(r=>{S.plat=(r&&r.rows)||[];render(true)}).catch(()=>{S.plat=[];render(true)});h+=`<div class="vskl"><i style="height:200px"></i></div>`}
@@ -3094,7 +3111,10 @@ function ayarBody(){
     srow("@rulesSheet",SI.kural,"Puanlama kuralları","Not, reyting ve yelek puanı nasıl hesaplanır"),
     srow("tel",SI.tel,"Telefona ekle","Uygulama gibi ana ekrandan aç"),
     srow("pay",SI.pay,"Linkler","Uygulamanın tek linki"),
-    srow("@gizlilik",SI.kilit,"Gizlilik","Hangi bilgiler tutulur, kim görür")]);
+    srow("@gizlilik",SI.kilit,"Gizlilik","Hangi bilgiler tutulur, kim görür"),
+    isMember()?srow("@kfrT",SI.kilit,"Uygunsuz kelimeleri gizle",kfrOn()?"Açık · sohbet ve yorumlarda yıldızlanır":"Kapalı"):"",
+    S.admin?srow("sikayet",SI.kilit,"Şikâyetler",S.mem&&S.mem.reports?S.mem.reports+" açık şikâyet":"Açık şikâyet yok"):"",
+    srow("destek",SI.kilit,"Destek ve şikâyet","yelek.destek@gmail.com")]);
   if(S.session)h+=`<section class="sgrp"><h3>Hesap</h3>${acc}</section>`+sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),S.mem&&S.mem.status==="onayli"?srow("@leaveTeam",SI.cik,S.f.leave?"Emin misin? Tekrar dokun":"Takımdan ayrıl",S.f.leave?esc(S.settings.group_name)+" üyeliğin biter":"Kartın takımda kalır; istersen yeniden katılırsın"):"",srow("hesap",SI.cik,"Hesabı sil","Hesabın ve üyeliklerin kalıcı olarak silinir")]);
   return h}
 
@@ -3456,6 +3476,15 @@ document.addEventListener("click",async e=>{
     case"atVote":{const v=S.f.atVote||(S.seasonVotes.find(x=>x.voter===S.me)||{}).target;if(!v){toast("Bir oyuncu seç");break}await act("season_vote",{p_year:new Date().getFullYear(),p_voter:S.me,p_target:v},"Altın Top oyun kaydedildi");break}
     case"phUse":await phSave(false);break;
     case"phCancel":S.f.phPrev=null;render(true);break;
+    case"repAsk":if(S.sheet){S.sheet.rep=String(S.sheet.rep)===String(el.dataset.v)?null:(el.dataset.v||null);modPatch()}break;
+    case"repSend":{let r=null;try{r=await rpc("report_add",{p_kind:el.dataset.k,p_ref:el.dataset.ref||null,p_target:id||null,p_reason:el.dataset.v,p_snap:el.dataset.s||null})}catch(_){}
+      toast(r&&r.ok?"Şikâyetin yöneticiye iletildi":r&&r.error==="limit"?"Bugün çok fazla şikâyet gönderdin":"Gönderilemedi, tekrar dene");if(r&&r.ok&&S.sheet){S.sheet.rep=null;S.sheet.sel=null}modPatch();break}
+    case"blkSet":{let r=null;try{r=await rpc("block_set",{p_player:id,p_on:el.dataset.v==="1"})}catch(_){}
+      if(r&&r.ok){if(S.mem)S.mem.blocks=r.blocks||[];if(S.sheet){S.sheet.rep=null;S.sheet.sel=null}toast(el.dataset.v==="1"?"Engellendi: mesajları ve yorumları artık görünmez":"Engel kaldırıldı")}else toast("Yapılamadı, tekrar dene");modPatch();break}
+    case"repClose":{let r=null;try{r=await rpc("report_close",{p_id:+el.dataset.v})}catch(_){}
+      if(r&&r.ok){S.reps=(S.reps||[]).filter(x=>String(x.id)!==el.dataset.v);if(S.mem)S.mem.reports=S.reps.length;toast("Şikâyet kapatıldı")}else toast("Kapatılamadı, tekrar dene");render(true);break}
+    case"kfrT":LS.set("y_kfr",kfrOn()?"0":"1");render(true);break;
+    case"mailCopy":try{await navigator.clipboard.writeText("yelek.destek@gmail.com");toast("Adres kopyalandı")}catch(_){toast("yelek.destek@gmail.com")}break;
     case"delPhoto":{const r=await A("admin_set_photo",{p_id:id,p_data:""},"Fotoğraf kaldırıldı");if(r){delete S.photos[id];render(true)}break}
     case"rulesSheet":S.sheet={type:"rules"};render(true);break;
   }
@@ -3594,7 +3623,7 @@ async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{ca
 async function revCheck(force){if(TID===0||!S.loaded||S._rc)return;S._rc=true;
   try{const r=await rpc("team_rev",{});if(!r){if(force)load();return}if(!S.rev||r.r!==S.rev.r||force){S.rev=r;await load()}}catch(_){}finally{S._rc=false}}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){revCheck();wakeSync()}})}});
-setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)revCheck()},20000);
+setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)revCheck()},30000);
 
 /* Sahada sürükle-bırak */
 let DRAG=null,SUPPRESS=false;
@@ -3933,14 +3962,15 @@ function odaCtx(){const sh=S.sheet;if(!sh||sh.type!=="oda")return null;const m=S
 const odaHM=t=>{try{return new Date(t).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}catch(_){return""}};
 function odaMsgsHtml(c){const{sh,d,live,me,team,capId,myAt}=c;const M=d.msgs.filter(x=>x.k!=="score");if(!M.length)return `<li class="sys">Henüz mesaj yok. İlk mesajı sen yaz.</li>`;
   const from=sh.from;const nw=live&&from!=null?M.filter(x=>+x.id>from&&x.p!==me&&x.k!=="sys"):[];const nwId=nw.length?nw[0].id:null;
-  let prev=null;return M.map(x=>{const dv=nwId!=null&&x.id===nwId?`<li class="nw" id="odaNw"><span>${nw.length} yeni mesaj</span></li>`:"";return dv+(()=>{const mine=x.p===me;const nm=mine?"Sen":esc(shortName(nameOf(x.p)));const sel=live&&String(sh.sel)===String(x.id);const grp=prev&&prev.k!=="sys"&&prev.k!=="poll"&&prev.k!=="duyuru"&&prev.p===x.p&&(x.k==="msg"||x.k==="quick");prev=x;
+  let prev=null,blkP=false;return M.map(x=>{const dv=nwId!=null&&x.id===nwId?`<li class="nw" id="odaNw"><span>${nw.length} yeni mesaj</span></li>`:"";return dv+(()=>{const mine=x.p===me;const nm=mine?"Sen":esc(shortName(nameOf(x.p)));const sel=live&&String(sh.sel)===String(x.id);const grp=prev&&prev.k!=="sys"&&prev.k!=="poll"&&prev.k!=="duyuru"&&prev.p===x.p&&(x.k==="msg"||x.k==="quick");prev=x;
     if(x.k==="sys")return `<li class="sys">${esc(x.b)}</li>`;
+    if(!mine&&isBlk(x.p)){prev=null;const f=!blkP;blkP=true;return f?`<li class="sys">Engellediğin bir oyuncunun mesajları gizlendi</li>`:""}blkP=false;
     if(x.k==="poll"){const tot=Object.values(x.v||{}).reduce((a,b)=>a+b,0);const mis=live?team.filter(i=>!(x.vp||[]).includes(i)):[];return `<li class="poll"><div class="oda-p"><span class="oda-h"><b>${esc(x.b)}</b>${live&&(mine||S.admin)?`<button class="oda-x" data-act="odaDel" data-v="${x.id}" aria-label="Anketi sil">Sil</button>`:""}</span><small>${nm} · anket · ${tot} oy · ${odaHM(x.t)}</small>${(x.o||[]).map((o,i)=>{const n=(x.v||{})[i]||0;return `<button class="${x.my===i?"on":""}"${live?"":" disabled"} data-act="odaVote" data-id="${x.id}" data-v="${i}" aria-pressed="${x.my===i}"><i style="width:${tot?Math.round(n/tot*100):0}%"></i><span>${esc(o)}</span><em class="num">${n}</em></button>`}).join("")}${mis.length?`<div class="oda-ng"><span>Cevap vermeyen: ${mis.map(i=>esc(firstName(nameOf(i)))).join(", ")}</span><button data-act="odaNudge" data-id="${x.id}">Dürt</button></div>`:""}</div></li>`}
     if(x.k==="duyuru"){const sn=x.sn||[];const mis=team.filter(i=>!sn.includes(i));return `<li class="poll"><div class="oda-dy"><span class="oda-h">${dIcon("duduk","gold",20)}<b>Duyuru · ${nm}</b><time>${odaHM(x.t)}</time>${live&&(mine||S.admin)?`<button class="oda-x" data-act="odaDel" data-v="${x.id}" aria-label="Duyuruyu sil">Sil</button>`:""}</span><p>${esc(x.b)}</p><div class="oda-ng"><span>${mis.length?`Görmeyen: ${mis.map(i=>esc(firstName(nameOf(i)))).join(", ")}`:"Herkes gördü"}</span>${live&&mis.length?`<button data-act="odaNudge" data-id="${x.id}">Dürt</button>`:""}</div></div></li>`}
     const rp=x.r&&odaMsgOf(d,x.r);const at=!mine&&x.b.toLocaleLowerCase("tr").includes(myAt);const isC=x.p&&x.p===capId;const isG=x.p&&(d.guests||[]).includes(x.p);
     const lk=(x.up||x.dn)?`<span class="oda-lk">${x.up?`<i class="${x.ml===1?"on":""}">${lIc("begen")}${x.up}</i>`:""}${x.dn?`<i class="dn${x.ml===-1?" on":""}">${lIc("begenme")}${x.dn}</i>`:""}</span>`:"";
-    return `<li class="${mine?"me":""}${grp?" g":""}${at?" at":""}${sel?" sel":""}${isC?" cap":""}${x.tmp?" tmp":""}">${mine?"":(grp?`<span class="oda-sp"></span>`:avatar(P(x.p)||{id:x.p,name:"?"},"sm"))}<div class="oda-bw"><div class="oda-b"${live&&!x.tmp?` data-act="odaSel" data-v="${x.id}" role="button" tabindex="0" aria-expanded="${sel}"`:""}>${!grp&&(!mine||isC||isG)?`<span class="oda-h">${isC?`<i class="oda-cb" title="Kaptan" aria-label="Kaptan">K</i>`:""}<b>${nm}</b>${isC?`<em>Kaptan</em>`:""}${isG?`<em class="gs">Misafir</em>`:""}</span>`:""}${rp?`<q>${esc(shortName(nameOf(rp.p)))}: ${esc(rp.b)}</q>`:""}<p>${esc(x.b)}<time>${x.ed?"düzenlendi · ":""}${odaHM(x.t)}</time></p></div>${lk}
-      ${sel?`<div class="oda-ac"><button class="kbkeep${x.ml===1?" on":""}" data-act="odaLike" data-id="${x.id}" data-v="1" aria-label="Beğen">${lIc("begen")}</button><button class="kbkeep${x.ml===-1?" on dn":""}" data-act="odaLike" data-id="${x.id}" data-v="-1" aria-label="Beğenme">${lIc("begenme")}</button><button class="kbkeep" data-act="odaReply" data-v="${x.id}">${lIc("yorum")}Yanıtla</button>${mine?"":`<button class="kbkeep" data-act="odaAt" data-v="${esc(x.p)}">@ Bahset</button>`}${mine&&x.k==="msg"&&Date.now()-Date.parse(x.t)<3e5?`<button class="kbkeep" data-act="odaEdit" data-v="${x.id}">Düzenle</button>`:""}${mine||S.admin?`<button class="kbkeep" data-act="odaDel" data-v="${x.id}">Sil</button>`:""}</div>`:""}</div></li>`})()}).join("")}
+    return `<li class="${mine?"me":""}${grp?" g":""}${at?" at":""}${sel?" sel":""}${isC?" cap":""}${x.tmp?" tmp":""}">${mine?"":(grp?`<span class="oda-sp"></span>`:avatar(P(x.p)||{id:x.p,name:"?"},"sm"))}<div class="oda-bw"><div class="oda-b"${live&&!x.tmp?` data-act="odaSel" data-v="${x.id}" role="button" tabindex="0" aria-expanded="${sel}"`:""}>${!grp&&(!mine||isC||isG)?`<span class="oda-h">${isC?`<i class="oda-cb" title="Kaptan" aria-label="Kaptan">K</i>`:""}<b>${nm}</b>${isC?`<em>Kaptan</em>`:""}${isG?`<em class="gs">Misafir</em>`:""}</span>`:""}${rp?`<q>${esc(shortName(nameOf(rp.p)))}: ${esc(isBlk(rp.p)?"…":temiz(rp.b))}</q>`:""}<p>${esc(temiz(x.b))}<time>${x.ed?"düzenlendi · ":""}${odaHM(x.t)}</time></p></div>${lk}
+      ${sel?`<div class="oda-ac"><button class="kbkeep${x.ml===1?" on":""}" data-act="odaLike" data-id="${x.id}" data-v="1" aria-label="Beğen">${lIc("begen")}</button><button class="kbkeep${x.ml===-1?" on dn":""}" data-act="odaLike" data-id="${x.id}" data-v="-1" aria-label="Beğenme">${lIc("begenme")}</button><button class="kbkeep" data-act="odaReply" data-v="${x.id}">${lIc("yorum")}Yanıtla</button>${mine?"":`<button class="kbkeep" data-act="odaAt" data-v="${esc(x.p)}">@ Bahset</button>`}${mine&&x.k==="msg"&&Date.now()-Date.parse(x.t)<3e5?`<button class="kbkeep" data-act="odaEdit" data-v="${x.id}">Düzenle</button>`:""}${mine||S.admin?`<button class="kbkeep" data-act="odaDel" data-v="${x.id}">Sil</button>`:""}${mine?"":modBtns(x.id,x.p)}</div>${String(sh.rep)===String(x.id)?`<div class="oda-ac rp">${repBtns("mesaj",x.id,x.p,x.b)}</div>`:""}`:""}</div></li>`})()}).join("")}
 function odaReplyHtml(c){if(c.sh.edit)return `<div class="oda-rb ed"><span><small>Mesajı düzenliyorsun</small>Gönderince eskisinin yerine geçer</span><button class="kbkeep" data-act="odaEditX" aria-label="Düzenlemeden vazgeç">×</button></div>`;const rp=c.sh.reply&&odaMsgOf(c.d,c.sh.reply);return rp?`<div class="oda-rb"><span><small>Yanıtlanan</small>${esc(shortName(nameOf(rp.p)))}: ${esc(rp.b)}</span><button class="kbkeep" data-act="odaReply" data-v="" aria-label="Yanıtı kaldır">×</button></div>`:""}
 function odaPinHtml(c){return c.d.pin?`<div class="oda-pin">${dIcon("yildiz","gold",18)}<span>${esc(c.d.pin)}</span></div>`:""}
 function odaTyHtml(c){return"";const T=(c.d.ty||[]).filter(i=>P(i));if(!c.live||!T.length)return"";const n=T.slice(0,2).map(i=>esc(firstName(nameOf(i)))).join(" ve ");return `<span><i></i><i></i><i></i></span>${n}${T.length>2?" ve diğerleri":""} yazıyor…`}
@@ -4142,8 +4172,8 @@ function betMini(id){const c=betFind(id);if(!c){betLoad("feed");return""}const L
 function betAgo(t){const d=(Date.now()-Date.parse(t))/60000;if(!(d>=0)||d<1)return"az önce";if(d<60)return Math.floor(d)+" dk";if(d<1440)return Math.floor(d/60)+" sa";return Math.floor(d/1440)+" gün"}
 function betComMsgs(){const sh=S.sheet,C=BET.com&&BET.com.id===sh.id?BET.com.rows:null,me=myPid();if(!C)return `<li class="sys">Yükleniyor…</li>`;if(!C.length)return `<li class="sys">Henüz yorum yok. İlk yorumu sen yaz.</li>`;
   const myAt=me?"@"+firstName(nameOf(me)).toLocaleLowerCase("tr"):null;
-  let prev=null;return C.map(c=>{const mine=c.p===me;const grp=prev&&prev.p===c.p;prev=c;const sel=String(sh.sel)===String(c.id);const can=(mine||S.admin)&&!c.tmp;const at=!mine&&myAt&&String(c.b||"").toLocaleLowerCase("tr").includes(myAt);
-    return `<li class="${mine?"me":""}${at?" at":""}${grp?" g":""}${sel?" sel":""}${c.tmp?" tmp":""}">${mine?"":(grp?`<span class="oda-sp"></span>`:avatar(P(c.p)||{id:c.p,name:"?"},"sm"))}<div class="oda-bw"><div class="oda-b"${can?` data-act="betComSel" data-v="${esc(c.id)}" role="button" tabindex="0" aria-expanded="${sel}"`:""}>${!grp&&!mine?`<span class="oda-h"><b>${esc(shortName(nameOf(c.p)))}</b></span>`:""}<p>${esc(c.b)}<time>${odaHM(c.at)}</time></p></div>${sel&&can?`<div class="oda-ac"><button class="kbkeep" data-act="betComDel" data-v="${esc(c.id)}">Sil</button></div>`:""}</div></li>`}).join("")}
+  let prev=null,blkP=false;return C.map(c=>{const mine=c.p===me;if(!mine&&isBlk(c.p)){prev=null;const f=!blkP;blkP=true;return f?`<li class="sys">Engellediğin bir oyuncunun yorumları gizlendi</li>`:""}blkP=false;const grp=prev&&prev.p===c.p;prev=c;const sel=String(sh.sel)===String(c.id);const del=(mine||S.admin)&&!c.tmp;const can=!c.tmp&&(del||!mine)&&isMember();const at=!mine&&myAt&&String(c.b||"").toLocaleLowerCase("tr").includes(myAt);
+    return `<li class="${mine?"me":""}${at?" at":""}${grp?" g":""}${sel?" sel":""}${c.tmp?" tmp":""}">${mine?"":(grp?`<span class="oda-sp"></span>`:avatar(P(c.p)||{id:c.p,name:"?"},"sm"))}<div class="oda-bw"><div class="oda-b"${can?` data-act="betComSel" data-v="${esc(c.id)}" role="button" tabindex="0" aria-expanded="${sel}"`:""}>${!grp&&!mine?`<span class="oda-h"><b>${esc(shortName(nameOf(c.p)))}</b></span>`:""}<p>${esc(temiz(c.b))}<time>${odaHM(c.at)}</time></p></div>${sel&&can?`<div class="oda-ac">${del?`<button class="kbkeep" data-act="betComDel" data-v="${esc(c.id)}">Sil</button>`:""}${mine?"":modBtns(c.id,c.p)}</div>${String(sh.rep)===String(c.id)?`<div class="oda-ac rp">${repBtns("yorum",c.id,c.p,c.b)}</div>`:""}`:""}</div></li>`}).join("")}
 function betComPatch(){const L=document.getElementById("odaMsgs");if(!L||!S.sheet||S.sheet.type!=="betCom")return false;const near=L.scrollHeight-L.scrollTop-L.clientHeight<90,st=L.scrollTop;L.innerHTML=betComMsgs();L.scrollTop=near?L.scrollHeight:st;odaDnUpd();return true}
 function sheetBetCom(){const id=S.sheet.id;const c=betFind(id);
   return `<div class="oda oda-T"><div class="oda-hd"><button class="oda-bk" data-act="close" aria-label="Geri"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><b>Yorumlar</b></div></div>${betMini(id)}

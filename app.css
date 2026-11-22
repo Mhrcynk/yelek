@@ -4482,3 +4482,12 @@ html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}
 .phpv-i img{width:100%;height:100%;object-fit:cover;display:block}
 .phpv-t{flex:1;min-width:0}.phpv-t p{margin:2px 0 8px}
 .phpv-b{display:flex;flex-wrap:wrap;gap:6px}
+
+/* topluluk: şikâyet et / engelle */
+.modr{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 6px}
+.modr button,.oda-ac.rp button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--c-line);background:none;color:var(--c-ink3);font:inherit;font-size:.82rem;font-weight:600}
+.rpq{flex-basis:100%;text-align:center;font-size:.82rem;font-weight:700;color:var(--c-ink3)}
+.oda-ac.rp{flex-wrap:wrap;margin-top:6px}.oda-ac.rp .rpq{text-align:left}
+.dmail{margin:6px 0 10px;font-size:1.05rem;font-weight:800;user-select:all;-webkit-user-select:all;overflow-wrap:anywhere}
+.repc q{display:block;margin:6px 0;padding:8px 10px;border-radius:12px;background:var(--c-card2);quotes:none;overflow-wrap:anywhere}
+.repc .btn{margin-top:10px}
