@@ -2279,7 +2279,7 @@ function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.se
 const oyTabs=v=>`<div class="oyt2" role="tablist" aria-label="Lig">${[["lig","Puan"],["gecmis","Fikstür"],["sezon","İstatistikler"]].map(([k,l])=>`<button data-act="tab" data-tab="${k}" role="tab" aria-selected="${v===k}" class="${v===k?"on":""}">${l}</button>`).join("")}</div>`;
 function viewKartlar(){
   const sort=S.f.sort||"ovr";const flt=S.filter;
-  const kv=S.f.kv||LS.get("y_kv")||"grid";
+  const kv=S.f.kv||LS.get("y_kv")||"list";
   const sq=S.f.sqMode?"all":(S.f.sq||"as");const nAs=S.players.filter(p=>!p.yedek).length,nYd=S.players.length-nAs;
   let ps=S.players.filter(p=>(sq==="all"||(sq==="yedek"?!!p.yedek:!p.yedek))&&(flt==="all"||flt==="as"||flt==="yedek"||p.pos===flt||(altOf(p)&&GROUP_POS[EPOS[altOf(p)][0]]===flt)));
   ps=[...ps].sort((a,b)=>sort==="mv"?mvOf(b.id)-mvOf(a.id)||genOf(b.id)-genOf(a.id):sort==="isim"?a.name.localeCompare(b.name,"tr"):sort==="form"?(S.stats[b.id]?.form??-1)-(S.stats[a.id]?.form??-1)||(S.stats[b.id]?.lastD||0)-(S.stats[a.id]?.lastD||0)||genOf(b.id)-genOf(a.id):genOf(b.id)-genOf(a.id));
@@ -2303,8 +2303,7 @@ function mzRow(p,rk){const s=S.stats[p.id]||{ovr:baseOf(p),lastD:0};const st=stO
   return `<button class="mzpl-r${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzpl-k num">${rk}</span><span class="mzpl-p ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>
     <span class="mzpl-x"><b>${esc(p.name)}</b><span class="mzpl-s">${sub}${st!=="hazir"&&x?`<span class="mzpl-t st">${x.flag} ${esc(x.label)}</span>`:""}</span></span><span class="mzpl-o"><b class="num ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}">${o}</b>${tr}</span></button>`}
 function mzCard(p){const s=S.stats[p.id]||{};const o=s.ovr??baseOf(p);const ph=photoOf(p.id);const st=stOf(p);
-  const stL=st!=="hazir"&&STATUS[st]?STATUS[st].label.split(" ")[0]:p.yedek?"Yedek":"Hazır";
-  return `<button class="mzc mzc2 ${o>=75?"hi":""}${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}, ${stL}"><span class="mzc-o"><b class="num">${o}</b><small>${eposOf(p)}</small></span><span class="mzc-a">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span><span class="mzc-n">${esc(firstName(p.name))}${S.me===p.id?" · sen":""}</span><span class="mzc-s${st!=="hazir"?" w":""}">${stL}</span></button>`}
+  return `<button class="mzc ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzc-o"><b class="num">${o}</b><small>${eposOf(p)}</small></span>${ph?`<img src="${esc(ph)}" alt="">`:`<span class="mzc-sil">${SIL}</span>`}<span class="mzc-n">${esc(shortName(p.name))}</span>${p.yedek?'<i class="mzc-y" title="Yedek kadro">Y</i>':""}${st!=="hazir"&&STATUS[st]?`<i class="mzc-st">${STATUS[st].flag}</i>`:""}</button>`}
 const vcls=v=>v>=80?"v8":v>=70?"v7":v>=60?"v6":"v5";
 function formNotes(s){const L=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r&&x.r.pts!=null).slice(-5);
   return L.length?`<span class="fnts" aria-label="Son ${L.length} maç notu">${L.map(x=>`<i class="f${noteCls(x.r.pts)}">${fN(x.r.pts)}</i>`).join("")}</span>`:'<span class="muted small">Henüz maç yok</span>'}
@@ -2561,13 +2560,11 @@ function viewLig(){const avg=false;const F=fin().filter(inYr);const L=ligTable(F
   const mv=(o,i)=>{if(!prev)return"";const j=prev.indexOf(o.id);const d=j<0?0:j-i;return d>0?`<small class="lmv up">▲${d}</small>`:d<0?`<small class="lmv dn">▼${-d}</small>`:""};
   const sub=o=>`${o.n} maç · ${o.G}G ${o.B}B ${o.M}M · ${o.av>0?"+":""}${o.av}`;
   const lead=L[0],lp=P(lead.id);
-  const all=!!S.f.ligAll||L.length<=7;const mi=L.findIndex(o=>o.id===S.me);const gos=all?L.map((o,i)=>[o,i]):L.map((o,i)=>[o,i]).filter(([o,i])=>i<6||i===mi);
-  h+=`<section class="card ltb"><div class="ltb-h"><span>#</span><span>Oyuncu</span><span title="Oynadığı maç">O</span><span title="Galibiyet">G</span><span title="Puan">P</span></div>`+gos.map(([o,i])=>{const p=P(o.id);
-      return `<button class="ltb-r${o.id===S.me?" me":""}${i===nb?" rl":""}" data-act="open" data-id="${esc(o.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.n} maç, ${o.G} galibiyet, ${o.p} puan"><span class="rk${i===0?" g":""}"><b class="num">${i+1}</b>${mv(o,i)}</span><span class="nm">${esc(shortName(p.name))}${o.id===S.me?" · sen":""}${o.id===champId?' <em class="chmp" title="Şampiyon">🏆</em>':""}</span><span class="num">${o.n}</span><span class="num">${o.G}</span><b class="ltp num">${pt(o)}</b></button>`}).join("")+
-    `<div class="ltb-f">${all?"":`<button class="lnk" data-act="tog" data-k="ligAll">Tamamı · ${L.length} oyuncu</button>`}<button class="lnk" data-act="tab" data-tab="kurallar">Puan nasıl hesaplanır</button></div></section>`;
-  {const g={};F.forEach(m=>Object.entries(m.stats||{}).forEach(([id,o])=>{if(o&&+o.g)g[id]=(g[id]||0)+(+o.g)}));const gk=Object.entries(g).filter(([id])=>P(id)).sort((a,b)=>b[1]-a[1])[0];
-   const tk=isMember()&&!S.fol&&BET.tbl?betRank(BET.tbl)[0]:null;
-   if(gk||tk)h+=`<div class="ltl">${gk?`<button class="ltl-t" data-act="open" data-id="${esc(gk[0])}"><small>Gol kralı</small><b>${esc(firstName(nameOf(gk[0])))}</b><span class="num">${gk[1]} gol</span></button>`:""}${tk&&tk.net>0?`<button class="ltl-t g" data-act="thkGo" data-v="sira"><small>Tahmin kralı</small><b>${esc(firstName(nameOf(tk.p)))}</b><span class="num">+${fJ(tk.net)} sikke</span></button>`:""}</div>`}
+  const all=!!S.f.ligAll||L.length<=8;const mi=L.findIndex(o=>o.id===S.me);const gos=all?L.map((o,i)=>[o,i]):L.map((o,i)=>[o,i]).filter(([o,i])=>i<7||i===mi);
+  const ga={};F.forEach(m=>Object.entries(m.stats||{}).forEach(([id,o])=>{if(!o)return;const x=ga[id]||(ga[id]={g:0,a:0});x.g+=+o.g||0;x.a+=+o.a||0}));
+  h+=`<section class="card ltb"><div class="ltb-h"><span>#</span><span>Oyuncu</span><span>O</span><span>G</span><span>B</span><span>M</span><span>Gol</span><span>Ast</span><span>P</span></div>`+gos.map(([o,i])=>{const p=P(o.id);const x=ga[o.id]||{g:0,a:0};
+      return `<button class="ltb-r${o.id===S.me?" me":""}${i===nb?" rl":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.n} maç, ${o.G} galibiyet, ${o.B} beraberlik, ${o.M} mağlubiyet, ${x.g} gol, ${x.a} asist, ${o.p} puan"><span class="rk${i===0?" g":""}"><b class="num">${i+1}</b>${mv(o,i)}</span><span class="nm">${esc(shortName(p.name))}${o.id===champId?' <em class="chmp" title="Şampiyon">🏆</em>':""}</span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num">${x.g}</span><span class="num">${x.a}</span><b class="ltp num">${pt(o)}</b></button>`}).join("")+
+    `${all?"":`<div class="ltb-f"><button class="lnk" data-act="tog" data-k="ligAll">Tamamı · ${L.length} oyuncu</button></div>`}</section><p class="ltb-n">O: oynadığı maç · G, B, M: galibiyet, beraberlik, mağlubiyet · Ast: asist · P: puan</p>`;
   const cw=champWall();
   return h+cw}
 function viewSezon(){return _viewSezon().replace("<!--TRK-->","")}
@@ -4021,7 +4018,7 @@ function viewIddia(){
     else{const t=matchTs(m);
       h+=`<section class="bm"><div class="bm-t"><span class="tA">${esc(nmOf(m,"A"))}</span><i>vs</i><span class="tB">${esc(nmOf(m,"B"))}</span></div>
         <div class="bm-m"><span>${dIcon("takvim","cyan",18)}${GKISA[new Date(t).getDay()]} ${fmtShort(m.date)} · ${esc(String(m.time||"").slice(0,5))}</span><span class="${bd.open?"op":"cl"}">${dIcon("duduk",bd.open?"gold":"pink",18)}${bd.open?`Kapanış ${new Date(t-BET_CLOSE).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}`:"Tahminler kapandı"}</span></div></section>`;
-      h+=betTalk(m,bd)+betDaily(m,bd);
+      h+=betDaily(m,bd);
       h+=bd.markets.map(k=>{const hi=betHint(k.k,m);return `<section class="card bmk"><h3>${esc(k.t)}</h3><div class="bo n${k.o.length}">${k.o.map(o=>{const on=BET.slip.some(l=>l.k===k.k&&l.s===o.s);const pp=betPopPct(bd,k.k,o.s);
         return `<button class="${on?"on":""}" ${!bd.open?"disabled":""} data-act="betPick" data-k="${esc(k.k)}" data-v="${esc(o.s)}" data-l="${esc(k.t+" · "+o.l)}" data-o="${o.odd}" aria-pressed="${on}"><span>${esc(o.l)}${pp?`<em class="bpop">%${pp} oynadı</em>`:""}</span><b class="num">${fO(o.odd)}</b></button>`}).join("")}</div>${hi?`<p class="bhint">${dIcon("simsek","gold",16)}<span>${esc(hi)}</span></p>`:""}</section>${k.k==="hnd"?betSkCard(m,bd):""}`}).join("");
       h+=betPlayers(m,bd);

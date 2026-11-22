@@ -4365,3 +4365,10 @@ html.dk .pv-h{background:#24165A;border-radius:22px;padding:14px;margin-top:0}
 html.dk .mg-h{display:flex;align-items:center;justify-content:space-between;flex-direction:row-reverse;gap:10px}
 html.dk .mg-h span{flex:none;font:800 .7rem/1 Inter,sans-serif!important;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:#FFD400;color:#2A1F00!important}
 html.dk .mg-h h2{font:800 1.75rem/1 var(--display)!important}
+/* Lig tablosu: geniş sütunlar */
+.ltb{padding:4px 12px!important}
+.ltb-h,.ltb-r{grid-template-columns:38px minmax(0,1fr) repeat(4,21px) 27px 27px 30px!important;gap:2px!important}
+.ltb-h{font-size:.6875rem!important;letter-spacing:.04em!important}
+.ltb-r>span.num{font-size:.82rem}.ltb-r .ltp{font-size:1.25rem!important}
+.ltb-r .nm{font-size:.88rem}
+.ltb-n{margin:8px 4px 0;font-size:.72rem;line-height:1.4;color:var(--c-ink3)}
