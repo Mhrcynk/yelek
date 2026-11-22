@@ -1023,7 +1023,7 @@ const betLast=n=>fin().slice(-n).reverse();
 function betHint(k,m){const L=betLast(5).filter(x=>x.score_a!=null);if(L.length<3)return"";const tot=L.map(x=>x.score_a+x.score_b),dif=L.map(x=>Math.abs(x.score_a-x.score_b));
   const ln={t95:9.5,t125:12.5,t155:15.5}[k];if(ln){const u=tot.filter(x=>x>ln).length;return `Son ${L.length} maçın ${u} tanesi ${String(ln).replace(".",",")} üstü bitti (toplam gol: ${tot.join(", ")}).`}
   if(k==="aralik")return `Son ${L.length} maçta toplam gol: ${tot.join(", ")}.`;
-  if(k==="sonuc"||k==="fark")return `Son ${L.length} maçta fark: ${dif.join(", ")}${dif.includes(0)?` · ${dif.filter(x=>!x).length} beraberlik`:""}.`;
+  if(k==="sonuc"||k==="fark"||k==="hnd")return `Son ${L.length} maçta fark: ${dif.join(", ")}${dif.includes(0)?` · ${dif.filter(x=>!x).length} beraberlik`:""}.`;
   if(k==="iki6"){const n=L.filter(x=>x.score_a>=6&&x.score_b>=6).length;return `Son ${L.length} maçın ${n} tanesinde iki takım da 6+ gol attı.`}
   if(k==="ta55"||k==="tb55"){const a=(tot.reduce((t,x)=>t+x,0)/L.length/2).toFixed(1).replace(".",",");return `Son ${L.length} maçta takım başına ortalama ${a} gol.`}
   return""}
@@ -3188,9 +3188,10 @@ document.addEventListener("click",async e=>{
     case"pmFmt":S.f.pm.fmt=el.dataset.v;render(true);break;
     case"pmRace":S.f.pm.race=el.dataset.v;render(true);break;
     case"betPick":{if(!BET.amt)BET.amt=betDefAmt();const k=el.dataset.k,v=el.dataset.v;const ix=BET.slip.findIndex(l=>l.k===k&&l.s===v);
-      if(ix>=0)BET.slip.splice(ix,1);else{const g=betGrp(k);const j=BET.slip.findIndex(l=>betGrp(l.k)===g);const leg={k,s:v,l:el.dataset.l,odd:+el.dataset.o};
+      if(ix>=0)BET.slip.splice(ix,1);else{const n0=BET.slip.length;if(k==="skor")BET.slip=BET.slip.filter(l=>l.k.includes(":")||l.k==="skor");else if(!k.includes(":"))BET.slip=BET.slip.filter(l=>l.k!=="skor");if(BET.slip.length<n0)toast("Skor tahmini, diğer maç seçimleriyle aynı kupona girmez");const g=betGrp(k);const j=BET.slip.findIndex(l=>betGrp(l.k)===g);const leg={k,s:v,l:el.dataset.l,odd:+el.dataset.o};
         if(j>=0)BET.slip[j]=leg;else if(BET.slip.length>=4){toast(BET_ERR.legs);break}else BET.slip.push(leg)}
       render(true);break}
+    case"betSk":{const m=betNext();const bd=m&&BET.board[m.id];if(!bd||!bd.skor)break;const c=betSk(bd);const t=el.dataset.t;c[t]=Math.max(0,Math.min(20,c[t]+(+el.dataset.d)));BET.sk=c;render(true);break}
     case"betClear":BET.slip=[];if(S.sheet&&S.sheet.type==="betSlip")S.sheet=null;render(true);break;
     case"kralOpen":if(BET.kral){S.sheet={type:"kral"};render(true)}break;
     case"kralOk":kralSeen();S.sheet=null;render(true);break;
@@ -3201,6 +3202,7 @@ document.addEventListener("click",async e=>{
     case"betDaily":{const m=betNext();const bd=m&&BET.board[m.id];if(!bd)break;BET.slip=betDailyLegs(bd);if(!BET.amt)BET.amt=betDefAmt();S.sheet={type:"betSlip"};render(true);break}
     case"betCopy":{const m=betNext();const bd=m&&BET.board[m.id];const c=BET.feed&&BET.feed.rows.find(x=>x.id===id);if(!bd||!c)break;const me=myPid();const L=[];
       for(const l of c.legs||[]){if(l.k.includes(":")){if(l.k.split(":")[1]===me)continue;const pl=(bd.players||[]).find(p=>p.p===l.k.split(":")[1]);const o=pl&&pl.o.find(x=>x.k===l.k);if(o)L.push({k:l.k,s:"e",l:l.l,odd:o.odd})}
+        else if(l.k==="skor"){const[a,b]=String(l.s).split("-").map(Number);const od=bd.skor&&bd.skor[a]&&bd.skor[a][b];if(od)L.push({k:l.k,s:l.s,l:l.l,odd:od})}
         else{const mk=bd.markets.find(x=>x.k===l.k);const o=mk&&mk.o.find(x=>x.s===l.s);if(o)L.push({k:l.k,s:l.s,l:l.l,odd:o.odd})}}
       if(!L.length){toast("Bu kuponun seçimleri artık oynanamıyor");break}if(L.length<(c.legs||[]).length)toast("Bazı seçimler eklenemedi (kendi adına tahmin ya da kapanan seçenek)");
       BET.slip=L;if(!BET.amt)BET.amt=betDefAmt();S.f.bt="oyna";S.sheet={type:"betSlip"};render(true);break}
@@ -3765,7 +3767,13 @@ const BET={feed:null,board:{},tbl:null,lists:{},kings:null,week:{},slip:[],amt:"
 const fJ=n=>(Math.round(+n||0)).toLocaleString("tr-TR");
 const fO=n=>(+n).toFixed(2).replace(".",",");
 const betNext=()=>S.matches.filter(m=>!m.archived&&!isExt(m)&&m.state==="takim").sort((a,b)=>matchTs(a)-matchTs(b))[0];
-const betGrp=k=>["sonuc","fark"].includes(k)?"sonuc":["aralik","t95","t125","t155","iki6"].includes(k)?"toplam":k.includes(":")?"p:"+k.split(":")[1]:k;
+const betGrp=k=>["sonuc","fark","hnd"].includes(k)?"sonuc":["aralik","t95","t125","t155","iki6"].includes(k)?"toplam":k.includes(":")?"p:"+k.split(":")[1]:k;
+function betSk(bd){const c=BET.sk;if(c&&c.a>=0&&c.b>=0)return{a:c.a,b:c.b};return{a:Math.round(+bd.la||6),b:Math.round(+bd.lb||6)}}
+function betSkCard(m,bd){if(!bd.skor)return"";const c=betSk(bd);const v=c.a+"-"+c.b;const od=(bd.skor[c.a]||[])[c.b];if(!od)return"";const on=BET.slip.some(l=>l.k==="skor"&&l.s===v);const pp=betPopPct(bd,"skor",v);const dis=bd.open?"":" disabled";
+  const st=(t,n)=>`<div class="bsk-t"><span class="t${t.toUpperCase()}">${esc(nmOf(m,t.toUpperCase()))}</span><div class="bsk-s"><button data-act="betSk" data-t="${t}" data-d="-1" aria-label="${esc(nmOf(m,t.toUpperCase()))} golünü azalt"${dis||(n<=0?" disabled":"")}>−</button><b class="num" aria-live="polite">${n}</b><button data-act="betSk" data-t="${t}" data-d="1" aria-label="${esc(nmOf(m,t.toUpperCase()))} golünü artır"${dis||(n>=20?" disabled":"")}>+</button></div></div>`;
+  return `<section class="card bmk bsk"><h3>Skor tahmini</h3><div class="bsk-r">${st("a",c.a)}${st("b",c.b)}</div>
+    <div class="bo n1"><button class="${on?"on":""}"${dis} data-act="betPick" data-k="skor" data-v="${v}" data-l="Skor tahmini · ${c.a}–${c.b}" data-o="${od}" aria-pressed="${on}"><span>${c.a}–${c.b} biter${pp?`<em class="bpop">%${pp} oynadı</em>`:""}</span><b class="num">${fO(od)}</b></button></div>
+    <p class="bhint">${dIcon("simsek","gold",16)}<span>Skoru tam bilirsen tutar. Maç sonucu, handikap ve toplam gol seçimleriyle aynı kupona girmez; oyuncu tahminleriyle girer.</span></p></section>`}
 const betOdd=()=>Math.min(999,BET.slip.reduce((t,l)=>t*l.odd,1));
 // oturum anahtarı süresi dolmak üzereyse önce tazele (ilk açılışta tahmin verisi takılmasın)
 async function freshAuth(){const e=S.session?.expires_at;if(!e||e*1000-Date.now()>60000||!AUTH.sb)return;await refreshOnce()}
@@ -3978,7 +3986,7 @@ function viewIddia(){
         <div class="bm-m"><span>${dIcon("takvim","cyan",18)}${GKISA[new Date(t).getDay()]} ${fmtShort(m.date)} · ${esc(String(m.time||"").slice(0,5))}</span><span class="${bd.open?"op":"cl"}">${dIcon("duduk",bd.open?"gold":"pink",18)}${bd.open?`Kapanış ${new Date(t-BET_CLOSE).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}`:"Tahminler kapandı"}</span></div></section>`;
       h+=betTalk(m,bd)+betDaily(m,bd);
       h+=bd.markets.map(k=>{const hi=betHint(k.k,m);return `<section class="card bmk"><h3>${esc(k.t)}</h3><div class="bo n${k.o.length}">${k.o.map(o=>{const on=BET.slip.some(l=>l.k===k.k&&l.s===o.s);const pp=betPopPct(bd,k.k,o.s);
-        return `<button class="${on?"on":""}" ${!bd.open?"disabled":""} data-act="betPick" data-k="${esc(k.k)}" data-v="${esc(o.s)}" data-l="${esc(k.t+" · "+o.l)}" data-o="${o.odd}" aria-pressed="${on}"><span>${esc(o.l)}${pp?`<em class="bpop">%${pp} oynadı</em>`:""}</span><b class="num">${fO(o.odd)}</b></button>`}).join("")}</div>${hi?`<p class="bhint">${dIcon("simsek","gold",16)}<span>${esc(hi)}</span></p>`:""}</section>`}).join("");
+        return `<button class="${on?"on":""}" ${!bd.open?"disabled":""} data-act="betPick" data-k="${esc(k.k)}" data-v="${esc(o.s)}" data-l="${esc(k.t+" · "+o.l)}" data-o="${o.odd}" aria-pressed="${on}"><span>${esc(o.l)}${pp?`<em class="bpop">%${pp} oynadı</em>`:""}</span><b class="num">${fO(o.odd)}</b></button>`}).join("")}</div>${hi?`<p class="bhint">${dIcon("simsek","gold",16)}<span>${esc(hi)}</span></p>`:""}</section>${k.k==="hnd"?betSkCard(m,bd):""}`}).join("");
       h+=betPlayers(m,bd);
       if(bd.open&&BET.slip.length)h+=`<button class="bbar" data-act="betSlipOpen"><span><small>${BET.slip.length>1?`${BET.slip.length} seçim · oran ${fO(betOdd())}`:`Tek tahmin · oran ${fO(betOdd())}`}</small><b>${BET.slip.length>1?BET.slip.map(l=>esc(l.l.split(" · ").pop())).join(" + "):esc(BET.slip[0].l)}</b></span><i>Tahmin yap</i></button>`}}
   else if(tab==="kupon"){const L=me&&BET.lists[me];

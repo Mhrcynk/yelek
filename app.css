@@ -4121,3 +4121,10 @@ body.uye #meBtn{display:none}
 .vst0{font-size:.78rem!important;color:var(--c-ink3)!important;text-align:center;display:block!important}
 
 .vsum~.vsend,html.dk .vsum~.vsend{position:static;margin-top:0}
+
+.bo.n1{grid-template-columns:minmax(0,1fr)}.bo.n8{grid-template-columns:repeat(2,minmax(0,1fr))}.bo.n8 button span{white-space:normal;line-height:1.15}
+.bsk-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bsk-t{display:grid;gap:8px;justify-items:center;padding:10px 8px;border-radius:14px;background:var(--c-card2);min-width:0}
+.bsk-t>span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.82rem;font-weight:700}
+.bsk-s{display:flex;align-items:center;gap:6px}.bsk-s b{min-width:44px;text-align:center;font:800 2rem/1 var(--display)}
+.bsk-s button{width:44px;height:44px;border-radius:50%;border:1px solid var(--c-line);background:var(--c-card);color:#fff;font:700 1.3rem/1 Inter,sans-serif;cursor:pointer}.bsk-s button:disabled{opacity:.35}
