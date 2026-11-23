@@ -1521,19 +1521,19 @@ function rekorHtml(){const F=fin();const{R,st}=rekorCalc(F);
   let h="";const s=R.seri;
   if(s&&s.v>=2)h+=`<button class="rk-hero rg" data-act="open" data-id="${esc(s.id)}"><span class="rgf" aria-hidden="true">${pFace(s.id)}</span><span class="rk-ey">En uzun galibiyet serisi</span><span class="rk-big"><b class="num">${s.v}</b><i>maç üst üste</i></span><span class="rg-w"><b>${esc(nameOf(s.id))}${s.eq?` <em class="rk-eq">ve ${s.eq} kişi daha</em>`:""}</b><small>${esc(fmtShort(s.m0.date))} – ${esc(fmtShort(s.m.date))}</small></span></button>`;
   const eq2=o=>o.eq?` <em class="rk-eq">ve ${o.eq} kişi daha</em>`:"";
-  const row=(lab,val,unit,col,face,name,sub,act,id)=>`<button class="rkr" data-act="${act}" data-id="${esc(id)}">${face}<span class="rkr-t"><small>${lab}</small><b>${name}</b><i>${sub}</i></span><span class="rkr-v"><b class="num" style="color:${col}">${val}</b><small>${unit}</small></span></button>`;
-  const grp=(t,d,L)=>L.length?`<section class="rkl"><h3>${t}<small>${d}</small></h3><div class="rkl-b">${L.join("")}</div></section>`:"";
+  const row=(lab,val,unit,col,face,name,sub,act,id)=>`<button class="rkr" data-act="${act}" data-id="${esc(id)}">${face}<span class="rkr-t"><small>${lab}</small><b>${name}</b>${sub?`<i>${sub}</i>`:""}</span><span class="rkr-v"><b class="num" style="color:${col}">${val}</b><small>${unit}</small></span></button>`;
+  const grp=(t,d,L)=>L.length?`<section class="rkl"><h3>${t}</h3><div class="rkl-b">${L.join("")}</div></section>`:"";
   const G1=[],G2=[],G3=[];
   if(R.gol)G1.push(row("En çok gol atan",R.gol.v,"gol","#FF7AC3",pFace(R.gol.id),esc(nameOf(R.gol.id))+eq2(R.gol),`${esc(fmtShort(R.gol.m.date))} maçı · skor ${sk(R.gol.m)}`,"viewm",R.gol.m.id));
   if(R.not)G1.push(row("En yüksek maç notu",fN(R.not.v),"not","#00E58A",pFace(R.not.id),esc(nameOf(R.not.id))+eq2(R.not),`${esc(fmtShort(R.not.m.date))} maçı · ${R.not.r.g} gol, ${R.not.r.a} asist`,"viewm",R.not.m.id));
   if(R.fark)G1.push(row("En farklı galibiyet",sk(R.fark.m),R.fark.v+" fark","#5FE3F5",`<span class="rkr-c">${crest(nmOf(R.fark.m,R.fark.k),R.fark.k,30)}</span>`,esc(nmOf(R.fark.m,R.fark.k))+eq2(R.fark),`${esc(fmtShort(R.fark.m.date))} maçı`,"viewm",R.fark.m.id));
   if(R.asist)G2.push(row("En çok asist yapan",R.asist.v,"asist","#5FE3F5",pFace(R.asist.id),esc(nameOf(R.asist.id))+eq2(R.asist),`${R.asist.yr}. sezonda`,"open",R.asist.id));
-  if(R.motm)G3.push(row("En çok maçın adamı seçilen",R.motm.v,"kez","#FFD400",pFace(R.motm.id),esc(nameOf(R.motm.id))+eq2(R.motm),"Oylamayla seçilme sayısı","open",R.motm.id));
-  if(R.mac)G3.push(row("En çok maça çıkan",R.mac.v,"maç","#fff",pFace(R.mac.id),esc(nameOf(R.mac.id))+eq2(R.mac),"Oynadığı maç sayısı","open",R.mac.id));
+  if(R.motm)G3.push(row("En çok maçın adamı seçilen",R.motm.v,"kez","#FFD400",pFace(R.motm.id),esc(nameOf(R.motm.id))+eq2(R.motm),"","open",R.motm.id));
+  if(R.mac)G3.push(row("En çok maça çıkan",R.mac.v,"maç","#fff",pFace(R.mac.id),esc(nameOf(R.mac.id))+eq2(R.mac),"","open",R.mac.id));
   h+=grp("Tek maçta","Bir maçta yapılan en iyiler",G1)+grp("Bir sezonda","Tek sezon içinde toplanan",G2)+grp("Bütün zamanlar","İlk maçtan bugüne toplam",G3);
   if(s){const last=F[F.length-1].id;const C=Object.entries(st).filter(([id,x])=>x.w>=2&&x.last===last&&x.w>=s.v-1).sort((a,b)=>b[1].w-a[1].w)[0];
     if(C)h+=`<div class="rk-nx">${ICON_BOLT}<span><b>Sıradaki maçta kırılabilir</b><small>${esc(nameOf(C[0]))} ${C[1].w} maçtır kazanıyor. Bir galibiyet daha ${C[1].w>=s.v?"rekoru yeniler":"rekoru egale eder"}.</small></span></div>`}
-  return h+`<p class="rk-ft">Bir rekora dokununca o maç ya da oyuncu açılır. Rekorlar sezon bitince sıfırlanmaz.</p>`}
+  return h+``}
 /* haftalık bülten: maç detayından açılır, her açılışta maç verisinden üretilir */
 function bultenRow(m){return `<button class="blt-r" data-act="bultenOpen" data-id="${esc(m.id)}"><span class="blt-ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4zM9 9h6M9 13h6M9 17h3"/></svg></span><span class="blt-rx"><b>Haftanın bülteni</b><small>Senin haftan, haftanın yedisi, seriler</small></span><i>${CHV}</i></button>`}
 const ypEmbed=x=>x&&x.html?`<div class="blt-yp"><div style="zoom:${Math.min(1,(Math.min(innerWidth,560)-36)/540).toFixed(3)}">${x.html}</div></div>`:"";
