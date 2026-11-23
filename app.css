@@ -4572,3 +4572,5 @@ html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}
 .mres .mafh{align-items:center}
 
 .blt .motmc .nt{display:inline-block;width:max-content;padding:3px 8px;border-radius:8px;font-weight:800}
+
+.blt .blt-k,.blt .blt-d{border:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;padding:0!important;height:auto!important;min-height:0!important;outline:0!important}
