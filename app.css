@@ -4721,3 +4721,7 @@ html.dk .oda .oda-m li.me:not(.cap) .oda-h b{color:#fff}
 html.dk .oda .oda-b p{color:#fff}
 html.dk .oda .oda-b p time{opacity:1;color:rgba(255,255,255,.72)}
 html.dk .oda .oda-b q,html.dk .oda .oda-m li.cap .oda-b q{background:rgba(0,0,0,.28);color:rgba(255,255,255,.86);opacity:1}
+
+/* @herkes seçeneği */
+.oda-hk{flex:none;width:32px;height:32px;border-radius:50%;background:#FFD400;color:#2A1F00;display:grid;place-items:center;font:800 1rem/1 Inter,sans-serif;font-style:normal}
+.oda-al button span small{display:block;margin-top:2px;font:500 .75rem/1.2 Inter,sans-serif;color:var(--c-ink3)}
