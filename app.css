@@ -4786,3 +4786,15 @@ html.dk body.tg .oda-mn{background:#12372A}
 html.dk body.tg .oda-mn>button.dng,html.dk body.tg .oda-mrx{border-color:#1F5440}
 html.dk body.tg .oda-mn>button svg,html.dk body.tg .oda-nf small,html.dk body.tg .oda-nf ul.no li{color:#A9D9C4}
 html.dk body.tg .oda-mn>button.dng svg{color:#FF8FA8}
+
+/* Rekorlar: galibiyet serisi kartı (sağda büyük soluk fotoğraf) */
+.rk-hero.rg{position:relative;overflow:hidden;gap:8px;padding:18px;min-height:150px;align-content:center;cursor:pointer}
+.rk-hero.rg>*{position:relative}
+.rk-hero.rg .rgf{position:absolute;right:-14px;bottom:-22px;width:150px;height:150px;opacity:.5;pointer-events:none}
+.rk-hero.rg .rgf .rkf{width:150px;height:150px;border-radius:44px;font-size:3.4rem}
+.rk-hero.rg .rk-big{align-items:baseline;gap:8px}
+.rk-hero.rg .rk-big b{font:800 4.4rem/.82 var(--display);color:#FFD400}
+.rk-hero.rg .rk-big i{padding-bottom:0}
+.rg-w{display:grid;gap:3px;max-width:62%}
+.rg-w b{font:700 1rem/1.25 Inter,sans-serif;overflow-wrap:anywhere}
+.rg-w small{font:500 .75rem/1.3 Inter,sans-serif;color:var(--c-ink3)}
