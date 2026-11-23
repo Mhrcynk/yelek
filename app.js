@@ -4074,9 +4074,9 @@ function odaMenuDraw(){const old=document.getElementById("odaMenu");const c=S.sh
     h=`<div class="oda-nf"><b>Okundu bilgisi</b>${y.length?`<small>Gören · ${y.length}</small><ul>${li(y)}</ul>`:""}${n.length?`<small>Görmeyen · ${n.length}</small><ul class="no">${li(n)}</ul>`:""}${!o.length?`<small>Odada başka kimse yok</small>`:""}</div>`}
   else if(String(c.sh.rep)===String(x.id))h=`<div class="oda-mrp">${repBtns("mesaj",x.id,x.p,x.b)}</div>`;
   else h=`<div class="oda-mrx"><button class="kbkeep${x.ml===1?" on":""}" data-act="odaLike" data-id="${x.id}" data-v="1" aria-label="Beğen">${lIc("begen")}</button><button class="kbkeep${x.ml===-1?" on dn":""}" data-act="odaLike" data-id="${x.id}" data-v="-1" aria-label="Beğenme">${lIc("begenme")}</button></div>`
-    +it("odaReply","re","Yanıtla",`data-v="${x.id}"`)+(mine?"":it("odaAt","at","Bahset",`data-v="${esc(x.p)}"`))+it("odaCopy","cp","Kopyala",`data-v="${x.id}"`)
+    +it("odaReply","re","Yanıtla",`data-v="${x.id}"`)+it("odaCopy","cp","Kopyala",`data-v="${x.id}"`)
     +(mine?it("odaInfo","inf","Okundu bilgisi",`data-v="${x.id}"`):"")+(mine&&x.k==="msg"&&Date.now()-Date.parse(x.t)<3e5?it("odaEdit","ed","Düzenle",`data-v="${x.id}"`):"")
-    +(mine?"":it("repAsk","rp","Şikâyet et",`data-v="${esc(x.id)}"`)+it("blkSet","blk","Engelle",`data-id="${esc(x.p)}" data-v="1"`))+(mine||S.admin?it("odaDel","del","Sil",`data-v="${x.id}"`,"dng"):"");
+    +(mine||S.admin?it("odaDel","del","Sil",`data-v="${x.id}"`,"dng"):"");
   const E=old||document.body.appendChild(Object.assign(document.createElement("div"),{id:"odaMenu"}));
   E.innerHTML=`<button class="oda-mbg" data-act="odaSelX" aria-label="Menüyü kapat"></button><i class="oda-mhl" aria-hidden="true"></i><div class="oda-mn" role="menu">${h}</div>`;
   const r=b.getBoundingClientRect(),M=E.querySelector(".oda-mn"),H=E.querySelector(".oda-mhl");const vw=innerWidth,vh=(window.visualViewport&&visualViewport.height)||innerHeight;

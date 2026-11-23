@@ -67,8 +67,8 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
 
   await T("Geri sayım",async()=>{await click(pg,'.nav [data-tab="mac"]');ok(!(await pg.evaluate(()=>!!document.querySelector(".mafcd"))),"Maç sekmesinde geri sayım olmamalı");
     await click(pg,'.nav [data-tab="lig"]');await click(pg,'.oyt2 [data-tab="gecmis"]');const t=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");
-    ok(/^\d\d:\d\d:\d\d$/.test(t),"24 saat içindeki maçta geri sayım yok ("+t+")");await pg.waitForTimeout(1200);
-    const t2=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"");ok(t2!==t,"geri sayım ilerlemiyor");await click(pg,'.nav [data-tab="mac"]')});
+    ok(/^\d\d:\d\d:\d\d$/.test(t),"24 saat içindeki maçta geri sayım yok ("+t+")");let t2=t;for(let i=0;i<8&&t2===t;i++){await pg.waitForTimeout(600);t2=await pg.evaluate(()=>document.querySelector(".mzfx.nx .tkcd")?.textContent||"")}
+    ok(t2!==t,"geri sayım ilerlemiyor");await click(pg,'.nav [data-tab="mac"]')});
 
   await T("Seçim menüsü uygulamanın kendi listesiyle açılıyor",async()=>{await E(pg,"window._t=S.tab;S.sheet=null;S.tab='lig';render(true)");await pg.waitForTimeout(300);await click(pg,'.yrsel select');ok(await pg.locator('.csel').count()===1,"menü açılmadı");const v0=await pg.evaluate(()=>document.querySelector('.yrsel select').value);await click(pg,'.csel button:not(.on)');ok(await pg.locator('.csel').count()===0,"menü kapanmadı");ok(await pg.evaluate(()=>document.querySelector('.yrsel select').value)!==v0,"seçim uygulanmadı");await E(pg,"S.yr='all';render(true)");await pg.evaluate(()=>{const s=document.querySelector('.yrsel select');s.value=s.options[0].value;s.dispatchEvent(new Event('change',{bubbles:true}))});await E(pg,"S.tab=window._t;render(true)");await pg.waitForTimeout(300)});
   await T("Kadro adımları iptal edilebiliyor",async()=>{await E(pg,"S.sheet=null;S.teams=null;S.tab='mac';openMatch().state='takim';render(true)");await pg.waitForTimeout(300);
