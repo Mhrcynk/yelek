@@ -4802,3 +4802,23 @@ html.dk body.tg .oda-mn>button.dng svg{color:#FF8FA8}
 /* Maç detayı › Tahmin: yüz, satırdaki genel span kuralıyla esnemesin */
 .mtr>.av{flex:0 0 30px!important;width:30px;height:30px;display:grid}
 .mtr>span:not(.av){flex:1 1 0;min-width:0}
+
+/* Krallıklar: tek tablo (her krallık bir satır, dokununca sıralama) */
+.kg{display:grid;border-radius:20px;background:var(--c-card);overflow:hidden}
+.kgr+.kgr{border-top:1px solid #2E2260}
+.kgh{display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:72px;padding:12px 14px;border:0;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer}
+.kgh .rkf{width:40px;height:40px}
+.kgt{display:grid;gap:3px;min-width:0}
+.kgt small{font:500 .75rem/1.25 Inter,sans-serif;color:var(--c-ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kgt small b{font-weight:600;color:#fff}
+.kgt>b{font:700 .95rem/1.2 Inter,sans-serif;overflow-wrap:anywhere}
+.kgv{display:grid;justify-items:end;gap:3px;min-width:44px}
+.kgv b{font:800 2rem/.9 var(--display)}
+.kgv small{font:700 .75rem/1 Inter,sans-serif;color:var(--c-ink3)}
+.kgr.op{background:#221650}
+.kgl{list-style:none;margin:0;padding:0 14px 8px}
+.kgl button{display:grid;grid-template-columns:22px minmax(0,1fr) auto 44px;align-items:center;gap:10px;width:100%;min-height:42px;border:0;border-top:1px solid #2E2260;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer;padding:0}
+.kgl i{font:800 .85rem/1 Inter,sans-serif;font-style:normal;color:var(--c-ink3);text-align:center}
+.kgl span{font:600 .9rem/1.2 Inter,sans-serif;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kgl small{font:500 .75rem/1 Inter,sans-serif;color:var(--c-ink3);white-space:nowrap}
+.kgl b{font:800 1.15rem/1 var(--display);text-align:right}
