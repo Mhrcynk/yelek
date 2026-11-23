@@ -4728,7 +4728,7 @@ html.dk .oda .oda-b q,html.dk .oda .oda-m li.cap .oda-b q{background:rgba(0,0,0,
 
 /* Sohbet: okundu tikleri, gören satırı, sağa çek-yanıtla, basılı tut */
 .oda .oda-m{overflow-x:hidden}
-.oda .oda-b[data-act="odaSel"]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.oda .oda-b[data-act="odaSel"],.oda .oda-b[data-act="betComSel"]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .oda-rt{display:inline-flex;vertical-align:-1px;margin-left:4px;color:rgba(255,255,255,.6)}
 .oda-rt svg{width:18px;height:10px;fill:none;stroke:currentColor;stroke-width:1.800;stroke-linecap:round;stroke-linejoin:round}.oda-rt svg.oda-tk1{width:13px}
 .oda-rt.all{color:#5FE3F5}
@@ -4781,3 +4781,8 @@ html.dk .rk-eq{font-size:.75rem}
 .oda-nf li .rkf{width:30px;height:30px;font-size:.7rem}
 .oda-nf ul.no li{color:#C9BFE6}.oda-nf ul.no .rkf{filter:grayscale(.6);opacity:.75}
 .oda-bw.odsw.odsl::before{left:auto;right:-40px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12.500 6 16.500l7-9M11 15l1.500 1.500 8-9'/%3E%3C/svg%3E")}
+/* Tahmin (yeşil tema) içinde menü tonu */
+html.dk body.tg .oda-mn{background:#12372A}
+html.dk body.tg .oda-mn>button.dng,html.dk body.tg .oda-mrx{border-color:#1F5440}
+html.dk body.tg .oda-mn>button svg,html.dk body.tg .oda-nf small,html.dk body.tg .oda-nf ul.no li{color:#A9D9C4}
+html.dk body.tg .oda-mn>button.dng svg{color:#FF8FA8}
