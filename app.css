@@ -4725,3 +4725,17 @@ html.dk .oda .oda-b q,html.dk .oda .oda-m li.cap .oda-b q{background:rgba(0,0,0,
 /* @herkes seçeneği */
 .oda-hk{flex:none;width:32px;height:32px;border-radius:50%;background:#FFD400;color:#2A1F00;display:grid;place-items:center;font:800 1rem/1 Inter,sans-serif;font-style:normal}
 .oda-al button span small{display:block;margin-top:2px;font:500 .75rem/1.2 Inter,sans-serif;color:var(--c-ink3)}
+
+/* Sohbet: okundu tikleri, gören satırı, sağa çek-yanıtla, basılı tut */
+.oda .oda-m{overflow-x:hidden}
+.oda .oda-b[data-act="odaSel"]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.oda-rt{display:inline-flex;vertical-align:-1px;margin-left:4px;color:rgba(255,255,255,.6)}
+.oda-rt svg{width:18px;height:10px;fill:none;stroke:currentColor;stroke-width:1.800;stroke-linecap:round;stroke-linejoin:round}.oda-rt svg.oda-tk1{width:13px}
+.oda-rt.all{color:#5FE3F5}
+.oda-rd{display:grid;gap:3px;justify-items:end;font-size:.75rem;line-height:1.35;color:var(--c-ink3);text-align:right;padding:2px 2px 4px}.oda-rd b{color:#fff;font-weight:700}
+.oda-bw{position:relative}
+.oda-bw.odsw{transition:none}
+.oda-bw.odsw::before{content:"";position:absolute;left:-40px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;background:#2B1F5E url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 7 4 12l5 5M4 12h10a6 6 0 0 1 6 6'/%3E%3C/svg%3E") center/16px no-repeat;opacity:.55}
+.oda-bw.odsw.odgo::before{opacity:1;background-color:var(--oc,#FF3EA5)}
+.oda-tip{display:flex;align-items:center;gap:8px;margin:0;padding:4px 4px 4px 12px;border-radius:12px;background:var(--c-card2);font-size:.78rem;line-height:1.35;color:var(--c-ink2,#fff)}
+.oda-tip span{flex:1;min-width:0}.oda-tip button{flex:none;width:40px;height:40px;border:0;background:none;color:#fff;font-size:1.2rem;cursor:pointer}
