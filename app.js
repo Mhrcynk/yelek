@@ -1741,7 +1741,10 @@ async function vsLoad(id,force){const c=S.vst[id];if(!force&&c&&Date.now()-c.t<6
 const myPid=()=>S.mem&&S.mem.status==="onayli"?S.mem.player_id:null;
 function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=esc(m.id);const vs=S.vst[m.id];vsLoad(m.id);
   const pl=plAll(m).filter(id=>P(id)&&!P(id).guest);const n=vs&&vs.n||0;const me=myPid();const can=me&&plAll(m).includes(me);
-  let h=`<section class="vhero${can&&!(vs&&vs.mine)?"":" ok"}" id="oylama"><div class="vhr"><b>${!can?"Oylama sürüyor":vs&&vs.mine?"Oyunu verdin":"Sıra sende: oyunu ver"}</b>${can&&!(vs&&vs.mine)?`<span class="vpill">+200<br>sikke</span>`:""}</div><p>${can&&!(vs&&vs.mine)?`${Math.max(0,plAll(m).length-1)} oyuncuyu değerlendir, maçın adamını seç. 2 dakika sürer. `:""}Şu ana kadar <span class="num">${n}/${pl.length}</span> kişi oy verdi.</p>${can?`<button class="btn vbtn block" data-act="voteOpen" data-id="${M}" data-v="${esc(me)}">${vs&&vs.mine?"Oyunu değiştir":"Oylamaya başla"}</button>`:""}</section>`;
+  const mineV=!!(vs&&vs.mine);const vt0=vs&&Array.isArray(vs.voters)?new Set(vs.voters):null;const wait=vt0?pl.filter(id=>!vt0.has(id)).sort((a,b)=>(b===me)-(a===me)):null;
+  const STAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.100-6.100L3.200 9.400l6.100-.8L12 3z"/></svg>';
+  const wb=wait?(wait.length?`<span class="od2-av">${wait.slice(0,4).map(id=>pFace(id)).join("")}${wait.length>4?`<span class="rkf more">+${wait.length-4}</span>`:""}</span><span class="vh2-x"><b>${wait.length} kişi bekleniyor</b><small>${can&&!mineV?"Sen de onlardansın":"Herkes verince notlar açıklanır"}</small></span>`:`<span class="vh2-x"><b>Herkes oyunu verdi</b><small>Yönetici kapatınca notlar açıklanır</small></span>`):`<span class="vh2-x"><b><span class="num">${n}/${pl.length}</span> kişi oy verdi</b><small>${can&&!mineV?`${Math.max(0,plAll(m).length-1)} oyuncuyu değerlendir, 2 dakika sürer`:"Herkes verince notlar açıklanır"}</small></span>`;
+  let h=`<section class="vhero vh2${can&&!mineV?"":" ok"}" id="oylama"><div class="vh2-h"><span class="vh2-i">${STAR}</span><b>${!can?"Oylama sürüyor":mineV?"Oyunu verdin":"Sıra sende: oyunu ver"}</b>${can&&!mineV?`<span class="vh2-p">+200 sikke</span>`:""}</div><div class="vh2-w">${wb}</div>${can?`<button class="btn vbtn block" data-act="voteOpen" data-id="${M}" data-v="${esc(me)}">${mineV?"Oyunu değiştir":"Oylamaya başla"}</button>`:""}</section>`;
   if(S.admin){const vt=new Set(vs&&vs.voters||[]);const no=pl.filter(id=>!vt.has(id)),yes=pl.filter(id=>vt.has(id));const conf=S.f.vClose===m.id;
     h+=`<section class="card admc"><div class="ch"><div><div class="eyebrow">Yönetici</div><h2>Oylama</h2></div><b class="num vcnt">${vt.size}/${pl.length}</b></div>
       ${no.length?`<div class="vlist">${no.map(id=>`<div class="vrow">${avatar(P(id),"sm")}<b>${esc(nameOf(id))}</b><button class="btn sm" data-act="voteOpen" data-id="${M}" data-v="${esc(id)}">Onun adına oy ver</button></div>`).join("")}</div>`:""}
@@ -1806,12 +1809,20 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
 // Bu hafta: haftanın dört adımı ve tahmin kartı
 function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const cur=!kadro?0:ended?3:acik?1:2;
   return `<ol class="hak" aria-label="Haftanın akışı">${["Kadro","Tahmin","Maç","Oylama"].map((l,i)=>`<li class="${i<cur?"ok":i===cur?"on":""}"${i===cur?' aria-current="step"':""}><i></i>${l}</li>`).join("")}</ol>`}
+function thkCd(ts){const ms=ts-Date.now();if(ms<=0)return"Kapandı";const x=Math.floor(ms/1e3);if(ms>864e5)return Math.floor(x/86400)+" gün "+Math.floor(x%86400/3600)+" sa";return pad(Math.floor(x/3600))+":"+pad(Math.floor(x%3600/60))+":"+pad(x%60)}
+function tickThk(){document.querySelectorAll("[data-thk]").forEach(el=>{const t=thkCd(+el.dataset.thk);if(el.textContent!==t)el.textContent=t;if(t==="Kapandı"&&!tickThk.d){tickThk.d=1;setTimeout(()=>{tickThk.d=0;render(true)},1200)}})}
+setInterval(tickThk,1000);
 function tahminKart(m){if(!isMember()||S.fol||!myPid())return"";const me=myPid();const bd=BET.board[m.id];betLoad("board",m.id);const L=BET.lists[me];if(!L)betLoad("list",me);
-  const mine=L?L.rows.filter(c=>c.m===m.id):[];const ac=mine.filter(c=>c.z==="acik");const sum=bd&&bd.sum;const un=betUnread();let t,cta,go;
-  if(bd&&bd.open){t=(sum?`Bakiyen ${fJ(sum.bal)} sikke`:"Bu haftanın tahminleri açık")+(ac.length?` · ${ac.length} tahminin açıkta`:"");cta="Tahmin yap";go="oyna"}
-  else if(mine.length){const net=mine.filter(c=>c.z==="kazandi"||c.z==="kaybetti").reduce((a,c)=>a+((c.py||0)-c.st),0);t=ac.length?`${ac.length} tahminin açıkta · ${fJ(ac.reduce((a,c)=>a+c.st,0))} sikke`:`Bu maçtan ${net>0?"+":net<0?"−":""}${fJ(Math.abs(net))} sikke`;cta="Tahminlerim";go="kupon"}
-  else{t=bd?"Bu maçın tahminleri kapandı":"Yükleniyor…";cta="Sıralama";go="sira"}
-  return `<div class="thk" id="thk"><div class="thk-b"><span class="thk-i">${dIcon("bilet","green",24)}</span><span class="thk-x"><b>Tahmin${un?`<em class="num" aria-label="${un} yeni bildirim">${un>9?"9+":un}</em>`:""}</b><small>${esc(t)}</small></span></div><div class="thk-a"><button class="thk-c" data-act="thkGo" data-v="${go}">${cta}</button><p class="thk-n">Para yok,<br>bahis değil</p></div></div>`}
+  const mine=L?L.rows.filter(c=>c.m===m.id):[];const ac=mine.filter(c=>c.z==="acik");const sum=bd&&bd.sum;const un=betUnread();const cts=bd&&bd.closes?Date.parse(bd.closes):0;const open=!!(bd&&bd.open&&cts>Date.now());
+  const CLK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  let pill,B,cta,go;const bal=sum?fJ(sum.bal):"–";
+  if(open){pill=`${CLK}Kapanışa <i class="num" data-thk="${cts}" role="timer" aria-label="Tahminlerin kapanmasına kalan süre">${thkCd(cts)}</i>`;B=[["Kalan sikke",bal],["Yapılan tahmin",L?mine.length:"–"]];cta="Tahmin yap";go="oyna"}
+  else if(mine.length){const dn=mine.filter(c=>c.z==="kazandi"||c.z==="kaybetti");const net=dn.reduce((a,c)=>a+((c.py||0)-c.st),0);
+    if(ac.length){pill="Tahminler kapandı";B=[["Açıktaki tahmin",ac.length],["Yatırılan sikke",fJ(ac.reduce((a,c)=>a+c.st,0))]]}
+    else{pill="Sonuçlandı";B=[["Bu maçtan",(net>0?"+":net<0?"−":"")+fJ(Math.abs(net))],["Tutan tahmin",mine.filter(c=>c.z==="kazandi").length+"/"+mine.length]]}
+    cta="Tahminlerim";go="kupon"}
+  else{pill=bd?"Tahminler kapandı":"Yükleniyor…";B=[["Kalan sikke",bal],["Yapılan tahmin",bd?0:"–"]];cta="Sıralama";go="sira"}
+  return `<div class="thk th2" id="thk"><div class="thk-b"><span class="thk-i">${dIcon("bilet","green",24)}</span><span class="thk-x"><b>Tahmin${un?`<em class="num" aria-label="${un} yeni bildirim">${un>9?"9+":un}</em>`:""}</b></span><span class="th2-p">${pill}</span></div><div class="th2-g">${B.map(([l,v])=>`<div><small>${l}</small><b class="num">${v}</b></div>`).join("")}</div><button class="thk-c" data-act="thkGo" data-v="${go}">${cta}</button></div>`}
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
   if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip adm">Yönetici</span></div>${editorPanel(m)}</section>`;
@@ -4048,7 +4059,10 @@ function odaCard(m){if(!m||!myPid()||isExt(m)||m.archived)return"";const fin=m.s
   if(d.after)return `<div id="odaCard"><button class="oda-c oda-X" data-act="odaOpen" data-id="${M}">${ic}<span><b>Soyunma odaları açıldı</b><small>İki takım maçtan önce ne konuşmuş? Yarın silinir.</small></span></button></div>`;
   if(!d.open)return `<div id="odaCard"></div>`;
   const sd=d.side,ot=sd==="A"?"B":"A";const last=[...d.msgs].reverse().find(x=>x.k!=="sys");const un=odaUnread(m.id);
-  return `<div id="odaCard"><button class="oda-c oda-${sd}" data-act="odaOpen" data-id="${M}">${ic}<span><b>${esc(nmOf(m,sd))} soyunma odası</b><small>${last?esc(shortName(nameOf(last.p)))+": "+esc(last.b):"Sadece takımın görür. İlk mesajı sen yaz."}</small></span>${un?`<em class="num">${un>9?"9+":un}</em>`:""}</button>
+  const W=d.msgs.filter(x=>x.k!=="sys"&&x.p&&!isBlk(x.p));const lastV=W[W.length-1];const wr=[...new Set(W.map(x=>x.p).reverse())];
+  return `<div id="odaCard"><button class="oda-c od2 oda-${sd}" data-act="odaOpen" data-id="${M}"><span class="od2-h">${ic}<span class="od2-t"><b>${esc(nmOf(m,sd))} soyunma odası</b><small>Sadece takımın görür</small></span>${un?`<em class="num">${un>9?"9+":un}</em>`:""}</span>
+    <span class="od2-m">${lastV?`<small>${esc(shortName(nameOf(lastV.p)))} · ${odaHM(lastV.t)}</small><span>${esc(temiz(lastV.b))}</span>`:`<span>Henüz mesaj yok. İlk mesajı sen yaz.</span>`}</span>
+    <span class="od2-f">${wr.length?`<span class="od2-av">${wr.slice(0,3).map(id=>pFace(id)).join("")}</span><small>${wr.length} kişi yazdı</small>`:`<small></small>`}<span class="od2-go">Odaya gir</span></span></button>
     <p class="oda-l"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${esc(nmOf(m,ot))} odası kilitli. Maç bitince iki oda da 1 gün herkese açılır, sonra silinir.</p></div>`}
 function odaPos(m,sd,tac){const ids=plOf(m,sd).filter(id=>P(id));const G={KL:[],DF:[],OS:[],FV:[]};const PG={Defans:"DF","Orta saha":"OS",Forvet:"FV",Kaleci:"KL",DF:"DF",OS:"OS",FV:"FV",KL:"KL"};
   ids.forEach(id=>{const p=P(id);let g="OS";try{g=(p.epos&&EPOS[p.epos]?EPOS[p.epos][0]:PG[p.pos]||(EPOS[eposOf(p)]||[])[0])||"OS"}catch(_){}(G[g]||G.OS).push(id)});
