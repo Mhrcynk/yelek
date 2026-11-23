@@ -4497,3 +4497,8 @@ html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}
 .lgrow{margin-bottom:12px}
 .lgv{flex:none;width:52px;height:52px;border-radius:14px;background:var(--c-card2);display:grid;place-items:center;overflow:hidden;color:var(--c-ink3)}
 .lgv img{width:100%;height:100%;object-fit:contain}.lgv svg{width:26px;height:26px}
+
+/* zıplama düzeltmeleri */
+.chipsP .pk i.off{visibility:hidden}
+.card>.pvc.in{margin:-18px -18px 0;padding:18px;width:calc(100% + 36px)}
+.pv-g2.one{grid-template-columns:1fr}

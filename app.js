@@ -1434,7 +1434,8 @@ function card(p,big){
    2) Yaş: tavanı düşürmez (her yaşta %100 olunabilir); 30'dan sonra maçta daha çok yorulur ve daha geç toparlanır.
    3) Maç yorgunluğu: oynadığı maçtan sonra düşer, yavaş yavaş düzelir (30 yaş altı 3 gün, yaşla 5 güne kadar uzar). */
 const KW=[1,.85,.7,.55,.4,.3],KREC=72;
-function kondOf(id){const hb=Math.floor(Date.now()/9e5);S._kc=S._kc||{};if(S._kc.v!==S.matches||S._kc.h!==hb)S._kc={v:S.matches,h:hb};if(id in S._kc)return S._kc[id];
+function kondOf(id){return null;/* kondisyon uygulamadan kaldırıldı */
+const hb=Math.floor(Date.now()/9e5);S._kc=S._kc||{};if(S._kc.v!==S.matches||S._kc.h!==hb)S._kc={v:S.matches,h:hb};if(id in S._kc)return S._kc[id];
   const p=P(id);let r=null;
   if(p&&!p.guest){const now=Date.now(),D=864e5,H=36e5,cr=p.created_at?Date.parse(p.created_at)-D:0;
     const M=S.matches.filter(m=>mDone(m)&&matchTs(m)<=now&&now-matchTs(m)<=56*D&&matchTs(m)>=cr).sort((a,b)=>matchTs(b)-matchTs(a)).slice(0,6);
@@ -1536,7 +1537,7 @@ function sheetExt(){if(!S.admin)return"";const f=S.f.ext;if(!f)return"";const ps
     <label class="f" for="exOpp">Rakip takım<input id="exOpp" type="text" maxlength="40" list="oppList" data-bind="ext.opp" value="${esc(f.opp)}" placeholder="Rakip takımın adı" autocomplete="off"><datalist id="oppList">${opps.map(o=>`<option value="${esc(o)}">`).join("")}</datalist></label>
     <label class="f" for="exDate">Tarih<input id="exDate" type="date" data-bind="ext.date" value="${esc(f.date)}"></label>
     <section class="xsb" aria-label="Skor">${side(us,"us",f.us,0)}<span class="xsbd">–</span>${side(op,"them",f.them,1)}</section>
-    <div><div class="xhd"><span class="eyebrow">Kadro</span><small>${f.team.length?f.team.length+" kişi seçildi":"Oynayanlara dokun"}</small></div>${(()=>{const pk=p=>`<button class="pk${inT(p.id)?" on":""}" data-act="extPick" data-p="${esc(p.id)}" aria-pressed="${inT(p.id)}">${avatar(p,"xs")}<span>${esc(shortName(p.name))}</span>${inT(p.id)?`<i>${ICON.check}</i>`:""}</button>`;
+    <div><div class="xhd"><span class="eyebrow">Kadro</span><small>${f.team.length?f.team.length+" kişi seçildi":"Oynayanlara dokun"}</small></div>${(()=>{const pk=p=>`<button class="pk${inT(p.id)?" on":""}" data-act="extPick" data-p="${esc(p.id)}" aria-pressed="${inT(p.id)}">${avatar(p,"xs")}<span>${esc(shortName(p.name))}</span><i${inT(p.id)?"":' class="off"'}>${ICON.check}</i></button>`;
       return `<div class="chipsP">${ps.map(pk).join("")}</div>${gs.length?`<div class="xhd" style="margin-top:12px"><span class="eyebrow">Misafirler</span></div><div class="chipsP">${gs.map(pk).join("")}</div>`:""}`})()}
       <form data-form="extGuest" class="guestf" style="margin-top:10px"><input id="extGuestName" type="text" maxlength="40" placeholder="Kadroda olmayan oyuncu (misafir)" autocomplete="off" data-bind="extGuest" value="${esc(S.f.extGuest||"")}"><button class="btn sm" type="submit">${ICON.plus} Ekle</button></form></div>
     ${f.team.length?`<div class="tblock"><span class="eyebrow">Gol ve asist</span>${f.team.map(id=>`<div class="srow"><div class="who"><b>${esc(nameOf(id))}</b></div><div class="steps">${stp2(id,"g","GOL")}${stp2(id,"a","AST")}</div></div>`).join("")}</div>
@@ -2072,7 +2073,7 @@ const trkSum=(m,k,f)=>{const L=plOf(m,k).map(id=>trkOf(m,id)).filter(Boolean);if
 // maçın en'leri
 const trkBest=m=>[["rt","En yüksek reyting"],["km","En çok koşan"],["hiz","En hızlı"],["pas","Pas ustası"],["tk","Top kapma"],["pa","Pas arası"],["pt","Progresif taşıma"]].map(([k,l])=>{const c=plAll(m).filter(id=>trkOf(m,id)?.[k]!=null).sort((a,b)=>trkOf(m,b)[k]-trkOf(m,a)[k])[0];return c?{k,l,id:c,v:trkOf(m,c)[k]}:null}).filter(Boolean);
 function trkPanel(m){const n=plAll(m).filter(id=>trkOf(m,id)).length,tot=plAll(m).length;const M=esc(m.id);
-  if(!n)return `<div class="empty emp2">${empIc("grafik","green")}<h3>Saha verisi girilmedi</h3><p>Akıllı Saha'daki koşu, pas, hız ve top kapma verileri girilirse burada iki takım karşılaştırılır; notlara, kartlara ve kondisyona da yansır.</p>${S.admin?`<button class="btn primary" data-act="trkOpen" data-id="${M}">Saha verilerini gir</button>`:""}</div>`;
+  if(!n)return `<div class="empty emp2">${empIc("grafik","green")}<h3>Saha verisi girilmedi</h3><p>Akıllı Saha'daki koşu, pas, hız ve top kapma verileri girilirse burada iki takım karşılaştırılır; notlara ve kartlara da yansır.</p>${S.admin?`<button class="btn primary" data-act="trkOpen" data-id="${M}">Saha verilerini gir</button>`:""}</div>`;
   const rows=[["rt","Ort. reyting"],["km","Koşu (km)"],["pas","Pas"],["isa","Pas isabeti"],["spr","Sprint"],["hiz","En yüksek hız"],["tk","Top kapma"],["pa","Pas arası"],["pp","Progresif pas"],["pt","Progresif taşıma"],["dri","Dripling"]].map(([k,l])=>[k,l,trkSum(m,"A",k),trkSum(m,"B",k)]).filter(r=>r[2]!=null||r[3]!=null);
   let h=`<p class="muted small" style="margin:0">${n}/${tot} oyuncunun verisi girildi${n<TRK_MIN?" · notlara ve kartlara yansıması için en az "+TRK_MIN+" oyuncu gerekir":""}. Kaynak: Akıllı Saha.</p>`;
   h+=`<div class="mstat"><div class="msth"><span>${tDot("A")}${esc(TEAM.A)}</span><span>${tDot("B")}${esc(TEAM.B)}</span></div>${rows.map(([k,l,x,y])=>{x=x||0;y=y||0;const t=Math.max(x,y)||1;
@@ -2088,7 +2089,7 @@ function sheetTrk(){const m=S.matches.find(x=>x.id===S.sheet.mid);if(!m||!S.admi
       <div class="grid2 trkg">${TRK.map(([k,l,u,dec])=>`<label class="f">${l}${u?" ("+u+")":""}<input type="text" inputmode="decimal" data-bind="trk.${esc(id)}.${k}" value="${esc(v[k]??"")}" placeholder="–" autocomplete="off"></label>`).join("")}</div></details>`};
   const n=plAll(m).filter(id=>{const v=f[id]||{};return TRK.some(([k])=>v[k]!==""&&v[k]!=null)}).length,tot=plAll(m).length;
   return `<div class="ch"><div style="min-width:0"><div class="eyebrow">Saha verileri · ${fmtShort(m.date)}</div><h2 style="white-space:normal">${esc(TEAM.A)} ${m.score_a} – ${m.score_b} ${esc(TEAM.B)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
-    <div class="trkp"><b>${n} / ${tot} oyuncu</b><span class="kbar khi big"><i style="width:${tot?n/tot*100:0}%"></i></span><small class="muted">Akıllı Saha'daki maç ekranından bakıp gir; ondalık için virgül kullanabilirsin. Zorunlu değil. En az ${TRK_MIN} oyuncu girilince notlara (en fazla ±1), kartlara (±1) ve kondisyona yansır.</small></div>
+    <div class="trkp"><b>${n} / ${tot} oyuncu</b><span class="kbar khi big"><i style="width:${tot?n/tot*100:0}%"></i></span><small class="muted">Akıllı Saha'daki maç ekranından bakıp gir; ondalık için virgül kullanabilirsin. Zorunlu değil. En az ${TRK_MIN} oyuncu girilince notlara (en fazla ±1) ve kartlara (±1) yansır.</small></div>
     <div class="eyebrow trkh">${tDot("A")}${esc(TEAM.A)}</div>${plOf(m,"A").map(row).join("")}
     <div class="eyebrow trkh">${tDot("B")}${esc(TEAM.B)}</div>${plOf(m,"B").map(row).join("")}
     <button class="btn primary block" data-act="trkSave" data-id="${esc(m.id)}">${ICON.check} Kaydet ve hesapla</button>`}
@@ -2410,7 +2411,7 @@ function sheetMe(){
   const rest=ps.filter(p=>!used.has(p.id));h+=sec(om?"Diğerleri":"",rest);
   h+=`<p class="muted small mee" hidden>Bu isimde oyuncu yok.</p></div>`;
   return h}
-function meFilter(q){q=trq((q||"").trim());const L=$("#meL");if(!L)return;let any=0;const pg=S.f.mePos||"";
+function meFilter(q){q=trq((q||"").trim());const L=$("#meL");if(!L)return;{const sh=document.querySelector("#modal .sheet");if(sh&&!sh.style.minHeight)sh.style.minHeight=sh.offsetHeight+"px"}let any=0;const pg=S.f.mePos||"";
   L.querySelectorAll(".mes").forEach(sc=>{let n=0;sc.querySelectorAll(".mer").forEach(b=>{const ok=(!q||b.dataset.q.includes(q)||b.dataset.q.split(" ").some(w=>w.startsWith(q)))&&(!pg||b.dataset.g===pg);b.hidden=!ok;if(ok)n++});sc.hidden=!n;any+=n});
   const e=L.querySelector(".mee");if(e)e.hidden=!!any}
 function rtHist(s){const h=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.gx!=null);if(!h.length)return"";
@@ -2521,7 +2522,7 @@ function sheetPlayer(pid,inline){
     <div><h3>Rozetler</h3><div class="pabd">${(s.badges||[]).map(b=>`<span class="${b.shame?"shame":""}"><i>${esc(b.i)}</i><span><b>${esc(b.t)}</b><small>${esc(b.d)}</small></span></span>`).join("")||'<span class="muted small">Henüz rozet yok.</span>'}</div></div>`;return h}
   const x=STATUS[st];const dc=st==="hazir"?"#00E58A":x.cls==="bad"?"#FF4D6D":"#FFD400";
   const stLbl=`<span class="pv-dot" style="background:${dc};box-shadow:0 0 0 5px ${dc}2e"></span><span class="pv-dx"><small>Durum</small><b>${esc(x.label)}${p.status?.until&&st!=="hazir"?` · ${fmtShort(p.status.until)}`:""}</b></span>`;
-  h+=`<div class="pv-g2">${canSt&&!inline?`<button class="pv-d" data-act="stOpen" aria-expanded="${!!S.f.stOpen}">${stLbl}<i>${CHVD}</i></button>`:`<div class="pv-d">${stLbl}</div>`}${kondMini(p)||'<div class="pv-k"></div>'}</div>`;
+  h+=`<div class="pv-g2 one">${canSt&&!inline?`<button class="pv-d" data-act="stOpen" aria-expanded="${!!S.f.stOpen}">${stLbl}<i>${CHVD}</i></button>`:`<div class="pv-d">${stLbl}</div>`}</div>`;
   if(canSt&&!inline&&S.f.stOpen){const ch=sf.type!==st||(sf.type!=="hazir"&&(sf.until!==(p.status?.until||"")||sf.note!==(p.status?.note||"")));
     h+=`<div class="pv-sp"><div class="pv-sc">${Object.entries(STATUS).map(([k,v])=>`<button data-act="stType" data-v="${k}" class="${sf.type===k?"on":""}">${v.label}</button>`).join("")}</div>
     ${sf.type!=="hazir"?`<div class="grid2"><label class="f" for="stUntil">Tahmini dönüş<input id="stUntil" type="date" data-bind="st.until" value="${esc(sf.until)}"></label><label class="f" for="stNote">Not<input id="stNote" type="text" maxlength="60" data-bind="st.note" value="${esc(sf.note)}" placeholder="Örn. ayak bileği"></label></div>`:""}
@@ -2660,8 +2661,6 @@ function viewKurallar(inSheet){
   const n=NOTE;const row=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;const f=x=>x>0?"+"+fN(x):x<0?"−"+fN(-x):"0";
   const RL=[["KL","Kaleci"],["DF","Defans"],["DOS","Defansif orta saha"],["OS","Orta saha"],["FV","Forvet"]];
   return `<p class="muted small" style="margin:0 4px 12px">Bir başlığa dokun, ayrıntısı açılsın.</p>
-  <details class="card rdet"><summary>${dIcon("simsek","green",28)}<h2>Kondisyon</h2></summary><p class="muted small">Maça ne kadar hazır olduğunu gösterir; reytinge ve takım dengesine etkisi yoktur. Üç şeyden oluşur:</p>
-   <div class="rules">${row("Maç temposu","son 8 haftadaki en çok 6 maça çıkma oranı (dış maçlar dahil), yakın maç daha ağır")}${row("Maç eksiği","hiç oynamayanın temposu %40'a iner")}${row("Sakatlık / hastalık dönüşü","tempo ilk maçta −15, ikinci maçta −8")}${row("Uzun ara","takım 3 haftadan uzun maç yapmazsa herkes düşer")}${row("Maç yorgunluğu","oynadığın maçtan sonra en az 22 puan düşer, yavaş yavaş düzelir; düşük tempo ve 4 gün içinde ikinci maç yorgunluğu artırır")}${row("Yaş","her yaşta %100 olunabilir; 30'dan sonra maçta daha çok yorulur (yaş başına +1,2, en fazla +14) ve daha geç toparlanır (30 altı 3 gün, her yaş +8 saat, en fazla 5 gün)")}${row("Seviye","%80+ zinde · %60–79 orta · altı düşük")}</div></details>
   <details class="card rdet"><summary>${dIcon("para","gold",28)}<h2>Piyasa değeri</h2></summary><p class="muted small">FC 27'deki oyuncu değerlerinden ayarlandı. Her maçtan sonra güncellenir.</p><div class="rules">${row("Reyting","her reytingin sabit değeri var: 65 = 5 M €, 70 = 9 M €, 75 = 16 M €, 80 = 30 M €, 85 = 47 M €, 90 = 62,6 M €, 100 = 90 M €")}${row("Kaleci","×0,85")}${row("Yaş","15 yaş ×1,2 · 22 yaş ×1,1 · 27 yaş ×1 · 31 yaş ×0,93 · 35+ ×0,85, aralar kademeli")}${row("Form","en az 3 maç oynayanlarda son 5 maçın not ortalaması 7'nin üstündeyse +, altındaysa −; en fazla ±%15")}${row("Devamlılık","en az 5 maç oynandıktan sonra, son 8 maçın katılımına göre en fazla ±%10; yedeklere uygulanmaz")}${row("Kupalar","son sezonun her kupası +%5, daha eskiler +%2")}${row("Taban","en düşük 1 M €")}</div></details>
   <details class="card rdet"><summary>${dIcon("yildiz","gold",28)}<h2>Maç notu</h2></summary><p>Sahada yapılanlar (sonuç, gol, asist, yenilen gol, değerlendirme) toplanır. Sonra <b>maç dengesi</b> uygulanır: maçtaki ortadaki oyuncu ${fN(n.orta)} alacak şekilde herkesin notu aynı miktarda kaydırılır. Böylece notlar şişmez, kim maçın ortalamasının üstünde kim altında net görünür. Not ${fN(n.tavan)}'i geçerse aşan kısım yarı sayılır.</p>
    <p class="muted small">Değerlendirme notun aralığını belirler. Aralığın dışına taşan kısmın dörtte biri sayılır:</p>
