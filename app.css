@@ -4700,3 +4700,10 @@ html.dk .mcd-r b{font:800 1.5rem/1 var(--display)!important;color:#fff!important
 .mcd-b{position:relative;height:8px;border-radius:4px;background:#3A2C78;margin-right:32px}
 .mcd-b i{display:block;height:8px;border-radius:4px;background:linear-gradient(90deg,#FF3EA5,#FFD400);transition:width .6s}
 .mcd-b svg{position:absolute;right:-32px;top:-8px}
+
+/* Maç kartı: gün, saat, saha rozetleri */
+.mzg{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-width:0}
+.mzg span{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 10px;border-radius:99px;background:#2E2068;font:700 .78rem/1 Inter,sans-serif;color:#fff;min-width:0;max-width:100%;box-sizing:border-box}
+.mzg svg{width:14px;height:14px;flex:none;color:var(--c-ink3)}
+.mzg .f i{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.mzg .e{background:#0E3B2E;color:#7CF5C4}

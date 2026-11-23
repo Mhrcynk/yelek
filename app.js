@@ -1694,7 +1694,7 @@ function hero(om){
   const fld=(S.settings&&S.settings.field_name)||"";const gun=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"][d.getDay()];
   const ms=matchTs(om)-Date.now();const kal=ended?"Maç bitti":ms<=0?"Başladı":ms<864e5?`${Math.floor(ms/36e5)} sa ${Math.floor(ms%36e5/6e4)} dk`:ms<3*864e5?`${Math.floor(ms/864e5)} gün ${Math.floor(ms%864e5/36e5)} sa`:`${Math.floor(ms/864e5)} gün`;
   const row=k=>`<span class="mzh-t t${k}${me&&me!==k?" o":""}"><i class="mzd"></i><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:""}</span>`;const ts=matchTs(om);
-  return `<section class="mzh"><div class="mzh-ey"><span>${ended?"Maç bitti · ":""}${gun} · ${esc(String(om.time||"").slice(0,5))}${fld?" · "+esc(fld):""}</span></div>
+  return `<section class="mzh"><div class="mzg">${ended?`<span class="e">Maç bitti</span>`:""}<span>${MZI.cal}${gun}</span><span>${MZI.clk}${esc(String(om.time||"").slice(0,5))}</span>${fld?`<span class="f">${MZI.pin}<i>${esc(fld)}</i></span>`:""}</div>
     <div class="mzh-vs">${row("A")}${row("B")}</div>${ended?"":`<div class="mcd"><div class="mcd-r"><small>İlk düdüğe</small><b class="num" data-mcd="${ts}" role="timer" aria-label="Maça kalan süre">${mcdT(ts)}</b></div><div class="mcd-b"><i style="width:${mcdP(ts)}%"></i>${dIcon("duduk","gold",24)}</div></div>`}${haftaAkis(om)}
     </section>`;
 }
@@ -1809,6 +1809,7 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
 // Bu hafta: haftanın dört adımı ve tahmin kartı
 function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const cur=!kadro?0:ended?3:acik?1:2;
   return `<ol class="hak" aria-label="Haftanın akışı">${["Kadro","Tahmin","Maç","Oylama"].map((l,i)=>`<li class="${i<cur?"ok":i===cur?"on":""}"${i===cur?' aria-current="step"':""}><i></i>${l}</li>`).join("")}</ol>`}
+const MZI={cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',clk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.800 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>'};
 function mcdT(ts){const ms=ts-Date.now();if(ms<=0)return"Maç oynanıyor";const x=Math.floor(ms/1e3);if(ms>864e5)return Math.floor(x/86400)+" gün "+Math.floor(x%86400/3600)+" sa";return pad(Math.floor(x/3600))+":"+pad(Math.floor(x%3600/60))+":"+pad(x%60)}
 function mcdP(ts){const ms=ts-Date.now();return Math.max(3,Math.min(100,Math.round((1-ms/(7*864e5))*1000)/10))}
 function tickMcd(){document.querySelectorAll("[data-mcd]").forEach(el=>{const ts=+el.dataset.mcd,t=mcdT(ts);if(el.textContent!==t)el.textContent=t;const i=el.closest(".mcd").querySelector(".mcd-b i");if(i)i.style.width=mcdP(ts)+"%"})}
