@@ -4502,3 +4502,14 @@ html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}
 .chipsP .pk i.off{visibility:hidden}
 .card>.pvc.in{margin:-18px -18px 0;padding:18px;width:calc(100% + 36px)}
 .pv-g2.one{grid-template-columns:1fr}
+
+/* lig tablosu hizaları: sıra ortada ve sabit, başlıklar değerlerin tam üstünde */
+.lt2 .ltb-h,.lt2 .ltb-r{grid-template-columns:28px 30px minmax(0,1fr) repeat(4,15px) 25px 26px 34px!important;gap:3px!important;align-items:center}
+.lt2 .ltb-h span:first-child{text-align:center!important}
+.lt2 .ltb-h span:nth-child(3){padding-left:4px}
+.lt2 .ltb-h span:nth-child(n+4),.lt2 .ltb-r>*:nth-child(n+4){text-align:center!important}
+.lt2 .ltb-h span:last-child{text-align:right!important}
+.lt2 .ltb-r .rk{position:relative;height:100%;display:grid!important;place-items:center!important;align-content:center}
+.lt2 .ltb-r .rk .lmv{position:absolute;left:50%;top:calc(50% + 10px);transform:translateX(-50%);white-space:nowrap;line-height:1}
+.lt2 .ltb-r .rk.m1 .lmv,.lt2 .ltb-r .rk.m2 .lmv,.lt2 .ltb-r .rk.m3 .lmv{top:calc(50% + 14px)}
+.lt2 .ltb-r .nm{min-width:0;white-space:normal;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
