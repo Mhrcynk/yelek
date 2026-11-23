@@ -4691,3 +4691,12 @@ html.dk #view>.mzh,html.dk .sacc{border-radius:20px!important}
 .mg-ask{display:grid;gap:10px;padding:14px;border-radius:16px;background:var(--c-card2)}
 .mg-ask b{font-size:.95rem;color:#fff}.mg-ask p{margin:0;font-size:.82rem;line-height:1.45;color:var(--c-ink3)}
 .mg-bk{width:100%;margin-top:10px}
+
+/* Maç kartı: ilk düdüğe sayaç (dolan çubuk, ucunda düdük) */
+.mcd{display:grid;gap:8px;margin-top:12px}
+.mcd-r{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.mcd-r small{font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--c-ink3)}
+html.dk .mcd-r b{font:800 1.5rem/1 var(--display)!important;color:#fff!important;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mcd-b{position:relative;height:8px;border-radius:4px;background:#3A2C78;margin-right:32px}
+.mcd-b i{display:block;height:8px;border-radius:4px;background:linear-gradient(90deg,#FF3EA5,#FFD400);transition:width .6s}
+.mcd-b svg{position:absolute;right:-32px;top:-8px}

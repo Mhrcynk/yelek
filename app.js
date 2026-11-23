@@ -1693,9 +1693,9 @@ function hero(om){
   const wk=Math.min(seasonCount(curYr())+1,sLen());
   const fld=(S.settings&&S.settings.field_name)||"";const gun=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"][d.getDay()];
   const ms=matchTs(om)-Date.now();const kal=ended?"Maç bitti":ms<=0?"Başladı":ms<864e5?`${Math.floor(ms/36e5)} sa ${Math.floor(ms%36e5/6e4)} dk`:ms<3*864e5?`${Math.floor(ms/864e5)} gün ${Math.floor(ms%864e5/36e5)} sa`:`${Math.floor(ms/864e5)} gün`;
-  const row=k=>`<span class="mzh-t t${k}${me&&me!==k?" o":""}"><i class="mzd"></i><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:me===k?`<small class="mzsn">Senin takımın</small>`:""}</span>`;
-  return `<section class="mzh"><div class="mzh-ey"><span>${ended?"Maç bitti · ":""}${gun} · ${esc(String(om.time||"").slice(0,5))}${fld?" · "+esc(fld):""}</span>${ended?"":`<em>${kal}</em>`}</div>
-    <div class="mzh-vs">${row("A")}${row("B")}</div>${haftaAkis(om)}
+  const row=k=>`<span class="mzh-t t${k}${me&&me!==k?" o":""}"><i class="mzd"></i><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:""}</span>`;const ts=matchTs(om);
+  return `<section class="mzh"><div class="mzh-ey"><span>${ended?"Maç bitti · ":""}${gun} · ${esc(String(om.time||"").slice(0,5))}${fld?" · "+esc(fld):""}</span></div>
+    <div class="mzh-vs">${row("A")}${row("B")}</div>${ended?"":`<div class="mcd"><div class="mcd-r"><small>İlk düdüğe</small><b class="num" data-mcd="${ts}" role="timer" aria-label="Maça kalan süre">${mcdT(ts)}</b></div><div class="mcd-b"><i style="width:${mcdP(ts)}%"></i>${dIcon("duduk","gold",24)}</div></div>`}${haftaAkis(om)}
     </section>`;
 }
 function mzTiles(){const F=fin().filter(m=>!isExt(m));const lf=F[F.length-1];if(!lf)return"";const sa=+lf.score_a||0,sb=+lf.score_b||0;
@@ -1809,6 +1809,10 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
 // Bu hafta: haftanın dört adımı ve tahmin kartı
 function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const cur=!kadro?0:ended?3:acik?1:2;
   return `<ol class="hak" aria-label="Haftanın akışı">${["Kadro","Tahmin","Maç","Oylama"].map((l,i)=>`<li class="${i<cur?"ok":i===cur?"on":""}"${i===cur?' aria-current="step"':""}><i></i>${l}</li>`).join("")}</ol>`}
+function mcdT(ts){const ms=ts-Date.now();if(ms<=0)return"Maç oynanıyor";const x=Math.floor(ms/1e3);if(ms>864e5)return Math.floor(x/86400)+" gün "+Math.floor(x%86400/3600)+" sa";return pad(Math.floor(x/3600))+":"+pad(Math.floor(x%3600/60))+":"+pad(x%60)}
+function mcdP(ts){const ms=ts-Date.now();return Math.max(3,Math.min(100,Math.round((1-ms/(7*864e5))*1000)/10))}
+function tickMcd(){document.querySelectorAll("[data-mcd]").forEach(el=>{const ts=+el.dataset.mcd,t=mcdT(ts);if(el.textContent!==t)el.textContent=t;const i=el.closest(".mcd").querySelector(".mcd-b i");if(i)i.style.width=mcdP(ts)+"%"})}
+setInterval(tickMcd,1000);
 function thkCd(ts){const ms=ts-Date.now();if(ms<=0)return"Kapandı";const x=Math.floor(ms/1e3);if(ms>864e5)return Math.floor(x/86400)+" gün "+Math.floor(x%86400/3600)+" sa";return pad(Math.floor(x/3600))+":"+pad(Math.floor(x%3600/60))+":"+pad(x%60)}
 function tickThk(){document.querySelectorAll("[data-thk]").forEach(el=>{const t=thkCd(+el.dataset.thk);if(el.textContent!==t)el.textContent=t;if(t==="Kapandı"&&!tickThk.d){tickThk.d=1;setTimeout(()=>{tickThk.d=0;render(true)},1200)}})}
 setInterval(tickThk,1000);
