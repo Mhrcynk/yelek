@@ -83,6 +83,8 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
   for(let v=0;v<6;v++){const f=ids[(v+4)%14];const pl=ids.slice(0,14).filter(x=>x!==f);const sc=pl.map(t=>({t,s:ids.indexOf(t)*-.25+rnd()*4})).sort((x,y)=>y.s-x.s);
     sc.forEach((o,j)=>VOTES.push({f,t:o.t,v:j<3?1:j<7?2:j<10?3:4,a:v===5}))}
   await run(()=>{S.vst={};render(true)});await pg.waitForTimeout(600);await shot("3_takip");
+  ok(await pg.locator(".vhero .vbtn").count()===0,"oy verdikten sonra değiştirme düğmesi duruyor");ok(await pg.locator('.vchips [data-act="voteOpen"]').count()===0,"oy verenlerin oyu yönetici panelinden değiştirilebiliyor");
+  {const n0=calls.filter(c=>c[0]==="vote_submit").length;await run(i=>{const b=document.createElement("button");b.dataset.act="voteOpen";b.dataset.id=S.matches.find(x=>x.vote_on).id;b.dataset.v=i;b.id="__vo";document.querySelector("#view").appendChild(b)},ids[2]);await pg.click("#__vo",{force:true});await pg.waitForTimeout(200);ok(await run(()=>!S.sheet||S.sheet.type!=="vote"),"oy veren biri için oylama yeniden açıldı");ok(calls.filter(c=>c[0]==="vote_submit").length===n0,"ikinci oy gönderildi");await run(()=>{const b=document.getElementById("__vo");if(b)b.remove()})}
   await pg.click('[data-act="vDet"]');await pg.waitForTimeout(900);if(shots)await pg.screenshot({path:path.join(shots,"4_detay.png")});await run(()=>{S.sheet=null;render(true)});
   const mid=await run(()=>S.matches.find(x=>x.vote_on).id);
   await pg.click(`[data-act="vClose"][data-id="${mid}"]`);await pg.waitForTimeout(200);await pg.click(`[data-act="vClose"][data-id="${mid}"]`);await pg.waitForTimeout(1200);
