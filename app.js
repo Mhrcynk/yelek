@@ -1825,12 +1825,13 @@ function tahminKart(m){if(!isMember()||S.fol||!myPid())return"";const me=myPid()
   return `<div class="thk th2" id="thk"><div class="thk-b"><span class="thk-i">${dIcon("bilet","green",24)}</span><span class="thk-x"><b>Tahmin${un?`<em class="num" aria-label="${un} yeni bildirim">${un>9?"9+":un}</em>`:""}</b></span><span class="th2-p">${pill}</span></div><div class="th2-r"><div class="th2-g">${B.map(([l,v])=>`<div><small>${l}</small><b class="num">${v}</b></div>`).join("")}</div><button class="thk-c" data-act="thkGo" data-v="${go}">${cta}</button></div></div>`}
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
-  if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><span class="chip adm">Yönetici</span></div>${editorPanel(m)}</section>`;
+  if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><button class="btn sm" data-act="cancelTeams">Vazgeç</button></div>${editorPanel(m)}</section>`;
   let h=S.admin?nextStep(m):"";
   if(m.state==="kayit"){
     h+=kadroCard(m);
     if(S.admin)h+=`<section class="card admc"><div class="ch"><div><div class="eyebrow">Yönetici</div><h2>Takımları kur</h2></div></div>
       <div class="grid2"><button class="btn primary" data-act="autoKadro" data-id="${esc(m.id)}">Otomatik kur</button><button class="btn" data-act="manual" data-id="${esc(m.id)}">${ICON.hand} Manuel kur</button></div>
+      ${(m.team_a||[]).length&&(m.team_b||[]).length?`<button class="btn mg-bk" data-act="fwdTakim" data-id="${esc(m.id)}">Vazgeç, kadrolar aynı kalsın</button>`:""}
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`;
   }else{
     const ended=mEnded(m);if(ended)h+=voteCard(m);
@@ -2096,7 +2097,7 @@ function finishCard(m){
     <div class="mg-l2">${row(kw,MGI.cal,"#5FE3F5","Tarih ve saat",`${fmtShort(m.date)} · ${esc(String(m.time||"").slice(0,5))}`)}${S.f[kw]||wch?`<div class="mg-f">${whenForm(m)}</div>`:""}
       ${row(kn,MGI.shirt,"#FF3EA5","Takım adları",`${esc(TEAM.A)} · ${esc(TEAM.B)}`)}${S.f[kn]?`<div class="mg-f">${namesForm(m)}</div>`:""}</div>
     <span class="mg-lb">KADROLAR</span>
-    <div class="mg-k"><button data-act="editTeams" data-id="${M}"><b>Kadroları değiştir</b><small>Oyuncu taşı, diziliş seç</small></button><button data-act="backRsvp" data-id="${M}"><b>Kadro aşamasına dön</b><small>Oynayacakları yeniden işaretle</small></button></div>
+    ${S.f.rsvpAsk===m.id?`<div class="mg-ask"><b>Kadro aşamasına dönülsün mü?</b><p>Kadrolar oyunculardan gizlenir; tahmin ve soyunma odası, kadroyu yeniden açıklayana kadar bekler. Takımlar, tahminler ve mesajlar silinmez.</p><div class="grid2"><button class="btn" data-act="rsvpNo">Vazgeç</button><button class="btn primary" data-act="backRsvp" data-id="${M}">Evet, dön</button></div></div>`:`<div class="mg-k"><button data-act="editTeams" data-id="${M}"><b>Kadroları değiştir</b><small>Oyuncu taşı, diziliş seç</small></button><button data-act="backRsvp" data-id="${M}"><b>Kadro aşamasına dön</b><small>Oynayacakları yeniden işaretle</small></button></div>`}
     <div class="mg-dz">${draft?`<button class="btn sm danger" data-act="draftDel" data-id="${M}">${S.f.delDraft===m.id?"Taslağı silmek için tekrar bas":"Taslağı sil"}</button>`:""}<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button></div></section>`;
 }
 function ptile(id,act,M,on,extra,cls){const p=P(id);return `<button class="pt${on?" on":""}${cls?" "+cls:""}" data-act="${act}" data-m="${M}" data-p="${esc(id)}"${extra||""} aria-pressed="${!!on}">${p?avatar(p,"xs"):`<span class="av xs">?</span>`}<b>${esc(shortName(nameOf(id)))}</b></button>`}
@@ -3494,7 +3495,9 @@ document.addEventListener("click",async e=>{
     case"autoKadro":{const m=S.matches.find(x=>x.id===id);if(!m)break;const ids=rsvpLists(m).kadro.map(p=>p.id);if(ids.length<4){toast("Önce en az 4 oyuncu işaretle");break}
       const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B);render(true);toast("Dengeli takımlar hazır");break}
     case"manual":{const m=S.matches.find(x=>x.id===id);S.draft=null;if(m.team_a&&m.team_a.length)startEditor(id,m.team_a,m.team_b,m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);else startEditor(id,[],[],t?.fa,t?.fb);S.teams.poolOpen=true;render(true);break}
-    case"backRsvp":await A("admin_set_state",{p_id:id,p_state:"kayit"},"Kadro aşaması yeniden açıldı");break;
+    case"backRsvp":if(S.f.rsvpAsk!==id){S.f.rsvpAsk=id;render(true);break}S.f.rsvpAsk=null;await A("admin_set_state",{p_id:id,p_state:"kayit"},"Kadro aşaması yeniden açıldı");break;
+    case"rsvpNo":S.f.rsvpAsk=null;render(true);break;
+    case"fwdTakim":await A("admin_set_state",{p_id:id,p_state:"takim"},"Kadrolar değişmeden geri açıldı");break;
     case"cancelTeams":S.teams=null;render(true);break;
     case"fv":S.fv=el.dataset.v;render(true);break;
     case"tview":t.view=el.dataset.v;t.sel=null;render(true);break;
