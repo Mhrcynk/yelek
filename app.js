@@ -2775,7 +2775,6 @@ function _viewSezon(){
       kgRow("Sezonun en iyi tek maçı","not","#FF7AC3",x=>x.best,x=>fN(x.best)),kgRow(yr==="all"?"En çok yükselen":"Sezonun yükseleni","reyting","#5FE3F5",x=>x.dOvr||0,x=>"+"+x.dOvr),
       kgRow("Kalede en az gol yiyen","maç başı","#FFD400",x=>x.aK,x=>fN(x.aK),x=>x.klG>=minK,true,x=>x.klG),kgRow("En çok maça çıkan","maç","#fff",x=>x.games,x=>x.games,null,false,x=>x.W),kgRow("En çok fiyasko","kez","#FF9DB3",x=>x.fiy,x=>x.fiy)].filter(Boolean);
     if(rows.length)h+=`<section class="kg">${rows.join("")}</section>`}
-  if(K12&&(K12[0]||K12[1])&&sv==="kral")h+=`<div class="boards">${K12[0]}${K12[1]}</div>`;
   return h;
 }
 
