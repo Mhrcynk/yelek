@@ -4574,3 +4574,8 @@ html.dk .krl .krl-o b{background:#1A1300!important;color:#FFD400!important}
 .blt .motmc .nt{display:inline-block;width:max-content;padding:3px 8px;border-radius:8px;font-weight:800}
 
 .blt .blt-k,.blt .blt-d{border:0!important;background:none!important;box-shadow:none!important;border-radius:0!important;padding:0!important;height:auto!important;min-height:0!important;outline:0!important}
+
+/* maç detayı skor kartı: skor büyük ve tam ortada, kaptan satırı yok */
+.mres .mafm{align-items:center!important;padding-bottom:18px}
+.mres .mafc{padding:0!important;align-self:center;justify-items:center;text-align:center}
+.mres .mafc b{font-size:clamp(3rem,17vw,4.2rem)!important;line-height:.9}
