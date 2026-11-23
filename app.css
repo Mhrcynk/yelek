@@ -4611,3 +4611,32 @@ html.dk .vhero.vh2.ok button.btn.vbtn{background:var(--c-card2)!important;color:
 
 html.dk #view #oylama.vh2 button.btn.vbtn{min-height:52px!important;border:0!important;border-radius:18px!important;background:#FFD400!important;color:#1A1300!important;font:800 1rem/1 Inter,sans-serif!important;box-shadow:none!important}
 html.dk #view #oylama.vh2.ok button.btn.vbtn{background:#24165A!important;color:#fff!important}
+
+/* Bu hafta kartları: sıkı düzen (aynı dil, yaklaşık yarı yükseklik) */
+html.dk .thk.th2{gap:10px;padding:12px 14px;border-radius:20px}
+html.dk .th2 .thk-i,html.dk .od2 .oda-ci,.vh2-i{width:36px!important;height:36px!important;border-radius:12px!important}
+.th2 .thk-i svg,.od2 .oda-ci svg,.vh2-i svg{width:20px;height:20px}
+.th2 .thk-b{gap:10px!important}.th2 .thk-x b{font-size:1rem!important}
+.th2-p{min-height:28px;padding:0 10px;font-size:.75rem}.th2-p svg{width:14px;height:14px}
+.th2-r{display:flex;align-items:center;gap:10px}
+.th2-r .th2-g{flex:1;min-width:0;display:flex;gap:16px}
+.th2-r .th2-g>div{background:none;padding:0;border-radius:0;gap:2px;flex:none}
+.th2-r .th2-g small{font-size:.6875rem;white-space:nowrap}.th2-r .th2-g b{font-size:1.35rem}
+html.dk .th2 .th2-r .thk-c{width:auto;flex:none;min-height:44px;padding:0 18px;border-radius:999px;font-size:.9rem}
+html.dk .oda-c.od2{gap:10px;padding:12px 14px!important;border-radius:20px!important}
+.od2 .od2-h{gap:10px}.od2 .od2-t b{font-size:1rem!important}.od2 .od2-t small{font-size:.75rem!important}
+.od2 .od2-h .od2-av{padding-left:8px}.od2 .od2-h .od2-av .rkf{width:26px;height:26px}
+.od2 .od2-f{gap:10px;min-height:44px}
+.od2 .od2-f .od2-m{flex:1;min-width:0;display:block!important;border-radius:14px;padding:11px 12px;font-size:.84rem;line-height:1.3;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.od2 .od2-f .od2-m b{color:#FF9DD0;font-weight:700}
+.od2 .od2-go{padding:0 16px}
+.oda-l{margin-top:6px!important}
+html.dk .vhero.vh2{gap:10px!important;padding:12px 14px!important;border-radius:20px!important}
+.vh2-h{gap:10px}.vh2-h b{font-size:1rem}.vh2-p{min-height:28px;padding:0 10px;font-size:.75rem}
+.vh2-r{display:flex;align-items:center;gap:10px}
+.vh2-r .vh2-w{flex:1;min-width:0;background:none;padding:0;min-height:44px;gap:8px}
+.vh2-r .od2-av .rkf{width:28px;height:28px;border-color:var(--c-card)}
+.vh2-x b{font-size:.84rem}.vh2-x small{font-size:.75rem}
+html.dk #view #oylama.vh2 button.btn.vbtn{width:auto!important;flex:none;min-height:44px!important;padding:0 18px!important;border-radius:999px!important;font-size:.9rem!important}
+
+.od2 .od2-f .od2-m b{font-size:inherit!important}.od2 .od2-t b,.od2 .od2-t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
