@@ -4659,3 +4659,6 @@ html.dk .thk.th2,html.dk .oda-c.od2,html.dk .vhero.vh2{padding:14px!important;ga
 .vh2-r .vh2-w{min-height:44px;align-items:center}
 html.dk .th2 .th2-r .thk-c,.od2 .od2-go,html.dk #view #oylama.vh2 button.btn.vbtn{min-width:118px!important;min-height:44px!important;height:44px!important;padding:0 16px!important;border-radius:999px!important;font:800 .9rem/1 Inter,sans-serif!important;box-sizing:border-box}
 .vh2-x{flex:1;min-width:0}.vh2-x b,.vh2-x small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.th2-r .th2-g{min-width:0}.th2-r .th2-g>div{flex:0 1 auto!important;min-width:0}.th2-r .th2-g small,.th2-r .th2-g b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.th2 .thk-b{min-width:0}.th2-p{min-width:0}
+@media (max-width:350px){html.dk .th2 .th2-r .thk-c,.od2 .od2-go,html.dk #view #oylama.vh2 button.btn.vbtn{min-width:92px!important;padding:0 12px!important}.th2-p{font-size:.6875rem!important;padding:0 8px!important}.th2-p svg{display:none}}
