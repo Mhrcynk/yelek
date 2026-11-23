@@ -4062,7 +4062,7 @@ function odaCard(m){if(!m||!myPid()||isExt(m)||m.archived)return"";const fin=m.s
   const W=d.msgs.filter(x=>x.k!=="sys"&&x.p&&!isBlk(x.p));const lastV=W[W.length-1];const wr=[...new Set(W.map(x=>x.p).reverse())];
   return `<div id="odaCard"><button class="oda-c od2 oda-${sd}" data-act="odaOpen" data-id="${M}"><span class="od2-h">${ic}<span class="od2-t"><b>Soyunma odası</b><small>${esc(nmOf(m,sd))} · ${wr.length?wr.length+" kişi yazdı":"sadece takımın görür"}</small></span>${wr.length?`<span class="od2-av">${wr.slice(0,3).map(id=>pFace(id)).join("")}</span>`:""}${un?`<em class="num">${un>9?"9+":un}</em>`:""}</span>
     <span class="od2-f"><span class="od2-m">${lastV?`<b>${esc(firstName(nameOf(lastV.p)))}:</b> ${esc(temiz(lastV.b))}`:"Henüz mesaj yok. İlk mesajı sen yaz."}</span><span class="od2-go">Odaya gir</span></span></button>
-    <p class="oda-l"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>${esc(nmOf(m,ot))} odası kilitli. Maç bitince iki oda da 1 gün herkese açılır, sonra silinir.</p></div>`}
+    </div>`}
 function odaPos(m,sd,tac){const ids=plOf(m,sd).filter(id=>P(id));const G={KL:[],DF:[],OS:[],FV:[]};const PG={Defans:"DF","Orta saha":"OS",Forvet:"FV",Kaleci:"KL",DF:"DF",OS:"OS",FV:"FV",KL:"KL"};
   ids.forEach(id=>{const p=P(id);let g="OS";try{g=(p.epos&&EPOS[p.epos]?EPOS[p.epos][0]:PG[p.pos]||(EPOS[eposOf(p)]||[])[0])||"OS"}catch(_){}(G[g]||G.OS).push(id)});
   const Y={KL:86,DF:66,OS:44,FV:20};const out={};for(const g in G)G[g].forEach((id,i)=>{out[id]=tac&&tac[id]?tac[id]:[Math.round((i+1)/(G[g].length+1)*100),Y[g]]});return out}
