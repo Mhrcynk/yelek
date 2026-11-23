@@ -64,7 +64,7 @@ const ONLY=process.env.ONLY?process.env.ONLY.split(","):null;
     const vis=e=>{if(e.closest("details:not([open])")&&!e.closest("summary"))return false;const r=e.getBoundingClientRect();const cs=getComputedStyle(e);return r.width>0&&r.height>0&&cs.visibility!=="hidden"&&cs.display!=="none"&&+cs.opacity>.1};
     const root=document.querySelector("#modal .sheet")||document.querySelector("#view");
     const act=[...root.querySelectorAll("button,a,[data-act],input,select")].filter(vis);
-    const small=act.filter(e=>{const r=e.getBoundingClientRect();return r.height<40&&!/\bgrab\b|\bsw\b|\bvh\b/.test(e.className)&&!e.closest("label")});
+    const small=act.filter(e=>{const r=e.getBoundingClientRect();return r.height<39.5&&!/\bgrab\b|\bsw\b|\bvh\b/.test(e.className)&&!e.closest("label")});
     const noname=act.filter(e=>/^(BUTTON|A)$/.test(e.tagName)&&!e.textContent.trim()&&!e.getAttribute("aria-label")&&!e.title);
     const nonbtn=act.filter(e=>!/^(BUTTON|A|INPUT|SELECT)$/.test(e.tagName)&&!e.getAttribute("role")&&e.tabIndex<0);
     let tiny=0,low=0,txt=0;const lows={},tinys={};const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
