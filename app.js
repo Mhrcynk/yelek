@@ -225,6 +225,8 @@ const vOn=m=>!!m&&!!m.vote_on&&!isExt(m);
 const vPend=m=>vOn(m)&&!m.vote_closed_at;
 const mEnded=m=>!!m&&m.state!=="kayit"&&Date.now()>=matchTs(m)+36e5;
 const mDone=m=>m.state==="bitti"&&!vPend(m);
+// oylama, yönetici skoru girip maçı bitirince açılır (maç saatine göre değil)
+const vOpen=m=>!!m&&vPend(m)&&m.state==="bitti"&&m.score_a!=null&&m.score_b!=null;
 const VL=["Çok iyi","İyi","Orta","Kötü"];
 const fin=()=>S.matches.filter(m=>mDone(m)&&!isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b));
 const extFin=()=>S.matches.filter(m=>isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b));
@@ -1741,7 +1743,7 @@ S.vst={};
 async function vsLoad(id,force){const c=S.vst[id];if(!force&&c&&Date.now()-c.t<60000)return;S.vst[id]={...(c||{}),t:Date.now()};
   try{const r=await rpc("vote_status",{p_match:id});if(r&&r.ok){S.vst[id]={...r,t:Date.now()};render(true)}}catch(_){}}
 const myPid=()=>S.mem&&S.mem.status==="onayli"?S.mem.player_id:null;
-function voteCard(m){if(!vOn(m)||!mEnded(m)||m.vote_closed_at)return"";const M=esc(m.id);const vs=S.vst[m.id];vsLoad(m.id);
+function voteCard(m){if(!vOpen(m))return"";const M=esc(m.id);const vs=S.vst[m.id];vsLoad(m.id);
   const pl=plAll(m).filter(id=>P(id)&&!P(id).guest);const n=vs&&vs.n||0;const me=myPid();const can=me&&plAll(m).includes(me);
   const mineV=!!(vs&&vs.mine);const vt0=vs&&Array.isArray(vs.voters)?new Set(vs.voters):null;const wait=vt0?pl.filter(id=>!vt0.has(id)).sort((a,b)=>(b===me)-(a===me)):null;
   const STAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.100-6.100L3.200 9.400l6.100-.8L12 3z"/></svg>';
@@ -1809,7 +1811,7 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
   const ok=await A("admin_vote_close",{p_match:m.id,p_perf:voters>=6?perf:{},p_sum:C},"Oylama kapandı, notlar kesinleşti");
   if(ok){S.f.vClose=null;delete S.vst[m.id];compute();if(m.state==="bitti")await notesSync(m.id);render(true)}}
 // Bu hafta: haftanın dört adımı ve tahmin kartı
-function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const cur=!kadro?0:ended?3:acik?1:2;
+function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const cur=!kadro?0:vOpen(m)?3:acik?1:2;
   return `<ol class="hak" aria-label="Haftanın akışı">${["Kadro","Tahmin","Maç","Oylama"].map((l,i)=>`<li class="${i<cur?"ok":i===cur?"on":""}"${i===cur?' aria-current="step"':""}><i></i>${l}</li>`).join("")}</ol>`}
 const MZI={cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',clk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.800 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>'};
 function mcdT(ts){const ms=ts-Date.now();if(ms<=0)return"Maç oynanıyor";const x=Math.floor(ms/1e3);if(ms>864e5)return Math.floor(x/86400)+" gün "+Math.floor(x%86400/3600)+" sa";return pad(Math.floor(x/3600))+":"+pad(Math.floor(x%3600/60))+":"+pad(x%60)}
@@ -1841,7 +1843,7 @@ function matchBody(m){
       ${(m.team_a||[]).length&&(m.team_b||[]).length?`<button class="btn mg-bk" data-act="fwdTakim" data-id="${esc(m.id)}">Vazgeç, kadrolar aynı kalsın</button>`:""}
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`;
   }else{
-    const ended=mEnded(m);if(ended)h+=voteCard(m);
+    const ended=mEnded(m);if(vOpen(m))h+=voteCard(m);else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
     h+=odaCard(m);h+=tahminKart(m);
     {const av=k=>{const L=plOf(m,k);return L.slice(0,3).map(id=>pFace(id)).join("")+(L.length>3?`<em>+${L.length-3}</em>`:"")};
     h+=`<details class="card kdd kq" id="kadrolar"><summary><span class="kq-h"><span class="kq-i">${dIcon("yelek","pink",22)}</span><span class="kq-t"><i>Kadrolar</i><small>${plOf(m,"A").length} · ${plOf(m,"B").length} oyuncu</small></span><span class="kq-p"><span class="c">Dizilişi gör</span><span class="o">Kapat</span>${CHVD}</span></span><span class="kq-2">${["A","B"].map(k=>`<span class="kq-tm">${crest(nmOf(m,k),k,22)}<span class="kq-av">${av(k)}</span></span>`).join("")}</span></summary>${teamsView(m,true)}</details>`}
@@ -2087,11 +2089,11 @@ const MGI={cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 function nextStep(m){const M=esc(m.id);
   if(m.state==="kayit"){const rs=m.rsvp||{};const n=S.players.filter(p=>!p.guest&&rs[p.id]==="g"&&!UNAVAIL.includes(stOf(p))).length;
     return `<section class="nxs"><span class="nxs-x"><small>Sıradaki adım</small><b>${n<4?"Oynayacakları işaretle":"Takımları kur"}</b><span>${n}/${CAP} oyuncu işaretli</span></span>${n<4?`<a class="btn sm" href="#kadrolar">Kadroya git</a>`:`<button class="btn primary sm" data-act="autoKadro" data-id="${M}">Otomatik kur</button>`}</section>`}
-  if(vPend(m)&&mEnded(m)){const vs=S.vst&&S.vst[m.id];const n=vs&&vs.n||0;const late=Date.now()>matchTs(m)+864e5;
+  if(vOpen(m)){const vs=S.vst&&S.vst[m.id];const n=vs&&vs.n||0;const late=Date.now()>matchTs(m)+864e5;
     return `<section class="nxs"><span class="nxs-x"><small>Sıradaki adım</small><b>Oylamayı kapat</b><span>${n?n+" kişi oy verdi · ":""}${late?"Kapanana kadar kartlar ve puan durumu güncellenmez":"Herkes oy verince kapat"}</span></span><a class="btn ${late?"primary ":""}sm" href="#oylama">Oylamaya git</a></section>`}
-  if(m.state==="bitti"||vPend(m))return"";
+  if(m.state==="bitti")return"";
   const draft=hasDraft(m),sd=draft?sdOf(m):null;
-  return `<section class="nxs"><span class="nxs-x"><small>Sıradaki adım</small><b>Maç bitti mi?</b><span>${draft?`Taslak: ${sd.a} – ${sd.b} · ${sd.events.length} kayıt`:"Skoru ve golleri gir"}</span></span><button class="btn primary sm" data-act="statSheet" data-id="${M}">${draft?"Devam et":"Skoru gir"}</button></section>`}
+  return `<section class="nxs"><span class="nxs-x"><small>Sıradaki adım</small><b>Maç bitti mi?</b><span>${draft?`Taslak: ${sd.a} – ${sd.b} · ${sd.events.length} kayıt`:(vPend(m)?"Skoru ve golleri gir, oylama sonra açılır":"Skoru ve golleri gir")}</span></span><button class="btn primary sm" data-act="statSheet" data-id="${M}">${draft?"Devam et":"Skoru gir"}</button></section>`}
 function finishCard(m){
   const draft=hasDraft(m);const sd=draft?sdOf(m):null;const M=esc(m.id);
   const reo=m.finished_at&&m.score_a!=null&&m.score_b!=null;
@@ -3595,7 +3597,7 @@ document.addEventListener("click",async e=>{
 }
       const pl=new Set(plAll(m));const links=sd.events.filter(e=>e.t==="g"&&pl.has(e.g)).map(x=>x.pk?{g:x.g,a:null,pk:true}:{g:x.g,a:x.a&&pl.has(x.a)&&sideOf(m,x.a)===sideOf(m,x.g)?x.a:null});
       const r=await A("admin_finish_match_v3",{p_id:id,p_score_a:sd.a,p_score_b:sd.b,p_stats:stats,p_motm:sd.motm||null,p_links:links});
-      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);compute();await notesSync(id);if(!wasFin){window.scrollTo(0,0);confetti();setTimeout(()=>{if(S.sheet)return;S.f.pm={tab:"mac",item:"skor",fmt:"post",mid:id};S.sheet={type:"pm"};render(true);toast("Maç sonucunu paylaş")},1800)}}break}
+      const sc=new Set(links.map(x=>x.g));const wasFin=m.state==="bitti";if(r)await A("admin_set_awards",{p_id:id,p_gol:sd.gol&&sc.has(sd.gol)?sd.gol:null,p_fiy:sd.fiy&&pl.has(sd.fiy)?sd.fiy:null},wasFin?"Maç güncellendi, kartlar yeniden hesaplandı":vPend(m)?"Skor kaydedildi, oylama açıldı":"Maç bitti, kartlar güncellendi");if(r){delete S.f["sd_"+id];LS.del("y_sd_"+id);S.sheet=null;await load(true);compute();await notesSync(id);const m2=S.matches.find(x=>x.id===id);if(!wasFin&&m2&&vPend(m2)){window.scrollTo(0,0);render(true)}else if(!wasFin){window.scrollTo(0,0);confetti();setTimeout(()=>{if(S.sheet)return;S.f.pm={tab:"mac",item:"skor",fmt:"post",mid:id};S.sheet={type:"pm"};render(true);toast("Maç sonucunu paylaş")},1800)}}break}
     case"reopen":{const m=S.matches.find(x=>x.id===id);if(!m)break;S.f.confReopen=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);sdOf(m);S.f.stTab="gol";S.f.confirmFinish=null;S.sheet={type:"stats",mid:id};render(true);break}
     case"stType":S.f.st.type=el.dataset.v;render(true);break;
     case"stOpen":S.f.stOpen=!S.f.stOpen;S.f.st=null;render(true);break;

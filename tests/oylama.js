@@ -36,7 +36,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
 
 // maç dün oynandı, oylama açık
 const today=new Date(Date.now()-864e5);const ymd=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
-Object.assign(matches[0],{date:ymd,time:"21:00",vote_on:true,vote_closed_at:null,vsum:null});
+Object.assign(matches[0],{date:ymd,time:"21:00",vote_on:true,vote_closed_at:null,vsum:null,state:"bitti",score_a:5,score_b:3,finished_at:new Date().toISOString()});
 const VOTES=[];const calls=[];
 const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
 (async()=>{
