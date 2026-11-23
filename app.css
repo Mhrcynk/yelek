@@ -4662,3 +4662,27 @@ html.dk .th2 .th2-r .thk-c,.od2 .od2-go,html.dk #view #oylama.vh2 button.btn.vbt
 .th2-r .th2-g{min-width:0}.th2-r .th2-g>div{flex:0 1 auto!important;min-width:0}.th2-r .th2-g small,.th2-r .th2-g b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .th2 .thk-b{min-width:0}.th2-p{min-width:0}
 @media (max-width:350px){html.dk .th2 .th2-r .thk-c,.od2 .od2-go,html.dk #view #oylama.vh2 button.btn.vbtn{min-width:92px!important;padding:0 12px!important}.th2-p{font-size:.6875rem!important;padding:0 8px!important}.th2-p svg{display:none}}
+
+/* Kadrolar kapalı hali: diğer Bu hafta kartlarıyla aynı ızgara */
+html.dk #kadrolar.kq{padding:14px!important;border-radius:20px!important;border:0!important}
+#kadrolar.kq>summary{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;list-style:none;min-height:0}
+.kq-h{display:flex;align-items:center;gap:12px;min-height:36px;min-width:0}
+.kq-i{flex:none;width:36px;height:36px;border-radius:12px;background:#FF3EA5;display:grid;place-items:center}.kq-i svg{width:20px;height:20px;filter:brightness(0) invert(1)}
+.kq-t{flex:1;min-width:0;display:grid;gap:2px}.kq-t i{font-style:normal;font-weight:800;font-size:1rem;line-height:1.2;color:#fff}.kq-t small{font-size:.75rem;line-height:1.2;color:var(--c-ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kq-p{flex:none;min-height:30px;padding:0 10px;border-radius:999px;background:var(--c-card2);color:var(--c-ink3);display:flex;align-items:center;gap:4px;font-weight:700;font-size:.75rem;line-height:1}.kq-p svg{width:14px;height:14px;transition:transform .2s}
+.kq-p .o,.kq[open] .kq-p .c{display:none}.kq[open] .kq-p .o{display:inline}.kq[open] .kq-p svg{transform:rotate(180deg)}
+.kq-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kq[open] .kq-2{display:none}
+.kq-tm{display:flex;align-items:center;gap:8px;min-height:44px;border-radius:14px;background:var(--c-card2);padding:0 10px;min-width:0;overflow:hidden}
+.kq-av{display:flex;padding-left:8px;min-width:0}.kq-av>*{width:28px!important;height:28px!important;min-width:28px;margin-left:-8px;border:2px solid var(--c-card2);border-radius:50%;font-size:.6875rem!important;line-height:24px!important;flex:none;box-sizing:border-box}
+.kq-av em{display:grid;place-items:center;background:var(--c-card);color:var(--c-ink3);font-style:normal;font-weight:700}
+@media (max-width:350px){.kq-av>*:nth-child(3):not(em){display:none}}
+
+/* Genel hizalama: tek dikey ritim (kartlar arası 14, etiketli grup öncesi 36), tek etiket girintisi (20) */
+#view:not(:has(>.onb))>*{margin-top:0!important;margin-bottom:0!important}
+#view:not(:has(>.onb))>.sgrp:not(:first-child){margin-top:22px!important}
+#view:not(:has(>.onb))>.vtx,#view:not(:has(>.onb))>.vfoot{margin-top:14px!important}
+html.dk .sgrp>h3{padding-left:0!important}
+html.dk .iddia .bmk h3{margin:4px 4px 0!important}
+html.dk .mzh-ey{align-items:center!important}
+html.dk #view>.mzh,html.dk .sacc{border-radius:20px!important}
+#kadrolar.kq:not([open]){display:block!important}

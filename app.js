@@ -1835,8 +1835,8 @@ function matchBody(m){
   }else{
     const ended=mEnded(m);if(ended)h+=voteCard(m);
     h+=odaCard(m);h+=tahminKart(m);
-    {const nm=k=>plOf(m,k).map(id=>esc(firstName(nameOf(id)))).join(" · ");
-    h+=`<details class="card kdd" id="kadrolar"><summary><span class="kdd-h"><b class="hic">${dIcon("yelek","pink",26)}Kadrolar</b><em><span class="c">Dizilişi gör</span><span class="o">Kapat</span></em></span><span class="kdd-n"><span>${tDot("A")}${nm("A")}</span><span>${tDot("B")}${nm("B")}</span></span></summary>${teamsView(m,true)}</details>`}
+    {const av=k=>{const L=plOf(m,k);return L.slice(0,3).map(id=>pFace(id)).join("")+(L.length>3?`<em>+${L.length-3}</em>`:"")};
+    h+=`<details class="card kdd kq" id="kadrolar"><summary><span class="kq-h"><span class="kq-i">${dIcon("yelek","pink",22)}</span><span class="kq-t"><i>Kadrolar</i><small>${plOf(m,"A").length} · ${plOf(m,"B").length} oyuncu</small></span><span class="kq-p"><span class="c">Dizilişi gör</span><span class="o">Kapat</span>${CHVD}</span></span><span class="kq-2">${["A","B"].map(k=>`<span class="kq-tm">${crest(nmOf(m,k),k,22)}<span class="kq-av">${av(k)}</span></span>`).join("")}</span></summary>${teamsView(m,true)}</details>`}
     if(!ended)h+=preview(m);
     if(S.admin)h+=finishCard(m);
   }
