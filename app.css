@@ -4643,3 +4643,19 @@ html.dk #view #oylama.vh2 button.btn.vbtn{width:auto!important;flex:none;min-hei
 
 /* tahmin kartı: sayılar sayaçla aynı tonda küçük kutularda */
 .th2-r .th2-g{gap:6px!important}.th2-r .th2-g>div{background:#0E1B15!important;border-radius:12px!important;padding:6px 10px!important;gap:2px!important}.th2-r .th2-g small{color:#6EE7A0!important;font-size:.6875rem!important}.th2-r .th2-g b{font-size:1.2rem!important;color:#fff!important}
+
+/* Bu hafta kartları: ortak ızgara (iç boşluk 14, simge 36, aralık 12, alt satır 44, sağ sütun 118) */
+#view>.mzh,#view>.nxs,#view>#oylama,#view>#thk,#view>#odaCard{margin-bottom:0!important}
+html.dk .thk.th2,html.dk .oda-c.od2,html.dk .vhero.vh2{padding:14px!important;gap:12px!important;border:0!important;border-radius:20px!important}
+.th2 .thk-b,.od2 .od2-h,.vh2-h{gap:12px!important;min-height:36px;align-items:center!important}
+.th2 .thk-x b,.od2 .od2-t b,.vh2-h b{font:800 1rem/1.2 Inter,sans-serif!important}
+.od2 .od2-t{gap:2px!important}.od2 .od2-t small{line-height:1.2!important}
+.th2-p,.vh2-p{min-height:28px!important}.od2 .od2-h .od2-av .rkf,.od2 .od2-h em{width:28px!important;height:28px!important;min-width:28px;line-height:28px!important;padding:0!important}
+.th2-r,.od2 .od2-f,.vh2-r{gap:10px!important;min-height:44px;align-items:stretch!important}
+.th2-r .th2-g>div{min-height:44px;box-sizing:border-box;justify-content:center;padding:4px 10px!important}
+.th2-r .th2-g b{font-size:1.1rem!important;line-height:1!important}
+.od2 .od2-f .od2-m{display:flex!important;align-items:center;min-height:44px;box-sizing:border-box;padding:0 12px!important}
+.od2 .od2-f .od2-m{display:block!important;line-height:44px!important}
+.vh2-r .vh2-w{min-height:44px;align-items:center}
+html.dk .th2 .th2-r .thk-c,.od2 .od2-go,html.dk #view #oylama.vh2 button.btn.vbtn{min-width:118px!important;min-height:44px!important;height:44px!important;padding:0 16px!important;border-radius:999px!important;font:800 .9rem/1 Inter,sans-serif!important;box-sizing:border-box}
+.vh2-x{flex:1;min-width:0}.vh2-x b,.vh2-x small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
