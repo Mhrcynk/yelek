@@ -4448,7 +4448,7 @@ function odaPatch(){const c=odaCtx();const L=document.getElementById("odaMsgs");
   const near=L.scrollHeight-L.scrollTop-L.clientHeight<90,st=L.scrollTop;const cnt=c.d.msgs.filter(x=>x.p!==c.me&&x.k!=="sys").length;if(c.sh.cnt!=null&&cnt>c.sh.cnt&&!near)c.sh.dn=(c.sh.dn||0)+(cnt-c.sh.cnt);c.sh.cnt=cnt;
   listYama(L,odaMsgItems(c));const nwE=document.getElementById("odaNw");if(c.sh.nwP&&nwE){c.sh.nwP=false;L.scrollTop=Math.max(0,nwE.offsetTop-L.offsetTop-8)}else L.scrollTop=near?L.scrollHeight:st;
   const r=document.getElementById("odaRb");if(r)r.innerHTML=odaReplyHtml(c);const p=document.getElementById("odaPinW");if(p)p.innerHTML=odaPinHtml(c);const ty=document.getElementById("odaTy");if(ty)ty.innerHTML=odaTyHtml(c);odaDnUpd();odaMenuDraw();return true}
-document.addEventListener("scroll",e=>{if(e.target&&e.target.id==="odaMsgs")odaDnUpd()},true);
+document.addEventListener("scroll",e=>{if(e.target&&e.target.id==="odaMsgs"){odaDnUpd();if(typeof KB!=="undefined"&&!(Date.now()<KB.hold))kbGap()}},true);
 function odaGrow(t){if(!t)return;t.style.height="auto";t.style.height=Math.min(t.scrollHeight,116)+"px"}
 function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d[sh.mid];
   const hd=(t,s,x)=>`<div class="oda-hd"><button class="oda-bk" data-act="close" aria-label="Geri"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><b>${t}</b>${s?`<small>${s}</small>`:""}</div>${x||""}</div>`;
@@ -4514,13 +4514,16 @@ const KB={ios:!!window.__ios||/iP(hone|ad|od)/.test(navigator.userAgent)||(navig
 {const m=/^(\d+)\/(\d+)$/.exec(LS.get("y_kbh")||"");if(m&&+m[2]===Math.round(screen.height))KB.open=+m[1]}
 const kbYazi=t=>!!t&&(t.tagName==="TEXTAREA"||(t.tagName==="INPUT"&&["text","number","search","tel",""].includes((t.getAttribute("type")||"").toLowerCase())));
 // klavye açılıp kapanırken pencereyi klavyeyle aynı anda, yumuşak bir geçişle boyutlandırır (sistem ölçüyü ancak geçiş bitince bildirir)
+// klavye açılıp kapanırken sohbet, alt kenara göre olduğu yerde kalır (en alttaysa en altta; ortadaysa aynı mesajlar görünür)
+function kbGap(){const b=document.getElementById("odaMsgs");if(!b)return;const g=b.scrollHeight-b.scrollTop-b.clientHeight;KB.gap=g<90?0:g}
+function kbYer(){const b=document.getElementById("odaMsgs");if(!b||KB.gap==null)return;b.scrollTop=b.scrollHeight-b.clientHeight-KB.gap;odaDnUpd()}
 function kbGit(ac){if(!KB.ios||!window.visualViewport)return;const bg=document.querySelector("#modal .sheet-bg");if(!bg)return;const on=document.body.classList.contains("kb");if(ac===KB.want&&Date.now()<KB.hold)return;if(ac===on&&!(Date.now()<KB.hold))return;
-  const full=KB.full||Math.round(visualViewport.height);const hedef=ac?(KB.open&&KB.open<full*.8?KB.open:Math.round(full*.6)):full;const b=document.getElementById("odaMsgs");const dip=b&&b.scrollHeight-b.scrollTop-b.clientHeight<90;
+  const full=KB.full||Math.round(visualViewport.height);const hedef=ac?(KB.open&&KB.open<full*.8?KB.open:Math.round(full*.6)):full;const b=document.getElementById("odaMsgs");kbGap();
   KB.want=ac;KB.hold=Date.now()+900;document.body.classList.toggle("kbs",ac);if(!ac)document.body.classList.add("kbk");
   bg.style.top="0px";bg.style.bottom="auto";if(!bg.style.height)bg.style.height=Math.round(bg.getBoundingClientRect().height)+"px";void bg.offsetHeight;bg.style.height=hedef+"px";
-  const t0=Date.now();const tik=()=>{if(dip&&b.isConnected)b.scrollTop=b.scrollHeight;if(Date.now()-t0<380)requestAnimationFrame(tik)};requestAnimationFrame(tik);
+  const t0=Date.now();const tik=()=>{if(b&&b.isConnected)kbYer();if(Date.now()-t0<380)requestAnimationFrame(tik)};requestAnimationFrame(tik);
   clearTimeout(KB.tm);KB.tm=setTimeout(()=>{KB.hold=0;document.body.classList.remove("kbk");if(KB.fix)KB.fix()},950)}
-if(window.visualViewport){let kbT=0;const show=()=>{const a=document.activeElement;if(!a||!/^(INPUT|TEXTAREA)$/.test(a.tagName))return;if(a.id==="odaTxt"){odaBottom();return}if(a.id==="betComTxt"){odaBottom();return}try{a.scrollIntoView({block:"center"})}catch(_){}};
+if(window.visualViewport){let kbT=0;const show=()=>{const a=document.activeElement;if(!a||!/^(INPUT|TEXTAREA)$/.test(a.tagName))return;if(a.id==="odaTxt"||a.id==="betComTxt"){if(KB.gap==null)odaBottom();else kbYer();return}try{a.scrollIntoView({block:"center"})}catch(_){}};
   const vvFix=()=>{const v=visualViewport;const kb=v.height<innerHeight*.78;document.documentElement.style.setProperty("--vvh",Math.round(v.height)+"px");const was=document.body.classList.contains("kb");document.body.classList.toggle("kb",kb);
     const tam=S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");if(tam&&(v.offsetTop>1||scrollY>1)&&(vvFix.n=(vvFix.n||0)+1)<=4){try{window.scrollTo(0,0)}catch(_){}}
     if(kb){KB.open=Math.round(v.height);LS.set("y_kbh",String(KB.open)+"/"+Math.round(screen.height))}else KB.full=Math.round(v.height);
@@ -4528,7 +4531,7 @@ if(window.visualViewport){let kbT=0;const show=()=>{const a=document.activeEleme
     const bg=document.querySelector("#modal .sheet-bg");if(bg&&!bek){if(kb||tam){bg.style.top=Math.round(v.offsetTop)+"px";bg.style.height=Math.round(v.height)+"px";bg.style.bottom="auto"}else{bg.style.top=bg.style.height=bg.style.bottom=""}}
     if(kb){clearTimeout(kbT);kbT=setTimeout(show,was?40:120)}};
   KB.fix=vvFix;visualViewport.addEventListener("resize",vvFix);visualViewport.addEventListener("scroll",vvFix);
-  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName||"")){vvFix.n=0;if(kbYazi(e.target)&&e.target.closest("#modal"))kbGit(true);setTimeout(vvFix,60);setTimeout(()=>{vvFix();show()},380)}});
+  document.addEventListener("focusin",e=>{if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName||"")){vvFix.n=0;if(!(Date.now()<KB.hold))kbGap();if(kbYazi(e.target)&&e.target.closest("#modal"))kbGit(true);setTimeout(vvFix,60);setTimeout(()=>{vvFix();show()},380)}});
   document.addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(!a||!/^(INPUT|TEXTAREA)$/.test(a.tagName))kbGit(false)},0);setTimeout(vvFix,120)});
   // iOS: yazı alanına dokununca klavye, ekranın tepesindeki görünmez bir alan üzerinden açılır; böylece sistem sayfayı yukarı itmez,
   // pencere klavyeyle birlikte tek harekette kısalır. Klavye yerleşince asıl alana geçilir.
