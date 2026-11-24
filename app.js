@@ -1540,14 +1540,14 @@ function th2Kart(cls,ic,t,pill,B,btn){return `<div class="thk th2 ${cls}"><div c
 function _macSonra(m){const M=esc(m.id);const inf=S.mInfo[m.id]||{pts:{}};const me=myPid();
   const STAR='<svg viewBox="0 0 24 24" fill="none" stroke="#2A1F00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8L12 3z"/></svg>';
   const PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-  let h=hero(m);
+  let h=hero(m)+odaCard(m);
   {const L=Object.entries(inf.pts||{}).filter(([id,r])=>r&&realP(id)&&isFinite(r.pts)).sort((a,b)=>b[1].pts-a[1].pts);
     if(L.length){const mo=inf.motm&&P(inf.motm)?inf.motm:null;const mine=me&&inf.pts[me]&&isFinite(inf.pts[me].pts)?inf.pts[me]:null;
       h+=th2Kart("thG",STAR,vOn(m)?"Oylama":"Maç notları","Sonuçlandı",[mo?["Maçın adamı",esc(shortName(nameOf(mo)))]:["En iyi",esc(shortName(nameOf(L[0][0])))],mine?["Senin notun",fN(mine.pts)]:["En yüksek not",fN(L[0][1].pts)]],`<button class="thk-c" data-act="${m.vsum?"oySonuc":"msGo"}" data-id="${M}" data-v="notlar">Sıralama</button>`)}}
   if(isMember()&&!S.fol&&me&&!tahminYok()){const W=BET.week[m.id];betLoad("week",m.id);const Ls=BET.lists[me];if(!Ls)betLoad("list",me);
     const mine=Ls?Ls.rows.filter(c=>c.m===m.id):[];const dn=mine.filter(c=>c.z==="kazandi"||c.z==="kaybetti");const net=dn.reduce((a,c)=>a+((c.py||0)-c.st),0);const won=mine.filter(c=>c.z==="kazandi").length;
     if(mine.length||(W&&W.n))h+=th2Kart("",dIcon("bilet","green",24),"Tahmin",mine.some(c=>c.z==="acik")?"Sonuç bekleniyor":"Sonuçlandı",mine.length?[["Kazanılan sikke",(net>0?"+":net<0?"−":"")+fJ(Math.abs(net))],["Tutan tahmin",won+"/"+mine.length]]:[["Yapılan tahmin",W.n||0],["Tutan tahmin",W.won||0]],`<button class="thk-c" data-act="thkGo" data-v="kupon">Sonuçlar</button>`)}
-  h+=duelCard(m)||duelWait();h+=odaCard(m);
+  h+=duelCard(m)||duelWait();
   if(S.admin){const d=S.f.newDate||nextDay(+S.settings.day);const tm=S.f.newTime||S.settings.time;const D=parseYmd(d);
     h+=th2Kart("thP",PLUS,"Sıradaki maç","Yönetici",[["Tarih",D.getDate()+" "+AYLAR[D.getMonth()].slice(0,3)+" "+GUNLER[D.getDay()].slice(0,3)],["Saat",esc(String(tm||"").slice(0,5))]],`<button class="thk-c" data-act="tog" data-k="nmOpen" aria-expanded="${!!S.f.nmOpen}">${S.f.nmOpen?"Kapat":"Maçı aç"}</button>`);
     if(S.f.nmOpen)h+=createForm()}
@@ -1926,8 +1926,8 @@ function matchBody(m){
       ${(m.team_a||[]).length&&(m.team_b||[]).length?`<button class="btn mg-bk" data-act="fwdTakim" data-id="${esc(m.id)}">Vazgeç, kadrolar aynı kalsın</button>`:""}
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`;
   }else{
-    const ended=mEnded(m);if(vOpen(m))h+=voteCard(m);else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
-    h+=odaCard(m);h+=tahminKart(m);h+=duelCard(m);
+    const ended=mEnded(m);h+=odaCard(m);if(vOpen(m))h+=voteCard(m);else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
+    h+=tahminKart(m);h+=duelCard(m);
     {const av=k=>{const L=plOf(m,k);return L.slice(0,3).map(id=>pFace(id)).join("")+(L.length>3?`<em>+${L.length-3}</em>`:"")};
     h+=`<details class="card kdd kq" id="kadrolar"><summary><span class="kq-h"><span class="kq-i">${dIcon("yelek","pink",22)}</span><span class="kq-t"><i>Kadrolar</i><small>${plOf(m,"A").length} · ${plOf(m,"B").length} oyuncu</small></span><span class="kq-p"><span class="c">Dizilişi gör</span><span class="o">Kapat</span>${CHVD}</span></span><span class="kq-2">${["A","B"].map(k=>`<span class="kq-tm">${crest(nmOf(m,k),k,22)}<span class="kq-av">${av(k)}</span></span>`).join("")}</span></summary>${teamsView(m,true)}</details>`}
     if(!ended)h+=preview(m);
