@@ -5083,3 +5083,24 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .ezl-r>span{flex:1;min-width:0}.ezl-r b{display:block;font:700 .875rem/1.25 Inter,sans-serif;color:#fff}.ezl-r small{display:block;margin-top:2px;font:500 .7812rem/1.3 Inter,sans-serif;color:#C9BFE6}
 .ezl-r i{font:800 .875rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;flex:none}.ezl-r i.a{color:var(--c-pink)}.ezl-r i.b{color:var(--c-cyan)}
 .btn.ezl-b{background:#5FE3F5;color:#06222A;border:0;margin-bottom:12px}
+/* kariyer sekmesi */
+.kv.kry-kv{grid-template-columns:repeat(3,1fr);margin-top:8px}
+.kry-c{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+.kry-c>div{background:var(--card2);border-radius:12px;padding:8px 14px;min-width:84px}.kry-c>div.n{box-shadow:inset 0 0 0 2px var(--c-pink,#FF3EA5)}
+.kry-c small{display:block;font:800 .6875rem/1.2 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}.kry-c b{display:block;font:900 1.75rem/1.1 var(--display)}
+.kry-c>i{font-style:normal;font-weight:800;color:var(--muted)}.kry-d{margin-left:auto;font:800 .875rem/1 Inter,sans-serif;color:var(--muted)}
+.kry-a{display:grid;gap:10px;margin-top:12px}.kry-a>div{display:grid;grid-template-columns:minmax(0,1.2fr) 26px minmax(0,1fr) 62px;align-items:center;gap:8px;font:600 .875rem/1.2 Inter,sans-serif}
+.kry-a small{color:var(--muted);text-align:right;font-size:.7812rem}.kry-a b{text-align:right;font-weight:800}.kry-a em{font-style:normal;font-weight:800}
+.kry-b{position:relative;height:8px;border-radius:999px;background:var(--card3);overflow:hidden}.kry-b u,.kry-b s{position:absolute;top:0;bottom:0}.kry-b u{left:0;background:#7C3AED}
+.kry-b s.up{background:#0A9B5C}.kry-b s.dn{background:#D9334F}
+.kry-l{margin-top:4px}.kry-l>*{display:flex;align-items:center;gap:12px;width:100%;padding:10px 0;background:none;border:0;border-radius:0;color:inherit;font:inherit;text-align:left}
+.kry-l>*+*{border-top:1px solid var(--card3)}.kry-l>button{cursor:pointer;min-height:44px}.kry-l span{flex:1;min-width:0}
+.kry-l b{display:block;font:700 .875rem/1.25 Inter,sans-serif}.kry-l small{display:block;margin-top:2px;font:500 .7812rem/1.3 Inter,sans-serif;color:var(--muted)}.kry-l em{font:900 1.3125rem/1 var(--display);font-style:normal;flex:none}
+/* sezon hedefleri */
+.hdf{display:grid;gap:16px}.hdf-r>div:first-child{display:flex;align-items:center;gap:8px}.hdf-r b{flex:1;min-width:0;font:700 .875rem/1.25 Inter,sans-serif}.hdf-r span{font:700 .875rem/1 Inter,sans-serif}
+.hdf-r button{width:40px;height:40px;margin:-8px -8px -8px 0;border:0;border-radius:999px;background:none;color:var(--muted);font:700 1.125rem/1 Inter,sans-serif;cursor:pointer}
+.hdf-p{height:10px;border-radius:999px;background:var(--card3);overflow:hidden;margin-top:8px}.hdf-p i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#7C3AED,#FF3EA5)}.hdf-r.ok .hdf-p i{background:#0A9B5C}
+.hdf-r small,.hdf-x{display:block;margin-top:6px;font:500 .7812rem/1.3 Inter,sans-serif;color:var(--muted)}.hdf-x{margin:0}
+.hdf-n{display:grid;gap:8px}.hdf-n>b{font:800 .875rem/1 Inter,sans-serif}.hdf-g{display:flex;flex-wrap:wrap;gap:8px}
+.hdf-g button{min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card3);color:inherit;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}.hdf-g button.on,.hdf-g.v button{background:#FF3EA5;color:#fff}
+.kry-a em.up,.kry-d.up{color:#00C777}.kry-a em.dn,.kry-d.dn{color:#FF6B86}
