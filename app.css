@@ -5117,3 +5117,5 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 /* sezon töreni hikâyesi: açılış ve özet */
 .sttr{font-size:5rem;line-height:1}.stch{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:8px}.stch span{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14);font:700 .7812rem/1 Inter,sans-serif}
 .stkv div.w b{color:#FFD400}.sttw.sttw-s{gap:6px}.sttw.sttw-s li{grid-template-columns:34px minmax(0,1fr) auto;padding:4px 12px 4px 4px}.sttw-s .sttp{width:34px;height:34px}
+/* sezon önizlemesi şeridi */
+.ymf.ymf-on{background:#3B1D6E;margin-bottom:8px}.ymf-on small{color:#D9CFFF}.ymf-on i{color:#fff;font-weight:800;text-decoration:underline}
