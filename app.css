@@ -4837,7 +4837,7 @@ html.dk .osr2 .vsec h3{font-size:1.25rem!important;margin-bottom:8px}.osr2 .vtl{
 .osrf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:100%;margin-top:6px}
 .osrf span{display:grid;justify-items:center;gap:3px;padding:10px 2px;border-radius:14px;background:#120A2A}.osrf b{font:800 1.6rem/1 var(--display);color:#fff}.osrf small{font:700 .72rem/1 Inter,sans-serif}
 .osrl{display:grid;gap:6px;margin-bottom:14px}
-.osrl .rw{display:grid;grid-template-columns:22px 36px minmax(0,1fr) auto auto;align-items:center;gap:10px;min-height:52px;padding:0 12px;border-radius:14px;background:#24165A}
+.osrl .rw{border:0;font:inherit;text-align:left;width:100%;cursor:pointer;display:grid;grid-template-columns:22px 36px minmax(0,1fr) auto auto;align-items:center;gap:10px;min-height:52px;padding:0 12px;border-radius:14px;background:#24165A}
 .osrl .rw i{font:800 .85rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;text-align:center}.osrl .rw b.nm{font:700 .92rem/1.2 Inter,sans-serif;color:#fff;overflow-wrap:anywhere}
 .osrl .rw.me{outline:2px solid #fff;outline-offset:-2px}.osrl .rkf{width:36px;height:36px}
 .osrl .nt{display:inline-block;min-width:2.6em;text-align:center;font-family:var(--display);font-weight:900;font-size:1.05rem;border-radius:7px;padding:3px 6px;color:#fff}
