@@ -1481,7 +1481,7 @@ function viewMac(){
   if(!S.players.length)return `<section class="card"><div class="empty emp2">${empIc("kisi","pink")}<h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
   const om=openMatch();if(om)return hero(om)+muafKart(om)+matchBody(om);
   const lm=lastFinM();if(lm&&!lm.archived&&S.mInfo[lm.id])return macSonra(lm);
-  return S.admin?createHero():noMatchHero();
+  return (S.admin?createHero():noMatchHero())+duelWait();
 }
 /* maç bitti, sıradaki maç henüz girilmedi: maç önü ekranıyla aynı kalıpta sonuç ekranı */
 const odaKapan=m=>{const d=parseYmd(m.date);d.setDate(d.getDate()+2);return d.getTime()};
@@ -1499,6 +1499,9 @@ const duNum=(d,v)=>d.k==="not"||d.k==="km"?fN(v):v;const duBek=d=>DU_TR[d.k]?"Sa
 const duOpen=m=>m.state==="takim"&&Date.now()<matchTs(m);
 const DU_MAX=3;
 function duMine(m,me){const pl=plAll(m);return (DU.rows||[]).filter(x=>x.m===m.id&&(x.a===me||x.b===me)&&pl.includes(x.a)&&pl.includes(x.b))}
+/* kadro açıklanmadan önce: düello görünür ama kapalıdır */
+function duelWait(){const me=myPid();if(!isMember()||S.fol||!me)return"";duLoad();const rc=DU.rows?duRec(me):{w:"–",l:"–"};
+  return th2Kart("thC duw",DU_IC,"Düello","Kadro bekleniyor",[["Galibiyet",rc.w],["Yenilgi",rc.l]],`<span class="duw-n">Kadrolar açıklanınca açılır</span>`)}
 function duelCard(m){const me=myPid();if(!isMember()||S.fol||!me||isExt(m)||m.state==="kayit")return"";duLoad();if(!DU.rows)return"";if(!plAll(m).includes(me))return"";
   const M=esc(m.id);const open=duOpen(m);const D=duMine(m,me);
   const B=(act,t)=>`<button class="thk-c" data-act="${act}" data-id="${M}">${t}</button>`;
@@ -1514,8 +1517,7 @@ function sheetSezonum(){const p=P(S.me);if(!p)return"";const yr=curYr();const F=
   const L=F.map(m=>({m,inf:S.mInfo[m.id],r:S.mInfo[m.id]?.pts?.[p.id]})).filter(x=>x.r);const g=L.reduce((t,x)=>t+(x.r.g||0),0),a=L.reduce((t,x)=>t+(x.r.a||0),0);const nt=L.filter(x=>isFinite(x.r.pts));const av=nt.length?nt.reduce((t,x)=>t+x.r.pts,0)/nt.length:null;
   return `<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>Sezonum</h2><small>Sezon ${yr} · ${L.length?L.length+" maç oynadın":"henüz maçın yok"}</small></div></div>
     <div class="szk-s">${[[L.length,"Maç"],[g,"Gol"],[a,"Asist"],[av==null?"–":fN(av),"Ort. not"]].map(([v,l])=>`<span><b class="num">${v}</b><small>${l}</small></span>`).join("")}</div>
-    ${L.length?`<div class="szk">${L.map(({m,inf,r})=>{const res=r.res||"";return `<button class="szk-r ${res}" data-act="szGo" data-id="${esc(m.id)}"><span class="szk-h"><small>${esc(fmtShort(m.date))}</small><b>${esc(nmOf(m,"A"))} ${+m.score_a||0}–${+m.score_b||0} ${esc(nmOf(m,"B"))}</b></span>${isFinite(r.pts)?`<span class="szk-n ${noteCls(r.pts)}">${fN(r.pts)}</span>`:""}<span class="szk-c">${RL[res]?`<i class="${res}">${RL[res]}</i>`:""}${r.g?`<i>${r.g} gol</i>`:""}${r.a?`<i>${r.a} asist</i>`:""}${r.role?`<i>${esc(r.role)}</i>`:""}${inf.motm===p.id?`<i class="y">★ Maçın adamı</i>`:""}${inf.fiy===p.id?`<i class="M">Fiyasko</i>`:""}</span></button>`}).join("")}</div>`:`<p class="muted">İlk maçına çıkınca burada görünür.</p>`}
-    <button class="btn block" data-act="open" data-id="${esc(p.id)}">Kartım</button>`}
+    ${L.length?`<div class="szk">${L.map(({m,inf,r})=>{const res=r.res||"";return `<button class="szk-r ${res}" data-act="szGo" data-id="${esc(m.id)}"><span class="szk-h"><small>${esc(fmtShort(m.date))}</small><b>${esc(nmOf(m,"A"))} ${+m.score_a||0}–${+m.score_b||0} ${esc(nmOf(m,"B"))}</b></span>${isFinite(r.pts)?`<span class="szk-n ${noteCls(r.pts)}">${fN(r.pts)}</span>`:""}<span class="szk-c">${RL[res]?`<i class="${res}">${RL[res]}</i>`:""}${r.g?`<i>${r.g} gol</i>`:""}${r.a?`<i>${r.a} asist</i>`:""}${r.role?`<i>${esc(r.role)}</i>`:""}${inf.motm===p.id?`<i class="y">★ Maçın adamı</i>`:""}${inf.fiy===p.id?`<i class="M">Fiyasko</i>`:""}</span></button>`}).join("")}</div>`:`<p class="muted">İlk maçına çıkınca burada görünür.</p>`}`}
 function sheetDuello(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=myPid();if(!m||!me)return"";return inM(m,()=>{const X=`<button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button>`;const open=duOpen(m);const D=duMine(m,me);
   if(sh.nw&&open){const cnt=id=>(DU.rows||[]).filter(x=>x.m===m.id&&(x.a===id||x.b===id)).length;const has=id=>D.some(d=>d.k===sh.kind&&(d.a===id||d.b===id));const L=plAll(m).filter(id=>id!==me&&realP(id));
     return `<div class="mzvh"><button class="mzic" data-act="duBack" aria-label="Geri">${ICON.x}</button><div><h2>Meydan oku</h2><small>${DU_MAX-D.length} hakkın kaldı · kabul ederse maçta belli olur</small></div></div>
@@ -1545,7 +1547,7 @@ function _macSonra(m){const M=esc(m.id);const inf=S.mInfo[m.id]||{pts:{}};const 
   if(isMember()&&!S.fol&&me&&!tahminYok()){const W=BET.week[m.id];betLoad("week",m.id);const Ls=BET.lists[me];if(!Ls)betLoad("list",me);
     const mine=Ls?Ls.rows.filter(c=>c.m===m.id):[];const dn=mine.filter(c=>c.z==="kazandi"||c.z==="kaybetti");const net=dn.reduce((a,c)=>a+((c.py||0)-c.st),0);const won=mine.filter(c=>c.z==="kazandi").length;
     if(mine.length||(W&&W.n))h+=th2Kart("",dIcon("bilet","green",24),"Tahmin",mine.some(c=>c.z==="acik")?"Sonuç bekleniyor":"Sonuçlandı",mine.length?[["Kazanılan sikke",(net>0?"+":net<0?"−":"")+fJ(Math.abs(net))],["Tutan tahmin",won+"/"+mine.length]]:[["Yapılan tahmin",W.n||0],["Tutan tahmin",W.won||0]],`<button class="thk-c" data-act="thkGo" data-v="kupon">Sonuçlar</button>`)}
-  h+=duelCard(m);h+=odaCard(m);
+  h+=duelCard(m)||duelWait();h+=odaCard(m);
   if(S.admin){const d=S.f.newDate||nextDay(+S.settings.day);const tm=S.f.newTime||S.settings.time;const D=parseYmd(d);
     h+=th2Kart("thP",PLUS,"Sıradaki maç","Yönetici",[["Tarih",D.getDate()+" "+AYLAR[D.getMonth()].slice(0,3)+" "+GUNLER[D.getDay()].slice(0,3)],["Saat",esc(String(tm||"").slice(0,5))]],`<button class="thk-c" data-act="tog" data-k="nmOpen" aria-expanded="${!!S.f.nmOpen}">${S.f.nmOpen?"Kapat":"Maçı aç"}</button>`);
     if(S.f.nmOpen)h+=createForm()}
@@ -1918,7 +1920,7 @@ function matchBody(m){
   if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><button class="btn sm" data-act="cancelTeams">Vazgeç</button></div>${editorPanel(m)}</section>`;
   let h=S.admin?nextStep(m):"";
   if(m.state==="kayit"){
-    h+=kadroCard(m);
+    h+=duelWait();h+=kadroCard(m);
     if(S.admin)h+=`<section class="card admc"><div class="ch"><div><div class="eyebrow">Yönetici</div><h2>Takımları kur</h2></div></div>
       <div class="grid2"><button class="btn primary" data-act="autoKadro" data-id="${esc(m.id)}">Otomatik kur</button><button class="btn" data-act="manual" data-id="${esc(m.id)}">${ICON.hand} Manuel kur</button></div>
       ${(m.team_a||[]).length&&(m.team_b||[]).length?`<button class="btn mg-bk" data-act="fwdTakim" data-id="${esc(m.id)}">Vazgeç, kadrolar aynı kalsın</button>`:""}
