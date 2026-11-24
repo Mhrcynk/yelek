@@ -5060,3 +5060,8 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .dkp-r button{flex:none;min-height:44px;min-width:76px;padding:0 16px;border:0;border-radius:999px;background:var(--c-card2);color:#fff;font:800 .8125rem/1 Inter,sans-serif;cursor:pointer}
 .dkp-r.on button{background:#5FE3F5;color:#06222A;opacity:1}
 .mzseg.dsg{margin:0 0 10px}html.dk .mzseg.dsg button.on{background:#5FE3F5!important;color:#06222A!important}
+
+/* Sezon kürsüsü: sıra küçük, puan büyük ve "puan" yazısıyla */
+.mzpod-b{gap:3px!important}.mzpod-b b{font:800 .9375rem/1 Inter,sans-serif!important;color:rgba(255,255,255,.7)}
+.mzpod-b small{font-size:.8125rem!important}
+.mzpod-b em{font:800 1.5rem/1 var(--display)!important;color:#fff!important;display:grid;justify-items:center;gap:2px}.mzpod-b em i{font:600 .6875rem/1 Inter,sans-serif;font-style:normal;color:rgba(255,255,255,.7)}
