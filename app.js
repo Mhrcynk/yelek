@@ -1488,7 +1488,7 @@ const odaKapan=m=>{const d=parseYmd(m.date);d.setDate(d.getDate()+2);return d.ge
 function macSonra(m){return inM(m,()=>_macSonra(m))}
 /* Düello: kadrolar açıklanınca iki oyuncu birbirine meydan okur; sonuç maç istatistiğinden çıkar */
 const DU={rows:null,at:0};const DU_K={gol:"Daha çok gol",asist:"Daha çok asist",not:"Daha yüksek not"};
-const DU_ERR={closed:"Maç başladı, düello kapandı",dolu:"İkinizden birinin bu maçta düellosu var",uye:"Bu oyuncunun hesabı yok",kadro:"İkiniz de bu maçın kadrosunda olmalısınız",yok:"Düello bulunamadı",auth:"Önce giriş yapmalısın",value:"Rakip ve konu seç"};
+const DU_ERR={closed:"Maç başladı, düello kapandı",dolu:"Bu maçtaki 3 düello hakkın doldu",rdolu:"Rakibinin 3 düello hakkı dolmuş",var:"Bu rakiple bu konuda zaten düellon var",uye:"Bu oyuncunun hesabı yok",kadro:"İkiniz de bu maçın kadrosunda olmalısınız",yok:"Düello bulunamadı",auth:"Önce giriş yapmalısın",value:"Rakip ve konu seç"};
 const DU_IC='<svg viewBox="0 0 24 24" fill="none" stroke="#06222A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l6 8-6 8M18 4l-6 8 6 8"/></svg>';
 function duLoad(force){if(!isMember()||S.fol||!myPid())return;if(DU.at===-1||(!force&&Date.now()-DU.at<60000))return;DU.at=-1;
   rpc("duel_list",{}).then(r=>{DU.at=Date.now();if(r&&r.ok){const o=JSON.stringify(DU.rows);DU.rows=r.rows||[];if(o!==JSON.stringify(DU.rows)&&S.tab==="mac"&&!S.sheet&&!S.view)render(true)}}).catch(()=>{DU.at=Date.now()-50000})}
@@ -1497,26 +1497,35 @@ function duRes(m,d,me){const ot=d.a===me?d.b:d.a;const x=duVal(m,d,me),y=duVal(m
 function duRec(me){let w=0,l=0;(DU.rows||[]).forEach(d=>{if(d.s!=="kabul"||(d.a!==me&&d.b!==me))return;const m=S.matches.find(x=>x.id===d.m);const r=m&&duRes(m,d,me);if(r){if(r.r==="G")w++;else if(r.r==="M")l++}});return{w,l}}
 const duFmt=(d,v)=>d.k==="not"?fN(v):v+(d.k==="gol"?" gol":" asist");
 const duOpen=m=>m.state==="takim"&&Date.now()<matchTs(m);
-function duelCard(m){const me=myPid();if(!isMember()||S.fol||!me||isExt(m)||m.state==="kayit")return"";duLoad();if(!DU.rows)return"";const pl=plAll(m);if(!pl.includes(me))return"";
-  const M=esc(m.id);const open=duOpen(m);const d=DU.rows.find(x=>x.m===m.id&&(x.a===me||x.b===me)&&pl.includes(x.a)&&pl.includes(x.b));
-  const B=(act,t,ex)=>`<button class="thk-c" data-act="${act}" ${ex||""}>${t}</button>`;
-  if(!d){if(!open)return"";const rc=duRec(me);return th2Kart("thC",DU_IC,"Düello","Bu maç boş",[["Galibiyet",rc.w],["Yenilgi",rc.l]],B("duNew","Meydan oku",`data-id="${M}"`))}
-  const ot=d.a===me?d.b:d.a;const on=esc(shortName(nameOf(ot)));const KB=[["Konu",DU_K[d.k]],["Rakip",on]];
-  if(d.s==="bekliyor"){if(!open)return"";return d.b===me?th2Kart("thC",DU_IC,"Düello","Meydan okundu",KB,B("duAns","Yanıtla",`data-id="${M}" data-v="${d.id}"`)):th2Kart("thC",DU_IC,"Düello","Yanıt bekleniyor",KB,B("duCancel","Geri çek",`data-v="${d.id}"`))}
-  const r=duRes(m,d,me);
-  if(!r)return th2Kart("thC",DU_IC,"Düello",m.state==="bitti"?(d.k==="not"?"Notlar bekleniyor":"Skor bekleniyor"):"Maçta belli olur",KB,"");
-  return th2Kart("thC",DU_IC,"Düello",r.r==="G"?"Kazandın":r.r==="M"?"Kaybettin":"Berabere",[["Sen",duFmt(d,r.x)],[on,duFmt(d,r.y)]],"")}
-function sheetDuello(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=myPid();if(!m||!me)return"";const X=`<button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button>`;
-  if(sh.ans){const d=(DU.rows||[]).find(x=>String(x.id)===String(sh.ans));if(!d)return `<div class="mzvh">${X}<div><h2>Düello</h2><small>Bu meydan okuma geri çekilmiş</small></div></div>`;const p=P(d.a);
-    return `<div class="mzvh">${X}<div><h2>Düello</h2><small>Kabul edersen sonuç maçta belli olur</small></div></div>
-      <div class="vpc">${p?avatar(p):""}<h3>${esc(nameOf(d.a))}</h3><p>sana meydan okudu</p><div class="vstt du1"><span><b>${DU_K[d.k]}</b><small>Konu</small></span></div></div>
-      <div class="vnav"><button class="btn" data-act="duNo" data-v="${d.id}">Reddet</button><button class="btn primary" data-act="duYes" data-v="${d.id}">Kabul et</button></div>`}
-  const busy=new Set();(DU.rows||[]).filter(x=>x.m===m.id).forEach(x=>{busy.add(x.a);busy.add(x.b)});const L=plAll(m).filter(id=>id!==me&&realP(id));
-  return `<div class="mzvh">${X}<div><h2>Meydan oku</h2><small>Rakibini ve konuyu seç · kabul ederse maçta belli olur</small></div></div>
+const DU_MAX=3;
+function duMine(m,me){const pl=plAll(m);return (DU.rows||[]).filter(x=>x.m===m.id&&(x.a===me||x.b===me)&&pl.includes(x.a)&&pl.includes(x.b))}
+function duelCard(m){const me=myPid();if(!isMember()||S.fol||!me||isExt(m)||m.state==="kayit")return"";duLoad();if(!DU.rows)return"";if(!plAll(m).includes(me))return"";
+  const M=esc(m.id);const open=duOpen(m);const D=duMine(m,me);
+  const B=(act,t)=>`<button class="thk-c" data-act="${act}" data-id="${M}">${t}</button>`;
+  if(open){const inc=D.filter(d=>d.s==="bekliyor"&&d.b===me).length,pen=D.filter(d=>d.s==="bekliyor").length;
+    if(!D.length){const rc=duRec(me);return th2Kart("thC",DU_IC,"Düello",DU_MAX+" hakkın var",[["Galibiyet",rc.w],["Yenilgi",rc.l]],B("duNew","Meydan oku"))}
+    return th2Kart("thC",DU_IC,"Düello",inc?inc+" meydan okuma":pen?"Yanıt bekleniyor":"Maçta belli olur",[["Düello",D.length+"/"+DU_MAX],["Bekleyen",pen]],B("duList",inc?"Yanıtla":"Düellolar"))}
+  const A=D.filter(d=>d.s==="kabul");if(!A.length)return"";const R=A.map(d=>duRes(m,d,me));const dn=R.filter(Boolean);
+  if(!dn.length)return th2Kart("thC",DU_IC,"Düello",m.state==="bitti"?"Sonuç bekleniyor":"Maçta belli olur",[["Düello",A.length],["Sonuçlanan",0]],B("duList","Düellolar"));
+  const w=dn.filter(r=>r.r==="G").length,l=dn.filter(r=>r.r==="M").length;
+  return th2Kart("thC",DU_IC,"Düello",dn.length<A.length?`${dn.length}/${A.length} sonuçlandı`:w>l?"Önde bitirdin":w<l?"Geride kaldın":"Berabere",[["Kazandın",w],["Kaybettin",l]],B("duList","Sonuçlar"))}
+function sheetDuello(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=myPid();if(!m||!me)return"";return inM(m,()=>{const X=`<button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button>`;const open=duOpen(m);const D=duMine(m,me);
+  if(sh.nw&&open){const cnt=id=>(DU.rows||[]).filter(x=>x.m===m.id&&(x.a===id||x.b===id)).length;const has=id=>D.some(d=>d.k===sh.kind&&(d.a===id||d.b===id));const L=plAll(m).filter(id=>id!==me&&realP(id));
+    return `<div class="mzvh"><button class="mzic" data-act="duBack" aria-label="Geri">${ICON.x}</button><div><h2>Meydan oku</h2><small>${DU_MAX-D.length} hakkın kaldı · kabul ederse maçta belli olur</small></div></div>
     <div class="vsec"><h3>Konu</h3><div class="du3">${Object.entries(DU_K).map(([k,l])=>`<button class="${sh.kind===k?"on":""}" data-act="duKind" data-v="${k}" aria-pressed="${sh.kind===k}">${l}</button>`).join("")}</div></div>
-    <div class="vsec"><h3>Rakip</h3><div class="vtg">${L.map(id=>{const p=P(id);const on=sh.rival===id;return `<button class="vtl${on?" on":""}" data-act="duPick" data-p="${esc(id)}" aria-pressed="${on}"${busy.has(id)?" disabled":""}>${p?avatar(p):""}<b>${esc(shortName(nameOf(id)))}</b>${busy.has(id)?`<small>Düellosu var</small>`:""}</button>`}).join("")}</div></div>
-    <button class="btn primary block vsend" data-act="duSend"${sh.rival&&sh.kind?"":" disabled"}>${sh.rival&&sh.kind?"Meydan oku":"Rakip ve konu seç"}</button>
-    <p class="muted small" style="text-align:center;margin:10px 0 0">Bir maçta tek düellon olur. Ödül yok; galibiyetlerin sayılır.</p>`}
+    <div class="vsec"><h3>Rakip</h3><div class="vtg">${L.map(id=>{const p=P(id);const on=sh.rival===id;const full=cnt(id)>=DU_MAX,dup=has(id);return `<button class="vtl${on&&!full&&!dup?" on":""}" data-act="duPick" data-p="${esc(id)}" aria-pressed="${on}"${full||dup?" disabled":""}>${p?avatar(p):""}<b>${esc(shortName(nameOf(id)))}</b>${full?`<small>Hakkı doldu</small>`:dup?`<small>Bu konuda var</small>`:""}</button>`}).join("")}</div></div>
+    <button class="btn primary block vsend" data-act="duSend"${sh.rival&&sh.kind?"":" disabled"}>${sh.rival&&sh.kind?"Meydan oku":"Rakip ve konu seç"}</button>`}
+  const row=d=>{const ot=d.a===me?d.b:d.a;const p=P(ot);const nm=esc(shortName(nameOf(ot)));const r=d.s==="kabul"?duRes(m,d,me):null;let st,ac="";
+    if(d.s==="bekliyor"&&d.b===me){st=`<em class="w">Sana meydan okudu</em>`;ac=open?`<div class="dul-a"><button class="btn sm" data-act="duNo" data-v="${d.id}">Reddet</button><button class="btn primary sm" data-act="duYes" data-v="${d.id}">Kabul et</button></div>`:""}
+    else if(d.s==="bekliyor"){st=`<em>Yanıt bekleniyor</em>`;ac=open?`<div class="dul-a"><button class="btn sm" data-act="duCancel" data-v="${d.id}">Geri çek</button></div>`:""}
+    else if(!r)st=`<em>${m.state==="bitti"?(d.k==="not"?"Notlar bekleniyor":"Skor bekleniyor"):"Kabul edildi · maçta belli olur"}</em>`;
+    else st=`<em class="${r.r==="G"?"g":r.r==="M"?"m":""}">${r.r==="G"?"Kazandın":r.r==="M"?"Kaybettin":"Berabere"}</em>`;
+    return `<div class="dul">${p?avatar(p,"sm"):""}<span class="dul-x"><b>${nm}</b><small>${DU_K[d.k]}</small></span>${r?`<span class="dul-s"><b class="num">${d.k==="not"?fN(r.x):r.x}</b><i>–</i><b class="num">${d.k==="not"?fN(r.y):r.y}</b></span>`:""}${st}${ac}</div>`};
+  const left=DU_MAX-D.length;const act=D.filter(d=>d.s==="kabul"||open);
+  return `<div class="mzvh">${X}<div><h2>Düellolar</h2><small>${open?`${DU_MAX} hakkından ${D.length}'${["ı","i","si","ü"][D.length]||"ü"} kullandın`:m.state==="bitti"?"Maç bitti":"Maç başladı, yeni düello açılamaz"}</small></div></div>
+    ${act.length?`<div class="dull">${act.map(row).join("")}</div>`:`<p class="muted">Bu maçta düellon yok.</p>`}
+    ${open?(left>0?`<button class="btn primary block" data-act="duNew" data-id="${esc(m.id)}">Meydan oku · ${left} hak</button>`:`<p class="muted small" style="text-align:center">Bu maçtaki ${DU_MAX} hakkını kullandın.</p>`):""}
+    <p class="muted small" style="text-align:center;margin:10px 0 0">Ödül yok; galibiyetlerin sayılır. Sonuç maç istatistiğinden çıkar.</p>`})}
 async function duDo(fn,args,okMsg){try{const r=await rpc(fn,args);if(r&&r.ok){DU.rows=r.rows||[];DU.at=Date.now();if(okMsg)toast(okMsg);return true}toast(DU_ERR[r&&r.error]||"Yapılamadı")}catch(_){toast("Bağlantı yok")}duLoad(true);return false}
 function th2Kart(cls,ic,t,pill,B,btn){return `<div class="thk th2 ${cls}"><div class="thk-b"><span class="thk-i">${ic}</span><span class="thk-x"><b>${t}</b></span><span class="th2-p">${pill}</span></div><div class="th2-r"><div class="th2-g">${B.map(([l,v])=>`<div><small>${l}</small><b class="num">${v}</b></div>`).join("")}</div>${btn}</div></div>`}
 function _macSonra(m){const M=esc(m.id);const inf=S.mInfo[m.id]||{pts:{}};const me=myPid();
@@ -3338,13 +3347,14 @@ document.addEventListener("click",async e=>{
       try{const r=await rpc("leave_team",{});if(r&&r.ok){LS.del("y_me");toast("Takımdan ayrıldın");setTimeout(()=>location.reload(),900)}else toast(r&&r.error==="tek_yonetici"?"Takımın tek yöneticisisin; önce başka birini yönetici yap":"Yapılamadı");render(true)}catch(_){toast("Yapılamadı, bağlantını kontrol et")}break}
     case"myStatus":S.f.ptab="genel";S.f.st=el.dataset.v&&el.dataset.v!==stOf(P(S.me))?{type:el.dataset.v,until:"",note:""}:null;S.f.stOpen=true;S.sheet={type:"player",id:S.me};render(true);break;
     case"gizlilik":window.open("gizlilik.html","_blank","noopener");break;
-    case"duNew":S.sheet={type:"duello",mid:id,rival:null,kind:"gol"};render(true);break;
-    case"duAns":S.sheet={type:"duello",mid:id,ans:el.dataset.v};render(true);break;
+    case"duNew":S.sheet={type:"duello",mid:id,nw:true,rival:null,kind:"gol"};render(true);break;
+    case"duList":S.sheet={type:"duello",mid:id};render(true);break;
+    case"duBack":if(S.sheet&&S.sheet.type==="duello"){const m=S.matches.find(x=>x.id===S.sheet.mid);if(m&&duMine(m,myPid()).length){S.sheet={type:"duello",mid:S.sheet.mid}}else S.sheet=null;render(true)}break;
     case"duPick":if(S.sheet&&S.sheet.type==="duello"){S.sheet.rival=el.dataset.p;render(true)}break;
     case"duKind":if(S.sheet&&S.sheet.type==="duello"){S.sheet.kind=el.dataset.v;render(true)}break;
-    case"duSend":{const sh=S.sheet;if(!sh||!sh.rival||!sh.kind)break;if(await duDo("duel_send",{p_match:sh.mid,p_rival:sh.rival,p_kind:sh.kind},"Meydan okuma gönderildi")){S.sheet=null}render(true);break}
-    case"duYes":if(await duDo("duel_answer",{p_id:+el.dataset.v,p_ok:true},"Düello başladı")){S.sheet=null}render(true);break;
-    case"duNo":if(await duDo("duel_answer",{p_id:+el.dataset.v,p_ok:false},"Reddedildi")){S.sheet=null}render(true);break;
+    case"duSend":{const sh=S.sheet;if(!sh||!sh.rival||!sh.kind)break;if(await duDo("duel_send",{p_match:sh.mid,p_rival:sh.rival,p_kind:sh.kind},"Meydan okuma gönderildi"))S.sheet={type:"duello",mid:sh.mid};render(true);break}
+    case"duYes":await duDo("duel_answer",{p_id:+el.dataset.v,p_ok:true},"Düello başladı");render(true);break;
+    case"duNo":await duDo("duel_answer",{p_id:+el.dataset.v,p_ok:false},"Reddedildi");render(true);break;
     case"duCancel":await duDo("duel_cancel",{p_id:+el.dataset.v},"Geri çekildi");render(true);break;
     case"oySel":if(S.sheet&&S.sheet.type==="oysonuc"){S.sheet.sel=el.dataset.p;render(true);const b=$("#sheetBody");[b,b&&b.closest(".sheet")].forEach(e=>{try{e&&e.scrollTo({top:0,behavior:"smooth"})}catch(_){}})}break;
     case"oySonuc":S.sheet={type:"oysonuc",mid:id};render(true);break;
