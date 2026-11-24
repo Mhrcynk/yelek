@@ -61,7 +61,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
       fin().forEach((m,i)=>{const pl=plAll(m);if(me&&pl.includes(me)){const o=pl.filter(x=>x!==me);DU.rows.push({id:10+i,m:m.id,a:me,b:o[i%o.length],k:["gol","asist","ga","tm"][i%4],s:"kabul"})}})}
     const P0=S.players;S.stats[P0[0].id].streak={t:"5 maçtır gol atıyor",hot:true};S.stats[P0[3].id].streak={t:"3 maçtır not 6 altında",hot:false};S.stats[P0[5].id].series=[66,68,67,70,72,71,75,78,79];S.stats[P0[5].id].ovr=79});
   const plan=[];
-  const items={once:["ilk7","gun","kadro","duel","meydan","dliste","out"],mac:["skor","motm","totw","gol","fiy","kadro","notum","duello","dson","veri"],tahmin:["kupon","oran","kimne","tkup","tuttu","tkral","ttab","thafta"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","sadik","karne","yFV","yOS","yDF","yKL","final"]};
+  const items={once:["ilk7","gun","kadro","duel","out"],mac:["skor","motm","totw","gol","fiy","kadro","notum","veri"],duello:["meydan","dliste","duello","dson"],tahmin:["kupon","oran","kimne","tkup","tuttu","tkral","ttab","thafta"],oyuncu:["kart","deger","seri","rozet","kaptan","durum","h2h","yeni","dogum","km"],sezon:["tablo","mvp","golk","asistk","piyasa","yildiz","ay","sadik","karne","yFV","yOS","yDF","yKL","final"]};
   const ms=await run(()=>fin().map(m=>m.id));const pids=await run(()=>pmPlayers().map(p=>p.id));
   for(const [tab,L] of Object.entries(items))for(const it of L){
     if(tab==="mac"||(tab==="tahmin"&&(it==="tkup"||it==="tuttu"))){for(const mid of ms)plan.push({tab,item:it,mid})}

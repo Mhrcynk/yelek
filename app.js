@@ -1327,8 +1327,9 @@ function ypFinal(){const n=[...seasonsAll()].reverse().find(x=>seasonDone(x));if
   return{html,cap:`Sezon ${n} şampiyonu: ${nameOf(w.champ.id)} 🏆\n${rows.map(([l,id])=>l+": "+nameOf(id)).join("\n")}\n${HT()} #şampiyon #halısaha`,name:"sezon-"+n+"-finali"}}
 
 const PM_ITEMS={
-  once:[["ilk7","İlk 7"],["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["meydan","Meydan okuma"],["dliste","Haftanın düelloları"],["out","Kadro dışı"]],
-  mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["kadro","Not karnesi"],["notum","Maç notum"],["duello","Düello sonucu"],["dson","Düello sonuçları"],["veri","Maçın verileri"]],
+  duello:[["meydan","Meydan okuma"],["dliste","Haftanın düelloları"],["duello","Düello sonucu"],["dson","Düello sonuçları"]],
+  once:[["ilk7","İlk 7"],["kadro","Kadrolar açıklandı"],["duel","Kritik eşleşme"],["out","Kadro dışı"]],
+  mac:[["skor","Maç sonucu"],["motm","Maçın adamı"],["totw","Haftanın takımı"],["gol","Haftanın golü"],["fiy","Fiyasko"],["kadro","Not karnesi"],["notum","Maç notum"],["veri","Maçın verileri"]],
   oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"],["yeni","Aramıza katıldı"],["dogum","Doğum günü"],["km","Kilometre taşı"]],
   sezon:[["tablo","Puan durumu"],["mvp","Zirve yarışı"],["golk","Gol krallığı"],["asistk","Asist krallığı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yFV","Sezonun golcüsü"],["yOS","Sezonun maestrosu"],["yDF","Sezonun duvarı"],["yKL","Sezonun panteri"],["final","Sezon finali"]],
   tahmin:[["kupon","Tahminim"],["oran","Maçın oranları"],["kimne","Kim neye oynadı?"],["tuttu","Tuttu!"],["tkup","Haftanın tahmini"],["thafta","Haftanın tahmin kralı"],["ttab","Haftalık tahmin tablosu"],["tkral","Sezonun tahmin kralı"]]};
@@ -1341,8 +1342,9 @@ function igBuild(){const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});const ms=fin(
   if(f.tab==="tahmin"){const not=x=>{if(x&&x.cap&&!x.cap.includes("bahis değil"))x.cap=x.cap.replace(/\n([^\n]*)$/,"\nPara yok, bahis değil: sadece keyfine oynanan bir tahmin oyunu. Sikke temsilidir.\n$1");return x};
     if(k==="kupon"||k==="oran"||k==="kimne"){const b=betNext();if(!b)return null;return not(k==="kupon"?ypKupon(b,f.cid):k==="oran"?ypOran(b):ypKimne(b))}
     if(k==="tuttu"||k==="tkup"){if(!m)return null;return not(k==="tuttu"?ypTuttu(m,f.cid):ypTkup(m))}return not(k==="thafta"?ypThafta():k==="tkral"?ypTkral():ypTtab())}
-  if(f.tab==="mac"){if(!m)return null;if(k==="tuttu")return ypTuttu(m,f.cid);if(k==="duello")return ypDuello(m,f.did);if(k==="dson")return ypDuList(m,true,f.dpg);return({skor:ypScore,motm:ypMotm,totw:ypTotw,gol:ypGoal,fiy:ypFiy,veri:ypData,tkup:ypTkup,notum:ypNotum,duello:ypDuello,kadro:mm=>ypKadro(mm,true)}[k]||ypScore)(m)}
-  if(f.tab==="once"){if(k==="gun")return ypMatchDay();if(k==="out")return ypOut();if(k==="kupon"||k==="oran"||k==="kimne"){const b=betNext();if(!b)return null;return k==="kupon"?ypKupon(b,f.cid):k==="oran"?ypOran(b):ypKimne(b)}const n=hkNext();if(!n)return null;if(k==="meydan")return ypMeydan(n,f.did);if(k==="dliste")return ypDuList(n,false,f.dpg);if(k==="ilk7")return ypIlk7(n,f.x7k||"A",f.x7p);return k==="duel"?ypDuel(n):ypKadro(n,false)}
+  if(f.tab==="duello"){if(k==="duello"||k==="dson"){if(!m)return null;return k==="duello"?ypDuello(m,f.did):ypDuList(m,true,f.dpg)}const n=hkNext();if(!n)return null;return k==="meydan"?ypMeydan(n,f.did):ypDuList(n,false,f.dpg)}
+  if(f.tab==="mac"){if(!m)return null;if(k==="tuttu")return ypTuttu(m,f.cid);return({skor:ypScore,motm:ypMotm,totw:ypTotw,gol:ypGoal,fiy:ypFiy,veri:ypData,tkup:ypTkup,notum:ypNotum,duello:ypDuello,kadro:mm=>ypKadro(mm,true)}[k]||ypScore)(m)}
+  if(f.tab==="once"){if(k==="gun")return ypMatchDay();if(k==="out")return ypOut();if(k==="kupon"||k==="oran"||k==="kimne"){const b=betNext();if(!b)return null;return k==="kupon"?ypKupon(b,f.cid):k==="oran"?ypOran(b):ypKimne(b)}const n=hkNext();if(!n)return null;if(k==="ilk7")return ypIlk7(n,f.x7k||"A",f.x7p);return k==="duel"?ypDuel(n):ypKadro(n,false)}
   if(f.tab==="oyuncu"){const p=P(pmPid(f,k))||pmPlayers()[0];if(!p)return null;
     if(k==="h2h"){const q=P(f.pid2)||pmPlayers().filter(x=>x.id!==p.id&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0];return ypH2H(p,q)}
     return({kart:ypCard,deger:ypValue,seri:ypStreak,rozet:ypBadges,kaptan:ypCaptain,durum:ypStatus,yeni:ypNew,dogum:ypBday,km:ypMile}[k]||ypCard)(p)}
@@ -1352,10 +1354,10 @@ const igFrame=(x,fmt)=>fmt==="story"?`<div class="yp-story${/class="yp yp-t[" ]/
 // önizleme ekrana sığsın
 function ypZoom(){const b=$("#pmPrev");if(!b)return;const el=b.firstElementChild;if(!el)return;const w=b.clientWidth-16;el.style.zoom=Math.min(1,w/540).toFixed(3)}
 function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"post"});if(!PM_ITEMS[f.tab])f.tab="mac";const ms=fin().slice().sort((a,b)=>matchTs(b)-matchTs(a));
-  if(f.tab==="tahmin"&&(!isMember()||tahminYok()))f.tab="mac";const tabs=[["mac","Maç"],["oyuncu","Oyuncu"],["sezon","Sezon"],...(isMember()&&!tahminYok()?[["tahmin","Tahmin"]]:[])];const macG=f.tab==="mac"||f.tab==="once";const items=PM_ITEMS[f.tab].filter(x=>isMember()||!TAHMIN_PM.includes(x[0]));
+  if(f.tab==="tahmin"&&(!isMember()||tahminYok()))f.tab="mac";const tabs=[["mac","Maç"],["oyuncu","Oyuncu"],["sezon","Sezon"],...(isMember()&&!tahminYok()?[["tahmin","Tahmin"]]:[]),...(isMember()?[["duello","Düello"]]:[])];if(f.tab==="duello"&&!isMember())f.tab="mac";const macG=f.tab==="mac"||f.tab==="once";const items=PM_ITEMS[f.tab].filter(x=>isMember()||!TAHMIN_PM.includes(x[0]));
   const it=f.item&&items.some(x=>x[0]===f.item)?f.item:items[0][0];f.item=it;
   const pOpt=(sel,ex)=>pmPlayers().filter(p=>p.id!==ex).map(p=>`<option value="${esc(p.id)}"${p.id===sel?" selected":""}>${esc(p.name)}</option>`).join("");
-  let sel="";if(f.tab==="mac"||(f.tab==="tahmin"&&(it==="tuttu"||it==="tkup"))){const mid=f.mid||(ms[0]&&ms[0].id);sel=`<select class="pmsel" data-bind="pm.mid" aria-label="Maç">${ms.map(m=>`<option value="${esc(m.id)}"${m.id===mid?" selected":""}>${fmtShort(m.date)} · ${esc(nmOf(m,"A"))} ${m.score_a}–${m.score_b} ${esc(nmOf(m,"B"))}</option>`).join("")}</select>`}
+  let sel="";if(f.tab==="mac"||(f.tab==="duello"&&(it==="duello"||it==="dson"))||(f.tab==="tahmin"&&(it==="tuttu"||it==="tkup"))){const mid=f.mid||(ms[0]&&ms[0].id);sel=`<select class="pmsel" data-bind="pm.mid" aria-label="Maç">${ms.map(m=>`<option value="${esc(m.id)}"${m.id===mid?" selected":""}>${fmtShort(m.date)} · ${esc(nmOf(m,"A"))} ${m.score_a}–${m.score_b} ${esc(nmOf(m,"B"))}</option>`).join("")}</select>`}
   if(f.tab==="oyuncu"){const pid=pmPid(f,it);sel=`<select class="pmsel" data-bind="pm.pid" aria-label="Oyuncu">${pOpt(pid)}</select>`;
     if(it==="h2h"){const p=P(pid);const q2=f.pid2||pmPlayers().filter(x=>x.id!==pid&&p&&posOf(x)===posOf(p)).sort((a,b)=>ovrOf(b.id)-ovrOf(a.id))[0]?.id;sel+=`<select class="pmsel" data-bind="pm.pid2" aria-label="Rakip oyuncu">${pOpt(q2,pid)}</select>`}}
 
@@ -1363,8 +1365,9 @@ function sheetPM(){if(!canPM())return"";const f=S.f.pm||(S.f.pm={tab:"mac",fmt:"
   if(f.tab==="tahmin"&&it==="tuttu"){const mid=f.mid||(ms[0]&&ms[0].id);sel+=cSel(betMine(mid,"kazandi"))}
   if(f.tab==="tahmin"&&it==="kupon"){const b=betNext();sel=b?cSel(betMine(b.id,"acik")):""}else
   if(f.tab==="once"){const n=it==="gun"||it==="out"?hkNextAny():hkNext();if(n&&it==="ilk7"){const tk=f.x7k||"A";const st=x7Star(n,tk,f.x7p);sel=`<div class="vtog pmr">${["A","B"].map(q=>`<button data-act="pmX7" data-v="${q}" class="${tk===q?"on":""}">${esc(nmOf(n,q))}</button>`).join("")}</div><select class="pmsel" data-bind="pm.x7p" aria-label="Öne çıkan oyuncu">${plOf(n,tk).map(id=>`<option value="${esc(id)}"${id===st?" selected":""}>${esc(nameOf(id))}</option>`).join("")}</select>`}else sel=n?`<p class="muted small" style="margin:0 0 10px">Sıradaki maç: ${fmtShort(n.date)}${n.time?" · "+esc(String(n.time).slice(0,5)):""}${(n.team_a||[]).length?" · "+esc(nmOf(n,"A"))+" – "+esc(nmOf(n,"B")):""}</p>`:""}
-  {const dm=f.tab==="mac"?(S.matches.find(x=>x.id===f.mid&&x.state==="bitti")||ms[0]):f.tab==="once"?hkNext():null;const one=it==="duello"||it==="meydan",all=it==="dson"||it==="dliste";
-    if(dm&&(one||all)&&(f.tab==="mac"||f.tab==="once")){const L=duPmL(dm,f.tab==="mac");const pc=Math.ceil(L.length/DUL_N);
+  if(f.tab==="duello"){const res=it==="duello"||it==="dson";const dm=res?(S.matches.find(x=>x.id===f.mid&&x.state==="bitti")||ms[0]):hkNext();const one=it==="duello"||it==="meydan",all=!one;
+    if(!res)sel=dm?`<p class="muted small" style="margin:0 0 10px">Sıradaki maç: ${fmtShort(dm.date)}${dm.time?" · "+esc(String(dm.time).slice(0,5)):""}</p>`:"";
+    if(dm){const L=duPmL(dm,res);const pc=Math.ceil(L.length/DUL_N);
       if(one&&L.length>1){const cur=duPmPick(L,f.did);sel+=`<select class="pmsel" data-bind="pm.did" aria-label="Düello">${L.map(d=>`<option value="${d.id}"${d===cur?" selected":""}>${esc(shortName(nameOf(d.a)))} – ${esc(shortName(nameOf(d.b)))} · ${esc(duT(d.k))}</option>`).join("")}</select>`}
       if(all&&pc>1){const cp=Math.max(0,Math.min(pc-1,+f.dpg||0));sel+=`<select class="pmsel" data-bind="pm.dpg" aria-label="Sayfa">${Array.from({length:pc},(_,q)=>`<option value="${q}"${q===cp?" selected":""}>${q+1}. sayfa · ${Math.min(L.length,(q+1)*DUL_N)-q*DUL_N} düello</option>`).join("")}</select>`}}}
   const x=igBuild();const emp=PM_EMPTY[it]||(f.tab==="once"&&it!=="out"?PM_EMPTY.once:"Bunun için henüz yeterli veri yok.");
@@ -3483,8 +3486,8 @@ document.addEventListener("click",async e=>{
     case"szGo":S.sheet=null;S.view=id;S.tab="gecmis";S.f.mtab="ozet";render(true);window.scrollTo(0,0);break;
     case"duAfN":if(S.sheet&&S.sheet.type==="duafis"){S.sheet.i++;render(true)}break;
     case"duNew":S.sheet={type:"duello",mid:id,nw:true,rival:null,kind:null};render(true);break;
-    case"duShare":{const d=(DU.rows||[]).find(x=>String(x.id)===String(el.dataset.v));const m=d&&S.matches.find(x=>x.id===d.m);if(!m)break;const fin2=m.state==="bitti";S.f.pm={tab:fin2?"mac":"once",item:fin2?"duello":"meydan",mid:m.id,did:d.id,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break}
-    case"duAll":{const m=S.matches.find(x=>x.id===id);if(!m)break;const fin2=m.state==="bitti";S.f.pm={tab:fin2?"mac":"once",item:fin2?"dson":"dliste",mid:m.id,dpg:0,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break}
+    case"duShare":{const d=(DU.rows||[]).find(x=>String(x.id)===String(el.dataset.v));const m=d&&S.matches.find(x=>x.id===d.m);if(!m)break;const fin2=m.state==="bitti";S.f.pm={tab:"duello",item:fin2?"duello":"meydan",mid:m.id,did:d.id,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break}
+    case"duAll":{const m=S.matches.find(x=>x.id===id);if(!m)break;const fin2=m.state==="bitti";S.f.pm={tab:"duello",item:fin2?"dson":"dliste",mid:m.id,dpg:0,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break}
     case"duTab":if(S.sheet&&S.sheet.type==="duello"){S.sheet.rtab=el.dataset.v||"";render(true)}break;
     case"duRv":if(S.sheet&&S.sheet.type==="duello"){S.sheet.pick=true;render(true)}break;
     case"duList":S.sheet={type:"duello",mid:id};render(true);break;
