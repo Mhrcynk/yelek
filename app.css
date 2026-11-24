@@ -5035,3 +5035,28 @@ html.dk .kq-pv .eyebrow,.kq-pv .eyebrow{color:#C9BFE6!important}
 
 /* Bu hafta / Ben kartlarındaki küçük kutular: rakamlar dar ve ağır yazı yerine düz yazıyla */
 html.dk .th2 .th2-r .th2-g b,.th2-r .th2-g b{font:700 1rem/1.15 Inter,sans-serif!important;font-variant-numeric:tabular-nums;letter-spacing:0}
+
+/* Düello kralı: şerit, kral ekranı, sıralama, kaptan seçimi (turkuaz) */
+.ymf.ymf-du{background:#0F2A33;padding:0;gap:0;cursor:default;align-items:stretch}
+.ymf-du .ymf-m{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;color:#fff;font:inherit;text-align:left;padding:12px 8px 12px 16px;cursor:pointer}
+.ymf-du .ymf-m>span:not(.ymf-x){flex:1;min-width:0;display:grid;gap:3px}.ymf-du .ymf-x{flex:none;display:grid;place-items:center}
+.ymf-du small{color:#BFEAF2}.ymf-du>i{align-self:center;padding-right:16px;color:#BFEAF2}
+.ymf-du .ymf-go{flex:none;align-self:center;margin-right:12px;min-height:44px;padding:0 14px;border:0;border-radius:999px;background:#5FE3F5;color:#06222A;font:800 .8125rem/1 Inter,sans-serif;cursor:pointer;white-space:nowrap}
+.krl.krl-du .eyebrow,html.dk .krl.krl-du .eyebrow,html.dk .krl-du .krl-t,html.dk .krl-du .krl-n,html.dk .krl-du .krl-l em{color:#5FE3F5}
+.krl-du .krl-av{background:linear-gradient(135deg,#5FE3F5,#FFD400)}.krl-du .krl-av img,.krl-du .krl-av>span{background:#0A2A33}
+.krl-du .krl-n small{color:#BFEAF2}.krl-du .muted.small{max-width:300px;line-height:1.4;margin-top:6px}
+html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!important;border-color:#5FE3F5!important}
+.krb.krb-du{background:linear-gradient(100deg,#FFF3B8,#C6F3FA);color:#06222A}.krb-du small,.krb-du i{color:#1F5564}.krb-du em{color:#0B5566}
+.kro.kro-du{background:#0F2A33;color:#BFEAF2;margin-bottom:10px}
+.dsr{list-style:none;margin:0;padding:2px 14px;border-radius:20px;background:var(--c-card)}
+.dsr li+li{border-top:1px solid #2E2260}.dsr li.me{background:rgba(95,227,245,.08);margin:0 -14px;padding:0 14px}
+.dsr button{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:8px 0;border:0;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer}
+.dsr i{flex:none;width:18px;text-align:center;font:800 .875rem/1 Inter,sans-serif;font-style:normal;color:var(--c-ink3)}
+.dsr button>span:not(.av){flex:1;min-width:0;display:grid;gap:3px}.dsr button>.av{flex:none}.dsr b{font:700 .9375rem/1.2 Inter,sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dsr small{font:500 .8125rem/1.2 Inter,sans-serif;color:var(--c-ink2)}
+.dsr em{flex:none;font:800 1.5rem/1 var(--display);font-style:normal;color:#5FE3F5}.dsr em.z{color:var(--c-ink3)}
+.dkp{display:grid;gap:8px;margin-top:4px}
+.dkp-r{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--c-card)}.dkp-r.on{box-shadow:inset 0 0 0 2px #5FE3F5}
+.dkp-r>span:not(.av){flex:1;min-width:0;display:grid;gap:3px}.dkp-r>.av{flex:none}.dkp-r b{font:700 .9375rem/1.2 Inter,sans-serif}.dkp-r small{font:500 .8125rem/1.2 Inter,sans-serif;color:var(--c-ink2)}
+.dkp-r button{flex:none;min-height:44px;min-width:76px;padding:0 16px;border:0;border-radius:999px;background:var(--c-card2);color:#fff;font:800 .8125rem/1 Inter,sans-serif;cursor:pointer}
+.dkp-r.on button{background:#5FE3F5;color:#06222A;opacity:1}
+.mzseg.dsg{margin:0 0 10px}html.dk .mzseg.dsg button.on{background:#5FE3F5!important;color:#06222A!important}
