@@ -4882,3 +4882,27 @@ html.dk .th2.thC .thk-i svg{color:#06222A}
 .szk-n{grid-row:1/3;grid-column:2;min-width:2.7em;text-align:center;font:900 1.3rem/1 var(--display);border-radius:8px;padding:8px 6px;color:#fff}
 .szk-n.n8{background:#0E8F4E}.szk-n.n7{background:#5DB443;color:#0E2A08}.szk-n.n65{background:#E3C33C;color:#1A1300}.szk-n.n6{background:#EE8A2A;color:#1A0E02}.szk-n.n5{background:#D9423F}
 .duw-n{flex:none;max-width:46%;font:600 .78rem/1.3 Inter,sans-serif;color:#5FE3F5;text-align:right;align-self:center}
+/* düello: karşı karşıya kartı */
+.dvl{display:grid;gap:12px;margin-bottom:14px}
+.dv{border-radius:24px;background:linear-gradient(160deg,#123844,#0B1F27);padding:16px;display:grid;gap:14px;border:1px solid #1E5566}
+.dv-t{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dv-g{font:800 .72rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#5FE3F5}
+.dv-s{min-height:28px;padding:0 10px;border-radius:99px;background:#081B21;color:#5FE3F5;display:flex;align-items:center;font:700 .75rem/1 Inter,sans-serif}
+.dv-s.w{background:#0E3B2E;color:#7CF5C4}.dv-s.l{background:#3A1220;color:#FF9DB3}
+.dv-v{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;gap:8px}
+.dv-v>i{align-self:center;font:800 1.6rem/1 var(--display);font-style:normal;color:#5FE3F5;padding:8px 10px;border-radius:12px;background:#081B21}
+.dv-p{display:grid;justify-items:center;gap:6px;min-width:0}.dv-p .av{width:56px!important;height:56px!important;border-radius:50%!important;font-size:1rem!important}
+.dv-p b{font:700 .9rem/1.2 Inter,sans-serif;color:#fff;text-align:center;overflow-wrap:anywhere}.dv-p em{font:800 2.2rem/1 var(--display);font-style:normal;color:#fff}
+.dv-p.win .av{box-shadow:0 0 0 3px #FFD400}.dv-p.win em{color:#FFD400}.dv-p.lose{opacity:.6}
+.dv-q{margin:0;text-align:center;font:800 1.5rem/1.1 var(--display);text-transform:uppercase;color:#fff}
+.dv-f{margin:0;text-align:center;font:500 .8rem/1.3 Inter,sans-serif;color:#A9D8E2}
+.dv-b{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}.dv-b.one{grid-template-columns:minmax(0,1fr)}
+.dv-b button{min-height:48px;border:0;border-radius:99px;font:800 .95rem/1 Inter,sans-serif;cursor:pointer}
+.dv-no{background:#081B21;color:#A9D8E2}.dv-yes{background:#5FE3F5;color:#06222A}
+.dvr{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border:0;border-radius:16px;background:#24165A;color:#fff;font:inherit;text-align:left;cursor:pointer;margin-bottom:12px;min-height:56px}
+.dvr>span:not(.av){display:grid;gap:2px;flex:1;min-width:0}.dvr>.av{flex:none}.dvr small{font:600 .72rem/1 Inter,sans-serif;color:#C9BFE6}.dvr b{font:700 .95rem/1.2 Inter,sans-serif}.dvr>i{font:700 .78rem/1 Inter,sans-serif;font-style:normal;color:#5FE3F5}
+.dvo{display:grid;gap:6px;margin-bottom:14px}
+.dvo button{min-height:50px;border:0;border-radius:16px;background:#24165A;color:#fff;font:700 .95rem/1.2 Inter,sans-serif;text-align:left;padding:0 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.dvo button i{width:18px;height:18px;border-radius:50%;border:2px solid #6B5CA8;flex:none;box-sizing:border-box}
+.dvo button.on{background:#0F2A33;outline:2px solid #5FE3F5;outline-offset:-2px}.dvo button.on i{border-color:#5FE3F5;background:radial-gradient(#5FE3F5 45%,transparent 50%)}
+.dvo button[disabled]{opacity:.45;cursor:default}
