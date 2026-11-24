@@ -4906,3 +4906,20 @@ html.dk .th2.thC .thk-i svg{color:#06222A}
 .dvo button i{width:18px;height:18px;border-radius:50%;border:2px solid #6B5CA8;flex:none;box-sizing:border-box}
 .dvo button.on{background:#0F2A33;outline:2px solid #5FE3F5;outline-offset:-2px}.dvo button.on i{border-color:#5FE3F5;background:radial-gradient(#5FE3F5 45%,transparent 50%)}
 .dvo button[disabled]{opacity:.45;cursor:default}
+/* sonuç ekranları */
+.af{display:grid;gap:14px}.af>*{margin:0}
+.af-e{text-align:center;font:800 .72rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding-top:6px}
+.af-d .af-e{color:#5FE3F5}.af-o .af-e{color:#FFD400}
+.af-s{text-align:center;font:500 .85rem/1.3 Inter,sans-serif;color:#C9BFE6}
+.af-dots{display:flex;justify-content:center;gap:6px}.af-dots i{width:22px;height:5px;border-radius:99px;background:#3A2C78}.af-dots i.on{background:#fff}
+.af-b{display:grid;grid-template-columns:1fr 1.3fr;gap:8px}.af-b.one{grid-template-columns:minmax(0,1fr)}
+.af-b button{min-height:50px;border:0;border-radius:99px;font:800 .95rem/1 Inter,sans-serif;cursor:pointer}
+.af .af-b button.af-g{background:#24165A!important;color:#fff!important;border:0!important}.af-d .af-b button.af-p{background:#5FE3F5!important;color:#06222A!important;border:0!important}.af-o .af-b button.af-p{background:#FFD400!important;color:#2A1F00!important;border:0!important}
+.af-ring{justify-self:center;padding:5px;border-radius:50%}
+.af-ph{width:104px;height:104px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(150deg,#FF3EA5,#9D1763);color:#fff;font:800 2rem/1 Inter,sans-serif;border:4px solid var(--c-card,#1C1240);box-sizing:content-box}
+.af-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.af-n{text-align:center;font:800 4.2rem/.9 var(--display)}
+.af-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.af-2.one{grid-template-columns:minmax(0,1fr)}
+.af-2>div{display:grid;gap:6px;padding:10px 12px;border-radius:14px;background:#24165A;min-width:0}
+.af-2 small{font:700 .6875rem/1.2 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#C9BFE6}.af-2 .g small{color:#FFD400}.af-2 .r small{color:#FF9DB3}
+.af-2 span{display:flex;align-items:center;gap:8px;min-width:0}.af-2 span b{font:700 .9rem/1.2 Inter,sans-serif;color:#fff;min-width:0;overflow-wrap:anywhere}.af-2 .rkf{width:30px;height:30px;flex:none}
