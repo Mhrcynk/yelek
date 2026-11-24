@@ -5029,3 +5029,6 @@ html.dk .yrsel.shsel{min-height:40px}
 html.dk .kq-pv .eyebrow,.kq-pv .eyebrow{color:#C9BFE6!important}
 
 /* Sohbet: ekranda olmayan mesajların yerleşimi hesaplanmaz; uzun odada da yazmak ve kaydırmak akıcı kalır */
+
+/* Sohbet: mesaja basılı tutunca telefonun "Kopyala / Araştır / Çeviri" baloncuğu çıkmasın (kopyalama kendi menümüzde) */
+#odaMsgs,#odaMsgs *,#odaMenu,#odaMenu *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}

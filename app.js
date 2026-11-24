@@ -4494,7 +4494,7 @@ document.addEventListener("mousedown",e=>{if(e.target.closest&&e.target.closest(
 // sohbet ve yorum hareketleri: sağa çek = yanıtla, sola çek (kendi mesajın) = okundu bilgisi, basılı tut = menü
 {let g=null;const B=t=>t&&t.closest&&t.closest("#odaMsgs .oda-b[data-act='odaSel'],#odaMsgs .oda-b[data-act='betComSel']");const live=()=>S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");
   document.addEventListener("touchstart",e=>{ODA.tch=Date.now();ODA.lp=false;ODA.lpX=false;if(g){clearTimeout(g.tm);g=null}const b=e.touches.length===1&&B(e.target);if(!b)return;const t=e.touches[0];
-    g={w:b.closest(".oda-bw"),me:!!b.closest("li.me"),x:t.clientX,y:t.clientY,dx:0,mode:0,dir:0,id:b.dataset.v};g.tm=setTimeout(()=>{if(!g||g.mode||!live())return;g.mode=3;ODA.lp=true;ODA.lpX=true;S.sheet.info=null;S.sheet.rep=null;S.sheet.sel=g.id;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}odaTipOff();chatPatch()},430)},{passive:true,capture:true});
+    g={w:b.closest(".oda-bw"),me:!!b.closest("li.me"),x:t.clientX,y:t.clientY,dx:0,mode:0,dir:0,id:b.dataset.v};g.tm=setTimeout(()=>{if(!g||g.mode||!live())return;g.mode=3;ODA.lp=true;ODA.lpX=true;try{getSelection().removeAllRanges()}catch(_){}S.sheet.info=null;S.sheet.rep=null;S.sheet.sel=g.id;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}odaTipOff();chatPatch()},430)},{passive:true,capture:true});
   document.addEventListener("touchmove",e=>{if(!g||g.mode>=2)return;const t=e.touches[0],dx=t.clientX-g.x,dy=t.clientY-g.y;
     if(!g.mode){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;clearTimeout(g.tm);const hz=Math.abs(dx)>Math.abs(dy)*1.6;if(hz&&dx>=10&&g.x>24){g.mode=1;g.dir=1;g.w.classList.add("odsw")}else if(hz&&dx<=-10&&g.me){g.mode=1;g.dir=-1;g.w.classList.add("odsw","odsl")}else{g.mode=2;return}}
     if(e.cancelable)e.preventDefault();g.dx=Math.max(0,Math.min(84,dx*g.dir));g.w.style.transform="translateX("+(g.dx*g.dir)+"px)";g.w.classList.toggle("odgo",g.dx>=56)},{passive:false,capture:true});
@@ -4502,7 +4502,8 @@ document.addEventListener("mousedown",e=>{if(e.target.closest&&e.target.closest(
     if(o.dx<56||!live())return;if(S.sheet.type==="oda"){const c=odaCtx();if(!c||!c.chat)return}odaTipOff();try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const bc=S.sheet.type==="betCom";
     if(o.dir===1){S.sheet.reply=bc?o.id:+o.id;S.sheet.sel=null;S.sheet.info=null;chatPatch();const t=$(bc?"#betComTxt":"#odaTxt");try{t&&t.focus()}catch(_){}}else{S.sheet.sel=null;S.sheet.info=o.id;chatPatch()}};
   document.addEventListener("touchend",end,{capture:true,passive:true});document.addEventListener("touchcancel",end,{capture:true,passive:true});
-  document.addEventListener("contextmenu",e=>{if(B(e.target))e.preventDefault()},true)}
+  document.addEventListener("contextmenu",e=>{if(B(e.target))e.preventDefault()},true);
+  document.addEventListener("selectstart",e=>{const t=e.target&&(e.target.nodeType===1?e.target:e.target.parentElement);if(t&&t.closest&&t.closest("#odaMsgs,#odaMenu"))e.preventDefault()},true)}
 document.addEventListener("touchend",e=>{const b=e.target.closest&&e.target.closest(".kbkeep");if(b&&document.activeElement&&/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)){e.preventDefault();b.click()}},{capture:true,passive:false});
 setInterval(()=>{if(S.sheet&&S.sheet.type==="oda"&&document.visibilityState==="visible")odaLoad(S.sheet.mid,true)},6000);
 setInterval(()=>{try{odaCanli()}catch(_){}},1500);
