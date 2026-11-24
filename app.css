@@ -5025,3 +5025,5 @@ html.dk .kgg,.kgg{margin:14px 4px 8px;font:800 .6875rem/1 Inter,sans-serif!impor
 html.dk .yrsel.shsel{min-height:40px}
 /* Sezonun oyuncusu sıralaması: çubuklar tek renk */
 .yl-b i,.yl-b i.gKL,.yl-b i.gDF,.yl-b i.gOS,.yl-b i.gFV{background:var(--c-pink)}
+.kq-pv{margin-top:12px}.kq-pv>.card{margin:0;background:#150D33!important}
+html.dk .kq-pv .eyebrow,.kq-pv .eyebrow{color:#C9BFE6!important}

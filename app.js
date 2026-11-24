@@ -2020,8 +2020,7 @@ function matchBody(m){
     const ended=mEnded(m);h+=odaCard(m);if(vOpen(m))h+=voteCard(m);else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
     h+=tahminKart(m);h+=duelCard(m);
     {const av=k=>{const L=plOf(m,k);return L.slice(0,3).map(id=>pFace(id)).join("")+(L.length>3?`<em>+${L.length-3}</em>`:"")};
-    h+=`<details class="card kdd kq" id="kadrolar"><summary><span class="kq-h"><span class="kq-i">${dIcon("yelek","pink",22)}</span><span class="kq-t"><i>Kadrolar</i><small>${plOf(m,"A").length} · ${plOf(m,"B").length} oyuncu</small></span><span class="kq-p"><span class="c">Dizilişi gör</span><span class="o">Kapat</span>${CHVD}</span></span><span class="kq-2">${["A","B"].map(k=>`<span class="kq-tm">${crest(nmOf(m,k),k,22)}<span class="kq-av">${av(k)}</span></span>`).join("")}</span></summary>${teamsView(m,true)}</details>`}
-    if(!ended)h+=preview(m);
+    h+=`<details class="card kdd kq" id="kadrolar"><summary><span class="kq-h"><span class="kq-i">${dIcon("yelek","pink",22)}</span><span class="kq-t"><i>Kadrolar</i><small>${plOf(m,"A").length} · ${plOf(m,"B").length} oyuncu</small></span><span class="kq-p"><span class="c">Dizilişi gör</span><span class="o">Kapat</span>${CHVD}</span></span><span class="kq-2">${["A","B"].map(k=>`<span class="kq-tm">${crest(nmOf(m,k),k,22)}<span class="kq-av">${av(k)}</span></span>`).join("")}</span></summary>${teamsView(m,true)}${ended?"":`<div class="kq-pv">${preview(m)}</div>`}</details>`}
     if(S.admin)h+=macYKart(m);
   }
   return h;
@@ -2167,8 +2166,6 @@ function teamsView(m,noShare){
   const fa=formOf(m,"A"),fb=formOf(m,"B");const A=m.team_a||[],B=m.team_b||[];const pa=posArr(m,"A"),pb=posArr(m,"B");
   const la=pad7(lineupOf(m,"A"),A),lb=pad7(lineupOf(m,"B"),B);const mode=S.fv||"both";const NI=mDone(m)&&!isExt(m)?S.mInfo?.[m.id]:null;
   return `${viewSeg(mode,"fv",true)}${fieldHtml(mode,pa,pb,la,lb,false,null,{A:m.cap_a,B:m.cap_b},NI)}
-    <div class="legend">${mode!=="B"?legendHtml("A",fa,pa,A,la,m.cap_a):""}${mode!=="A"?legendHtml("B",fb,pb,B,lb,m.cap_b):""}</div>
-
     `;
 }
 function subPanel(t,selName,selHasPlayer){
