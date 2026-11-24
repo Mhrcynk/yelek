@@ -4983,3 +4983,24 @@ html.dk .th2.thC .thk-i svg{color:#06222A}
 .yp-duto>span:not(.yp-duf){flex:1;min-width:0}.yp-duto small{display:block;font:700 11px/1 Inter,sans-serif;letter-spacing:.16em;color:#9FD9E4;margin-bottom:4px}
 .yp-duto b{display:block;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:800;line-height:1;white-space:nowrap}
 .yp-duto em{flex:none;font:800 24px/1 "Barlow Condensed","Arial Narrow",sans-serif;font-style:normal;color:#FFD400;white-space:nowrap}
+
+/* Ferahlık turu: alt menüde dört sekmenin adı hep görünür */
+@media (max-width:1099px){
+html.dk .nav{height:68px}
+html.dk .nav .in{height:56px!important;gap:2px;justify-content:stretch}
+html.dk .nav button,html.dk .nav button.ctr{flex:1 1 0!important;min-width:0;height:56px!important;border-radius:20px!important;padding:0 4px!important;flex-direction:column!important;gap:4px!important}
+html.dk .nav button[aria-current="page"],html.dk .nav button.ctr[aria-current="page"]{padding:0 4px!important;gap:4px!important}
+html.dk .nav .tl{max-width:none!important;opacity:1!important;font:700 .6875rem/1.2 Inter,sans-serif!important;padding:0!important}
+}
+/* Tahmin: tür şeridi, aynı anda tek grup */
+.bgc{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;margin:0 0 4px}
+.bgc button{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border:1px solid var(--c-line);border-radius:99px;background:var(--c-card2);color:var(--c-ink2);font:700 .88rem/1 Inter,sans-serif;cursor:pointer}
+.bgc button.on{background:#fff;color:#063D26;border-color:#fff}
+.bgc button i{font-style:normal;min-width:20px;height:20px;border-radius:99px;background:#00E58A;color:#04130C;font:800 .72rem/20px Inter,sans-serif;text-align:center}
+/* Lig istatistik girişi: dört kart */
+.istg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.istc{position:relative;display:grid;gap:6px;justify-items:start;text-align:left;padding:16px 14px 14px;border:0;border-radius:20px;background:var(--c-card);color:#fff;cursor:pointer;min-height:132px;align-content:start}
+.istc-i{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--c-card2);margin-bottom:4px}
+.istc b{font:800 1.05rem/1.15 Inter,sans-serif}.istc small{font:500 .78rem/1.3 Inter,sans-serif;color:var(--c-ink2)}
+.istc>i{position:absolute;right:12px;top:16px;color:var(--c-ink3)}.istc>i svg{width:18px;height:18px}
+html.dk .sback{background:var(--c-card2);color:#fff}
