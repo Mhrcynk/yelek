@@ -5023,3 +5023,5 @@ html.dk .kgg,.kgg{margin:14px 4px 8px;font:800 .6875rem/1 Inter,sans-serif!impor
 /* Saha verileri: dönem seçimi geri düğmesiyle aynı satırda, açılır */
 .sbrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}.sbrow .sback{margin:0}
 html.dk .yrsel.shsel{min-height:40px}
+/* Sezonun oyuncusu sıralaması: çubuklar tek renk */
+.yl-b i,.yl-b i.gKL,.yl-b i.gDF,.yl-b i.gOS,.yl-b i.gFV{background:var(--c-pink)}

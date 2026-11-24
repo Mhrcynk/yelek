@@ -1993,6 +1993,11 @@ function tahminKart(m){if(!isMember()||S.fol||!myPid()||tahminYok())return"";con
   else{pill=bd?"Tahminler kapandı":"Yükleniyor…";B=[["Kalan sikke",bal],["Yapılan tahmin",bd?0:"–"]];cta="Sıralama";go="sira"}
   return `<div class="thk th2" id="thk"><div class="thk-b"><span class="thk-i">${dIcon("bilet","green",24)}</span><span class="thk-x"><b>Tahmin${un?`<em class="num" aria-label="${un} yeni bildirim">${un>9?"9+":un}</em>`:""}</b></span><span class="th2-p">${pill}</span></div><div class="th2-r"><div class="th2-g">${B.map(([l,v])=>`<div><small>${l}</small><b class="num">${v}</b></div>`).join("")}</div><button class="thk-c" data-act="thkGo" data-v="${go}">${cta}</button></div></div>`}
 // yönetici işleri ayrı sayfada: Bu hafta ekranı üyeyle aynı kısalıkta kalır
+// içerik yukarıda kısalınca basılan öğe yerinde kalsın: en yakın kaydırılan kap kadar düzelt
+function kayDuz(n,dy){if(Math.abs(dy)<=1)return;let e=n.parentElement;while(e&&e!==document.body){const o=getComputedStyle(e).overflowY;if((o==="auto"||o==="scroll")&&e.scrollHeight>e.clientHeight+1){const t=e.scrollTop;e.scrollTop=t+dy;if(Math.abs(e.scrollTop-t)>.5)return}e=e.parentElement}
+  // sayfa kısalıp kaydırma payı kalmadıysa geçici boşluk bırak (sayfa başına dönünce kalkar)
+  const need=Math.max(0,scrollY+dy)+innerHeight;if(document.documentElement.scrollHeight<need)document.body.style.minHeight=need+"px";window.scrollBy(0,dy)}
+addEventListener("scroll",()=>{if(scrollY<2&&document.body.style.minHeight)document.body.style.minHeight=""},{passive:true});
 // sayfadan çıkınca açık listeler kapanır
 function listKapat(){Object.keys(S.f).forEach(x=>{if(/^(kg_|pr_|bxs_|bx_)/.test(x))S.f[x]=false})}
 function macYonet(m){const kay=m.state==="kayit";
@@ -3527,7 +3532,7 @@ document.addEventListener("click",async e=>{
     case"bultenOpen":S.sheet={type:"bulten",id};render(true);break;
     case"odulOpen":S.sheet={type:"odul",n:+id};render(true);break;
     case"odulShare":shareSeason(+id);break;
-    case"tab":{let tt=el.dataset.tab;S.f.macY=false;listKapat();if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";if(S.f.sezV==="rekor"){S.f.sezV="";if(tt==="sezon"&&S.tab==="sezon"){render(true);window.scrollTo(0,0);break}}goTab(tt);if(tt===S.tab)render(true);break}
+    case"tab":{let tt=el.dataset.tab;S.f.macY=false;listKapat();document.body.style.minHeight="";if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";if(S.f.sezV==="rekor"){S.f.sezV="";if(tt==="sezon"&&S.tab==="sezon"){render(true);window.scrollTo(0,0);break}}goTab(tt);if(tt===S.tab)render(true);break}
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"open":S.f.ptab="genel";S.sheet={type:"player",id};S.f.st=null;S.f.stOpen=false;S.f.ed=null;S.f.delP=null;render(true);break;
     case"intSet":LS.set("y_int",el.dataset.v);render(true);window.scrollTo(0,0);break;
@@ -3540,7 +3545,10 @@ document.addEventListener("click",async e=>{
     case"folOpen":{const on=el.dataset.v==="1";try{const r=await rpc("admin_set_followable",{p_on:on});if(r&&r.ok){S.settings.followable=on;toast(on?"Lig takibe açıldı":"Lig takibe kapandı");render(true)}else toast("Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"meSheet":if(S.fol){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break}if((isMember()&&!S.admin)||(S.me&&P(S.me)&&el.id==="meBtn")){S.f.setp="";S.view=null;goTab("ben");render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":{if(el.dataset.k==="mem_x"){const f=S.f.mem||(S.f.mem={});f["x_"+el.dataset.u]=!f["x_"+el.dataset.u]}else{const k=el.dataset.k,on=!S.f[k];// aynı gruptan biri açılınca öncekiler kapanır
-      if(on){const g=(/^(kg_|pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}render(true);break}
+      if(on){const g=(/^(kg_|pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}
+      // öncekiler kapanınca basılan başlık parmağın altından kaymasın
+      const y0=el.getBoundingClientRect().top;render(true);
+      {const n=[...document.querySelectorAll('[data-act="tog"]')].find(x=>x.dataset.k===el.dataset.k&&(el.dataset.u==null||x.dataset.u===el.dataset.u));if(n){const dy=n.getBoundingClientRect().top-y0;kayDuz(n,dy)}}break}
     case"tog1":S.f[el.dataset.k]=el.dataset.v;render(true);if(el.dataset.k==="sezV"){listKapat();render(true);window.scrollTo(0,0)}break;
     case"setNames":{const m=S.matches.find(x=>x.id===id);const w=S.f["nm_"+id]||{};const a=cleanName(w.a??m.name_a??""),b=cleanName(w.b??m.name_b??"");if(!a||!b){toast("İki takımın adını da yaz");break}
       const r=await A("admin_set_names",{p_id:id,p_a:a,p_b:b},"Takım isimleri kaydedildi");if(r){delete S.f["nm_"+id];await load(true)}break}
@@ -4015,7 +4023,7 @@ document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.actChange==="awR"){const m=S.matches.find(x=>x.id===t.dataset.m);if(m){const g=t.dataset.k==="gol"?(t.value||null):(m.gol_id||null),f=t.dataset.k==="fiy"?(t.value||null):(m.fiy_id||null);A("admin_set_awards",{p_id:m.id,p_gol:g,p_fiy:f},"Kaydedildi")}return}
   if(t.dataset.actChange==="motm"){const m=S.matches.find(x=>x.id===t.dataset.m);const sd=S.f["sd_"+t.dataset.m];if(sd){snap(sd,"Maçın Adamı");sd.motm=t.value;S.f.confirmFinish=null;sdSave(m,sd);render(true)}}
 });
-document.addEventListener("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.open&&d.parentElement){const c=["nrow","rdet","trkr"].find(x=>d.classList.contains(x));if(c)[...d.parentElement.children].forEach(o=>{if(o!==d&&o.tagName==="DETAILS"&&o.classList.contains(c)&&o.open)o.open=false})}if(d.dataset.actToggle)S.f[d.dataset.actToggle]=d.open;if(d.dataset.actToggleTeam&&S.teams)S.teams[d.dataset.actToggleTeam]=d.open},true);
+document.addEventListener("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.open&&d.parentElement){const c=["nrow","rdet","trkr"].find(x=>d.classList.contains(x));if(c){const sm=d.querySelector("summary")||d;const y1=sm.getBoundingClientRect().top;[...d.parentElement.children].forEach(o=>{if(o!==d&&o.tagName==="DETAILS"&&o.classList.contains(c)&&o.open)o.open=false});const dy=sm.getBoundingClientRect().top-y1;kayDuz(d,dy)}}if(d.dataset.actToggle)S.f[d.dataset.actToggle]=d.open;if(d.dataset.actToggleTeam&&S.teams)S.teams[d.dataset.actToggleTeam]=d.open},true);
 document.addEventListener("focusout",()=>{setTimeout(()=>{if(S.pending&&!isEditing())render()},0)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=null;render(true)}});
 // yeni sürüm varsa (ana ekran uygulaması dahil) sayfayı taze yükle
