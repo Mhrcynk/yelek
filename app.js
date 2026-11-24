@@ -841,7 +841,7 @@ function routeAfter(){const r=S._route;if(!r||!S.loaded)return;const p=decodeURI
   if(p[0]==="m"&&p[2]==="bulten"&&S.mInfo&&S.mInfo[p[1]]){S.sheet={type:"bulten",id:p[1]};render(true);return}
   if(p[0]==="iddia"&&p[1]==="kral"){render(true);kralLoad(true);return}
   if(p[0]==="iddia"&&p[1]==="yorum"&&p[2]){const id=p[2];S.sheet={type:"betCom",id};BET.com=null;render(true);rpc("bet_comments_read",{p_coupon:id}).then(x=>{if(x&&x.ok){betComPut(id,x);if(S.sheet&&S.sheet.type==="betCom")render(true)}}).catch(()=>{});return}
-  if(p[0]==="mac"&&p[1]==="oda"){const me=myPid();const m=S.matches.filter(x=>!x.archived&&!isExt(x)&&x.state==="takim"&&sideOf(x,me)).sort((a,b)=>matchTs(a)-matchTs(b))[0];if(m){S.sheet={type:"oda",mid:m.id,tab:["gorev","rakip"].includes(p[2])?p[2]:"sohbet",from:+LS.get("y_oda_"+m.id)||0,nwP:true};odaSeen(m.id);render(true);setTimeout(odaBottom,60);odaLoad(m.id,true)}return}
+  if(p[0]==="mac"&&p[1]==="oda"){const me=myPid();const m=S.matches.filter(x=>!x.archived&&!isExt(x)&&x.state==="takim"&&sideOf(x,me)).sort((a,b)=>matchTs(a)-matchTs(b))[0];if(m){S.sheet={type:"oda",mid:m.id,tab:["gorev","rakip"].includes(p[2])?p[2]:"sohbet",from:+LS.get("y_oda_"+m.id)||0,nwP:true};odaSeen(m.id);render(true);odaYerles();odaLoad(m.id,true)}return}
   const el=p[0]==="iddia"&&p[2]?"bk-"+p[2]:(p[0]!=="m"&&p[1]?p[1]:null);if(!el){window.scrollTo(0,0);return}
   let n=0;const go=()=>{const e=document.getElementById(el);if(e){if(e.tagName==="DETAILS")e.open=true;e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1800)}else if(n++<20)setTimeout(go,300)};setTimeout(go,150)}
 function routeGo(r){S._route=r;S._r0=r;S._r0t=Date.now();S.sheet=null;routeTab(r);render(true);routeAfter()}
@@ -3648,7 +3648,7 @@ document.addEventListener("click",async e=>{
     case"betComDel":if(S.sheet){S.sheet.sel=null}try{const r=await rpc("bet_comment_del",{p_id:el.dataset.v});if(r&&r.ok&&BET.com){BET.com.rows=BET.com.rows.filter(x=>x.id!==el.dataset.v);const up=L=>{if(!L)return;const c=L.rows.find(x=>x.id===BET.com.id);if(c)c.nc=BET.com.rows.length};up(BET.feed);Object.values(BET.lists).forEach(up);if(S.sheet)S.sheet.sel=null;betComPatch()}}catch(_){}break;
     case"betFollow":{const on=!betFollows().includes(id);try{const r=await rpc("bet_follow",{p_target:id,p_on:on});if(r&&r.ok){if(BET.feed)BET.feed.f=r.f;toast(on?"Takip ediliyor: büyük tahmin yapınca ve tahmini tutunca bildirim gelir":"Takipten çıkıldı");render(true)}}catch(_){toast("Bağlantı yok")}break}
     case"betDefAmt":{const v=Math.max(0,Math.floor(+($("#betDef")?.value)||0));try{if(v>=10)localStorage.setItem("y_bet_amt",String(v));else localStorage.removeItem("y_bet_amt")}catch(_){}toast(v>=10?`Varsayılan tutar ${fJ(v)} sikke`:"Varsayılan tutar kaldırıldı");break}
-    case"odaOpen":S.sheet={type:"oda",mid:id,tab:"sohbet",from:+LS.get("y_oda_"+id)||0,nwP:true};odaSeen(id);odaSeenSrv(id);odaReadSrv(id);render(true);setTimeout(odaBottom,60);odaLoad(id,true);{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===id);if(c&&m)c.outerHTML=odaCard(m)}break;
+    case"odaOpen":S.sheet={type:"oda",mid:id,tab:"sohbet",from:+LS.get("y_oda_"+id)||0,nwP:true};odaSeen(id);odaSeenSrv(id);odaReadSrv(id);render(true);odaYerles();odaLoad(id,true);{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===id);if(c&&m)c.outerHTML=odaCard(m)}break;
     case"odaTab":if(S.sheet){S.sheet.tab=el.dataset.v;S.sheet.plus=false;odaRender(true)}break;
     case"odaSide":if(S.sheet){S.sheet.side=el.dataset.v;S.sheet.sel=null;S.sheet.info=null;S.sheet.reply=null;odaRender(true);odaReadSrv(S.sheet.mid)}break;
     case"odaSend":{const t=$("#odaTxt");const v=(t&&t.value||"").trim();if(!v)break;t.value="";odaGrow(t);odaAtList(null);const sh=S.sheet,rp=sh.reply||null,an=!!sh.ann;sh.reply=null;sh.sel=null;sh.ann=false;sh.plus=false;sh.nwP=false;sh.dn=0;
@@ -4331,8 +4331,8 @@ function odaCanli(){const sh=S.sheet;const d0=sh&&sh.type==="oda"&&ODA.d[sh.mid]
   const C=ODA.ch;if(C&&C.key===key)return;if(C){ODA.ch=null;try{AUTH.sb.removeChannel(C.ch)}catch(_){}}if(!key)return;
   try{const mid=sh.mid;const ch=AUTH.sb.channel(key,{config:{broadcast:{self:false}}});ch.on("broadcast",{event:"yeni"},()=>{if(S.sheet&&S.sheet.type==="oda"&&S.sheet.mid===mid)odaLoad(mid,true)});ch.subscribe();ODA.ch={key,ch}}catch(_){ODA.ch=null}}
 function odaHaber(){const C=ODA.ch;if(!C)return;try{C.ch.send({type:"broadcast",event:"yeni",payload:{}})}catch(_){}}
-function odaPut(mid,r){const o=JSON.stringify(ODA.d[mid]||null),n=JSON.stringify(r);ODA.d[mid]=r;if(o===n)return;
-  if(S.sheet&&S.sheet.type==="oda"&&S.sheet.mid===mid){odaSeen(mid);odaRender();odaSeenSrv(mid);odaReadSrv(mid)}
+function odaPut(mid,r){const ilk=!ODA.d[mid];const o=JSON.stringify(ODA.d[mid]||null),n=JSON.stringify(r);ODA.d[mid]=r;if(o===n)return;
+  if(S.sheet&&S.sheet.type==="oda"&&S.sheet.mid===mid){odaSeen(mid);odaRender();if(ilk)odaYerles();odaSeenSrv(mid);odaReadSrv(mid)}
   else{const c=document.getElementById("odaCard"),m=S.matches.find(x=>x.id===mid);if(c&&m)c.outerHTML=odaCard(m)}odaFab()}
 function odaSeenSrv(mid){const d0=ODA.d[mid],me=myPid();const d=d0&&d0.after?d0.H:d0;if(!d||!d.open||!d.msgs||!me)return;if(!d.msgs.some(x=>x.k==="duyuru"&&!(x.sn||[]).includes(me)))return;if(ODA.sn===mid+":"+d.msgs.length)return;ODA.sn=mid+":"+d.msgs.length;rpc("room_seen",{p_match:mid}).then(r=>{if(r&&r.ok)odaPut(mid,r)}).catch(()=>{})}
 function odaReadSrv(mid){const d=ODA.d[mid],me=myPid();if(d&&d.after){const H=d.H;if(!H||!me||document.visibilityState!=="visible"||!(S.sheet&&S.sheet.type==="oda"&&odaSide(d)==="H"))return;const mx=H.msgs.reduce((a,x)=>Math.max(a,+x.id||0),0);if(!mx||+((H.rd||{})[me]||0)>=mx||ODA.rdS===mid+":"+mx)return;ODA.rdS=mid+":"+mx;rpc("room_hread",{p_match:mid,p_id:mx}).then(r=>{if(r&&r.ok)odaPut(mid,r)}).catch(()=>{ODA.rdS=null});return}
@@ -4396,6 +4396,11 @@ function odaPos(m,sd,tac){const ids=plOf(m,sd).filter(id=>P(id));const G={KL:[],
   const Y={KL:86,DF:66,OS:44,FV:20};const out={};for(const g in G)G[g].forEach((id,i)=>{out[id]=tac&&tac[id]?tac[id]:[Math.round((i+1)/(G[g].length+1)*100),Y[g]]});return out}
 function odaRender(full){if(!full&&odaPatch())return;const keep={};document.querySelectorAll("#sheetBody [data-kp]").forEach(e=>keep[e.id]=e.value);const act=document.activeElement&&document.activeElement.id;render(true);
   for(const k in keep){const e=document.getElementById(k);if(e)e.value=keep[k]}odaGrow(document.getElementById("odaTxt"));if(act){const e=document.getElementById(act);if(e&&e.dataset.kp!=null&&e.tagName!=="SELECT")try{e.focus({preventScroll:true})}catch(_){}}odaBottom()}
+// oda açılışı: son görülen yerden (yeni mesaj çizgisi), yenisi yoksa en alttan. Pencere açılırken ve mesajlar/fotoğraflar
+// yerleşirken konum birkaç kare boyunca yeniden uygulanır; ekrana dokununca bırakılır.
+function odaYerles(){const t0=Date.now();ODA.pinT=t0;const sh=S.sheet;const step=()=>{if(ODA.pinT!==t0||S.sheet!==sh||!sh||sh.type!=="oda")return;const b=document.getElementById("odaMsgs");
+    if(b){const n=document.getElementById("odaNw");b.scrollTop=n?Math.max(0,n.offsetTop-b.offsetTop-8):b.scrollHeight;odaDnUpd()}
+    if(Date.now()-t0<800)requestAnimationFrame(step);else{sh.nwP=false;ODA.pinT=0}};step()}
 function odaBottom(){const b=document.getElementById("odaMsgs");if(!b)return;const n=document.getElementById("odaNw");if(S.sheet&&S.sheet.nwP&&n){S.sheet.nwP=false;b.scrollTop=Math.max(0,n.offsetTop-b.offsetTop-8)}else if(!(S.sheet&&S.sheet.nwP&&S.sheet.from!=null&&!ODA.d[S.sheet.mid]))b.scrollTop=b.scrollHeight;odaDnUpd()}
 async function odaDo(fn,args,full){const mid=S.sheet&&S.sheet.mid;try{const r=await rpc(fn,args);if(r&&r.ok){ODA.d[mid]=r;odaSeen(mid);odaRender(full);odaHaber();return true}toast(ODA_ERR[r&&r.error]||"Yapılamadı")}catch(_){toast("Bağlantı yok")}return false}
 function odaMsgOf(d,id){return (d.msgs||[]).find(x=>+x.id===+id)}
@@ -4493,7 +4498,7 @@ document.addEventListener("input",e=>{if(e.target&&e.target.id==="odaTxt"){odaGr
 document.addEventListener("mousedown",e=>{if(e.target.closest&&e.target.closest(".kbkeep"))e.preventDefault()},true);
 // sohbet ve yorum hareketleri: sağa çek = yanıtla, sola çek (kendi mesajın) = okundu bilgisi, basılı tut = menü
 {let g=null;const B=t=>t&&t.closest&&t.closest("#odaMsgs .oda-b[data-act='odaSel'],#odaMsgs .oda-b[data-act='betComSel']");const live=()=>S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");
-  document.addEventListener("touchstart",e=>{ODA.tch=Date.now();ODA.lp=false;ODA.lpX=false;if(g){clearTimeout(g.tm);g=null}const b=e.touches.length===1&&B(e.target);if(!b)return;const t=e.touches[0];
+  document.addEventListener("touchstart",e=>{ODA.tch=Date.now();ODA.lp=false;ODA.lpX=false;ODA.pinT=0;if(g){clearTimeout(g.tm);g=null}const b=e.touches.length===1&&B(e.target);if(!b)return;const t=e.touches[0];
     g={w:b.closest(".oda-bw"),me:!!b.closest("li.me"),x:t.clientX,y:t.clientY,dx:0,mode:0,dir:0,id:b.dataset.v};g.tm=setTimeout(()=>{if(!g||g.mode||!live())return;g.mode=3;ODA.lp=true;ODA.lpX=true;try{getSelection().removeAllRanges()}catch(_){}S.sheet.info=null;S.sheet.rep=null;S.sheet.sel=g.id;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}odaTipOff();chatPatch()},430)},{passive:true,capture:true});
   document.addEventListener("touchmove",e=>{if(!g||g.mode>=2)return;const t=e.touches[0],dx=t.clientX-g.x,dy=t.clientY-g.y;
     if(!g.mode){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;clearTimeout(g.tm);const hz=Math.abs(dx)>Math.abs(dy)*1.6;if(hz&&dx>=10&&g.x>24){g.mode=1;g.dir=1;g.w.classList.add("odsw")}else if(hz&&dx<=-10&&g.me){g.mode=1;g.dir=-1;g.w.classList.add("odsw","odsl")}else{g.mode=2;return}}
