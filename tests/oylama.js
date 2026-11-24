@@ -55,7 +55,7 @@ const ok=(c,m)=>{if(!c){console.log("HATA: "+m);process.exitCode=1}};
       return J({ok:true})}
     const k=Object.keys(DB).find(k=>u.includes("/rest/v1/"+k+"?"));return J(k?DB[k]:[])});
   const pg=await ctx.newPage();const run=(fn,arg)=>pg.evaluate(([c,a])=>window.__E("("+c+")")(a),[fn.toString(),arg]);const errs=[];pg.on("pageerror",e=>errs.push(e.message));
-  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team","1")});
+  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_kur","3|0");localStorage.setItem("y_team","1")});
   await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1500);
   const shot=async n=>{if(shots)await pg.screenshot({path:path.join(shots,n+".png"),fullPage:true})};
   await run(i=>{S.admin=true;S.pin="x";S.mem={status:"onayli",role:"yonetici",player_id:i};S.me=i;S.tab="mac";render(true)},ids[2]);await pg.waitForTimeout(800);

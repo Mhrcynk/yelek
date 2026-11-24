@@ -1420,7 +1420,7 @@ function _sheetHtml(){const t=S.sheet.type;if(t==="dukral")return sheetDuKral();
   if(t==="stats"){const m=S.matches.find(x=>x.id===S.sheet.mid);return m&&S.admin&&(m.state==="takim"||m.state==="bitti")?inM(m,()=>statEntry(m)):""}
   if(t==="rules")return `<div class="ch"><h2>Puanlama</h2><button class="btn sm" data-act="close">Kapat</button></div>`+viewKurallar(true);
   if(t==="share")return sheetShare();if(t==="pm")return sheetPM();
-  return t==="inapp"?sheetInApp():t==="bkKey"?sheetBkKey():t==="delAcc"?sheetDelAcc():t==="ligs"||t==="hub"?sheetHub():t==="teamNew"?sheetTeamNew():t==="hos"?sheetHos():t==="login"?sheetLogin():t==="player"?sheetPlayer():t==="pedit"?sheetPEdit():t==="me"?(isMember()&&!S.admin?"":sheetMe()):t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="arch"?sheetArch():t==="ext"?sheetExt():t==="txt"?`<div class="ch"><h2>Metni kopyala</h2><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button></div><p class="muted small">Metni basılı tutup seç, kopyala ve WhatsApp grubuna yapıştır.</p><textarea readonly rows="14" style="width:100%">${esc(S.f.copyTx||"")}</textarea>`:""}
+  return t==="inapp"?sheetInApp():t==="bkKey"?sheetBkKey():t==="delAcc"?sheetDelAcc():t==="ligs"||t==="hub"?sheetHub():t==="teamNew"?sheetTeamNew():t==="hos"?sheetHos():t==="kur"?sheetKur():t==="login"?sheetLogin():t==="player"?sheetPlayer():t==="pedit"?sheetPEdit():t==="me"?(isMember()&&!S.admin?"":sheetMe()):t==="add"?sheetAdd():t==="cmp"?sheetCmp():t==="arch"?sheetArch():t==="ext"?sheetExt():t==="txt"?`<div class="ch"><h2>Metni kopyala</h2><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button></div><p class="muted small">Metni basılı tutup seç, kopyala ve WhatsApp grubuna yapıştır.</p><textarea readonly rows="14" style="width:100%">${esc(S.f.copyTx||"")}</textarea>`:""}
 
 /* ================= Parçalar ================= */
 const SIL=`<svg viewBox="0 0 100 104" aria-hidden="true"><circle cx="50" cy="33" r="21" fill="currentColor"/><path d="M8 104c2-27 19-42 42-42s40 15 42 42z" fill="currentColor"/></svg>`;
@@ -1615,7 +1615,8 @@ function sonucPop(){if(S.sheet||S._route||S.story||S.view||!S.session||!isMember
   if(DU.rows){let seen=[];try{seen=JSON.parse(LS.get("y_dus_"+TID)||"[]")}catch(_){}const ids=DU.rows.filter(d=>d.s==="kabul"&&(d.a===me||d.b===me)&&!seen.includes(d.id)).filter(d=>{const m=S.matches.find(x=>x.id===d.m);return m&&yeni(m)&&duRes(m,d,me)}).map(d=>d.id);
     if(ids.length){try{LS.set("y_dus_"+TID,JSON.stringify([...seen,...ids].slice(-60)))}catch(_){}S.sheet={type:"duafis",ids,i:0};render(true);return}}
   {const km=lastFinM();const kk=km&&duKingRec(km.id);if(km&&yeni(km)&&kk&&kk.p&&P(kk.p)&&LS.get("y_duk_"+TID)!==km.id){LS.set("y_duk_"+TID,km.id);S.sheet={type:"dukral",mid:km.id};render(true);return}}
-  const lm=lastFinM();if(lm&&yeni(lm)&&vOn(lm)&&lm.vsum&&S.mInfo[lm.id]&&S.mInfo[lm.id].pts[me]&&LS.get("y_oya_"+TID)!==lm.id){LS.set("y_oya_"+TID,lm.id);S.sheet={type:"oyafis",mid:lm.id};render(true)}}
+  const lm=lastFinM();if(lm&&yeni(lm)&&vOn(lm)&&lm.vsum&&S.mInfo[lm.id]&&S.mInfo[lm.id].pts[me]&&LS.get("y_oya_"+TID)!==lm.id){LS.set("y_oya_"+TID,lm.id);S.sheet={type:"oyafis",mid:lm.id};render(true);return}
+  kurPop()}
 function sheetDuAfis(){const sh=S.sheet,me=myPid();const L=(sh.ids||[]).map(id=>(DU.rows||[]).find(d=>d.id===id)).filter(Boolean);const d=L[sh.i]||L[0];if(!d)return"";const m=S.matches.find(x=>x.id===d.m);if(!m)return"";const last=sh.i>=L.length-1;
   return inM(m,()=>`<div class="af af-d"><p class="af-e">Düello${L.length>1?` · ${sh.i+1} / ${L.length}`:" sonucu"}</p>${L.length>1?`<div class="af-dots" aria-hidden="true">${L.map((_,k)=>`<i class="${k===sh.i?"on":""}"></i>`).join("")}</div>`:""}
     <p class="af-s">${esc(fmtShort(m.date))} maçı · saha konuştu</p>${duCard(m,d,me,false,true,false,true)}
@@ -3087,7 +3088,7 @@ async function afterAuth(){
   const prevMem=S.mem;S.mem=null;if(!S.session)S.sessionStale=null;
   if(S.session){
     try{S.mem=await rpc("my_membership",{});try{const c=JSON.parse(localStorage.getItem("y_cache")||"null");if(c){c.mem=S.mem;localStorage.setItem("y_cache",JSON.stringify(c))}}catch(_){}}catch(_){S.mem=prevMem}
-    if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}setTimeout(betPrefetch,400);rpc("push_prefs_get",{}).then(r=>{if(r&&r.ok){PUSH.off=r.off||[];if(S.tab==="ben")render(true)}}).catch(()=>{});
+    if(isMember()){if(S.mem.player_id){S.me=S.mem.player_id;LS.set("y_me",S.me)}setTimeout(betPrefetch,400);rpc("push_prefs_get",{}).then(r=>{if(r&&r.ok){PUSH.off=r.off||[];PUSH.quiet=!!r.quiet;if(S.tab==="ben")render(true)}}).catch(()=>{});
       if(S.mem.role==="yonetici"){S.admin=true;S.pin=S.pin||"";setTimeout(notesSync,1500)}
       if(!LS.get("y_hos")&&!S.sheet)S.sheet={type:"hos"}}
     if(S.sheet&&S.sheet.type==="login")S.sheet=null;
@@ -3329,6 +3330,19 @@ const PUSH={st:"?"};
 const pushOk=()=>"serviceWorker"in navigator&&"PushManager"in window&&"Notification"in window;
 const isIOS=()=>/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+/* kurulum: Android'de tek dokunuşla ekleme */
+let BIP=null;const kurAcik=()=>!!S.sheet&&(S.sheet.type==="kur"||S.sheet.type==="hos");
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();BIP=e;if(kurAcik()||S.f.setp==="tel")render(true)});
+addEventListener("appinstalled",()=>{BIP=null;if(S.sheet&&S.sheet.type==="kur")S.sheet=null;render(true)});
+const kurBtn=()=>BIP?`<button class="btn sm primary" data-act="kurEkle">Ana ekrana ekle</button>`:"";
+const kurMobil=()=>isIOS()||/Android/i.test(navigator.userAgent);
+function kurPop(){if(isStandalone()||!kurMobil()||!LS.get("y_hos"))return false;const a=(LS.get("y_kur")||"0|0").split("|"),n=+a[0]||0,ts=+a[1]||0;if(n>=3||Date.now()-ts<7*864e5)return false;LS.set("y_kur",(n+1)+"|"+Date.now());S.sheet={type:"kur"};render(true);return true}
+function sheetKur(){const ios=isIOS(),st=PUSH.st;const step=(n,t,body,dn)=>`<div class="hstep${dn?" dn":""}"><i>${dn?"✓":n}</i><div><b>${t}</b>${body}</div></div>`;
+  return `<div class="hos"><div class="hhd">${IGLOGO}<h2>Uygulama gibi kullan</h2><p class="muted">İki adımda tam ekran açılır, bildirim gelir. Bir dakika sürer.</p></div>
+    ${step(1,"Giriş yaptın",`<p>Takımın: ${esc(S.settings.group_name||"Takım")}</p>`,true)}
+    ${step(2,"Ana ekrana ekle",BIP?`<p>Tek dokunuşla ana ekranına gelir.</p>${kurBtn()}`:`<p>${ios?"Safari'de alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç. Sonra uygulamayı oradan aç.":"Chrome'da sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç."}</p>`)}
+    ${step(3,"Bildirimleri aç",st==="acik"?`<p class="ok">Açık. Kadro ve sonuçlar telefonuna gelecek.</p>`:st==="kapali"?`<p>Kadro açıklanınca ve maç bitince haber verelim.</p><button class="btn sm primary" data-act="pushOn" ${PUSH.busy?"disabled":""}>Bildirimleri aç</button>`:`<p>Uygulamayı ana ekrandan açınca Ben → Ayarlar'dan bildirimleri açabilirsin.</p>`,st==="acik")}
+    <button class="btn ghost block" data-act="kurOk">Sonra</button></div>`}
 async function pushInit(){if(!("serviceWorker"in navigator)){PUSH.st="yok";return}
   try{PUSH.reg=await navigator.serviceWorker.register("sw.js")}catch(_){PUSH.st="yok";return}
   await pushCheck()}
@@ -3349,13 +3363,13 @@ async function pushOff(){PUSH.busy=true;render(true);
   try{const reg=PUSH.reg||await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();
     if(sub){const j=sub.toJSON();try{await rpc("push_subscribe",{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_on:false})}catch(_){}await sub.unsubscribe()}
     PUSH.st="kapali";toast("Bildirimler kapandı")}catch(_){toast("Kapatılamadı")}finally{PUSH.busy=false;render(true)}}
-const pushSub=()=>({acik:`Açık · ${PUSH_CATS.length} türden ${PUSH_CATS.length-(PUSH.off||[]).length}\u2019${["ı","i","si","ü","ü","i","sı"][PUSH_CATS.length-(PUSH.off||[]).length]||"i"}`,kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:isIOS()&&!isStandalone()?"Önce Telefona ekle ile ana ekrana ekle":"Desteklenmiyor · Chrome ya da Safari ile aç","?":"…"}[PUSH.st]||"");
+const pushSub=()=>({acik:`Açık · ${PUSH_CATS.length} türden ${PUSH_CATS.length-(PUSH.off||[]).length}\u2019${["ı","i","si","ü","ü","i","sı","si"][PUSH_CATS.length-(PUSH.off||[]).length]||"i"}`,kapali:"Kapalı",red:"İzin kapalı · telefon ayarlarından aç",ios:"Önce ana ekrana eklemelisin",yok:isIOS()&&!isStandalone()?"Önce Telefona ekle ile ana ekrana ekle":"Desteklenmiyor · Chrome ya da Safari ile aç","?":"…"}[PUSH.st]||"");
 function waitPush(){const st=PUSH.st;if(st==="acik")return `<p class="wpush on">${SI.zil} Onaylanınca bildirim gelecek.</p>`;
   if(st==="kapali")return `<button class="btn block wpush" data-act="pushOn">${SI.zil} Onaylanınca bana haber ver</button>`;
   if(st==="ios")return `<p class="wpush">${SI.zil} Onaylanınca haber almak için önce uygulamayı ana ekrana ekle: Paylaş → Ana Ekrana Ekle.</p>`;return""}
 function pushRow(){if(!S.session||!isMember())return"";const on=PUSH.st==="acik",can=PUSH.st==="acik"||PUSH.st==="kapali"||PUSH.st==="ios";
-  return `<div class="setr nolink"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimler</b><small>${pushSub()}</small></span>${can?`<button class="sw ${on?"on":""}" data-act="${on?"pushOff":"pushOn"}" role="switch" aria-checked="${on}" aria-label="Bildirimler" ${PUSH.busy?"disabled":""}><i></i></button>`:""}</div>${on?`<details class="pcd"><summary>Bildirim türleri</summary>`+PUSH_CATS.map(([k,t,d])=>{const o=!(PUSH.off||[]).includes(k);return `<div class="setr nolink setsub"><span class="setx"><b>${t}</b><small>${d}</small></span><button class="sw ${o?"on":""}" data-act="pushCat" data-k="${k}" role="switch" aria-checked="${o}" aria-label="${t}"><i></i></button></div>`}).join("")+`</details>`:""}`}
-const PUSH_CATS=[["mac","Maç","Kadrolar, maç sonucu ve oylama"],["kupon","Tahminlerim","Tahminin tuttu, tahminine yorum ve beğeni"],["arkadas","Arkadaşların tahminleri","Yeni tahminler ve tutan tahminler"],["yaris","Haftanın tahmin kralı","Haftalık yarışın kazananı"],["sohbet","Soyunma odası sohbeti","Yeni mesajlar ve anketler"],["oda","Duyuru, görev ve etiket","Duyuru, dürtme, sana verilen görev, senden bahsedilmesi"]];
+  return `<div class="setr nolink"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimler</b><small>${pushSub()}</small></span>${can?`<button class="sw ${on?"on":""}" data-act="${on?"pushOff":"pushOn"}" role="switch" aria-checked="${on}" aria-label="Bildirimler" ${PUSH.busy?"disabled":""}><i></i></button>`:""}</div>${on?`<details class="pcd"><summary>Bildirim türleri</summary>`+PUSH_CATS.map(([k,t,d])=>{const o=!(PUSH.off||[]).includes(k);return `<div class="setr nolink setsub"><span class="setx"><b>${t}</b><small>${d}</small></span><button class="sw ${o?"on":""}" data-act="pushCat" data-k="${k}" role="switch" aria-checked="${o}" aria-label="${t}"><i></i></button></div>`}).join("")+`</details><div class="setr nolink"><span class="seti">${SI.ay}</span><span class="setx"><b>Sessiz saatler</b><small>23:00 – 08:00 arası bildirim gelmez</small></span><button class="sw ${PUSH.quiet?"on":""}" data-act="pushQuiet" role="switch" aria-checked="${!!PUSH.quiet}" aria-label="Sessiz saatler"><i></i></button></div>`:""}`}
+const PUSH_CATS=[["mac","Maç","Kadrolar, maç sonucu ve oylama"],["duello","Düello","Meydan okuma, cevap, sonuç ve düello kralı"],["kupon","Tahminlerim","Tahminin tuttu, tahminine yorum ve beğeni"],["arkadas","Arkadaşların tahminleri","Yeni tahminler ve tutan tahminler"],["yaris","Haftanın tahmin kralı","Haftalık yarışın kazananı"],["sohbet","Soyunma odası sohbeti","Yeni mesajlar ve anketler"],["oda","Duyuru, görev ve etiket","Duyuru, dürtme, sana verilen görev, senden bahsedilmesi"]];
 function pushAsk(){if(!S.session||!(isMember()||S.fol)||LS.get("y_pushask")||!(PUSH.st==="kapali"||PUSH.st==="ios"))return"";
   return `<section class="card pask"><span class="seti">${SI.zil}</span><span class="setx"><b>Bildirimleri aç</b><small>${PUSH.st==="ios"?"iPhone'da önce ana ekrana ekle, sonra buradan aç.":"Takımlar belli olunca ve maç sonucunda haber verelim."}</small></span><div class="pab"><button class="btn sm primary" data-act="pushOn">${PUSH.st==="ios"?"Nasıl?":"Aç"}</button><button class="btn sm ghost" data-act="pushNo" aria-label="Kapat">${ICON.x}</button></div></section>`}
 const SI={
@@ -3371,7 +3385,8 @@ const SI={
   plus:sv('<path d="M12 5v14M5 12h14"/>'),
   platform:sv('<rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="18" height="6" rx="2"/><path d="M7 7h.01M7 17h.01"/>'),
   zil:sv('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>'),
-  cik:sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>')};
+  cik:sv('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/>'),
+  ay:sv('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>')};
 const srow=(k,ic,t,sub,extra,cls)=>`<button class="setr ${cls||""}" data-act="${k.startsWith("@")?k.slice(1):"setp"}" ${k.startsWith("@")?"":`data-v="${k}"`}><span class="seti">${ic}</span><span class="setx"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span>${extra||""}<i class="setc" aria-hidden="true">›</i></button>`;
 const sgrp=(t,rows)=>rows.filter(Boolean).length?`<section class="sgrp">${t?`<h3>${t}</h3>`:""}<div class="sbox">${rows.filter(Boolean).join("")}</div></section>`:"";
 
@@ -3380,7 +3395,7 @@ function sheetHos(){const p=S.me&&P(S.me);const nm=p?p.name.split(" ")[0]:"";con
   const step=(n,t,body)=>`<div class="hstep"><i>${n}</i><div><b>${t}</b>${body}</div></div>`;let n=1;
   return `<div class="hos"><div class="hhd">${IGLOGO}<h2>Hoş geldin${nm?", "+esc(nm):""}!</h2><p class="muted">Artık takımdasın. Üç şey yeterli:</p></div>
     ${p?step(n++,"Bu senin kartın",`<button class="hcard" data-act="open" data-id="${esc(p.id)}">${avatar(p)}<span><b>${esc(p.name)}</b><small>${esc(eposOf(p))} · ${ovrOf(p.id)}</small></span><i>›</i></button>`):""}
-    ${sa?"":step(n++,"Ana ekrana ekle",`<p>${ios?"Safari'de alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç. Sonra uygulamayı oradan aç.":"Chrome'da sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç."}</p>`)}
+    ${sa?"":step(n++,"Ana ekrana ekle",`<p>${ios?"Safari'de alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç. Sonra uygulamayı oradan aç.":"Chrome'da sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç."}</p>${kurBtn()}`)}
     ${step(n++,"Bildirimleri aç",st==="acik"?`<p class="ok">Açık. Kadro ve sonuçlar telefonuna gelecek.</p>`:st==="kapali"?`<p>Kadro açıklanınca ve maç bitince haber verelim.</p><button class="btn sm primary" data-act="pushOn" ${PUSH.busy?"disabled":""}>Bildirimleri aç</button>`:st==="ios"?`<p>iPhone'da bildirim için önce ana ekrana eklemelisin. Ekledikten sonra Ayarlar'dan açabilirsin.</p>`:`<p>Bu tarayıcı bildirim desteklemiyor.</p>`)}
     <button class="btn primary block" data-act="hosOk">Başla</button></div>`}
 
@@ -3439,7 +3454,7 @@ function setSub(k){const url=teamLink();
     ${(()=>{const F=fin(),fz=F.filter(m=>m.calc).length;return `<section class="card szx"><b>Kart puanları</b><p class="snote" style="margin:0">Biten maçların puanları kesinleşir; kurallar değişse de geçmiş aynı kalır. ${F.length?fz+"/"+F.length+" maç kesin.":""}</p><p class="snote" style="margin:0">Yeniden hesaplarsan bu sezonun bütün maçları güncel kurallarla baştan hesaplanır, kartlar değişebilir.</p><button class="btn ghost block" data-act="calcReset">${S.f.cReset?"Emin misin? Sezon "+curYr()+" yeniden hesaplansın":"Bu sezonu yeniden hesapla"}</button></section>`})()}`}
   else if(k==="tel")h+=`<p class="snote" style="margin:0 4px 10px">Ana ekrana eklersen uygulama gibi tam ekran açılır.</p><div class="sbox">
     <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>iPhone · Safari</b><span>Alttaki <b>Paylaş</b> düğmesine bas, <b>Ana Ekrana Ekle</b>'yi seç.</span></span></div>
-    <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>Android · Chrome</b><span>Sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç.</span></span></div></div>`;
+    <div class="setr nolink tels"><span class="seti">${SI.tel}</span><span class="setx"><b>Android · Chrome</b><span>Sağ üstteki <b>üç noktaya</b> bas, <b>Ana ekrana ekle</b>'yi seç.</span></span></div></div>${BIP?`<button class="btn primary block" data-act="kurEkle" style="margin-top:10px">Ana ekrana ekle</button>`:""}`;
   else if(k==="pay"){const gn=S.settings.group_name||"Takım";const fo=!!S.settings.followable;const u=APPL;
     const code=S.settings.slug||"";const wa="⚽ "+gn+" artık Yelek'te. Linke gir, Google ya da e-postanla giriş yap, takım kodu olarak \""+code+"\" yaz ve kendi kartını seç (kartın yoksa yeni kart iste): "+u;
     h+=`<section class="card lnkc"><p class="muted small" style="margin:0">Herkese bu tek linki ve takım kodunu gönder. Zaten üye olan doğrudan takımına girer; yeni gelen kodu yazıp kartını seçer ya da yeni kart ister, sen onaylarsın.</p>
@@ -3665,6 +3680,10 @@ document.addEventListener("click",async e=>{
     case"kralOpen":if(BET.kral){S.sheet={type:"kral"};render(true)}break;
     case"kralOk":kralSeen();S.sheet=null;render(true);break;
     case"kralShare":kralSeen();S.f.pm={tab:"tahmin",item:"thafta",fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
+    case"pushQuiet":{const was=!!PUSH.quiet;PUSH.quiet=!was;render(true);
+      try{const r=await rpc("push_prefs_set",{p_off:PUSH.off||[],p_quiet:PUSH.quiet});if(!r||!r.ok)throw 0;PUSH.quiet=!!r.quiet}catch(_){PUSH.quiet=was;toast("Kaydedilemedi");render(true)}break}
+    case"kurEkle":{const e=BIP;if(!e)break;BIP=null;try{e.prompt();await e.userChoice}catch(_){}render(true);break}
+    case"kurOk":S.sheet=null;render(true);break;
     case"pushCat":{const k=el.dataset.k;const o=PUSH.off||[];const was=o.slice();PUSH.off=o.includes(k)?o.filter(x=>x!==k):[...o,k];render(true);
       try{const r=await rpc("push_prefs_set",{p_off:PUSH.off});if(!r||!r.ok)throw 0;PUSH.off=r.off||[]}catch(_){PUSH.off=was;toast("Kaydedilemedi");render(true)}break}
     case"betShare":S.f.pm={tab:"tahmin",item:el.dataset.v==="kazandi"?"tuttu":"kupon",cid:id,mid:el.dataset.m,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;

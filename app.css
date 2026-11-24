@@ -5065,3 +5065,5 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .mzpod-b{gap:3px!important}.mzpod-b b{font:800 .9375rem/1 Inter,sans-serif!important;color:rgba(255,255,255,.7)}
 .mzpod-b small{font-size:.8125rem!important}
 .mzpod-b em{font:800 1.5rem/1 var(--display)!important;color:#fff!important;display:grid;justify-items:center;gap:2px}.mzpod-b em i{font:600 .6875rem/1 Inter,sans-serif;font-style:normal;color:rgba(255,255,255,.7)}
+/* kurulum rehberi: biten adım */
+.hstep.dn>i{background:#0A6B3C}.hstep.dn>div>b{color:var(--muted)}

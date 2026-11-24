@@ -44,7 +44,7 @@ const DB={settings,players,matches,season_votes:[],player_photos:[]};
     if(u.includes("/rpc/"))return r.fulfill({status:200,contentType:"application/json",body:u.includes("player_ages")?JSON.stringify(players.map((p,i)=>({id:p.id,age:22+i}))):"{}"});
     const k=Object.keys(DB).find(k=>u.includes("/rest/v1/"+k+"?"));return r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(k?DB[k]:[])})});
   const pg=await ctx.newPage();const run=(fn,arg)=>pg.evaluate(([c,a])=>window.__E("("+c+")")(a),[fn.toString(),arg]);const errs=[];pg.on("pageerror",e=>errs.push(e.message));
-  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team","1")});
+  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_kur","3|0");localStorage.setItem("y_team","1")});
   await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1500);
   // yarısına saydam arka planlı uydurma fotoğraf (256×320)
   await run(async()=>{await document.fonts.load('800 40px "Barlow Condensed"');await document.fonts.load('700 12px Inter');

@@ -34,7 +34,7 @@ let fails=0;const ok=(c,m)=>{if(!c){console.log("HATA: "+m);fails++}};
   await ctx.route(/\/rest\/v1\//,r=>{const u=r.request().url();const J=o=>r.fulfill({status:200,contentType:"application/json",body:JSON.stringify(o)});
     if(u.includes("/rpc/"))return J(u.includes("player_ages")?[]:{ok:true});const k=Object.keys(DB).find(k=>u.includes("/rest/v1/"+k+"?"));return J(k?DB[k]:[])});
   const pg=await ctx.newPage();const errs=[];pg.on("pageerror",e=>errs.push(e.message));
-  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_team","1")});
+  await pg.addInitScript(()=>{localStorage.setItem("y_asked","1");localStorage.setItem("y_hos","1");localStorage.setItem("y_kur","3|0");localStorage.setItem("y_team","1")});
   await pg.goto(`http://localhost:${port}/`);await pg.waitForTimeout(1500);
   const E=s=>pg.evaluate(s=>window.__E(s),s);
 
