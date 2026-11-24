@@ -5032,3 +5032,6 @@ html.dk .kq-pv .eyebrow,.kq-pv .eyebrow{color:#C9BFE6!important}
 
 /* Sohbet: mesaja basılı tutunca telefonun "Kopyala / Araştır / Çeviri" baloncuğu çıkmasın (kopyalama kendi menümüzde) */
 #odaMsgs,#odaMsgs *,#odaMenu,#odaMenu *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+
+/* Bu hafta / Ben kartlarındaki küçük kutular: rakamlar dar ve ağır yazı yerine düz yazıyla */
+html.dk .th2 .th2-r .th2-g b,.th2-r .th2-g b{font:700 1rem/1.15 Inter,sans-serif!important;font-variant-numeric:tabular-nums;letter-spacing:0}

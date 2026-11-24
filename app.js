@@ -2581,7 +2581,7 @@ function preview(m){const A=(m.team_a||[]),B=(m.team_b||[]);if(!A.length||!B.len
     <p class="muted small" style="margin-top:-6px;text-align:center">Kağıt üstünde ${pA===50?"iki takım denk":"favori "+esc(TEAM[pA>50?"A":"B"])} · reyting ortalamasına göre</p>
     <div class="pvg">${col("A",A)}${col("B",B)}</div>
     ${streaks.length?`<div class="small"><span class="eyebrow">Seriler</span>${streaks.map(id=>`<div>${S.stats[id].streak.hot?"🔥":"❄️"} ${esc(shortName(nameOf(id)))} · ${esc(S.stats[id].streak.t)}</div>`).join("")}</div>`:""}
-    <a class="btn wa block" href="https://wa.me/?text=${encodeURIComponent(previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent))}" target="_blank" rel="noopener">${ICON.wa} WhatsApp'a gönder</a></section>`}
+    </section>`}
 function previewText(m,avA,avB,pA,chem,key,inForm,streaks,recent){const fld=S.settings.field_name;const d=parseYmd(m.date);
   let t=`⚽ MAÇ ÖNÜ · ${d.getDate()} ${AYLAR[d.getMonth()]} ${GUNLER[d.getDay()]} ${m.time||""}${fld?" · "+fld:""}\n\n${TEAM.A} (${avA}) vs ${TEAM.B} (${avB})\nKağıt üstünde: %${pA} – %${100-pA}\n`;
   for(const k of["A","B"]){const T=k==="A"?m.team_a:m.team_b;const kp=key(T);t+=`\n${TEAM[k]}: ${T.map(id=>shortName(nameOf(id))).join(", ")}\n`;const rc=recent(T);if(rc)t+=`Son maçları: ${rc.G}G ${rc.B}B ${rc.M}M\n`;const ch=chem(T);if(ch)t+=`Takım kimyası: %${ch.p}\n`;if(kp)t+=`Kilit oyuncu: ${nameOf(kp)}\n`;const f=inForm(T);if(f.length)t+=`Formda: ${f.map(id=>shortName(nameOf(id))).join(", ")}\n`}
@@ -3409,7 +3409,7 @@ function setSub(k){const url=teamLink();
     h+=`<section class="card lnkc"><p class="muted small" style="margin:0">Herkese bu tek linki ve takım kodunu gönder. Zaten üye olan doğrudan takımına girer; yeni gelen kodu yazıp kartını seçer ya da yeni kart ister, sen onaylarsın.</p>
       <div class="surl"><input type="text" readonly value="${esc(u.replace(/^https?:\/\//,""))}" id="shareUrl" aria-label="Link"></div>
       <div class="setr nolink"><span class="setx"><b>Takım kodu</b><small>${esc(code)}</small></span><button class="btn sm" data-act="copy" data-txt="${esc(code)}">${ICON.copy} Kopyala</button></div>
-      <div class="btns2"><a class="btn wa" href="https://wa.me/?text=${encodeURIComponent(wa)}" target="_blank" rel="noopener">${ICON.wa} WhatsApp</a><button class="btn" data-act="copy" data-txt="${esc(u)}">${ICON.copy} Kopyala</button></div>
+      <div class="btns2"><button class="btn" data-act="copy" data-txt="${esc(u)}">${ICON.copy} Kopyala</button></div>
       <p class="snote" style="margin:0">Instagram ya da Facebook içinden açanlar Safari veya Chrome'a geçebilir ya da e-posta koduyla orada giriş yapabilir.</p></section>
     ${S.mem?.role==="yonetici"?`<div class="sbox"><div class="setr nolink lnks"><span class="setx"><b>Takip edilebilir</b><small>${fo?"Üye olmayanlar da fikstürü ve puan durumunu izleyebilir":"Sadece üyeler görür"}</small></span><button class="sw ${fo?"on":""}" data-act="folOpen" data-v="${fo?"0":"1"}" role="switch" aria-checked="${fo}" aria-label="Takip edilebilir"><i></i></button></div></div>`:""}`}
   else if(k==="pin"){h+=`<section class="card"><form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`}
@@ -3496,7 +3496,7 @@ document.addEventListener("click",async e=>{
       else if(v==="ready")ids=S.players.filter(p=>!p.guest&&!p.yedek&&ok(p)).map(p=>p.id);
       const r=await A("admin_set_roster",{p_match:id,p_ids:ids},v==="none"?"Kadro temizlendi":ids.length+" oyuncu işaretlendi");break}
     case"copyTxt":{const m=S.matches.find(x=>x.id===id);if(!m)break;const tx=el.dataset.v==="teams"?teamsText(m):waText(m,rsvpLists(m));
-      try{await navigator.clipboard.writeText(tx);toast("Kopyalandı · WhatsApp grubuna yapıştır")}catch(_){S.f.copyTx=tx;S.sheet={type:"txt"};render(true)}break}
+      try{await navigator.clipboard.writeText(tx);toast("Kopyalandı")}catch(_){S.f.copyTx=tx;S.sheet={type:"txt"};render(true)}break}
     case"archList":S.f.kmenu=false;S.sheet={type:"arch"};render(true);break;
     case"restoreP":{const p=S.all.find(x=>x.id===id);await A("admin_restore_player",{p_id:id},(p?p.name:"Oyuncu")+" kadroya geri döndü");render(true);break}
     case"leaveTeam":{if(!S.f.leave){S.f.leave=1;render(true);break}S.f.leave=0;
