@@ -2387,8 +2387,8 @@ function trkPlayer(p){const F=fin().filter(inYr).filter(m=>trkOf(m,p.id));if(!F.
   return `<div><h3>Saha verileri</h3><p class="muted small" style="margin:2px 0 8px">Maç başına ortalama · ${F.length} maç · etiket: takım ortalamasına göre</p><div class="trkb t3">${tiles}</div>${rec?`<div class="trkrec">${rec}</div>`:""}</div>`}
 // lig: saha verileri sekmesi (Akıllı Saha sıralamaları)
 const SAHA_G=[["Fizik",["km","hiz","spr","rt"]],["Pas",["pas","isa","pp"]],["Top kazanma",["tk","pa"]],["Top taşıma",["dri","pt"]]];
-function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs("saha");
-  if(!TM.length)return h+`<section class="card"><div class="empty emp2">${empIc("grafik","green")}<h3>Henüz saha verisi yok</h3><p>Akıllı Saha'dan koşu, pas, hız, top kapma ve reyting verileri girildikçe sıralamalar burada görünür.</p></div></section>`;
+function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs("saha");const SBK=`<button class="sback" data-act="tog1" data-k="sezV" data-v="">${ICON_BACK} İstatistik</button>`;
+  if(!TM.length)return h+SBK+`<section class="card"><div class="empty emp2">${empIc("grafik","green")}<h3>Henüz saha verisi yok</h3><p>Akıllı Saha'dan koşu, pas, hız, top kapma ve reyting verileri girildikçe sıralamalar burada görünür.</p></div></section>`;
   const last=TM[TM.length-1];const mode=S.f.sahaM==="sez"?"sez":"son";const nm=TM.length,need=nm<3?1:2;
   const tm=id=>plOf(last,"A").includes(id)?"A":plOf(last,"B").includes(id)?"B":null;
   let rows;// [id,{k:v},sub]
@@ -2401,14 +2401,14 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
   const ini=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:esc(initials(nameOf(id)))};
   const subOf=x=>mode==="son"?(x?esc(nmOf(last,x)):""):x+" maç";
   const LK=k=>rows.filter(r=>r[1][k]!=null).sort((a,b)=>b[1][k]-a[1][k]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
-  const segM=`<div class="mzseg shm" role="group" aria-label="Dönem">${[["son","Son maç"],["sez","Sezon"]].map(([k,l])=>`<button data-act="tog1" data-k="sahaM" data-v="${k}" class="${mode===k?"on":""}" aria-pressed="${mode===k}">${l}</button>`).join("")}</div>`;
+  const segM=`<label class="yrsel shsel"><span>${mode==="son"?"Son maç":"Sezon"}</span><i>${CHVD}</i><select data-bind="sahaM" aria-label="Dönem seç"><option value="son"${mode==="son"?" selected":""}>Son maç · ${esc(fmtShort(last.date))}</option><option value="sez"${mode==="sez"?" selected":""}>Sezon ortalaması</option></select></label>`;
   // Krallar'daki liste kartı
   const board=(k)=>{const A=LK(k);if(!A.length)return"";const bk="bxs_"+k;const open=!!S.f[bk];const more=A.length>3;
     return `<section class="card tsb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${esc(TRKN[k].l)}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${A.slice(0,open?A.length:3).map(([id,o,x],i)=>`<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${i+1}</span><span class="tsp ${tierOf(ovrOf(id))}${photoOf(id)?"":" ni"}">${ini(id)}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${subOf(x)}</small></span><b class="tsv num">${fv(k,o[k])}${unit(k)?" "+unit(k):""}</b></li>`).join("")}</ol></section>`};
   {// Mevkiler sekmesiyle aynı düzen: ikonlu grup sekmeleri + grup içindeki her veri için liste kartı
     const GI={Fizik:["simsek","#00E58A"],Pas:["krampon","#5FE3F5"],"Top kazanma":["kalkan","#FFD400"],"Top taşıma":["top","#FF3EA5"]};
     const G=SAHA_G.filter(([,ks])=>ks.some(k=>avail.includes(k)));const g=G.find(x=>x[0]===S.f.sahaG)||G[0];
-    h+=`<div class="mzf">${segM}</div><div class="pr-s" role="tablist" aria-label="Veri grupları">${G.map(([t])=>`<button role="tab" aria-selected="${t===g[0]}" class="${t===g[0]?"on":""}" data-act="tog1" data-k="sahaG" data-v="${esc(t)}" style="--c:${GI[t][1]}"><i class="dit">${dIcon(GI[t][0],GI[t][1],26)}</i>${esc(t)}</button>`).join("")}</div>`;
+    h+=`<div class="sbrow">${SBK}${segM}</div><div class="pr-s" role="tablist" aria-label="Veri grupları">${G.map(([t])=>`<button role="tab" aria-selected="${t===g[0]}" class="${t===g[0]?"on":""}" data-act="tog1" data-k="sahaG" data-v="${esc(t)}" style="--c:${GI[t][1]}"><i class="dit">${dIcon(GI[t][0],GI[t][1],26)}</i>${esc(t)}</button>`).join("")}</div>`;
     h+=`<div class="boards">${g[1].filter(k=>avail.includes(k)).map(board).join("")}</div>`}
   if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
   return h}
@@ -2929,7 +2929,7 @@ function _viewSezon(){
   if(!sv){const IN={yelek:["yildiz","gold","Sezonun oyuncusu","Puan yarışı ve reyting sıralaması"],kral:["top","pink","Krallıklar","Gol, asist ve maçın adamı liderleri"],mevki:["yelek","cyan","Mevkiler","Panter, Duvar, Maestro, Golcü"],saha:["grafik","green","Saha verileri","Koşu, hız, pas ve top kazanma"]};
     if(F.length||VW.some(x=>x[0]==="saha"))h+=`<div class="istg">${VW.filter(([k])=>F.length||k==="saha").map(([k])=>{const[ic,c,t,d]=IN[k];return `<button class="istc" data-act="tog1" data-k="sezV" data-v="${k}"><span class="istc-i">${dIcon(ic,c,26)}</span><b>${t}</b><small>${d}</small><i aria-hidden="true">${CHVR}</i></button>`}).join("")}</div>`;
     return h}
-  h+=`<button class="sback" data-act="tog1" data-k="sezV" data-v="">${ICON_BACK} İstatistik</button>`;
+  const SBK=`<button class="sback" data-act="tog1" data-k="sezV" data-v="">${ICON_BACK} İstatistik</button>`;if(sv!=="saha")h+=SBK;
   if(sv==="saha")return h+viewSaha().replace(oyTabs("saha"),"");
   if(F.length&&sv==="yelek")h+=mvpHtml(F);
   const ldCard=(t,c,val,fmt,filt,tie)=>{const v=p=>val(ys[p.id]);const all=S.players.filter(p=>!p.guest&&(ys[p.id]?.games||0)>0&&(filt?filt(ys[p.id]):v(p)>0)).sort((a,b)=>v(b)-v(a)||(ys[a.id].games-ys[b.id].games)||(tie?tie(ys[b.id])-tie(ys[a.id]):0)||a.name.localeCompare(b.name,"tr"));
@@ -4002,7 +4002,7 @@ document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.bind){setPath(t.dataset.bind,t.value);const bd=t.dataset.bind;
     if(bd==="ap.epos"||bd==="ed.epos"){const o=S.f[bd.slice(0,2)];o.pos=GROUP_POS[EPOS[o.epos][0]];if(o.alt===o.epos)o.alt=""}
     if(bd.startsWith("pm.")){render(true);return}
-    if(["sort","wrapP","ap.epos","ed.epos","newDate","newTime","ext.motm","ext.date"].includes(bd)||bd.startsWith("when_"))render(true);return}
+    if(["sort","wrapP","ap.epos","ed.epos","newDate","newTime","ext.motm","ext.date","sahaM"].includes(bd)||bd.startsWith("when_"))render(true);return}
   if(t.dataset.cmp&&S.sheet&&S.sheet.type==="cmp"){S.sheet[t.dataset.cmp]=t.value;render(true);return}
   if(t.dataset.vote){const k="v_"+t.dataset.m;(S.f[k]||(S.f[k]={}))[t.dataset.vote]=t.value;return}
   if(t.dataset.logo&&t.files&&t.files[0]){uploadLogo(t.files[0]);t.value="";return}

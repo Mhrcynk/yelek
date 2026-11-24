@@ -5019,3 +5019,7 @@ html.dk .kgg,.kgg{margin:14px 4px 8px;font:800 .6875rem/1 Inter,sans-serif!impor
 .kgt small i{font-style:normal;color:var(--c-ink3)}
 .kgc{color:var(--c-ink3);display:grid;place-items:center}.kgc svg{width:18px;height:18px}
 .kgg.shg{display:flex;align-items:center;gap:6px}.kgg.shg .dit{display:grid;place-items:center}
+
+/* Saha verileri: dönem seçimi geri düğmesiyle aynı satırda, açılır */
+.sbrow{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px}.sbrow .sback{margin:0}
+html.dk .yrsel.shsel{min-height:40px}
