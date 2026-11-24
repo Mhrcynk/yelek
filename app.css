@@ -4822,3 +4822,45 @@ html.dk body.tg .oda-mn>button.dng svg{color:#FF8FA8}
 .kgl span{font:600 .9rem/1.2 Inter,sans-serif;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .kgl small{font:500 .75rem/1 Inter,sans-serif;color:var(--c-ink3);white-space:nowrap}
 .kgl b{font:800 1.15rem/1 var(--display);text-align:right}
+
+/* maç sonrası "Bu hafta" ekranı */
+.dq{display:grid;gap:14px}
+.dq .dqc{border-radius:20px;background:#1C1240;padding:14px;display:grid;gap:12px;margin:0}
+.dq .dqh{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;width:100%}
+.dq .dqi{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center}
+.dq .dqi svg{width:20px;height:20px;filter:brightness(0) invert(1)}
+.dq .dqt{flex:1;min-width:0;display:grid;gap:2px}.dq .dqt b{font:800 1rem/1.2 Inter,sans-serif;color:#fff}.dq .dqt small{font:500 .75rem/1.25 Inter,sans-serif;color:#C9BFE6}
+.dq .dqg{flex:none;min-height:30px;padding:0 10px;border-radius:99px;background:#2E2068;color:#C9BFE6;display:flex;align-items:center;font:700 .75rem/1 Inter,sans-serif;white-space:nowrap}
+.dq .dqf{flex:none;width:36px;height:36px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font:800 .75rem/1 Inter,sans-serif;color:#fff;background:linear-gradient(150deg,#7C3AED,#4C1D95)}
+.dq .dqf img{width:100%;height:100%;object-fit:cover;display:block}
+.dq .dqf.s{width:26px;height:26px;font-size:.6875rem}
+.dq .dqn{font:800 1.5rem/.9 "Barlow Condensed","Inter Tight",sans-serif;color:#fff}
+.dq .dqs{all:unset;box-sizing:border-box;cursor:pointer;border-radius:24px;background:linear-gradient(160deg,#4A2BD0,#2A1670);padding:16px;display:grid;gap:12px;color:#fff}
+.dq .dqs .ch{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;margin:0}
+.dq .dqs .ch span{min-height:30px;padding:0 10px;border-radius:99px;background:rgba(255,255,255,.12);display:inline-flex;align-items:center;font:700 .78rem/1 Inter,sans-serif}
+.dq .dqs .ch span.e{background:#0E3B2E;color:#7CF5C4}
+.dq .dqs .sr{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px}
+.dq .dqs .sr b{font:800 1.35rem/1 "Barlow Condensed","Inter Tight",sans-serif;text-transform:uppercase;overflow-wrap:anywhere}.dq .dqs .sr b:last-child{text-align:right}
+.dq .dqs .sr .dqn{font-size:3.4rem}.dq .dqs .sr b.lo{opacity:.55}
+.dq .dq2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.dq .dq2.one{grid-template-columns:minmax(0,1fr)}
+.dq .dqb{all:unset;box-sizing:border-box;border-radius:14px;background:#2E2068;padding:10px 12px;display:grid;gap:6px;align-content:start;min-height:44px;color:#fff}
+.dq button.dqb{cursor:pointer}
+.dq .dqb>small{font:700 .6875rem/1.2 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#C9BFE6}
+.dq .dqb .w{display:flex;align-items:center;gap:8px;min-width:0}.dq .dqb .w b{font:700 .9rem/1.2 Inter,sans-serif;min-width:0;overflow-wrap:anywhere}
+.dq .dqb.g>small{color:#FFD400}.dq .dqb.r>small{color:#FF9DB3}
+.dq .dqb em{font:500 .75rem/1.2 Inter,sans-serif;font-style:normal;color:#A9D9C4}
+.dq .dqb .dqv{font:700 .9rem/1.2 Inter,sans-serif;color:#fff}
+.dq .dql{display:grid}
+.dq .dql .rw{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:20px 36px minmax(0,1fr) auto;align-items:center;gap:10px;min-height:48px;border-top:1px solid #2E2260}
+.dq .dql .rw i{font:800 .85rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;text-align:center}
+.dq .dql .rw b.nm{font:700 .92rem/1.2 Inter,sans-serif;color:#fff;overflow-wrap:anywhere}
+.dq .dql .rw.me{margin:0 -14px;padding:0 14px;background:#2B1F5E}
+.dq .dql .rw.me:last-child{margin-bottom:-14px;border-radius:0 0 20px 20px}
+.dq .tg{background:#12372A}.dq .tg .dqg{background:#1F5440;color:#A9D9C4}.dq .tg .dqt small{color:#A9D9C4}
+.dq .tg .dqb{background:#1B4A38}.dq .tg .dqb>small{color:#7CF5C4}
+.dq .dqk{margin:0;font:500 .75rem/1.3 Inter,sans-serif;color:#A9D9C4;text-align:center}
+.dq .dqm{min-height:44px;border-radius:14px;background:#2E2068;padding:0 12px;display:flex;align-items:center;gap:8px;font:500 .82rem/1.3 Inter,sans-serif;color:#C9BFE6;min-width:0}
+.dq .dqm b{color:#fff;font-weight:700;flex:none}.dq .dqm span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dqx{font:500 .78rem/1.4 Inter,sans-serif;color:#C9BFE6;text-align:center;padding:2px 8px;margin:0}
+.dq button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.nmf .lnk{min-height:44px;display:inline-flex;align-items:center}
