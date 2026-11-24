@@ -4929,3 +4929,4 @@ html.dk .th2.thC .thk-i svg{color:#06222A}
 .dvx{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:#24165A;opacity:.85}
 .dvx>span:not(.av){display:grid;gap:2px;min-width:0}.dvx b{font:700 .88rem/1.2 Inter,sans-serif;color:#fff}.dvx small{font:500 .75rem/1.25 Inter,sans-serif;color:#C9BFE6}
 .dvx em{font:700 .75rem/1 Inter,sans-serif;font-style:normal;color:#FF9DB3;white-space:nowrap}
+.dvtb{margin-bottom:14px}.dvtb button{flex:1}
