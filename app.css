@@ -5067,3 +5067,19 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .mzpod-b em{font:800 1.5rem/1 var(--display)!important;color:#fff!important;display:grid;justify-items:center;gap:2px}.mzpod-b em i{font:600 .6875rem/1 Inter,sans-serif;font-style:normal;color:rgba(255,255,255,.7)}
 /* kurulum rehberi: biten adım */
 .hstep.dn>i{background:#0A6B3C}.hstep.dn>div>b{color:var(--muted)}
+/* rozet koleksiyonu */
+.rzt-n{font:700 .7812rem/1 Inter,sans-serif;color:var(--muted);margin-left:6px}
+.rzt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.rzt>div{background:var(--card2);border-radius:12px;padding:12px 6px 10px;text-align:center;min-width:0}
+.rzt i{display:block;font-style:normal;font-size:1.75rem;line-height:1.1}
+.rzt b{display:block;margin-top:6px;font:700 .7812rem/1.2 Inter,sans-serif;overflow-wrap:anywhere}
+.rzt small{display:block;margin-top:3px;font:500 .6875rem/1.25 Inter,sans-serif;color:var(--muted)}
+.rzt .lk i{filter:grayscale(1);opacity:.4}.rzt .lk b{color:var(--muted)}
+.rzt .rr{box-shadow:inset 0 0 0 2px #E0A800}.rzt .sh{box-shadow:inset 0 0 0 2px #D9334F}
+.rzt-k{margin:8px 0 0;font:500 .7812rem/1.3 Inter,sans-serif;color:var(--muted)}
+.rzt-e{text-align:center;font-size:5.5rem;line-height:1.1}.rzt-t{margin:0;text-align:center;font:800 2.1rem/1 var(--display);text-transform:uppercase;color:#fff}
+/* ezeli rakipler */
+.ezl-r{display:flex;align-items:center;gap:10px;padding:10px 0}.ezl-r+.ezl-r{border-top:1px solid rgba(255,255,255,.1)}
+.ezl-r>span{flex:1;min-width:0}.ezl-r b{display:block;font:700 .875rem/1.25 Inter,sans-serif;color:#fff}.ezl-r small{display:block;margin-top:2px;font:500 .7812rem/1.3 Inter,sans-serif;color:#C9BFE6}
+.ezl-r i{font:800 .875rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;flex:none}.ezl-r i.a{color:var(--c-pink)}.ezl-r i.b{color:var(--c-cyan)}
+.btn.ezl-b{background:#5FE3F5;color:#06222A;border:0;margin-bottom:12px}
