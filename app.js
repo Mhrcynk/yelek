@@ -742,8 +742,8 @@ function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return""
       ${L.length>8?`<button class="yl-m" data-act="tog" data-k="mvpAll">${all?"Daha az göster":`Tüm sıralama · ${L.length} oyuncu`}</button>`:""}</div>`})():""}</section>`}
 function stSeason(n){const w=seasonAwards(n);if(!w||!w.champ){toast("Bu sezonda maç yok");return}
   const ph=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:`<span class="stini">${esc(initials(nameOf(id)))}</span>`};const c=w.champ;const P2=[];const A=odulList(w);const N=A.length+1;
-  P2.push({k:"aw",h:`<span class="stey">Sezon ${n} · ${w.F.length} maç</span><div class="sttr" aria-hidden="true">🏆</div><h2>Ödül töreni</h2><span class="stey">${N} ödül sahibini buluyor. Dokun, sırayla açılsın.</span><div class="stch">${A.map(x=>`<span>${x[0]} ${x[1]}</span>`).join("")}<span>🏆 Şampiyon</span></div>`});
-  A.forEach(([ic,t,L,u],i)=>{const o=L[0];P2.push({k:"motm",sh:"shareSeason",h:`<span class="stey">Ödül ${i+1} / ${N}</span><span class="stey2">${ic} ${t}</span><div class="stph">${ph(o.id)}</div><h2>${esc(nameOf(o.id))}</h2><div class="stkv"><div class="w"><b class="num">${o.v}</b><small>${u}</small></div>${L.slice(1).map((r,j)=>`<div><b class="num">${r.v}</b><small>${j+2}. ${esc(shortName(nameOf(r.id)))}</small></div>`).join("")}</div>`})});
+  P2.push({k:"aw",ns:1,h:`<span class="stey">Sezon ${n} · ${w.F.length} maç</span><div class="sttr" aria-hidden="true">🏆</div><h2>Ödül töreni</h2><span class="stey">${N} ödül sahibini buluyor. Dokun, sırayla açılsın.</span><div class="stch">${A.map(x=>`<span>${x[0]} ${x[1]}</span>`).join("")}<span>🏆 Şampiyon</span></div>`});
+  A.forEach(([ic,t,L,u],i)=>{const o=L[0];P2.push({k:"motm",sh:"shareSeason",h:`<span class="stey">Ödül ${i+1} / ${N}</span><span class="stey2">${ic} ${t}</span><div class="stph">${ph(o.id)}</div><h2>${esc(nameOf(o.id))}</h2><div class="stkv"><div class="w"><b class="num">${o.v}</b><small>${u}</small></div>${L.slice(1).map((r,j)=>`<div><b class="num">${r.v}</b><small>${j+2}. ${esc(shortName(nameOf(r.id)))}</small></div>`).join("")}</div>${t==="Tahmin kralı"?`<span class="stey">Para yok, bahis değil; sadece keyfine. Sikke temsilidir.</span>`:""}`})});
   const pa=POS_AW.filter(([k])=>w.pos[k]);if(pa.length)P2.push({k:"aw",sh:"shareSeason",h:`<span class="stey2">Mevki ödülleri</span><div class="staw">${pa.map(([k,t,ic])=>{const o=w.pos[k];return `<div><span class="stph sm">${ph(o.id)}</span><small>${ic} ${t}</small><b>${esc(nameOf(o.id))}</b><span class="stval">${fP(o.tot)+" puan · "+o.n+" maç"}</span></div>`}).join("")}</div>`});
   P2.push({k:"motm",sh:"shareSeason",h:`<span class="stey">Ödül ${N} / ${N} · Sezon ${n}</span><span class="stey2">🏆 Şampiyon</span><div class="stph">${ph(c.id)}</div><h2>${esc(nameOf(c.id))}</h2><div class="stkv"><div><b class="num">${c.p}</b><small>Puan</small></div><div><b class="num">${c.G}-${c.B}-${c.M}</b><small>G-B-M</small></div><div><b class="num">${c.av>0?"+":""}${c.av}</b><small>Averaj</small></div></div>`});
   P2.push({k:"totw",sh:"shareSeason",h:`<span class="stey2">Sezon ${n} · Şampiyonlar</span><ol class="sttw sttw-s"><li><span class="sttp">${ph(c.id)}</span><span><b>${esc(nameOf(c.id))}</b><small>Şampiyon</small></span><b class="num">${c.p}</b></li>${A.slice().reverse().map(([ic,t,L])=>`<li><span class="sttp">${ph(L[0].id)}</span><span><b>${esc(nameOf(L[0].id))}</b><small>${t}</small></span><b class="num">${L[0].v}</b></li>`).join("")}</ol>`});
@@ -785,6 +785,10 @@ function stPages(m){return inM(m,()=>{const inf=S.mInfo[m.id]||{};const sa=+m.sc
   P2.push({k:"spk",h:`<div class="stspk">${spiker(m,inf)}</div><button class="stgo" data-act="stDetail" data-id="${esc(m.id)}">Maç detayına git ${CHV}</button>`});
   return P2})}
 function stOpen(mid,i){const m=S.matches.find(x=>x.id===mid);if(!m)return;S.story={mid,i:i||0,P:stPages(m)};document.body.classList.add("lock");stDraw()}
+async function stShot(){const st=S.story;if(!st)return;const pg=st.P[st.i];clearTimeout(S._stT);toast("Görsel hazırlanıyor…");await ypFonts();let h;try{h=await h2c()}catch(_){toast("Görsel aracı yüklenemedi, bağlantını kontrol et");return}
+  const box=document.createElement("div");box.className="igrender";box.innerHTML=`<div class="stv st-${pg.k} stshot"><div class="sttop"><span class="stbrand">YELEK</span><span class="stbrand">${esc(S.settings.group_name||"")}</span></div><div class="stpg">${pg.h}</div><div class="stft">#halısaha</div></div>`;document.body.appendChild(box);
+  try{const el=box.firstElementChild;el.querySelectorAll(".stph img,.sttp img").forEach(im=>{const q=im.parentNode;q.style.background=`url("${im.src}") 50% 12%/cover no-repeat`;im.remove()});trUp(el);
+    const c=await h(el,{scale:1080/el.offsetWidth,backgroundColor:"#37003C",useCORS:true,logging:false});shareCanvas(c,"yelek-sezon-"+st.season+"-"+(st.i+1)+".png","Sezon "+st.season)}catch(e){toast("Görsel oluşturulamadı")}finally{box.remove()}}
 function stClose(){clearTimeout(S._stT);S.story=null;$("#story").innerHTML="";if(!S.sheet)document.body.classList.remove("lock")}
 function stGo(d){const st=S.story;if(!st)return;const n=st.i+d;if(n<0){st.i=0;stDraw();return}
   if(n>=st.P.length){const R=fin().filter(inYr);const j=R.findIndex(x=>x.id===st.mid);const nx=R[j-1];if(d>0&&nx&&S._stChain){stOpen(nx.id,0);return}stClose();return}st.i=n;stDraw()}
@@ -792,7 +796,7 @@ function stDraw(){const st=S.story,host=$("#story");if(!st)return;const pg=st.P[
   host.innerHTML=`<div class="stv st-${pg.k}" role="dialog" aria-modal="true" aria-label="Maç hikâyesi"><div class="stbars">${st.P.map((_,k)=>`<i class="${k<st.i?"done":k===st.i?"run":""}"><b></b></i>`).join("")}</div>
     <div class="sttop"><span class="stbrand">YELEK</span><button class="stx" data-act="stX" aria-label="Kapat">✕</button></div>
     <div class="stpg">${pg.h}</div>
-
+    ${st.season&&!pg.ns?`<button class="stsh" data-act="stShare">Bu sayfayı paylaş</button>`:""}
     <button class="stnav l" aria-label="Önceki" data-st="-1"></button><button class="stnav r" aria-label="Sonraki" data-st="1"></button></div>`;
   const run=host.querySelector(".stbars .run b");if(run&&!RM){run.style.animationDuration=ST_MS+"ms"}
   clearTimeout(S._stT);S._stT0=Date.now();S._stLeft=ST_MS;S._stT=setTimeout(()=>stGo(1),ST_MS)}
@@ -1637,7 +1641,7 @@ function sonucPop(){if(S.sheet||S._route||S.story||S.view||!S.session||!isMember
     if(ids.length){try{LS.set("y_dus_"+TID,JSON.stringify([...seen,...ids].slice(-60)))}catch(_){}S.sheet={type:"duafis",ids,i:0};render(true);return}}
   {const km=lastFinM();const kk=km&&duKingRec(km.id);if(km&&yeni(km)&&kk&&kk.p&&P(kk.p)&&LS.get("y_duk_"+TID)!==km.id){LS.set("y_duk_"+TID,km.id);S.sheet={type:"dukral",mid:km.id};render(true);return}}
   const lm=lastFinM();if(lm&&yeni(lm)&&vOn(lm)&&lm.vsum&&S.mInfo[lm.id]&&S.mInfo[lm.id].pts[me]&&LS.get("y_oya_"+TID)!==lm.id){LS.set("y_oya_"+TID,lm.id);S.sheet={type:"oyafis",mid:lm.id};render(true);return}
-  {const n=curYr();if(!SZ_ON&&seasonDone(n)&&LS.get("y_trn_"+TID)!==String(n)){const w=seasonAwards(n);if(w&&w.champ){LS.set("y_trn_"+TID,String(n));S.sheet={type:"odul",n};render(true);return}}}
+  {const n=curYr();if(!SZ_ON&&seasonDone(n)&&LS.get("y_trn_"+TID)!==String(n)){const w=seasonAwards(n);if(w&&w.champ){LS.set("y_trn_"+TID,String(n));stSeason(n);return}}}
   if(DU.rows&&rztPop(me))return;
   kurPop()}
 function sheetDuAfis(){const sh=S.sheet,me=myPid();const L=(sh.ids||[]).map(id=>(DU.rows||[]).find(d=>d.id===id)).filter(Boolean);const d=L[sh.i]||L[0];if(!d)return"";const m=S.matches.find(x=>x.id===d.m);if(!m)return"";const last=sh.i>=L.length-1;
@@ -3679,7 +3683,8 @@ document.addEventListener("click",async e=>{
     case"thkGo":S.f.bt=el.dataset.v||"oyna";goTab("iddia");break;
     case"rekTab":S.f.sezV="rekor";if(S.tab==="sezon")render(true);else goTab("sezon");window.scrollTo(0,0);break;
     case"bultenOpen":S.sheet={type:"bulten",id};render(true);break;
-    case"odulOpen":S.sheet={type:"odul",n:+id};render(true);break;
+    case"odulOpen":stSeason(+id);break;
+    case"stShare":stShot();break;
     case"odulShare":shareSeason(+id);break;
     case"tab":{let tt=el.dataset.tab;S.f.macY=false;listKapat();document.body.style.minHeight="";if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";if(S.f.sezV==="rekor"){S.f.sezV="";if(tt==="sezon"&&S.tab==="sezon"){render(true);window.scrollTo(0,0);break}}goTab(tt);if(tt===S.tab)render(true);break}
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
@@ -3893,7 +3898,7 @@ document.addEventListener("click",async e=>{
     case"seasonSave":{const L=+(S.f.sLen||sLen());await A("admin_season",{p_len:L,p_close:false},"Sezon ayarı kaydedildi");await load(true);break}
     case"calcReset":{if(!S.f.cReset){S.f.cReset=1;render(true);break}S.f.cReset=0;const r=await A("admin_calc_reset",{p_season:curYr()},"Kartlar yeniden hesaplanıyor");if(r){await load(true);compute();const n=await calcSync();toast(n+" maç yeniden hesaplandı");render(true)}break}
     case"szOnTog":{if(!S.admin)break;if(SZ_ON){SZ_ON=false;S.sheet=null;toast("Önizleme kapandı");render(true);break}
-      SZ_ON=true;const w=seasonAwards(curYr());if(!w||!w.champ){SZ_ON=false;toast("Bu sezonda biten maç yok");break}S.f.setp="";S.tab="mac";S.sheet={type:"odul",n:curYr()};render(true);break}
+      SZ_ON=true;const w=seasonAwards(curYr());if(!w||!w.champ){SZ_ON=false;toast("Bu sezonda biten maç yok");break}S.f.setp="";S.tab="mac";S.sheet=null;render(true);stSeason(curYr());break}
     case"seasonClose":{if(!S.f.sClose){S.f.sClose=1;render(true);break}S.f.sClose=0;await A("admin_season",{p_len:sLen(),p_close:true},"Sezon bitirildi");await load(true);break}
     case"story":S._stChain=false;stOpen(id,0);break;
     case"stDetail":stClose();S.view=id;S.tab="gecmis";render(true);window.scrollTo(0,0);break;
