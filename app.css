@@ -4937,3 +4937,15 @@ html.dk .th2.thC .thk-i svg{color:#06222A}
 .oda-sc,.oda .oda-m,#odaMsgs{overflow-x:hidden;overscroll-behavior-x:none}
 .oda .oda-b p,.oda-rq{overflow-wrap:anywhere}
 .sheet:has(.oda-cmp){overflow-x:hidden}
+
+/* Düello paylaşımı: kart altı düğme ve toplu liste görseli */
+.dv-shr,.dv-all{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;border:0;border-radius:99px;background:#0D2A33;color:#CFF4FA;font:700 .9rem/1 Inter,sans-serif;cursor:pointer}
+.dv-shr svg,.dv-all svg{width:18px;height:18px}
+.dv-all{margin-top:12px;background:var(--c-card2);color:#fff;min-height:48px}
+.yp-dulw{display:flex;flex-direction:column;gap:9px;width:100%;margin-top:6px}
+.yp-dul{display:flex;align-items:center;gap:12px;background:rgba(18,10,42,.5);border-radius:16px;padding:11px 16px}
+.yp-dul span{flex:1;min-width:0}
+.yp-dul small{display:block;font:700 11px/1 Inter,sans-serif;letter-spacing:.12em;color:#BBA9F0;margin-bottom:5px}
+.yp-dul em{display:block;font-style:normal;font-family:Inter,sans-serif;font-weight:700;color:#fff;white-space:nowrap}
+.yp-dul b{flex:none;font-family:"Barlow Condensed",sans-serif;font-weight:800;line-height:1;color:#FFD400;white-space:nowrap}.yp-dul b.eq{color:#C9BFE6}
+.yp-dul i{flex:none;font-style:normal;font-family:Inter,sans-serif;font-weight:600;color:#FFD400;white-space:nowrap}
