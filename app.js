@@ -1993,13 +1993,15 @@ function tahminKart(m){if(!isMember()||S.fol||!myPid()||tahminYok())return"";con
   else{pill=bd?"Tahminler kapandı":"Yükleniyor…";B=[["Kalan sikke",bal],["Yapılan tahmin",bd?0:"–"]];cta="Sıralama";go="sira"}
   return `<div class="thk th2" id="thk"><div class="thk-b"><span class="thk-i">${dIcon("bilet","green",24)}</span><span class="thk-x"><b>Tahmin${un?`<em class="num" aria-label="${un} yeni bildirim">${un>9?"9+":un}</em>`:""}</b></span><span class="th2-p">${pill}</span></div><div class="th2-r"><div class="th2-g">${B.map(([l,v])=>`<div><small>${l}</small><b class="num">${v}</b></div>`).join("")}</div><button class="thk-c" data-act="thkGo" data-v="${go}">${cta}</button></div></div>`}
 // yönetici işleri ayrı sayfada: Bu hafta ekranı üyeyle aynı kısalıkta kalır
+// sayfadan çıkınca açık listeler kapanır
+function listKapat(){Object.keys(S.f).forEach(x=>{if(/^(kg_|pr_|bxs_|bx_)/.test(x))S.f[x]=false})}
 function macYonet(m){const kay=m.state==="kayit";
   return `<button class="sback" data-act="macY" data-v="">${ICON_BACK} Bu hafta</button>`+(kay?kadroCard(m,true)+`<section class="card admc"><div class="ch"><div><div class="eyebrow">Yönetici</div><h2>Takımları kur</h2></div></div>
       <div class="grid2"><button class="btn primary" data-act="autoKadro" data-id="${esc(m.id)}">Otomatik kur</button><button class="btn" data-act="manual" data-id="${esc(m.id)}">${ICON.hand} Manuel kur</button></div>
       ${(m.team_a||[]).length&&(m.team_b||[]).length?`<button class="btn mg-bk" data-act="fwdTakim" data-id="${esc(m.id)}">Vazgeç, kadrolar aynı kalsın</button>`:""}
       ${adminMore(m,`<button class="btn danger sm" data-act="delMatch" data-id="${esc(m.id)}">${S.f.delMatch===m.id?"Silmek için tekrar bas":"Maçı sil"}</button>`)}</section>`:finishCard(m))}
 function macYKart(m){const kay=m.state==="kayit";const rs=m.rsvp||{};const n=S.players.filter(p=>!p.guest&&rs[p.id]==="g"&&!UNAVAIL.includes(stOf(p))).length;
-  return th2Kart("thN",BN_I('<path d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h12M20 17h0"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="17" r="2"/>'),"Maçı yönet","Yönetici",kay?[["Kadro",n+"/"+CAP],["Aşama","Kadro seçimi"]]:[["Tarih",fmtShort(m.date)],["Saat",esc(String(m.time||"").slice(0,5))]],`<button class="thk-c" data-act="macY" data-v="1">${kay?"Kadroyu seç":"Yönet"}</button>`)}
+  return th2Kart("thN",BN_I('<path d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h12M20 17h0"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="17" r="2"/>'),"Maçı yönet","Yönetici",kay?[["Kadro",n+"/"+CAP],["Aşama","Kadro seçimi"]]:[["Tarih",fmtShort(m.date)],["Saat",esc(String(m.time||"").slice(0,5))]],`<button class="thk-c" data-act="macY" data-v="1">${kay?"Kadroyu düzenle":"Yönet"}</button>`)}
 function matchBody(m){
   if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
   if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><button class="btn sm" data-act="cancelTeams">Vazgeç</button></div>${editorPanel(m)}</section>`;
@@ -2007,7 +2009,8 @@ function matchBody(m){
   if(m.state==="kayit"){
     {const lf=lastFinM();if(lf)h+=inM(lf,()=>odaCard(lf))}// kadro açıklanana kadar geçen maçın sohbeti açık kalır
     h+=duelWait();h+=kadroCard(m);
-    if(S.admin)h+=macYKart(m);
+    // kadro seçilmeden önce "Sıradaki adım" kutusu aynı işi görür; aynı düğme iki kez çıkmasın
+    if(S.admin&&S.players.filter(p=>!p.guest&&(m.rsvp||{})[p.id]==="g"&&!UNAVAIL.includes(stOf(p))).length>=4)h+=macYKart(m);
   }else{
     const ended=mEnded(m);h+=odaCard(m);if(vOpen(m))h+=voteCard(m);else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
     h+=tahminKart(m);h+=duelCard(m);
@@ -3523,7 +3526,7 @@ document.addEventListener("click",async e=>{
     case"bultenOpen":S.sheet={type:"bulten",id};render(true);break;
     case"odulOpen":S.sheet={type:"odul",n:+id};render(true);break;
     case"odulShare":shareSeason(+id);break;
-    case"tab":{let tt=el.dataset.tab;S.f.macY=false;if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";if(S.f.sezV==="rekor"){S.f.sezV="";if(tt==="sezon"&&S.tab==="sezon"){render(true);window.scrollTo(0,0);break}}goTab(tt);if(tt===S.tab)render(true);break}
+    case"tab":{let tt=el.dataset.tab;S.f.macY=false;listKapat();if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";if(S.f.sezV==="rekor"){S.f.sezV="";if(tt==="sezon"&&S.tab==="sezon"){render(true);window.scrollTo(0,0);break}}goTab(tt);if(tt===S.tab)render(true);break}
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"open":S.f.ptab="genel";S.sheet={type:"player",id};S.f.st=null;S.f.stOpen=false;S.f.ed=null;S.f.delP=null;render(true);break;
     case"intSet":LS.set("y_int",el.dataset.v);render(true);window.scrollTo(0,0);break;
@@ -3537,7 +3540,7 @@ document.addEventListener("click",async e=>{
     case"meSheet":if(S.fol){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break}if((isMember()&&!S.admin)||(S.me&&P(S.me)&&el.id==="meBtn")){S.f.setp="";S.view=null;goTab("ben");render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":{if(el.dataset.k==="mem_x"){const f=S.f.mem||(S.f.mem={});f["x_"+el.dataset.u]=!f["x_"+el.dataset.u]}else{const k=el.dataset.k,on=!S.f[k];// aynı gruptan biri açılınca öncekiler kapanır
       if(on){const g=(/^(kg_|pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}render(true);break}
-    case"tog1":S.f[el.dataset.k]=el.dataset.v;render(true);if(el.dataset.k==="sezV")window.scrollTo(0,0);break;
+    case"tog1":S.f[el.dataset.k]=el.dataset.v;render(true);if(el.dataset.k==="sezV"){listKapat();render(true);window.scrollTo(0,0)}break;
     case"setNames":{const m=S.matches.find(x=>x.id===id);const w=S.f["nm_"+id]||{};const a=cleanName(w.a??m.name_a??""),b=cleanName(w.b??m.name_b??"");if(!a||!b){toast("İki takımın adını da yaz");break}
       const r=await A("admin_set_names",{p_id:id,p_a:a,p_b:b},"Takım isimleri kaydedildi");if(r){delete S.f["nm_"+id];await load(true)}break}
     case"shareMenu":S.sheet={type:"share",mid:id};render(true);break;
