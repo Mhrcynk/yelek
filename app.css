@@ -4845,3 +4845,10 @@ html.dk .osr2 .vsec h3{font-size:1.25rem!important;margin-bottom:8px}.osr2 .vtl{
 /* maç sonu odası */
 .oda-m q.oda-fw{font-style:normal;font-weight:700}
 .oda-ro{margin:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));font:500 .8rem/1.35 Inter,sans-serif;color:#C9BFE6;text-align:center}
+/* düello */
+html.dk .thk.th2.thC{background:#0F2A33}html.dk .th2.thC .thk-i{background:#5FE3F5!important}html.dk .th2.thC .thk-i svg{filter:none}
+.th2.thC .th2-p{background:#081B21;color:#5FE3F5}.th2.thC .th2-r .th2-g>div{background:#081B21!important}.th2.thC .th2-r .th2-g small{color:#5FE3F5!important}
+html.dk .th2.thC .th2-r .thk-c{background:#5FE3F5;color:#06222A}
+.du3{display:grid;gap:8px}.du3 button{min-height:52px;border:0;border-radius:16px;background:#24165A;color:#fff;font:700 .95rem/1 Inter,sans-serif;cursor:pointer}.du3 button.on{background:#5FE3F5;color:#06222A}
+.vstt.du1{grid-template-columns:minmax(0,1fr)}.vtl[disabled]{opacity:.45;cursor:default}.vtl small{font-size:.6875rem;color:var(--c-ink2)}
+.mdx-b{margin-bottom:10px}
