@@ -3994,6 +3994,8 @@ document.addEventListener("toggle",e=>{const d=e.target;if(!d.dataset)return;if(
 document.addEventListener("focusout",()=>{setTimeout(()=>{if(S.pending&&!isEditing())render()},0)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=null;render(true)}});
 // yeni sürüm varsa (ana ekran uygulaması dahil) sayfayı taze yükle
+// adres çubuğundaki ?v=… izi silinir ki sonraki açılış telefondaki kopyadan anında gelsin
+try{const u=new URL(location.href);if(u.searchParams.has("v")){u.searchParams.delete("v");history.replaceState(history.state,"",u.pathname+u.search+u.hash)}}catch(_){}
 async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
   const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
   if(v&&v!=="dev"&&APP_V!=="dev"&&v!==APP_V){location.replace(location.pathname+"?v="+v+(S._r0&&Date.now()-S._r0t<30000?"#"+S._r0:location.hash));return true}}catch(_){}return false}
