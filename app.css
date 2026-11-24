@@ -5029,5 +5029,3 @@ html.dk .yrsel.shsel{min-height:40px}
 html.dk .kq-pv .eyebrow,.kq-pv .eyebrow{color:#C9BFE6!important}
 
 /* Sohbet: ekranda olmayan mesajların yerleşimi hesaplanmaz; uzun odada da yazmak ve kaydırmak akıcı kalır */
-#odaMsgs>li{content-visibility:auto;contain-intrinsic-size:auto 52px}
-#odaMsgs>li.sel .oda-b{outline-offset:-2px}

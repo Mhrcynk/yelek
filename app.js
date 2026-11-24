@@ -3666,7 +3666,8 @@ document.addEventListener("click",async e=>{
     case"odaDone":await odaDo("room_set",{p_match:S.sheet.mid,p_patch:{done:+el.dataset.v}},true);break;
     case"odaTaskQ":{const t=$("#odaTask");if(t)t.value=el.dataset.v;break}
     case"odaSel":if(S.sheet){if(Date.now()-(ODA.tch||0)<900){ODA.lp=false;break}S.sheet.info=null;S.sheet.rep=null;S.sheet.sel=String(S.sheet.sel)===String(el.dataset.v)?null:el.dataset.v;odaPatch()}break;
-    case"odaSelX":if(S.sheet){S.sheet.sel=null;S.sheet.info=null;S.sheet.rep=null;chatPatch()}break;
+    case"odaSelX":if(ODA.lpX){ODA.lpX=false;break}// basılı tutup bırakınca gelen dokunuş menüyü kapatmasın
+      if(S.sheet){S.sheet.sel=null;S.sheet.info=null;S.sheet.rep=null;chatPatch()}break;
     case"odaInfo":if(S.sheet){S.sheet.info=el.dataset.v;S.sheet.sel=null;odaPatch()}break;
     case"odaCopy":{const x=S.sheet&&odaMsgOf(odaRoom(ODA.d[S.sheet.mid]),el.dataset.v);if(!x)break;let ok=false;try{await navigator.clipboard.writeText(x.b);ok=true}catch(_){try{const t=document.createElement("textarea");t.value=x.b;t.style.cssText="position:fixed;opacity:0";document.body.appendChild(t);t.select();ok=document.execCommand("copy");t.remove()}catch(_){}}toast(ok?"Kopyalandı":"Kopyalanamadı");S.sheet.sel=null;odaPatch();break}
     case"odaTipX":odaTipOff();break;
@@ -4416,14 +4417,15 @@ function odaCtx(){const sh=S.sheet;if(!sh||sh.type!=="oda")return null;const m=S
   const d=odaRoom(d0),sd=d0.after?odaSide(d0):d.side,me=myPid(),isH=sd==="H",live=!d0.after||isH;return{sh,m,d0,d,live,isH,chat:live,sd,me,cap:live&&!isH&&d.cap,tab:!isH&&["rakip","gorev"].includes(sh.tab)?sh.tab:"sohbet",capId:isH?null:sd==="A"?m.cap_a:m.cap_b,team:(isH?plAll(m):plOf(m,sd)).filter(i=>P(i)),myAt:"@"+firstName(nameOf(me)).toLocaleLowerCase("tr")}}
 const odaHM=t=>{try{return new Date(t).toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}catch(_){return""}};
 // mesaj listesi parça parça güncellenir: yalnızca değişen satır yeniden çizilir (liste baştan kurulmaz)
-function listYama(L,items){const old=new Map();[...L.children].forEach(e=>{if(e.dataset.mk!=null)old.set(e.dataset.mk,e);else e.remove()});const tpl=document.createElement("template");let prev=null;
-  for(const[k,h]of items){let e=old.get(k);if(e){old.delete(k);if(e._h!==h){tpl.innerHTML=h;const n=tpl.content.firstElementChild;if(n){n.dataset.mk=k;n._h=h;e.replaceWith(n);e=n}}}else{tpl.innerHTML=h;e=tpl.content.firstElementChild;if(!e)continue;e.dataset.mk=k;e._h=h}
-    const want=prev?prev.nextSibling:L.firstChild;if(e!==want)L.insertBefore(e,want);prev=e}
-  old.forEach(e=>e.remove())}
+const LY=new Map();// ekranda ne çizili: anahtar → satırın HTML'i (ilk çizimde de dolar; ilk güncelleme listeyi baştan kurmaz)
+function listYama(L,items){const old=new Map();[...L.children].forEach(e=>{if(e.dataset.mk!=null)old.set(e.dataset.mk,e);else e.remove()});const tpl=document.createElement("template");let prev=null;const yeni=new Map();
+  for(const[k,h]of items){let e=old.get(k);if(e){old.delete(k);if(LY.get(k)!==h){tpl.innerHTML=h;const n=tpl.content.firstElementChild;if(n){n.dataset.mk=k;e.replaceWith(n);e=n}}}else{tpl.innerHTML=h;e=tpl.content.firstElementChild;if(!e)continue;e.dataset.mk=k}
+    yeni.set(k,h);const want=prev?prev.nextSibling:L.firstChild;if(e!==want)L.insertBefore(e,want);prev=e}
+  old.forEach(e=>e.remove());LY.clear();yeni.forEach((h,k)=>LY.set(k,h))}
 // anahtarsız liste (tahmin yorumları): sıra sıra karşılaştır, yalnızca farklı satırı değiştir
 function listYamaSira(L,html){const tpl=document.createElement("template");tpl.innerHTML=html;const N=[...tpl.content.children],O=[...L.children];
   N.forEach((n,i)=>{const h=n.outerHTML,o=O[i];if(!o){n._h=h;L.appendChild(n)}else if((o._h||o.outerHTML)!==h){n._h=h;o.replaceWith(n)}else o._h=h});for(let i=N.length;i<O.length;i++)O[i].remove()}
-function odaMsgsHtml(c){return odaMsgItems(c).map(x=>x[1]).join("")}
+function odaMsgsHtml(c){const it=odaMsgItems(c);LY.clear();return it.map(([k,h])=>{LY.set(k,h);return h.replace(/^<li/,`<li data-mk="${k}"`)}).join("")}
 function odaMsgItems(c){const{sh,d,live,chat,isH,m,me,team,capId,myAt}=c;const M=d.msgs.filter(x=>x.k!=="score");if(!M.length)return [["bos",`<li class="sys">${isH?"Maç bitti, söz sizde. İlk mesajı sen yaz.":live?"Henüz mesaj yok. İlk mesajı sen yaz.":"Bu odada kimse yazmamış."}</li>`]];
   const from=sh.from;const nw=chat&&from!=null?M.filter(x=>+x.id>from&&x.p!==me&&x.k!=="sys"):[];const nwId=nw.length?nw[0].id:null;
   let prev=null,blkP=false;const out=[];const oth=odaOthers(c),rdM=d.rd||{};const HC=ODA.hc||(ODA.hc=new Map());if(HC.size>3000)HC.clear();M.forEach(x=>{if(nwId!=null&&x.id===nwId)out.push(["nw",`<li class="nw" id="odaNw"><span>${nw.length} yeni mesaj</span></li>`]);const h=(()=>{const mine=x.p===me;const nm=mine?"Sen":esc(shortName(nameOf(x.p)));const sel=String(sh.sel)===String(x.id);const grp=prev&&prev.k!=="sys"&&prev.k!=="poll"&&prev.k!=="duyuru"&&prev.p===x.p&&(x.k==="msg"||x.k==="quick");prev=x;
@@ -4491,8 +4493,8 @@ document.addEventListener("input",e=>{if(e.target&&e.target.id==="odaTxt"){odaGr
 document.addEventListener("mousedown",e=>{if(e.target.closest&&e.target.closest(".kbkeep"))e.preventDefault()},true);
 // sohbet ve yorum hareketleri: sağa çek = yanıtla, sola çek (kendi mesajın) = okundu bilgisi, basılı tut = menü
 {let g=null;const B=t=>t&&t.closest&&t.closest("#odaMsgs .oda-b[data-act='odaSel'],#odaMsgs .oda-b[data-act='betComSel']");const live=()=>S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");
-  document.addEventListener("touchstart",e=>{ODA.tch=Date.now();ODA.lp=false;if(g){clearTimeout(g.tm);g=null}const b=e.touches.length===1&&B(e.target);if(!b)return;const t=e.touches[0];
-    g={w:b.closest(".oda-bw"),me:!!b.closest("li.me"),x:t.clientX,y:t.clientY,dx:0,mode:0,dir:0,id:b.dataset.v};g.tm=setTimeout(()=>{if(!g||g.mode||!live())return;g.mode=3;ODA.lp=true;S.sheet.info=null;S.sheet.rep=null;S.sheet.sel=g.id;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}odaTipOff();chatPatch()},430)},{passive:true,capture:true});
+  document.addEventListener("touchstart",e=>{ODA.tch=Date.now();ODA.lp=false;ODA.lpX=false;if(g){clearTimeout(g.tm);g=null}const b=e.touches.length===1&&B(e.target);if(!b)return;const t=e.touches[0];
+    g={w:b.closest(".oda-bw"),me:!!b.closest("li.me"),x:t.clientX,y:t.clientY,dx:0,mode:0,dir:0,id:b.dataset.v};g.tm=setTimeout(()=>{if(!g||g.mode||!live())return;g.mode=3;ODA.lp=true;ODA.lpX=true;S.sheet.info=null;S.sheet.rep=null;S.sheet.sel=g.id;try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}odaTipOff();chatPatch()},430)},{passive:true,capture:true});
   document.addEventListener("touchmove",e=>{if(!g||g.mode>=2)return;const t=e.touches[0],dx=t.clientX-g.x,dy=t.clientY-g.y;
     if(!g.mode){if(Math.abs(dx)<10&&Math.abs(dy)<10)return;clearTimeout(g.tm);const hz=Math.abs(dx)>Math.abs(dy)*1.6;if(hz&&dx>=10&&g.x>24){g.mode=1;g.dir=1;g.w.classList.add("odsw")}else if(hz&&dx<=-10&&g.me){g.mode=1;g.dir=-1;g.w.classList.add("odsw","odsl")}else{g.mode=2;return}}
     if(e.cancelable)e.preventDefault();g.dx=Math.max(0,Math.min(84,dx*g.dir));g.w.style.transform="translateX("+(g.dx*g.dir)+"px)";g.w.classList.toggle("odgo",g.dx>=56)},{passive:false,capture:true});
