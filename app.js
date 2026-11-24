@@ -2310,7 +2310,7 @@ function _resultPanel(m,only){
         ${ids.map(id=>{const r=inf.pts[id];return `<button class="degr" data-act="open" data-id="${esc(id)}">${P(id)?avatar(P(id),"sm"):""}<span class="degn"><b>${esc(nameOf(id))}</b><span class="muted small">${r?dot2(r.side)+esc(TEAM[r.side])+" · "+ROLE_NAME[r.role]:""}</span></span>${r?`<span class="nt ${noteCls(r.pts)}">${fN(r.pts)}</span>`:""}</button>`}).join("")||'<span class="muted small">—</span>'}</div>`}).join("")}</div>
       ${S.admin?`<button class="btn ghost sm" data-act="evalOpen" data-id="${M}">Değerlendirmeyi düzenle</button>`:""}`}
   else if(tab==="notlar"){
-    const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>inf.pts[b].pts-inf.pts[a].pts);
+    const r1=id=>Math.round(inf.pts[id].pts*10);const ranked=pl.filter(id=>inf.pts[id]).sort((a,b)=>r1(b)-r1(a)||(inf.pts[a].pk||9)-(inf.pts[b].pk||9)||inf.pts[b].pts-inf.pts[a].pts);
     h+=`<div class="nlist">`+ranked.map(id=>{const r=inf.pts[id];const hh=(S.stats[id]?.hist||[]).find(x=>x.m.id===m.id);const od=hh?hh.od||0:0;const chs=hh?chText(hh.ch):"";
       const sub=[r.g?r.g+" gol":"",r.a?r.a+" asist":"",inf.motm===id?"★ Maçın Adamı":"",inf.gol===id?"Haftanın Golü":"",inf.fiy===id?"Fiyasko":""].filter(Boolean).join(" · ");
       return `<details class="nrow"><summary><span class="nrl">${dot2(r.side)}<small>${r.role}</small></span><span class="nrn"><b>${esc(shortName(nameOf(id)))}</b>${NOTE.perf[r.pk]?`<span class="pfc p${r.pk}">${NOTE.perf[r.pk][1]}</span>`:""}${sub?`<small>${sub}</small>`:""}</span>${od?`<span class="nrd ${od>0?"up":"dn"}">${od>0?"▲":"▼"}${Math.abs(od)}</span>`:"<span></span>"}<span class="nt ${noteCls(r.pts)}">${fN(r.pts)}</span></summary>
