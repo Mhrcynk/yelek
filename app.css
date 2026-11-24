@@ -4858,3 +4858,8 @@ html.dk .th2.thC .th2-r .thk-c{background:#5FE3F5;color:#06222A}
 .dul-s{display:flex;align-items:baseline;gap:6px}.dul-s b{font:800 1.5rem/1 var(--display);color:#fff}.dul-s i{font-style:normal;color:#C9BFE6}
 .dul>em{grid-column:1/-1;font:700 .8rem/1.2 Inter,sans-serif;font-style:normal;color:#C9BFE6}.dul>em.w{color:#FFD400}.dul>em.g{color:#7CF5C4}.dul>em.m{color:#FF9DB3}
 .dul-a{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end}.dul-a .btn{min-height:44px}
+/* Ben ekranı: Bu hafta kalıbı */
+.benh{cursor:pointer}
+html.dk .thk.th2.thN{background:#1C1240}html.dk .th2.thN .thk-i{background:#3A2C78!important}html.dk .th2.thN .thk-i svg,html.dk .th2.thP .thk-i svg{filter:none;color:#fff}html.dk .th2.thG .thk-i svg{color:#2A1F00}
+.th2.thN .th2-p{background:#2E2068;color:#C9BFE6}.th2.thN .th2-r .th2-g>div{background:#2E2068!important}.th2.thN .th2-r .th2-g small{color:#C9BFE6!important}
+html.dk .th2.thN .th2-r .thk-c{background:#fff;color:#1C1240}

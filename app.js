@@ -2320,7 +2320,7 @@ function resultPanel(m,...r){return inM(m,()=>_resultPanel(m))}
 function _resultPanel(m,only){
   const inf=S.mInfo[m.id]||{pts:{},totw:[]};const pl=plAll(m);const stt=m.stats||{};const M=esc(m.id);
   const scorers=pl.filter(id=>(+stt[id]?.g||0)>0);const sa=+m.score_a||0,sb=+m.score_b||0;
-  const tab0=S.f.mtab||"ozet";const tab=only||({kadro:"ozet",oy:"notlar",ist:"notlar",deg:"notlar"}[tab0]||tab0);const T=k=>plOf(m,k);
+  const tab0=S.f.mtab==="tahmin"?"ozet":S.f.mtab||"ozet";const tab=only||({kadro:"ozet",oy:"notlar",ist:"notlar",deg:"notlar"}[tab0]||tab0);const T=k=>plOf(m,k);
   const avgN=k=>{const v=T(k).map(id=>inf.pts[id]?.pts).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
   const mt=Object.values(inf.pts).find(Boolean)?.mt||"";const dot2=k=>crest(k==="A"?TEAM.A:TEAM.B,k,15);
   const d0=parseYmd(m.date);const capOf=k=>{const id=k==="A"?m.cap_a:m.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
@@ -2329,10 +2329,10 @@ function _resultPanel(m,only){
   const cpn=k=>{const id=k==="A"?m.cap_a:m.cap_b;return id&&P(id)?" · KPT "+esc(shortName(nameOf(id))):""};
   let h=`<section class="maf mres"><div class="mafh"><span>${GKISA[d0.getDay()]} ${d0.getDate()} ${AYLAR[d0.getMonth()].toLocaleUpperCase("tr")}${S.settings.field_name?" · "+esc(S.settings.field_name).toLocaleUpperCase("tr"):""}</span>${S.admin?`<button class="mafbtn" data-act="mngOpen" data-id="${M}">Yönet</button>`:`<span>MAÇ SONU</span>`}</div>
     <div class="mafm">${capOf("A")}<div class="mafc"><span>${esc(mt||(sa===sb?"Beraberlik":"Maç sonu"))}</span><b class="num">${sa}<i>–</i>${sb}</b></div>${capOf("B")}</div>
-    </section>${only||!S.mInfo[m.id]?"":bultenRow(m)}
+    </section>
     <section class="card mdet">
     ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Maç ve kartlara etkisi tamamen silinir.</div>`:""}
-    <div class="mtabs" role="tablist">${[["ozet","Özet"],["notlar","Notlar"],...(trkHas(m)||S.admin?[["saha","Saha"]]:[]),...(isMember()&&!S.fol&&!tahminYok()?[["tahmin","Tahmin"]]:[])].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
+    <div class="mtabs" role="tablist">${[["ozet","Özet"],["notlar","Notlar"],...(trkHas(m)||S.admin?[["saha","Saha"]]:[]),].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(only)h="";
   if(tab==="ozet"){
     const mo=inf.motm;const r=mo&&inf.pts[mo];
@@ -2557,7 +2557,7 @@ function sheetAdd(){
 }
 const LIG_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3M12 13v4M8 20h8M9.5 17h5"/></svg>`;
 const LOCK_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
-function viewBen(){const k=S.f.setp||"";if(k)return setSub(k);return memCard()+_viewBen()+ayarBody()+verTxt()}
+function viewBen(){const k=S.f.setp||"";if(k)return setSub(k);return memCard()+_viewBen()+(P(S.me)?"":ayarBody())+verTxt()}
 const isOwner=()=>!!(S.session&&S.session.user&&S.session.user.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273");
 // geri tuşu / geri kaydırma: açık pencereyi ya da alt ekranı kapatır
 function shHist(){try{const on=!!S.sheet||!!S.view;const st=!!(history.state&&history.state.sh);if(shHist.b)return;
@@ -2574,9 +2574,17 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   const L=F.length?ligTable(F):[];const li=L.findIndex(x=>x.id===p.id);
   const gear='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>';
   const stK=stOf(p);
-  let h=`<button class="mzme" data-act="open" data-id="${esc(p.id)}">${ph?`<span class="mzme-av ph"><img src="${esc(ph)}" alt=""></span>`:`<span class="mzme-av">${esc(initials(p.name))}</span>`}<span class="mzme-x"><b>${esc(firstName(p.name))}</b><span class="mzme-c">${esc(EPOS[eposOf(p)]?.[1]||eposOf(p))} · ${o}${li>=0?` · ligde ${li+1}.`:""}${p.yedek?" · yedek":""}</span></span><span class="mzme-k">Kartım</span></button>`;
-  if(S.session&&isMember())h+=`<section class="card bdr"><b>Bu hafta durumum</b><div class="bdr-g">${[["hazir","Hazır"],["sakat","Sakat"],["hasta","Hasta"],["izinli","İzinde"]].map(([k,l])=>`<button class="${stK===k?"on":""}" data-act="myStatus" data-v="${k}" aria-pressed="${stK===k}">${l}</button>`).join("")}</div><small>${stK==="yogun"||stK==="belirsiz"?`Şu an: ${esc((STATUS[stK]||{}).label||"")}. `:""}Yönetici kadroyu kurarken bunu görür.</small></section>`;
-  h+=betBenCard();
+  const IC=x=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${x}</svg>`;
+  const B=(act,t,ex)=>`<button class="thk-c" data-act="${act}" ${ex||""}>${t}</button>`;const pos=EPOS[eposOf(p)]?.[1]||eposOf(p);
+  let h=`<section class="mzh benh" data-act="open" data-id="${esc(p.id)}" role="button" tabindex="0"><div class="mzg"><span class="e">${esc(pos)}</span><span>Reyting ${o}</span>${li>=0?`<span>Ligde ${li+1}.</span>`:""}${p.yedek?`<span>Yedek</span>`:""}</div><div class="mzh-vs"><span class="mzh-t tA"><i class="mzd"></i><b style="font-size:${mzFs(p.name)}">${esc(p.name)}</b><em class="num">${o}</em></span></div></section>`;
+  if(S.session&&isMember()){const om=openMatch();const kd=!om?"Maç yok":om.state==="kayit"?((om.rsvp||{})[p.id]==="g"?"Kadrodasın":"Belli değil"):plAll(om).includes(p.id)?"Kadrodasın":"Kadroda yoksun";const sl=esc((STATUS[stK]||{}).label||"Hazır");
+    h+=th2Kart("",IC('<path d="m5 12 4.5 4.500L19 7"/>'),"Bu hafta durumum",sl,[["Durum",sl],["Kadro",kd]],B("tog",S.f.stOpen?"Kapat":"Değiştir",`data-k="stOpen" aria-expanded="${!!S.f.stOpen}"`));
+    if(S.f.stOpen)h+=`<section class="card bdr"><div class="bdr-g">${[["hazir","Hazır"],["sakat","Sakat"],["hasta","Hasta"],["izinli","İzinde"]].map(([k,l])=>`<button class="${stK===k?"on":""}" data-act="myStatus" data-v="${k}" aria-pressed="${stK===k}">${l}</button>`).join("")}</div><small>Yönetici kadroyu kurarken bunu görür.</small></section>`}
+  h+=th2Kart("thG",IC('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'),"Sezonum","Sezon "+yr,[["Maç",n],["Gol · asist",g+" · "+a]],B("open","Kartım",`data-id="${esc(p.id)}"`));
+  if(S.admin){const pend=(S.memList||[]).filter(m=>m.status==="bekliyor").length,okN=(S.memList||[]).filter(m=>m.status==="onayli").length;if(!S.memList&&S.mem?.role==="yonetici")memLoad();
+    h+=th2Kart("thP",IC('<circle cx="9" cy="9" r="3.500"/><circle cx="17" cy="10" r="2.500"/><path d="M3 20a6 6 0 0 1 12 0M15 20a4.500 4.500 0 0 1 6-4"/>'),"Takım",pend?pend+" katılma isteği":"Yönetici",[["Üye",S.memList?okN:"–"],["Sezon",`${seasonCount(curYr())}/${sLen()} maç`]],B("setp","Yönet",`data-v="takimy"`))}
+  {const vv=/^\d{12}$/.test(APP_V)?"Sürüm "+APP_V.slice(4,6)+"."+APP_V.slice(2,4):"Uygulama";
+    h+=th2Kart("thN",IC('<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.600 5.600l2.100 2.100M16.300 16.300l2.100 2.100M5.600 18.400l2.100-2.100M16.300 7.700l2.100-2.100"/>'),"Ayarlar",vv,[["Bildirim",PUSH.st==="acik"?"Açık":"Kapalı"],["Hesap",S.session?"Bağlı":"Giriş yok"]],B("setp","Ayarlar",`data-v="ayar"`))}
   if(!s.games)h+=`<p class="mzhint">İlk maçına çık, kartın uyanır. Notların, formun ve rozetlerin burada birikir.</p>`;
   const it=(c,i,t,sub,act,extra)=>`<button class="mzmi" data-act="${act}" ${extra||""}><span class="mzmi-i dit" style="background:${c}22">${dIcon(i,c,26)}</span><span class="mzmi-t">${t}</span><span class="mzmi-s">${sub||""}</span><span class="mzmi-c" aria-hidden="true">›</span></button>`;
   h+=`<div class="mzmn">${(!isMember()||S.admin)?it("#B9A8FF","degis","Oyuncuyu değiştir","","meSheet",""):""}</div>`;
@@ -3251,8 +3259,11 @@ const SUBT={destek:"Destek ve şikâyet",sikayet:"Şikâyetler",kullanim:"Kullan
 const APPL=location.origin+location.pathname;
 const teamLink=()=>APPL;
 function setSub(k){const url=teamLink();
-  let h=`<button class="sback" data-act="setp" data-v="">${ICON_BACK} Ben</button>`;
-  if(k==="uyeler")h+=adminMembers();
+  const hub=k==="ayar"||k==="takimy";const par=!hub&&(S.f.setpP==="ayar"||S.f.setpP==="takimy")?S.f.setpP:"";
+  let h=`<button class="sback" data-act="setp" data-v="${par}">${ICON_BACK} ${par==="ayar"?"Ayarlar":par==="takimy"?"Takım":"Ben"}</button>`;
+  if(k==="ayar")h+=ayarBody("uyg");
+  else if(k==="takimy")h+=S.admin?ayarBody("takim"):"";
+  else if(k==="uyeler")h+=adminMembers();
   else if(k==="kullanim")h+=usageView();
   else if(k==="hesap")h+=`<section class="card szx"><b>Hesabını silmek istiyor musun?</b><p class="snote" style="margin:0">Giriş hesabın, takım üyeliklerin, takip ettiğin ligler ve bildirim kayıtların kalıcı olarak silinir; geri alınamaz. Oyuncu kartın takımda kalır, yönetici isterse siler.</p><button class="btn ghost danger block" data-act="delAcc">Hesabımı kalıcı olarak sil</button></section>`;
   else if(k==="gecmis")h+=adminAudit();
@@ -3295,7 +3306,7 @@ function setSub(k){const url=teamLink();
   else if(k==="pin"){h+=`<section class="card"><form data-form="login" style="display:grid;gap:10px"><label class="f" for="pin">Şifre<input id="pin" type="password" autocomplete="current-password" data-bind="pin" value="${esc(S.f.pin||"")}"></label><button class="btn primary block" type="submit">Giriş yap</button></form></section>`}
   return h}
 const viewAyarlar=()=>viewBen();
-function ayarBody(){
+function ayarBody(part){
   const adm=S.admin,pend=(S.memList||[]).filter(m=>m.status==="bekliyor").length,okN=(S.memList||[]).filter(m=>m.status==="onayli").length;
   if(adm&&!S.memList&&S.mem?.role==="yonetici")memLoad();
   let h="",acc="";
@@ -3304,6 +3315,7 @@ function ayarBody(){
   if(S.session){if(!S.myTeams)teamsLoad();const MT=Array.isArray(S.myTeams)?S.myTeams:[];
     const nM=MT.filter(t=>t.status==="onayli").length,nF=(S.follows||[]).length;const gn=S.settings.group_name||"Takım";
     h+=`<section class="stm"><span class="stm-c${S.logo?" lg":""}">${S.logo?`<img src="${esc(S.logo)}" alt="">`:esc(initials(gn))}</span><span class="stm-x"><small>Aktif takım${nM>1||nF?` · ${nM} takım${nF?", "+nF+" takip":""}`:""}</small><b>${esc(gn)}</b></span><button class="btn sm" data-act="hub">Değiştir</button></section>`}
+  const hA=h;h="";
   if(adm&&pend)h+=`<button class="salert" data-act="setp" data-v="uyeler"><b>${pend} katılma isteği</b><span>Onaylamak için dokun</span><i>›</i></button>`;
   if(adm&&S.mem?.role==="yonetici"){const fo=!!S.settings.followable;
     const tile=(ic,c,t,sub,on,act)=>`<div class="stg-t"><div class="stg-h"><span class="stg-i" style="color:${c}">${ic}</span><button class="sw ${on?"on":""}" data-act="${act}" data-v="${on?"0":"1"}" role="switch" aria-checked="${on}" aria-label="${t}"><i></i></button></div><b>${t}</b><small>${sub}</small></div>`;
@@ -3315,6 +3327,7 @@ function ayarBody(){
     S.mem?.role==="yonetici"?srow("gecmis",SI.gecmis,"Değişiklik geçmişi","Kim neyi ne zaman değiştirdi"):"",
     S.mem?.role==="yonetici"?srow("kullanim",SI.sezon,"Kullanım","Hangi bölüm kaç kez açıldı (kişi bilgisi yok)"):"",
     S.mem?.role==="yonetici"&&TID!==1?srow("sil",SI.cik,"Takımı sil","Bütün veriler kalıcı olarak silinir","","danger"):""]);
+  const hT=h;h="";
   h+=sgrp("Uygulama",[
     S.session&&S.session.user?.id==="d8bac3ce-40c8-4ef7-babe-0732872cd273"?srow("platform",SI.platform,"Platform","Bütün takımlar"):"",
     pushRow(),
@@ -3326,7 +3339,7 @@ function ayarBody(){
     S.admin?srow("sikayet",SI.kilit,"Şikâyetler",S.mem&&S.mem.reports?S.mem.reports+" açık şikâyet":"Açık şikâyet yok"):"",
     srow("destek",SI.kilit,"Destek ve şikâyet","yelek.destek@gmail.com")]);
   if(S.session)h+=`<section class="sgrp"><h3>Hesap</h3>${acc}</section>`+sgrp("",[srow("@signOut",SI.cik,"Çıkış yap","","","danger"),S.mem&&S.mem.status==="onayli"?srow("@leaveTeam",SI.cik,S.f.leave?"Emin misin? Tekrar dokun":"Takımdan ayrıl",S.f.leave?esc(S.settings.group_name)+" üyeliğin biter":"Kartın takımda kalır; istersen yeniden katılırsın"):"",srow("hesap",SI.cik,"Hesabı sil","Hesabın ve üyeliklerin kalıcı olarak silinir")]);
-  return h}
+  return part==="takim"?hT:part==="uyg"?hA+h:hA+hT+h}
 
 /* ================= Olaylar ================= */
 document.addEventListener("click",async e=>{
@@ -3424,7 +3437,7 @@ document.addEventListener("click",async e=>{
     case"pushNo":LS.set("y_pushask","1");render(true);break;
     case"memDel":S.f.memDel=id||"";render(true);break;
     case"memRole":{const f=S.f.mem||(S.f.mem={});f["r_"+id]=!f["r_"+id];render(true);break}
-    case"setp":S.f.setp=el.dataset.v||"";if(S.f.setp==="platform"){S.perr=null;S.plat=null}render(true);window.scrollTo(0,0);break;
+    case"setp":{const pv=S.f.setp||"",nv=el.dataset.v||"";if((pv==="ayar"||pv==="takimy")&&nv&&nv!==pv)S.f.setpP=pv;else if(!nv||nv==="ayar"||nv==="takimy")S.f.setpP=""}S.f.setp=el.dataset.v||"";if(S.f.setp==="platform"){S.perr=null;S.plat=null}render(true);window.scrollTo(0,0);break;
     case"memNew":{const m=(S.memList||[]).find(x=>x.user_id===id);const c=m&&m.new_card;if(!c)break;const pos=GROUP_POS[EPOS[c.epos]?.[0]]||"Orta saha";
       const a={};for(const[k,,,subs]of attrSet(pos))for(const[sk]of subs)a[k+"_"+sk]=65;
       const r=await A("admin_save_player_v2",{p_id:null,p_name:c.name,p_pos:pos,p_epos:c.epos,p_alt:c.alt||"",p_attrs:cleanAttrs(pos,a)});if(!r||!r.id)break;

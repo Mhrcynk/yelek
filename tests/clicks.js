@@ -88,7 +88,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   await T("Ayarlar: Linkler",async()=>{await E(pg,`S.f.setp="pay";S.tab="ayarlar";render(true)`);await pg.waitForTimeout(300);
     const u=await pg.evaluate(()=>document.querySelector("#shareUrl")?.value||"");ok(u&&!u.includes("?t="),"Tek link yanlış ("+u+")");ok(await pg.locator(".lkt").count()===0,"Eski link sekmeleri duruyor")});
 
-  await T("Ayarlar: Platform",async()=>{await E(pg,`S.f.setp="";render(true)`);await click(pg,'[data-act="setp"][data-v="platform"]');await pg.waitForTimeout(400);
+  await T("Ayarlar: Platform",async()=>{await E(pg,`S.f.setp="ayar";render(true)`);await click(pg,'[data-act="setp"][data-v="platform"]');await pg.waitForTimeout(400);
     await click(pg,'[data-act="platL"]');ok(await pg.locator(".plx").count()===1,"Platform → Linkler açılmadı");
     await click(pg,'[data-act="bkKey"]');await click(pg,'#modal [data-act="bkKey"][data-v="1"]');await pg.waitForTimeout(400);
     const k=await pg.evaluate(()=>document.querySelector("#modal .surl input")?.value||"");ok(/^[0-9a-f]{64}$/.test(k),"yedek anahtarı üretilmedi");
@@ -96,7 +96,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
 
   await T("Görünüm",async()=>{await E(pg,`S.f.setp="";S.tab="ayarlar";render(true)`);await pg.waitForTimeout(300);ok(await pg.evaluate(()=>document.documentElement.classList.contains("dk")),"mor (koyu) tema açık değil");ok(await pg.locator('[data-act="theme"]').count()===0,"tema seçici hâlâ duruyor")});
 
-  await T("Hesabımı sil",async()=>{await click(pg,'[data-act="setp"][data-v="hesap"]');await pg.waitForTimeout(300);await click(pg,'[data-act="delAcc"]');await pg.waitForTimeout(400);ok(await pg.locator('#modal [data-act="delAccGo"]').count()===1,"hesap silme penceresi açılmadı");await click(pg,'#modal [data-act="close"]')});
+  await T("Hesabımı sil",async()=>{await E(pg,`S.tab="ben";S.f.setp="ayar";render(true)`);await click(pg,'[data-act="setp"][data-v="hesap"]');await pg.waitForTimeout(300);await click(pg,'[data-act="delAcc"]');await pg.waitForTimeout(400);ok(await pg.locator('#modal [data-act="delAccGo"]').count()===1,"hesap silme penceresi açılmadı");await click(pg,'#modal [data-act="close"]')});
 
   await T("Takımlar ekranı",async()=>{await click(pg,".top .brand");await pg.waitForTimeout(400);ok(await pg.locator("#tCode").count()===1,"Takımlar ekranı açılmadı");
     await pg.fill("#tCode","yokboyle");await pg.locator(".tcf button[type=submit]").click();await pg.waitForTimeout(300);ok(calls.some(c=>c[0]==="team_by_code"&&/yokboyle/.test(c[1])),"takım kodu sorgulanmadı");await click(pg,'#modal [data-act="close"]')});
@@ -110,7 +110,7 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   await T("Kadro: hızlı seçim ve kopyala",async()=>{await E(pg,`S.sheet=null;S.tab="mac";const m=openMatch();m.state="kayit";render(true)`);await pg.waitForTimeout(300);
     ok(await pg.locator('[data-act="copyTxt"][data-v="rsvp"]').count()===1,"kadro listesini kopyala yok");
     await click(pg,'[data-act="rosterSet"][data-v="ready"]');ok(calls.some(c=>c[0]==="admin_set_roster"),"hazır olanlar sunucuya gitmedi");await E(pg,`openMatch().state="takim";render(true)`)});
-  await T("Üye kendi durumunu günceller",async()=>{await E(pg,`S.admin=false;S.mem={status:"onayli",role:"uye",player_id:"${ids[4]}"};S.me="${ids[4]}";S.tab="ben";S.sheet=null;render(true)`);await pg.waitForTimeout(300);
+  await T("Üye kendi durumunu günceller",async()=>{await E(pg,`S.admin=false;S.mem={status:"onayli",role:"uye",player_id:"${ids[4]}"};S.me="${ids[4]}";S.tab="ben";S.f.setp="";S.f.stOpen=true;S.sheet=null;render(true)`);await pg.waitForTimeout(300);
     await click(pg,'[data-act="myStatus"]');ok(await pg.locator('#modal [data-act="stType"]').count()>0,"üye durum seçeneklerini göremiyor");await click(pg,'#modal [data-act="close"]');
     await E(pg,`S.admin=true;S.mem={status:"onayli",role:"yonetici",player_id:"${ids[4]}"};render(true)`)});
   await T("Çıkarılan oyuncuyu geri al",async()=>{await E(pg,`S.all.find(p=>p.id==="${ids[13]}").archived=true;S.players=S.players.filter(p=>p.id!=="${ids[13]}");S.sheet={type:"arch"};render(true)`);await pg.waitForTimeout(300);
