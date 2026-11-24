@@ -2423,7 +2423,7 @@ function _resultPanel(m,only){
     </section>
     <section class="card mdet">
     ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Maç ve kartlara etkisi tamamen silinir.</div>`:""}
-    <div class="mtabs" role="tablist">${[["ozet","Özet"],["notlar","Notlar"],...(trkHas(m)||S.admin?[["saha","Saha"]]:[]),].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
+    <div class="mtabs" role="tablist">${[["ozet","Özet"],["odul","Ödüller"],["notlar","Notlar"],...(trkHas(m)||S.admin?[["saha","Saha"]]:[]),].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(only)h="";
   if(tab==="ozet"){
     const mo=inf.motm;const r=mo&&inf.pts[mo];
@@ -2431,7 +2431,6 @@ function _resultPanel(m,only){
       h+=`<button class="motmc" data-act="open" data-id="${esc(mo)}"><span class="mph">${ph?`<img src="${esc(ph)}" alt="">`:P(mo)?avatar(P(mo)):""}</span>
         <span class="mmi"><span class="eyebrow">Maçın Adamı</span>${r?`<span class="nt ${noteCls(r.pts)}">★ ${fN(r.pts)}</span>`:""}<b>${esc(nameOf(mo))}</b><span class="muted small">${dot2(r?r.side:"A")}${esc(TEAM[r?r.side:"A"])}${r?" · "+ROLE_NAME[r.role]:""}</span></span>
         <span class="mms">${kl?`<span><small>Yenilen</small><b>${r.op}</b></span>`:`<span><small>Gol</small><b>${+stt[mo]?.g||0}</b></span>`}<span><small>Asist</small><b>${+stt[mo]?.a||0}</b></span></span></button>`}
-    h+=`<div class="awards two"><div class="aw"><span>Haftanın Golü</span><b>${inf.gol?esc(shortName(nameOf(inf.gol))):"—"}</b></div><div class="aw"><span>Fiyasko</span><b>${inf.fiy?esc(shortName(nameOf(inf.fiy))):"—"}</b></div></div>`;
     // olaylar: her oyuncu bir kez, yaptığı işler ikon ve sayıyla
     const used=new Set();const evs=k=>T(k).map(id=>{const o=stt[id]||{};const it=[];const add=(n,ic,cls,t)=>{if(n>0){used.add(t);it.push(`<span class="evi ${cls}" title="${t}">${ic}${n>1?`<small>×${n}</small>`:""}</span>`)}};
         add((+o.g||0)-Math.min(+o.pg||0,+o.g||0),"⚽","g","Gol");add(Math.min(+o.pg||0,+o.g||0),'<span class="pkb">⚽<b>P</b></span>',"g","Penaltı golü");add(+o.a||0,"👟","a","Asist");add(+o.cl||0,"🛡️","c","Çizgiden çıkardı");add(+o.ps||0,"🧤","c","Penaltı kurtardı");add(+o.pm||0,'<span class="pkb">⚽<b>✕</b></span>',"og","Penaltı kaçırdı");add(+o.pen||0,"P","p","Penaltı yaptırdı");add(+o.og||0,"⚽","og","Kendi kalesine");
@@ -2439,6 +2438,8 @@ function _resultPanel(m,only){
     const eA=evs("A"),eB=evs("B");
     if(eA||eB)h+=`<div class="evg"><div class="evc"><div class="evt">${dot2("A")}${esc(TEAM.A)}</div>${eA||'<span class="muted small">—</span>'}</div><div class="evc"><div class="evt">${dot2("B")}${esc(TEAM.B)}</div>${eB||'<span class="muted small">—</span>'}</div></div>
       ${(()=>{const L=[["Gol","⚽ gol"],["Penaltı golü",'<span class="pkb">⚽<b>P</b></span> penaltı golü'],["Asist","👟 asist"],["Çizgiden çıkardı","🛡️ çizgiden çıkarma"],["Penaltı kurtardı","🧤 penaltı kurtardı"],["Penaltı kaçırdı",'<span class="pkb">⚽<b>✕</b></span> penaltı kaçırdı'],["Penaltı yaptırdı",'<b class="evi p">P</b> penaltı yaptırdı'],["Kendi kalesine",'<b class="evi og">⚽</b> kendi kalesine']].filter(x=>used.has(x[0])&&!["Gol","Asist"].includes(x[0]));return L.length?`<div class="evleg">${L.map(x=>`<span>${x[1]}</span>`).join("")}</div>`:""})()}`;
+  }else if(tab==="odul"){
+    h+=`<div class="awards two"><div class="aw"><span>Haftanın Golü</span><b>${inf.gol?esc(shortName(nameOf(inf.gol))):"—"}</b></div><div class="aw"><span>Fiyasko</span><b>${inf.fiy?esc(shortName(nameOf(inf.fiy))):"—"}</b></div></div>`;
     if(inf.totw.length)h+=`<div><div class="eyebrow">Haftanın takımı${inf.totw.form?" · "+esc(inf.totw.form):""}</div><div class="twg">${inf.totw.map(id=>{const p=P(id);if(!p)return"";const r=inf.pts[id];return `<button class="twc" data-act="open" data-id="${esc(id)}">${avatar(p)}<b>${esc(shortName(p.name))}</b>${r?`<i class="nt ${noteCls(r.pts)}">${inf.motm===id?"★":""}${fN(r.pts)}</i>`:""}<small>${esc((inf.totw.slot||{})[id]||"")}</small></button>`}).join("")}</div></div>`;
     if(S.admin){const o=(list,cur)=>`<option value="">Seçilmedi</option>`+list.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))}</option>`).join("");
       h+=`<details><summary class="small">Ödülleri değiştir <span class="chip warn" style="margin-left:6px">Yönetici</span></summary><div class="grid2" style="margin-top:10px"><label class="f">⚽ Haftanın Golü<select data-act-change="awR" data-k="gol" data-m="${M}">${o(scorers,m.gol_id||"")}</select></label><label class="f">🙈 Haftanın Fiyaskosu<select data-act-change="awR" data-k="fiy" data-m="${M}">${o(pl,m.fiy_id||"")}</select></label></div></details>`}
