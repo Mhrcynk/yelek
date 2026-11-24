@@ -5104,3 +5104,5 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .hdf-n{display:grid;gap:8px}.hdf-n>b{font:800 .875rem/1 Inter,sans-serif}.hdf-g{display:flex;flex-wrap:wrap;gap:8px}
 .hdf-g button{min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card3);color:inherit;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}.hdf-g button.on,.hdf-g.v button{background:#FF3EA5;color:#fff}
 .kry-a em.up,.kry-d.up{color:#00C777}.kry-a em.dn,.kry-d.dn{color:#FF6B86}
+/* Bu hafta: sezon ödül töreni şeridi */
+.ymf.ymf-od{background:linear-gradient(90deg,#4A3800,#3A2E00)}.ymf-od em{flex:none;font-style:normal;font-size:1.5rem;line-height:1}
