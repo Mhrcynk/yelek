@@ -1337,7 +1337,7 @@ const PM_ITEMS={
   oyuncu:[["kart","Kartını tanı"],["deger","Piyasa değeri"],["seri","Seri"],["rozet","Rozetler"],["kaptan","Kaptanlık"],["durum","Sakatlık / durum"],["h2h","Kafa kafaya"],["yeni","Aramıza katıldı"],["dogum","Doğum günü"],["km","Kilometre taşı"]],
   sezon:[["tablo","Puan durumu"],["mvp","Zirve yarışı"],["golk","Gol krallığı"],["asistk","Asist krallığı"],["piyasa","Değeri artanlar"],["yildiz","Yükselen yıldız"],["ay","Ayın oyuncusu"],["sadik","Hiç kaçırmayanlar"],["karne","Ara karne"],["yFV","Sezonun golcüsü"],["yOS","Sezonun maestrosu"],["yDF","Sezonun duvarı"],["yKL","Sezonun panteri"],["final","Sezon finali"]],
   tahmin:[["kupon","Tahminim"],["oran","Maçın oranları"],["kimne","Kim neye oynadı?"],["tuttu","Tuttu!"],["tkup","Haftanın tahmini"],["thafta","Haftanın tahmin kralı"],["ttab","Haftalık tahmin tablosu"],["tkral","Sezonun tahmin kralı"]]};
-const PM_EMPTY={duello:"Bu maçta sonuçlanmış düello yok.",dson:"Bu maçta sonuçlanmış düello yok.",dliste:"Sıradaki maçta kabul edilmiş düello yok.",meydan:"Sıradaki maçta kabul edilmiş düello yok. Kadrolar açıklanınca Bu hafta ekranından meydan okuyabilirsin.",notum:"Bu maçta notun yok ya da oylama henüz kapanmadı.",tduel:"Düello için iki oyuncunun da sonuçlanmış tahmini olmalı.",kupon:"Sıradaki maç için açık tahminin yok. Bu hafta ekranındaki Tahmin kartından tahmin yapınca burada paylaşabilirsin.",oran:"Sıradaki maçın kadroları açıklanınca oranlar hazır olur.",kimne:"Sıradaki maç için henüz tahmin yapılmadı.",tuttu:"Bu maçta tutan tahminin yok.",ttab:"Henüz sonuçlanmış tahmin yok.",tkup:"Bu maçta tutan tahmin yok (ya da tahmin oyununa üye girişiyle bakılmalı).",tkral:"Henüz sonuçlanmış tahmin yok.",thafta:"Henüz kazananı ilan edilmiş bir hafta yok.",veri:"Bu maçın saha verileri girilmedi. Maç detayında Saha sekmesinden girebilirsin.",once:"Sıradaki maçın takımları henüz kurulmadı.",gun:"Planlanmış bir maç yok.",out:"Şu an sakat, hasta ya da izinli oyuncu yok.",seri:"Bu oyuncunun şu an süren bir serisi yok.",rozet:"Bu oyuncunun henüz rozeti yok.",kaptan:"Bu oyuncu henüz kaptanlık yapmadı.",durum:"Bu oyuncu şu an hazır görünüyor; durumu sakat, hasta ya da izinli yapılınca bu gönderi açılır.",h2h:"Karşılaştırmak için ikinci bir oyuncu seç.",km:"Bu oyuncu henüz 10 maça, 10 gole ya da 10 asiste ulaşmadı.",golk:"Bu sezon henüz gol yok.",asistk:"Bu sezon henüz asist yok.",karne:"Ara karne en az 3 maç oynandıktan sonra hazırlanır.",final:"Sezon finali, sezon bitince hazırlanır."};
+const PM_EMPTY={duello:"Bu maçta sonuçlanmış düello yok.",dson:"Bu maçta sonuçlanmış düello yok.",dliste:"Sıradaki maçta kabul edilmiş düello yok.",meydan:"Sıradaki maçta kabul edilmiş düello yok. Kadrolar açıklanınca Bu hafta ekranından meydan okuyabilirsin.",notum:"Bu maçta notun yok ya da oylama henüz kapanmadı.",tduel:"Düello için iki oyuncunun da sonuçlanmış tahmini olmalı.",kupon:"Sıradaki maç için açık tahminin yok. Bu hafta ekranındaki Tahmin kartından tahmin yapınca burada paylaşabilirsin.",oran:"Sıradaki maçın kadroları açıklanınca oranlar hazır olur.",kimne:"Sıradaki maç için henüz tahmin yapılmadı.",tuttu:"Bu maçta tutan tahminin yok.",ttab:"Henüz sonuçlanmış tahmin yok.",tkup:"Bu maçta tutan tahmin yok (ya da tahmin oyununa üye girişiyle bakılmalı).",tkral:"Henüz sonuçlanmış tahmin yok.",thafta:"Henüz kazananı ilan edilmiş bir hafta yok.",veri:"Bu maçın saha verileri girilmedi. Maç detayında İstatistik sekmesinden girebilirsin.",once:"Sıradaki maçın takımları henüz kurulmadı.",gun:"Planlanmış bir maç yok.",out:"Şu an sakat, hasta ya da izinli oyuncu yok.",seri:"Bu oyuncunun şu an süren bir serisi yok.",rozet:"Bu oyuncunun henüz rozeti yok.",kaptan:"Bu oyuncu henüz kaptanlık yapmadı.",durum:"Bu oyuncu şu an hazır görünüyor; durumu sakat, hasta ya da izinli yapılınca bu gönderi açılır.",h2h:"Karşılaştırmak için ikinci bir oyuncu seç.",km:"Bu oyuncu henüz 10 maça, 10 gole ya da 10 asiste ulaşmadı.",golk:"Bu sezon henüz gol yok.",asistk:"Bu sezon henüz asist yok.",karne:"Ara karne en az 3 maç oynandıktan sonra hazırlanır.",final:"Sezon finali, sezon bitince hazırlanır."};
 function pmPlayers(){return S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,"tr"))}
 const pmNewest=()=>S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||"")))[0];
 const pmPid=(f,it)=>f.pid||(it==="yeni"?pmNewest()?.id:null)||S.me||pmPlayers()[0]?.id;
@@ -2407,16 +2407,15 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
     return `<section class="card tsb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${esc(TRKN[k].l)}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${A.slice(0,open?A.length:3).map(([id,o,x],i)=>`<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${i+1}</span><span class="tsp ${tierOf(ovrOf(id))}${photoOf(id)?"":" ni"}">${ini(id)}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${subOf(x)}</small></span><b class="tsv num">${fv(k,o[k])}${unit(k)?" "+unit(k):""}</b></li>`).join("")}</ol></section>`};
   {// Mevkiler sekmesiyle aynı düzen: ikonlu grup sekmeleri + grup içindeki her veri için liste kartı
     const GI={Fizik:["simsek","#00E58A"],Pas:["krampon","#5FE3F5"],"Top kazanma":["kalkan","#FFD400"],"Top taşıma":["top","#FF3EA5"]};
-    const G=SAHA_G.filter(([,ks])=>ks.some(k=>avail.includes(k)));const g=G.find(x=>x[0]===S.f.sahaG)||G[0];
-    h+=`<div class="mzf">${segM}</div><div class="pr-s" role="tablist" aria-label="Veri grupları">${G.map(([t])=>`<button role="tab" aria-selected="${t===g[0]}" class="${t===g[0]?"on":""}" data-act="tog1" data-k="sahaG" data-v="${esc(t)}" style="--c:${GI[t][1]}"><i class="dit">${dIcon(GI[t][0],GI[t][1],26)}</i>${esc(t)}</button>`).join("")}</div>`;
-    h+=`<div class="boards">${g[1].filter(k=>avail.includes(k)).map(board).join("")}</div>`}
+    const G=SAHA_G.filter(([,ks])=>ks.some(k=>avail.includes(k)));
+    h+=`<div class="mzf">${segM}</div>`+G.map(([t,ks])=>`<h3 class="kgg shg"><i class="dit">${dIcon(GI[t][0],GI[t][1],18)}</i>${esc(t)}</h3><div class="boards">${ks.filter(k=>avail.includes(k)).map(board).join("")}</div>`).join("")}
   if(S.admin&&mode==="son")h+=`<button class="btn ghost sm" data-act="trkOpen" data-id="${esc(last.id)}">Son maçın verilerini düzenle</button>`;
   return h}
 function resultPanel(m,...r){return inM(m,()=>_resultPanel(m))}
 function _resultPanel(m,only){
   const inf=S.mInfo[m.id]||{pts:{},totw:[]};const pl=plAll(m);const stt=m.stats||{};const M=esc(m.id);
   const scorers=pl.filter(id=>(+stt[id]?.g||0)>0);const sa=+m.score_a||0,sb=+m.score_b||0;
-  const tab0=S.f.mtab==="tahmin"?"ozet":S.f.mtab||"ozet";const tab=only||({kadro:"ozet",oy:"notlar",ist:"notlar",deg:"notlar"}[tab0]||tab0);const T=k=>plOf(m,k);
+  const tab0=S.f.mtab==="tahmin"?"ozet":S.f.mtab||"ozet";const tab=only||({kadro:"ozet",oy:"notlar",deg:"notlar",saha:"ist"}[tab0]||tab0);const T=k=>plOf(m,k);
   const avgN=k=>{const v=T(k).map(id=>inf.pts[id]?.pts).filter(x=>x!=null);return v.length?v.reduce((a,b)=>a+b,0)/v.length:null};
   const mt=Object.values(inf.pts).find(Boolean)?.mt||"";const dot2=k=>crest(k==="A"?TEAM.A:TEAM.B,k,15);
   const d0=parseYmd(m.date);const capOf=k=>{const id=k==="A"?m.cap_a:m.cap_b;const ok=id&&P(id);const ph=ok&&photoOf(id);
@@ -2428,7 +2427,7 @@ function _resultPanel(m,only){
     </section>
     <section class="card mdet">
     ${S.admin&&S.f.delMatch===m.id?`<div class="note warn">Maç ve kartlara etkisi tamamen silinir.</div>`:""}
-    <div class="mtabs" role="tablist">${[["ozet","Özet"],["odul","Ödüller"],["notlar","Notlar"],...(trkHas(m)||S.admin?[["saha","Saha"]]:[]),].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
+    <div class="mtabs" role="tablist">${[["ozet","Özet"],["odul","Ödüller"],["notlar","Notlar"],["ist","İstatistik"]].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" class="${tab===k?"on":""}" data-act="mtab" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(only)h="";
   if(tab==="ozet"){
     const mo=inf.motm;const r=mo&&inf.pts[mo];
@@ -2479,7 +2478,8 @@ function _resultPanel(m,only){
   if(only)return h;
   // sade dört sekme: kadro Özet'in, oylama ve takım istatistikleri Notlar'ın altında açılır
   if(tab==="ozet")h+=`<details class="mdx"${tab0==="kadro"?" open":""}><summary>Kadro ve diziliş</summary>${_resultPanel(m,"kadro")}</details>`;
-  if(tab==="notlar")h+=(vOn(m)?(m.vsum&&m.vote_closed_at?`<button class="btn block mdx-b" data-act="oySonuc" data-id="${M}">Oylama sonuçları</button>`:`<details class="mdx"${tab0==="oy"?" open":""}><summary>Oylama sonuçları</summary>${_resultPanel(m,"oy")}</details>`):"")+`<details class="mdx"${tab0==="ist"?" open":""}><summary>Takım istatistikleri</summary>${_resultPanel(m,"ist")}</details>`;
+  if(tab==="notlar")h+=(vOn(m)?(m.vsum&&m.vote_closed_at?`<button class="btn block mdx-b" data-act="oySonuc" data-id="${M}">Oylama sonuçları</button>`:`<details class="mdx"${tab0==="oy"?" open":""}><summary>Oylama sonuçları</summary>${_resultPanel(m,"oy")}</details>`):"");
+  if(tab==="ist"&&(trkHas(m)||S.admin))h+=`<h3 class="kgg">Saha verileri</h3><div style="display:grid;gap:12px">${trkPanel(m)}</div>`;
   return h+`</section>`;
 }
 // maç detayı: o maçın tahminleri
@@ -4552,9 +4552,8 @@ function viewIddia(){
   const bd=m&&BET.board[m.id];const row=BET.tbl&&me?(BET.tbl.wrows||[]).find(r=>r.p===me):null;const sum=(bd&&bd.sum)||row;
   const tab=S.f.bt||"oyna";
   let h=`<div class="iddia"><header class="bjh"><button class="oda-bk" data-act="tab" data-tab="mac" aria-label="Bu hafta ekranına dön"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><h1>Tahmin</h1>${betBell()}<button class="bj-i" data-act="betInfo" aria-label="Sikke ve kurallar"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".9" fill="currentColor" stroke="none"/></svg></button><button class="bjh-v" data-act="betInfo" aria-label="Bu haftaki bakiyen ${sum?fJ(sum.bal):""} sikke"><b class="num">${sum?fJ(sum.bal):"…"}</b><small>Sikke</small></button></header>`;
-  const t3=tab==="herkes"?"kupon":tab;
-  h+=`<div class="mtabs bt" role="tablist">${[["oyna","Oyna"],["kupon","Tahminler"],["sira","Sıralama"]].map(([k,l])=>`<button role="tab" aria-selected="${t3===k}" class="${t3===k?"on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
-  if(t3==="kupon")h+=`<div class="bxh bx2">${[["kupon","Benim"],["herkes","Arkadaşlar"]].map(([k,l])=>`<button class="chip${tab===k?" on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
+  const t3=tab;
+  h+=`<div class="mtabs bt" role="tablist">${[["oyna","Oyna"],["kupon","Benim"],["herkes","Arkadaşlar"],["sira","Sıralama"]].map(([k,l])=>`<button role="tab" aria-selected="${t3===k}" class="${t3===k?"on":""}" data-act="tog1" data-k="bt" data-v="${k}">${l}</button>`).join("")}</div>`;
   if(tab==="oyna"){
     if(!m)h+=`<div class="card emp2">${empIc("takvim","cyan")}<p>Sıradaki maçın kadroları açıklanınca tahminler açılır.</p></div>`;
     else if(!bd)h+=`<div class="card"><p class="muted">Oranlar yükleniyor…</p></div>`;
