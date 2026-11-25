@@ -1559,7 +1559,7 @@ function bhWrap(top,mac){const B=BH;BH=null;const T=[["mac","Maç",mac+B.mac.joi
 function viewMac(){
   if(!S.players.length)return `<section class="card"><div class="empty emp2">${empIc("kisi","pink")}<h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
   const om=openMatch();if(om){const busy=(S.draft&&S.draft.mid===om.id)||(S.teams&&S.teams.mid===om.id);if(S.admin&&S.f.macY&&!busy)return macYonet(om);if(busy)return hero(om)+matchBody(om);
-    BH={mac:[],oyun:[],haber:[]};bh("haber",SZ_ON?"":odSerit());bh("haber",muafKart(om));{const lf=lastFinM();if(lf&&S.mInfo[lf.id]&&!lf.archived){bh("haber",haberFeed(lf));bh("haber",rztSerit(lf))}}bh("oyun",duKapKart(om));const body=matchBody(om);return bhWrap(hero(om)+(SZ_ON?odSerit():"")+(BH.top||""),body)}
+    BH={mac:[],oyun:[],haber:[]};bh("haber",SZ_ON?"":odSerit());bh("haber",muafKart(om));bh("haber",duSerit(om));{const lf=lastFinM();if(lf&&S.mInfo[lf.id]&&!lf.archived){bh("haber",haberFeed(lf));bh("haber",rztSerit(lf))}}const body=matchBody(om);return bhWrap(hero(om)+(SZ_ON?odSerit():"")+(BH.top||""),body)}
   const lm=lastFinM();if(lm&&!lm.archived&&S.mInfo[lm.id])return macSonra(lm);
   BH={mac:[],oyun:[],haber:[]};bh("haber",odSerit());bh("oyun",duelWait());return bhWrap(S.admin?createHero():noMatchHero(),"")
 }
@@ -1627,6 +1627,10 @@ function duTally(L){const T={};const add=(id,w,l,o)=>{const x=T[id]||(T[id]={p:i
   L.forEach(([m,d])=>{const r=duRes(m,d,d.a);if(!r){add(d.a,0,0,1);add(d.b,0,0,1);return}add(d.a,r.r==="G"?1:0,r.r==="M"?1:0);add(d.b,r.r==="M"?1:0,r.r==="G"?1:0)});
   return Object.values(T).filter(x=>P(x.p)).sort((a,b)=>b.w-a.w||a.l-b.l||b.n-a.n||nameOf(a.p).localeCompare(nameOf(b.p),"tr"))}
 const duOf=m=>{const pl=plAll(m);return (DU.rows||[]).filter(d=>d.m===m.id&&d.s==="kabul"&&pl.includes(d.a)&&pl.includes(d.b)).map(d=>[m,d])};
+function duSerit(m){if(!isMember()||S.fol||typeof DU==="undefined")return"";const pm=duPrevM(m);const k=pm&&duKingRec(pm.id);if(!k||!k.p||!P(k.p))return"";const pl=plAll(m);
+  if(pl.includes(k.p)&&m.state==="takim")return duKapKart(m);const me=k.p===myPid();const fn=esc(firstName(nameOf(k.p)));
+  const [t,s]=!pl.length?[me?"Düello kralı sensin":fn+" düello kralı",me?"Ödülün: bu maçta kaptansın, rakip kaptanı da sen seçeceksin":"Ödülü: bu maçta kaptan, rakip kaptanı da o seçecek"]:pl.includes(k.p)?[me?"Bu maçta kaptansın":fn+" bu maçta kaptan","Düello kralının ödülü"]:[me?"Düello kralı sensin":fn+" düello kralı","Bu maçta kadroda değil, ödül kullanılmıyor"];
+  return `<button class="ymf ymf-du1" data-act="duKralOpen" data-id="${esc(pm.id)}">${KRL_TAC}<span><b>${t}</b><small>${s}</small></span><i aria-hidden="true">›</i></button>`}
 function duKapKart(m){if(!isMember()||S.fol||m.state!=="takim")return"";const K=duKingFor(m);if(!K)return"";const me=K.p===myPid();const sd=sideOf(m,K.p),ot=sd==="A"?"B":"A";const pk=K.k.pm===m.id&&K.k.pick&&plOf(m,ot).includes(K.k.pick)?K.k.pick:null;const canPick=me&&!mEnded(m)&&matchTs(m)>Date.now();
   const t=me?"Bu maçta kaptansın":esc(firstName(nameOf(K.p)))+" bu maçta kaptan";const s=pk?`Düello kralının ödülü · rakip kaptan: ${esc(shortName(nameOf(pk)))}`:me?"Düello kralının ödülü · rakip kaptanı sen seçiyorsun":"Düello kralının ödülü · rakip kaptanı da o seçer";
   return `<div class="ymf ymf-du"><button class="ymf-m" data-act="duKralOpen" data-id="${esc(K.pm.id)}"><span class="ymf-x" aria-hidden="true">${KRL_TAC}</span><span><b>${t}</b><small>${s}</small></span></button>${canPick?`<button class="ymf-go" data-act="duKapOpen" data-id="${esc(m.id)}">${pk?"Değiştir":"Kaptanı seç"}</button>`:`<i aria-hidden="true">›</i>`}</div>`}
@@ -1894,8 +1898,6 @@ function haberFeed(m){if(!m||S.fol||!isMember())return"";const inf=S.mInfo[m.id]
     if(A&&P(A.id))row(rzIc("tac","odul","sm"),(B&&B.id!==A.id?"Yeni lider: ":"Lider: ")+nm(A.id),A.p+" puan · "+A.n+" maç",op(A.id,"lider"));
     const gt=F=>{const t={};for(const x of F){const pi=(S.mInfo[x.id]||{}).pts||{};for(const id in pi)if(realP(id)&&pi[id].g)t[id]=(t[id]||0)+pi[id].g}return Object.entries(t).sort((a,b)=>b[1]-a[1])[0]};
     const ga=gt(Fy),gb=Fb.length?gt(Fb):null;if(ga&&P(ga[0]))row(rzIc("gol","gol","sm"),(gb&&gb[0]!==ga[0]?"Gol krallığında yeni lider: ":"Gol kralı: ")+nm(ga[0]),ga[1]+" gol",op(ga[0],"golk"))}
-  {const K=duKingRec(m.id);if(K&&K.p&&P(K.p))row(rzIc("kilic","oyun","sm"),"Düello kralı: "+nm(K.p),"Haftanın düellolarında en çok kazanan",`data-act="duKralOpen" data-id="${esc(m.id)}"`)}
-  if(!tahminYok()&&BET.kral&&P(BET.kral.p))row(rzIc("tac","oyun","sm"),"Tahmin kralı: "+nm(BET.kral.p),BET.kral.net?(BET.kral.net>0?"+":"")+fJ(BET.kral.net)+" sikke":"",'data-act="kralOpen"');
   {const H=pl.map(id=>[id,(S.stats[id]||{}).streak]).filter(x=>x[1]&&x[1].hot).slice(0,2);for(const[id,st]of H)row(rzIc("alev","gol","sm"),nm(id),esc(st.t),op(id,"seri"))}
   if(!R.length)return"";const d=parseYmd(m.date);
   return `<section class="rzs hbf"><small>Geçen maçtan sonra · ${d.getDate()} ${AYLAR[d.getMonth()]}</small><b>Neler oldu?</b>${R.join("")}</section>`}
@@ -4905,8 +4907,9 @@ function betRestore(){try{const d=JSON.parse(localStorage.getItem("y_bet_"+(TID)
 const kralSeen=()=>{try{if(BET.kral)LS.set("y_kral_"+TID,BET.kral.wk)}catch(_){}};
 // ödül: haftanın tahmin kralı, bir sonraki haftanın maçında yelek giymez
 function yelekMuaf(m){const k=BET.kral;if(!k||!k.wk||!m||!P(k.p))return null;const d=parseYmd(String(k.wk).slice(0,10));d.setDate(d.getDate()+7);const w=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");return betMon(m.date)===w?k.p:null}
-function muafKart(m){if(!isMember()||S.fol)return"";const id=yelekMuaf(m);if(!id||!plAll(m).includes(id))return"";const me=id===myPid();
-  return `<button class="ymf" data-act="kralOpen">${KRL_TAC}<span><b>${me?"Takımın bu maçta yelek giymiyor":esc(firstName(nameOf(id)))+"'in takımı bu maçta yelek giymiyor"}</b><small>Geçen haftanın tahmin kralının ödülü</small></span><i aria-hidden="true">›</i></button>`}
+function muafKart(m){if(!isMember()||S.fol)return"";const id=yelekMuaf(m);if(!id)return"";const me=id===myPid();const pl=plAll(m);const fn=esc(firstName(nameOf(id)));
+  const [t,s]=!pl.length?[me?"Tahmin kralı sensin":fn+" tahmin kralı",me?"Ödülün: bu maçta takımın yelek giymeyecek":"Ödülü: bu maçta takımı yelek giymeyecek"]:pl.includes(id)?[me?"Takımın bu maçta yelek giymiyor":fn+"'in takımı bu maçta yelek giymiyor","Geçen haftanın tahmin kralının ödülü"]:[(me?"Tahmin kralı sensin":fn+" tahmin kralı"),"Bu maçta kadroda değil, ödül kullanılmıyor"];
+  return `<button class="ymf" data-act="kralOpen">${KRL_TAC}<span><b>${t}</b><small>${s}</small></span><i aria-hidden="true">›</i></button>`}
 function kralLoad(open){return rpc("bet_kral",{}).then(r=>{if(!r||!r.ok)return;BET.kral=r.wk&&P(r.p)?r:null;if(!BET.kral)return;
   if(open||(LS.get("y_kral_"+TID)!==BET.kral.wk&&!S.sheet&&!S._route&&!S.story)){S.sheet={type:"kral"};render(true)}else if(S.tab==="iddia"||S.tab==="mac")render(true)}).catch(()=>{})}
 const KRL_TAC='<svg class="krl-tac" viewBox="0 0 64 40" aria-hidden="true"><path d="M6 34 2 10l16 12L32 3l14 19 16-12-4 24z" fill="#FFD400" stroke="#B8860B" stroke-width="2.5" stroke-linejoin="round"/><circle cx="32" cy="3.5" r="3.5" fill="#FF3EA5"/><circle cx="2.5" cy="10" r="2.5" fill="#12C46B"/><circle cx="61.5" cy="10" r="2.5" fill="#12C46B"/></svg>';
