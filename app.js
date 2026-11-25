@@ -1243,7 +1243,7 @@ function ypStreak(p){const st=S.stats[p.id]?.streak;if(!st)return null;const num
   const html=ypPerson({id:p.id,f:{c:st.hot?"":"r",ey:"Form grafiği",ti:st.hot?"Seri sürüyor":"Kötü seri",wk:igWeek(lastFinM()),ft:"#halısaha"},bdg:num?[num,"Maçtır"]:[String(ovrOf(p.id)),"Reyting"],pre:`<div class="yp-pre">${ypTag(st.t)}</div>`,post:frm});
   return{html,cap:`${p.name}: ${st.t} ${st.hot?"🔥":"🥶"}\n${HT()} #halısaha`,name:"seri-"+p.name}}
 function ypBadges(p){const B=(S.stats[p.id]?.badges||[]).filter(b=>!b.shame);if(!B.length)return null;const b4=B.slice(0,4);const cw=(476-10)/2-24-46-12;
-  const meds=`<div class="yp-meds">${b4.map(b=>`<div class="yp-med"><i>${esc(b.i)}</i><div><b style="font-size:${ypFit(TRU(b.t),18,cw,{ls:.04})}px">${esc(TRU(b.t))}</b><small>${esc(b.d)}</small></div></div>`).join("")}</div>`;
+  const meds=`<div class="yp-meds">${b4.map(b=>`<div class="yp-med">${rzMed(b.t,"yp")}<div><b style="font-size:${ypFit(TRU(b.t),18,cw,{ls:.04})}px">${esc(TRU(b.t))}</b><small>${esc(b.d)}</small></div></div>`).join("")}</div>`;
   const html=ypPost({ey:curYr()+". Sezon",ti:"Rozetler",wk:B.length+" rozet",hero:ypCut(p.id),pn:ypBig(p.name,ageOf(p))+meds,ft:"#halısaha"});
   return{html,cap:`${p.name}'in rozetleri 🏅\n${B.map(b=>b.t+" ("+b.d+")").join("\n")}\n${HT()} #halısaha`,name:"rozetler-"+p.name}}
 function ypCaptain(p){const L=fin().filter(m=>m.cap_a===p.id||m.cap_b===p.id);if(!L.length)return null;const o={G:0,B:0,M:0};
@@ -1643,14 +1643,57 @@ function rztList(pid){const L=((S.stats[pid]||{}).rzt||[]).slice();
     T(H,"👑","Tahmin Kralı",H+" kez haftanın tahmin kralı","Haftanın tahmin kralı ol")}
   const sh=L.filter(b=>b.shame);return L.filter(b=>b.on&&!b.shame).concat(L.filter(b=>!b.on),sh)}
 function rztCnt(){const c={};for(const p of S.players)for(const b of rztList(p.id))if(b.on)c[b.t]=(c[b.t]||0)+1;return c}
+/* rozet madalyonları: emoji yerine tek tip çizgi ikon + kategori rengi */
+const RZ_C={gol:"#FF3EA5",pas:"#5FE3F5",def:"#00E58A",kl:"#FFD400",saha:"#B9A8FF",odul:"#FFB020",oyun:"#FF7A45",utanc:"#9C8DD0"};
+const RZ_I={hat:'<circle cx="7" cy="15.5" r="3.2"/><circle cx="17" cy="15.5" r="3.2"/><circle cx="12" cy="7.5" r="3.2"/>',
+  hat5:'<circle cx="12" cy="13" r="4"/><path d="M12 3v3M4.5 6.5l2 2M19.5 6.5l-2 2M3 13h2.5M18.5 13H21"/>',
+  gol:'<circle cx="12" cy="12" r="8"/><path d="m12 7.5 3.4 2.5-1.3 4h-4.2l-1.3-4z"/>',
+  pas:'<path d="M4 17c4 0 6-10 16-10"/><path d="m16 4 4 3-3 4"/>',
+  duvar:'<rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 9.7h18M3 14.3h18M9 5v4.7M15 5v4.7M6 9.7v4.6M12 9.7v4.6M18 9.7v4.6M9 14.3V19M15 14.3V19"/>',
+  eldiven:'<path d="M7 21v-6l-2-3V8a1.5 1.5 0 0 1 3 0v3V5a1.5 1.5 0 0 1 3 0v5V4a1.5 1.5 0 0 1 3 0v6V6a1.5 1.5 0 0 1 3 0v8c0 4-2 7-4 7z"/>',
+  eltop:'<path d="M5 20v-5l-1.5-2.5V9a1.3 1.3 0 0 1 2.6 0v2V6a1.3 1.3 0 0 1 2.6 0v4"/><circle cx="16" cy="14" r="5"/><path d="m16 11.5 1.8 1.3-.7 2.1h-2.2l-.7-2.1z"/>',
+  kosu:'<circle cx="15" cy="4.5" r="2"/><path d="m8 21 3-6 3 2 1 4M6 11l3-3 4 1 2 4 3 1"/>',
+  hiz:'<path d="M13 3 5 13h6l-1 8 8-10h-6z"/>',
+  ruzgar:'<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
+  miknatis:'<path d="M6 4v8a6 6 0 0 0 12 0V4h-4v8a2 2 0 0 1-4 0V4z"/><path d="M6 8h4M14 8h4"/>',
+  yildiz:'<path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8z"/>',
+  forma:'<path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/>',
+  file:'<path d="M3 20V6h18v14"/><path d="M3 10h18M3 15h18M8 6v14M13 6v14M18 6v14"/>',
+  kalkan:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+  hedef:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/>',
+  nota:'<path d="M9 18V5l10-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>',
+  saat:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M10 2h4M12 2v3"/>',
+  ok:'<circle cx="14" cy="10" r="6"/><circle cx="14" cy="10" r="2"/><path d="M3 21l9.5-9.5M3 17v4h4"/>',
+  goz:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  cift:'<path d="M4 20 14 10M14 10V5M14 10h5"/><path d="M10 20l10-10"/>',
+  alev:'<path d="M12 21c4 0 7-3 7-7 0-5-5-6-4-11-4 2-6 5-6 8-1-1-2-2-2-4-2 2-2 4-2 7 0 4 3 7 7 7z"/>',
+  kaptan:'<rect x="4" y="7" width="16" height="10" rx="3"/><path d="M14 10.2a2.6 2.6 0 1 0 0 3.6"/>',
+  dag:'<path d="m3 20 6-11 4 6 2-3 6 8z"/><path d="m7.5 12 1.5 1.5 1.5-1.5"/>',
+  yukselis:'<path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  ters:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',
+  sasir:'<circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r=".8"/><circle cx="15" cy="10" r=".8"/><path d="M9 16c1.5-1.5 4.5-1.5 6 0"/>',
+  kilic:'<path d="m4 4 9 9M20 4l-9 9M7 15l-3 3 2 2 3-3M17 15l3 3-2 2-3-3"/>',
+  tac:'<path d="M4 18h16l1-10-5 4-4-7-4 7-5-4z"/>',
+  seri:'<path d="m5 6 5 6-5 6M12 6l5 6-5 6"/>',
+  yapboz:'<path d="M4 8h4a2 2 0 1 1 4 0h4v4a2 2 0 1 1 0 4v4H4v-4a2 2 0 1 0 0-4z"/>'};
+const RZ_M={"Hat-trick":["hat","gol"],"Süper Hat-trick":["hat5","gol"],"Golcü":["gol","gol"],"Haftanın Golü":["file","gol"],"Bitirici":["ok","gol"],"Fırsatçı":["goz","gol"],"Çift Tabanca":["cift","gol"],"Seri Golcü":["alev","gol"],
+  "Pasör":["pas","pas"],"Orkestra Şefi":["nota","pas"],"Metronom":["saat","pas"],
+  "Duvar":["duvar","def"],"Temizlikçi":["kalkan","def"],"Bek Golü":["hedef","def"],"Mıknatıs":["miknatis","def"],
+  "Kale Bekçisi":["eldiven","kl"],"Gol Atan Kaleci":["eltop","kl"],
+  "Maratoncu":["kosu","saha"],"Roket":["hiz","saha"],"Maçın En Hızlısı":["ruzgar","saha"],
+  "Maçın Adamı":["yildiz","odul"],"Haftanın Takımı":["forma","odul"],"Kaptan":["kaptan","odul"],"Dev Avcısı":["dag","odul"],"Yükselen":["yukselis","odul"],
+  "Düello Kralı":["kilic","oyun"],"Tahmin Kralı":["tac","oyun"],"Sürpriz Avcısı":["hedef","oyun"],"Seri Tahminci":["seri","oyun"],"Kombine Ustası":["yapboz","oyun"],
+  "Ters Köşe":["ters","utanc"],"Fiyasko Ustası":["sasir","utanc"]};
+function rzIc(k,c,cls){return `<span class="rzm ${cls||""}" style="--c:${RZ_C[c]}" aria-hidden="true"><svg viewBox="0 0 24 24">${RZ_I[k]}</svg></span>`}
+function rzMed(t,cls){const m=RZ_M[t]||["yildiz","saha"];return `<span class="rzm ${cls||""}" style="--c:${RZ_C[m[1]]}" aria-hidden="true"><svg viewBox="0 0 24 24">${RZ_I[m[0]]}</svg></span>`}
 function rztHtml(pid){const L=rztList(pid);if(!L.length)return"";const c=rztCnt();const N=L.filter(b=>!b.shame),n=N.filter(b=>b.on).length;const all=!!S.f.rzAll;const V=all?L:L.filter(b=>b.on);
-  return `<div><h3>Rozetler <span class="rzt-n">${n} / ${N.length}</span></h3>${V.length?`<div class="rzt">${V.map(b=>`<div class="${b.on?(b.shame?"sh":c[b.t]<=2?"rr":""):"lk"}"><i aria-hidden="true">${b.e}</i><b>${esc(b.t)}</b><small>${esc(b.d)}</small></div>`).join("")}</div>`:`<p class="muted small" style="margin:8px 0 0">Henüz rozet yok.</p>`}
+  return `<div><h3>Rozetler <span class="rzt-n">${n} / ${N.length}</span></h3>${V.length?`<div class="rzt">${V.map(b=>`<div class="${b.on?(b.shame?"sh":c[b.t]<=2?"rr":""):"lk"}">${rzMed(b.t)}<b>${esc(b.t)}</b><small>${esc(b.d)}</small></div>`).join("")}</div>`:`<p class="muted small" style="margin:8px 0 0">Henüz rozet yok.</p>`}
     ${V.some(b=>b.on&&!b.shame&&c[b.t]<=2)?`<p class="rzt-k">Altın çerçeve: takımda en çok 2 kişide olan rozet.</p>`:""}
     <button class="btn sm ghost rzt-a" data-act="tog" data-k="rzAll" aria-expanded="${all}">${all?"Sadece kazanılanlar":"Tüm rozetleri gör"}</button></div>`}
 function rztPop(me){if(!S.stats[me])return false;const on=rztList(me).filter(b=>b.on&&!b.shame&&!b.bet).map(b=>b.t);const k="y_rzt_"+TID;let seen=null;try{seen=JSON.parse(LS.get(k)||"null")}catch(_){}
   try{LS.set(k,JSON.stringify(on))}catch(_){}if(!Array.isArray(seen))return false;const yeni=on.filter(t=>!seen.includes(t));if(!yeni.length)return false;S.sheet={type:"rztyeni",ts:yeni,i:0};render(true);return true}
 function sheetRztYeni(){const sh=S.sheet,L=rztList(myPid());const T=(sh.ts||[]).map(t=>L.find(b=>b.t===t)).filter(Boolean);const b=T[sh.i]||T[0];if(!b)return"";const last=sh.i>=T.length-1;const n=rztCnt()[b.t]||1;
-  return `<div class="af af-o"><p class="af-e">Yeni rozet${T.length>1?` · ${sh.i+1} / ${T.length}`:""}</p><div class="rzt-e" aria-hidden="true">${b.e}</div><h2 class="rzt-t">${esc(b.t)}</h2>
+  return `<div class="af af-o"><p class="af-e">Yeni rozet${T.length>1?` · ${sh.i+1} / ${T.length}`:""}</p><div class="rzt-e">${rzMed(b.t,"big")}</div><h2 class="rzt-t">${esc(b.t)}</h2>
     <p class="af-s">${esc(b.d)}. ${n<=1?"Takımda bu rozet sadece sende.":"Takımda "+n+" kişide var."}</p><div class="af-b one"><button class="af-p" data-act="${last?"kurOk":"rztNext"}">${last?"Tamam":"Sıradaki rozet"}</button></div></div>`}
 function sheetDuKral(){const m=S.matches.find(x=>x.id===S.sheet.mid);const k=m&&duKingRec(m.id);if(!k||!k.p||!P(k.p))return"";const T=(k.top||[]).filter(r=>P(r.p));const w=T.find(r=>r.p===k.p)||{p:k.p,w:0,l:0,n:0};const ph=photoOf(k.p);const me=myPid()===k.p;const rest=T.filter(r=>r.p!==k.p).slice(0,2);
   return `<div class="krl krl-du"><div class="eyebrow">Haftalık düello yarışı</div>
@@ -1838,26 +1881,26 @@ function odulList(w){const F=w.F;const ilk=(o,L)=>o?[o,...L.filter(x=>x.id!==o.i
 /* Bu hafta: biten sezonun ödül töreni şeridi (yeni sezonun ilk maçı bitene kadar durur) */
 /* Haberler: son maçtan sonra olanlar; bir sonraki maç bitince yenilenir */
 function haberFeed(m){if(!m||S.fol||!isMember())return"";const inf=S.mInfo[m.id];if(!inf)return"";const nm=id=>esc(shortName(nameOf(id)));const R=[];
-  const row=(e,t,sub,at)=>R.push(at?`<button class="rzs-r" ${at}><span class="hbf-e" aria-hidden="true">${e}</span><span class="rzs-x"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span><i class="hbf-c" aria-hidden="true">›</i></button>`:`<div class="rzs-r"><span class="hbf-e" aria-hidden="true">${e}</span><span class="rzs-x"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span></div>`);
+  const row=(e,t,sub,at)=>R.push(at?`<button class="rzs-r" ${at}>${e}<span class="rzs-x"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span><i class="hbf-c" aria-hidden="true">›</i></button>`:`<div class="rzs-r">${e}<span class="rzs-x"><b>${t}</b>${sub?`<small>${sub}</small>`:""}</span></div>`);
   const op=id=>`data-act="open" data-id="${esc(id)}"`;const pl=Object.keys(inf.pts||{}).filter(id=>realP(id)&&inf.pts[id]);
-  if(inf.motm&&P(inf.motm))row("⭐","Maçın adamı: "+nm(inf.motm),isFinite(inf.pts[inf.motm]?.pts)?"Maç notu "+fN(inf.pts[inf.motm].pts):"",op(inf.motm));
-  if(inf.gol&&P(inf.gol))row("🥅","Haftanın golü: "+nm(inf.gol),"",op(inf.gol));
-  {const H=pl.filter(id=>inf.pts[id].g>=3).sort((a,b)=>inf.pts[b].g-inf.pts[a].g);for(const id of H.slice(0,2))row(inf.pts[id].g>=5?"🌟":"🎩",nm(id)+" "+inf.pts[id].g+" gol attı",inf.pts[id].g>=5?"Süper hat-trick":"Hat-trick",op(id))}
-  {const U=pl.map(id=>[id,(S.stats[id]||{}).lastD||0]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];if(U)row("📈","En çok yükselen: "+nm(U[0]),"Reyting ▲"+fA(U[1])+" · şimdi "+f1(genOf(U[0])),op(U[0]))}
+  if(inf.motm&&P(inf.motm))row(rzIc("yildiz","odul","sm"),"Maçın adamı: "+nm(inf.motm),isFinite(inf.pts[inf.motm]?.pts)?"Maç notu "+fN(inf.pts[inf.motm].pts):"",op(inf.motm));
+  if(inf.gol&&P(inf.gol))row(rzIc("file","gol","sm"),"Haftanın golü: "+nm(inf.gol),"",op(inf.gol));
+  {const H=pl.filter(id=>inf.pts[id].g>=3).sort((a,b)=>inf.pts[b].g-inf.pts[a].g);for(const id of H.slice(0,2))row(inf.pts[id].g>=5?rzIc("hat5","gol","sm"):rzIc("hat","gol","sm"),nm(id)+" "+inf.pts[id].g+" gol attı",inf.pts[id].g>=5?"Süper hat-trick":"Hat-trick",op(id))}
+  {const U=pl.map(id=>[id,(S.stats[id]||{}).lastD||0]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1])[0];if(U)row(rzIc("yukselis","odul","sm"),"En çok yükselen: "+nm(U[0]),"Reyting ▲"+fA(U[1])+" · şimdi "+f1(genOf(U[0])),op(U[0]))}
   {const y=yrOf(m),Fy=fin().filter(x=>yrOf(x)===y),Fb=Fy.filter(x=>x.id!==m.id);const A=ligTable(Fy)[0],B=Fb.length?ligTable(Fb)[0]:null;
-    if(A&&P(A.id))row("👑",(B&&B.id!==A.id?"Yeni lider: ":"Lider: ")+nm(A.id),A.p+" puan · "+A.n+" maç",op(A.id));
+    if(A&&P(A.id))row(rzIc("tac","odul","sm"),(B&&B.id!==A.id?"Yeni lider: ":"Lider: ")+nm(A.id),A.p+" puan · "+A.n+" maç",op(A.id));
     const gt=F=>{const t={};for(const x of F){const pi=(S.mInfo[x.id]||{}).pts||{};for(const id in pi)if(realP(id)&&pi[id].g)t[id]=(t[id]||0)+pi[id].g}return Object.entries(t).sort((a,b)=>b[1]-a[1])[0]};
-    const ga=gt(Fy),gb=Fb.length?gt(Fb):null;if(ga&&P(ga[0]))row("⚽",(gb&&gb[0]!==ga[0]?"Gol krallığında yeni lider: ":"Gol kralı: ")+nm(ga[0]),ga[1]+" gol",op(ga[0]))}
-  {const K=duKingRec(m.id);if(K&&K.p&&P(K.p))row("⚔️","Düello kralı: "+nm(K.p),"Haftanın düellolarında en çok kazanan",`data-act="duKralOpen" data-id="${esc(m.id)}"`)}
-  if(!tahminYok()&&BET.kral&&P(BET.kral.p))row("👑","Tahmin kralı: "+nm(BET.kral.p),BET.kral.net?(BET.kral.net>0?"+":"")+fJ(BET.kral.net)+" sikke":"",'data-act="kralOpen"');
-  {const H=pl.map(id=>[id,(S.stats[id]||{}).streak]).filter(x=>x[1]&&x[1].hot).slice(0,2);for(const[id,st]of H)row("🔥",nm(id),esc(st.t),op(id))}
+    const ga=gt(Fy),gb=Fb.length?gt(Fb):null;if(ga&&P(ga[0]))row(rzIc("gol","gol","sm"),(gb&&gb[0]!==ga[0]?"Gol krallığında yeni lider: ":"Gol kralı: ")+nm(ga[0]),ga[1]+" gol",op(ga[0]))}
+  {const K=duKingRec(m.id);if(K&&K.p&&P(K.p))row(rzIc("kilic","oyun","sm"),"Düello kralı: "+nm(K.p),"Haftanın düellolarında en çok kazanan",`data-act="duKralOpen" data-id="${esc(m.id)}"`)}
+  if(!tahminYok()&&BET.kral&&P(BET.kral.p))row(rzIc("tac","oyun","sm"),"Tahmin kralı: "+nm(BET.kral.p),BET.kral.net?(BET.kral.net>0?"+":"")+fJ(BET.kral.net)+" sikke":"",'data-act="kralOpen"');
+  {const H=pl.map(id=>[id,(S.stats[id]||{}).streak]).filter(x=>x[1]&&x[1].hot).slice(0,2);for(const[id,st]of H)row(rzIc("alev","gol","sm"),nm(id),esc(st.t),op(id))}
   if(!R.length)return"";const d=parseYmd(m.date);
   return `<section class="rzs hbf"><small>Geçen maçtan sonra · ${d.getDate()} ${AYLAR[d.getMonth()]}</small><b>Neler oldu?</b>${R.join("")}</section>`}
 /* bu haftanın yeni rozetleri: son maçta kazanılanlar, herkese görünür */
 function rztSerit(m){const F=fin();if(!m||!F.length||F[F.length-1].id!==m.id||S.fol)return"";
   const L=S.players.filter(p=>realP(p.id)&&(S.stats[p.id]?.rztNew||[]).length).map(p=>[p,S.stats[p.id].rztNew]);if(!L.length)return"";
   const n=L.reduce((q,[,b])=>q+b.length,0);L.sort((a,b)=>b[1].length-a[1].length);const me=myPid();
-  return `<section class="rzs"><small>Bu hafta ${n} yeni rozet</small><b>Rozet avcıları</b>${L.slice(0,8).map(([p,B])=>`<button class="rzs-r" data-act="open" data-id="${esc(p.id)}">${avatar(p)}<span class="rzs-x"><b>${esc(shortName(p.name))}${p.id===me?" (sen)":""}</b><small>${B.map(b=>esc(b.t)).join(" · ")}</small></span><em aria-hidden="true">${B.map(b=>b.e).join("")}</em></button>`).join("")}${L.length>8?`<p class="rzs-m">ve ${L.length-8} kişi daha</p>`:""}</section>`}
+  return `<section class="rzs"><small>Bu hafta ${n} yeni rozet</small><b>Rozet avcıları</b>${L.slice(0,8).map(([p,B])=>`<button class="rzs-r" data-act="open" data-id="${esc(p.id)}">${avatar(p)}<span class="rzs-x"><b>${esc(shortName(p.name))}${p.id===me?" (sen)":""}</b><small>${B.map(b=>esc(b.t)).join(" · ")}</small></span><span class="rzs-ms">${B.slice(0,3).map(b=>rzMed(b.t,"sm")).join("")}</span></button>`).join("")}${L.length>8?`<p class="rzs-m">ve ${L.length-8} kişi daha</p>`:""}</section>`}
 function odSerit(){if(S.fol)return"";const n=sonYr();if(!seasonDone(n))return"";const w=seasonAwards(n);if(!w||!w.champ)return"";const ys=yeniSez();
   return (SZ_ON?`<button class="ymf ymf-on" data-act="szOnTog"><span><b>Önizleme açık</b><small>${SZ_ON===2?"Yeni sezon başlamış":"Sezon bitmiş"} gibi görünüyor. Yalnızca sende, kayıt yok.</small></span><i>Kapat</i></button>`:"")+(ys?`<div class="ymf ymf-ys"><em aria-hidden="true">🏁</em><span><b>${ys}. SEZON BAŞLIYOR</b><small>Tablo sıfırlandı, herkes eşit. İlk düdük bu maçta.</small></span></div>`:"")+`<button class="ymf ymf-od" data-act="odulOpen" data-id="${n}"><em aria-hidden="true">🏆</em><span><b>${n}. Sezon ödül töreni</b><small>Şampiyon ${esc(nameOf(w.champ.id))} · ödüller sahiplerini buldu</small></span><i aria-hidden="true">›</i></button>`}
 function viewGecmis(){

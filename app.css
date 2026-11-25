@@ -5245,3 +5245,19 @@ html.dk .bsx .szx{background:var(--c-card);border-radius:18px;padding:14px;margi
 /* alt menü: seçili düğme çubukla aynı eğimde (iç yarıçap = dış yarıçap - boşluk) */
 @media (max-width:1099px){html.dk .nav{border-radius:34px!important;padding:0 6px!important}
 html.dk .nav button,html.dk .nav button.ctr{border-radius:28px!important}}
+
+/* rozet madalyonu */
+.rzm{flex:none;position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--c);background:#211547;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 32%,#2A1D58),#1C1240 75%);
+  box-shadow:inset 0 0 0 3px var(--c),inset 0 0 0 6px #1C1240,inset 0 0 0 7px color-mix(in srgb,var(--c) 45%,transparent)}
+.rzm svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rzm.sm{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--c)}.rzm.sm svg{width:16px;height:16px;stroke-width:2.2}
+.rzm.big{width:96px;height:96px;box-shadow:inset 0 0 0 4px var(--c),inset 0 0 0 9px #1C1240,inset 0 0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}.rzm.big svg{width:44px;height:44px}
+.rzm.yp{width:46px;height:46px;background:#1C1240!important;box-shadow:none!important;border:3px solid var(--c)}.rzm.yp svg{width:22px;height:22px}
+.rzt>div{display:grid;justify-items:center}
+.rzt .rzm{margin:0 auto 2px}
+.rzt .rr{box-shadow:none!important}.rzt .rr .rzm{box-shadow:inset 0 0 0 3px #FFD400,inset 0 0 0 6px #1C1240,inset 0 0 0 7px #FFD40099,0 0 16px #FFD40055}
+.rzt .lk .rzm{background:#211547;color:#5E5196;box-shadow:inset 0 0 0 2px #3A2C78}.rzt .lk i{filter:none;opacity:1}
+.rzt .sh{box-shadow:none!important}
+.rzs-ms{flex:none;display:flex;gap:4px}
+.hbf .rzm.sm{width:36px;height:36px}.hbf .rzm.sm svg{width:18px;height:18px}
