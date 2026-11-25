@@ -5159,3 +5159,52 @@ html.dk .th2.th1.thC .thk-c{background:#5FE3F5;color:#06222A}
 .gz-vs{display:flex;gap:6px}.gz-vs span{flex:1;display:grid;gap:2px;padding:8px;border-radius:10px;font:700 .6875rem/1 Inter,sans-serif}.gz-vs b{font:800 1.3rem/1 var(--display)}.gz-vs .a{background:rgba(255,62,165,.18);color:#FF8CC8}.gz-vs .b{background:rgba(95,227,245,.16);color:#5FE3F5}
 .gz-bub{max-width:86%;padding:7px 11px;border-radius:14px;background:#2E2068;font-size:.8125rem}.gz-bub small{display:block;font:800 .6875rem/1.2 Inter,sans-serif;color:#B9A8FF}.gz-bub.me{justify-self:end;background:var(--c-pink);color:#2A0018;font-weight:700}
 .gz-ch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.gz-ch span{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:14px;background:#1C1240;font:700 .8125rem/1.2 Inter,sans-serif;color:#fff}.gz-ch i{flex:none;width:10px;height:10px;border-radius:3px}
+
+/* Ben alt sayfaları: tek tip satır dili */
+html.dk .bsx .sgrp{margin:0 0 18px}
+html.dk .bsx .sgrp>h3{display:flex;align-items:center;justify-content:space-between;margin:0 4px 8px!important;color:#9C8DD0!important;letter-spacing:.14em}
+html.dk .bsx .sbox{border-radius:18px!important;background:var(--c-card)!important}
+html.dk .bsx .setr{min-height:60px;gap:12px;padding:10px 14px!important;border-bottom:1px solid var(--c-card2)!important}
+html.dk body .bsx .seti.seti,html.dk body .bsx .sgrp .seti.seti{width:36px!important;height:36px!important;border-radius:11px!important;background:var(--c,#B9A8FF)!important;color:#160B30!important}
+html.dk .bsx .seti svg{width:20px;height:20px;stroke-width:2.1}
+html.dk body .bsx .sgrp .setr.danger .seti.seti{background:rgba(255,92,122,.16)!important;color:#FF5C7A!important}
+html.dk .bsx .setr.danger .setx b{color:#FF7A93!important}
+html.dk .bsx .setx b{font:700 .9375rem/1.25 Inter,sans-serif!important;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html.dk .bsx .setx small{font:500 .8125rem/1.3 Inter,sans-serif;color:var(--c-ink2)!important}
+html.dk .bsx .setc{flex:none;font-size:1.375rem;line-height:1;color:var(--c-ink3)!important}
+html.dk .bsx .xval{flex:none;font:600 .8125rem/1 Inter,sans-serif;color:var(--c-ink2)}
+html.dk .bsx .setr .btn.sm{min-height:40px}
+.bsx .sbadge{flex:none}
+/* bildirim türleri açılır satırı */
+html.dk .bsx .pcd{border-bottom:1px solid var(--c-card2)}
+html.dk .bsx .pcd>summary{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;list-style:none;cursor:pointer}
+html.dk .bsx .pcd>summary::-webkit-details-marker{display:none}
+html.dk .bsx .pcd[open]>summary .setc{transform:rotate(90deg)}
+html.dk .bsx .pcd .setsub{padding-left:62px!important;min-height:54px}
+/* bilgi kutusu */
+.xinf{display:flex;gap:10px;align-items:flex-start;margin:0 0 18px;padding:12px 14px;border-radius:16px;background:rgba(185,168,255,.1)}
+.xinf>span{flex:none;color:#B9A8FF;margin-top:1px}.xinf>span svg{width:20px;height:20px}
+.xinf p{margin:0;font:500 .8125rem/1.45 Inter,sans-serif;color:var(--c-ink2)}
+.bsx .snote{margin:8px 4px 0}
+/* form */
+.bsx .xfm{display:grid;gap:12px;padding:14px}
+.bsx .xfm .f{margin:0}
+.bsx .xbtn{margin:0 0 18px}.bsx .sgrp>.xbtn{margin:10px 0 0}
+.bsx .xsel{flex:none;width:auto;min-width:96px;height:44px;padding:0 10px;border-radius:12px;border:1.5px solid var(--c-line);background:var(--c-card2);color:#fff;font:600 .875rem/1 Inter,sans-serif}
+.bsx .lgrow .lgv{flex:none;width:44px;height:44px;border-radius:12px;overflow:hidden;display:grid;place-items:center;background:#5FE3F5;color:#160B30}
+.bsx .lgrow .lgv img{width:100%;height:100%;object-fit:cover}.bsx .lgrow .lgv svg{width:22px;height:22px}
+/* sezon kartı */
+.xhero{display:grid;gap:4px;margin:0 0 18px;padding:16px;border-radius:18px;background:linear-gradient(135deg,#3B1C86,#21134A)}
+.xhero small{font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#B9A8FF}
+.xhero b{font:800 2.125rem/1 var(--display);color:#fff;margin-top:4px}
+.xhero span{font:500 .8125rem/1.3 Inter,sans-serif;color:var(--c-ink2)}
+.xhero em{font:600 .8125rem/1.3 Inter,sans-serif;font-style:normal;color:#FFD400;margin-top:6px}
+.xbar{height:8px;border-radius:4px;background:#3A2C78;margin-top:10px;overflow:hidden}.xbar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--c-pink),#B9A8FF)}
+/* kullanım çubukları */
+.bsx .xbars{display:grid;gap:10px;padding:14px}
+.xbr{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 44px;gap:10px;align-items:center;font:600 .8125rem/1.2 Inter,sans-serif}
+.xbr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#E6DEFA}.xbr i{height:10px;border-radius:5px;background:#7C3AED}.xbr b{text-align:right;font:800 1rem/1 var(--display);color:#fff}
+html.dk .bsx .pcd>summary::after,html.dk .bsx .pcd>summary::before{display:none!important;content:none!important}
+html.dk .bsx .szx{background:var(--c-card);border-radius:18px;padding:14px;margin:0 0 12px}html.dk .bsx .szx>b{color:#fff!important;font:700 .9375rem/1.25 Inter,sans-serif}
+.bsx .xlnk{flex:1;min-width:0;font:600 .875rem/1.3 Inter,sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bsx .xmore{margin:8px 4px 0;font:500 .8125rem/1.4 Inter,sans-serif;color:var(--c-ink3)}
