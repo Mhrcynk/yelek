@@ -1649,13 +1649,24 @@ const fzPr=id=>Math.round(mvOf(id)*10)/10;
 function fzBudget(m){const L=fzPool(m).map(fzPr).filter(v=>v>0);return L.length?Math.round(5*L.reduce((a,b)=>a+b,0)/L.length):0}
 const fzMine=m=>(FZ.rows||[]).find(r=>r.m===m.id&&r.p===myPid())||null;
 // puan: yalnızca maç kaydındaki veri (skor, gol, asist, saha verisi); oy ve maç notu sayılmaz
-const FZ_GOL={FV:4,OS:5,DF:6,KL:8};
+// puan değerleri her maç için o maçtan önceki bütün maçlardan hesaplanır: bir mevkide gol/asist ne kadar seyrekse o kadar değerli
+const FZ_R=["KL","DF","OS","FV"];const FZC={};
+function fzRates(m){const F=fin().filter(x=>!isExt(x)&&x.id!==m.id&&matchTs(x)<matchTs(m)&&x.score_a!=null);const key=m.id+":"+F.map(x=>x.id).join(",");if(FZC[m.id]&&FZC[m.id].k===key)return FZC[m.id].v;
+  const ap={},g={},a={},km={},tk={};let conc=0,cn=0,tg=0,ta=0,tn=0;
+  F.forEach(x=>{for(const sd of["A","B"]){const L=lineupOf(x,sd).length?lineupOf(x,sd):(sd==="A"?x.team_a:x.team_b)||[];L.forEach(id=>{if(!realP(id))return;const r=fzRole(x,id);const o=(x.stats||{})[id]||{};
+      ap[r]=(ap[r]||0)+1;g[r]=(g[r]||0)+(+o.g||0);a[r]=(a[r]||0)+(+o.a||0);tg+=+o.g||0;ta+=+o.a||0;tn++;const t=trkOf(x,id);if(t){if(isFinite(+t.km))(km[r]=km[r]||[]).push(+t.km);if(isFinite(+t.tk))(tk[r]=tk[r]||[]).push(+t.tk)}});
+    conc+=sd==="A"?+x.score_b:+x.score_a;cn++}});
+  const W=5,gA=tn?tg/tn:1,aA=tn?ta/tn:.9;const cl=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));const av=L=>L&&L.length?L.reduce((x,y)=>x+y,0)/L.length:null;
+  const v={n:F.length,gol:{},ast:{},km:{},tk:{},yen:cn?Math.round(conc/cn*10)/10:6,ortG:{},ortA:{}};
+  FZ_R.forEach(r=>{const n=ap[r]||0;const og=((g[r]||0)+W*gA)/(n+W),oa=((a[r]||0)+W*aA)/(n+W);v.ortG[r]=n?(g[r]||0)/n:null;v.ortA[r]=n?(a[r]||0)/n:null;
+    v.gol[r]=F.length?cl(Math.round(6/Math.max(og,.01)),2,8):{FV:4,OS:5,DF:6,KL:8}[r];v.ast[r]=F.length?cl(Math.round(3/Math.max(oa,.01)),1,4):3;const k=av(km[r]),t=av(tk[r]);if(k!=null)v.km[r]=Math.round(k*10)/10;if(t!=null)v.tk[r]=Math.round(t)});
+  FZC[m.id]={k:key,v};return v}
 const fzReady=m=>!!m&&mDone(m)&&m.score_a!=null&&m.score_b!=null;
-function fzScore(m,id){if(!fzReady(m)||!plAll(m).includes(id)||!realP(id))return null;const sd=sideOf(m,id);if(!sd)return null;const rl=fzRole(m,id);const o=(m.stats||{})[id]||{};
+function fzScore(m,id){if(!fzReady(m)||!plAll(m).includes(id)||!realP(id))return null;const sd=sideOf(m,id);if(!sd)return null;const rl=fzRole(m,id);const o=(m.stats||{})[id]||{};const R=fzRates(m);
   const my=sd==="A"?+m.score_a:+m.score_b,op=sd==="A"?+m.score_b:+m.score_a;const L=[["Oynadı",1]];const g=+o.g||0,a=+o.a||0,og=+o.og||0;
-  if(g)L.push([g+" gol",g*(FZ_GOL[rl]||4)]);if(a)L.push([a+" asist",a*3]);if(my>op)L.push(["Galibiyet",2]);else if(my===op)L.push(["Beraberlik",1]);
-  if((rl==="KL"||rl==="DF")&&op<=5)L.push(["5 ya da az gol yedi",2]);if(rl==="KL"&&op<=3)L.push(["3 ya da az gol yedi",3]);if(rl==="KL"&&op>=4)L.push([op+" gol yedi",-Math.floor(op/4)]);
-  if(og)L.push(["Kendi kalesine",-2*og]);const t=trkOf(m,id);if(t){if(+t.km>=5)L.push(["5 km+ koştu",1]);if(+t.tk>=10)L.push(["10+ top kaptı",1])}
+  if(g)L.push([g+" gol",g*R.gol[rl]]);if(a)L.push([a+" asist",a*R.ast[rl]]);if(my>op)L.push(["Galibiyet",2]);else if(my===op)L.push(["Beraberlik",1]);
+  if(rl==="KL"||rl==="DF"){if(op<R.yen)L.push(["Ortalamadan az gol yedi",rl==="KL"?3:2]);if(rl==="KL"&&op<=R.yen-3)L.push(["Çok az gol yedi",2]);if(rl==="KL"&&op>=R.yen+3)L.push(["Çok gol yedi",-Math.floor((op-R.yen)/3)])}
+  if(og)L.push(["Kendi kalesine",-2*og]);const t=trkOf(m,id);if(t){if(R.km[rl]!=null&&+t.km>R.km[rl])L.push(["Mevki ortalamasından çok koştu",1]);if(R.tk[rl]!=null&&+t.tk>R.tk[rl])L.push(["Mevki ortalamasından çok top kaptı",1])}
   return{pts:L.reduce((x,y)=>x+y[1],0),L}}
 const fzSc=(m,id)=>{const r=fzScore(m,id);return r?r.pts:null};
 function fzPts(m,r){if(!fzReady(m)||!r)return null;let s=0;(r.picks||[]).forEach(id=>{const v=fzSc(m,id);if(v!=null)s+=v*(id===r.cap?2:1)});return s}
@@ -1664,9 +1675,12 @@ function fzWeek(m){if(!fzReady(m))return[];return (FZ.rows||[]).filter(r=>r.m===
 function fzSeason(){const y=curYr();const T={};fin().filter(m=>yrOf(m)===y&&!isExt(m)).forEach(m=>fzWeek(m).forEach(r=>{const x=T[r.p]||(T[r.p]={p:r.p,pts:0,n:0,best:0});x.pts+=r.pts;x.n++;x.best=Math.max(x.best,r.pts)}));
   return Object.values(T).sort((a,b)=>b.pts-a.pts||b.best-a.best)}
 const fzRk=(L,p)=>{const i=L.findIndex(r=>r.p===p);return i<0?"–":(i+1)+"."};
+const FZ_ZOR=["KL","DF","OS","FV"];const FZ_AD={KL:"kaleci",DF:"defans",OS:"orta saha",FV:"forvet"};
+const fzMiss=(m,picks)=>FZ_ZOR.filter(r=>!picks.some(id=>fzRole(m,id)===r));
 function fzCheck(m,sel){const B=fzBudget(m);const sum=sel.picks.reduce((a,id)=>a+fzPr(id),0);const gk=fzGks(m);
   if(sel.picks.length<5)return (5-sel.picks.length)+" oyuncu daha seç";
   if(gk.length&&sel.picks.filter(id=>gk.includes(id)).length!==1)return "Kadronda 1 kaleci olmalı";
+  {const ms=fzMiss(m,sel.picks);if(ms.length)return "En az 1 "+FZ_AD[ms[0]]+" seçmelisin"}
   if(sel.picks.filter(id=>sideOf(m,id)==="A").length>3||sel.picks.filter(id=>sideOf(m,id)==="B").length>3)return "Bir takımdan en çok 3 oyuncu";
   if(sum>B+0.001)return "Bütçeyi "+fN1(sum-B)+" M € aştın";if(!sel.cap||!sel.picks.includes(sel.cap))return "Kaptanını seç";return ""}
 function fzSel(m){const f=S.f.fz;if(f&&f.mid===m.id)return f;const r=fzMine(m);return S.f.fz={mid:m.id,picks:r?r.picks.filter(id=>fzPool(m).includes(id)):[],cap:r?r.cap:null}}
@@ -1683,7 +1697,10 @@ function sheetFz(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=
   const X=`<button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button>`;const open=fzOpen(m);const tab=sh.tab==="sira"?"sira":"kadro";
   const hd=`<div class="mzvh">${X}<div><h2>Fantezi Kadro</h2><small>${esc(fmtShort(m.date))} maçı · ${open?"maç saatinde kilitlenir":mDone(m)?"maç bitti":"kadrolar kilitlendi"}</small></div></div>
     <div class="mzseg" role="tablist">${[["kadro",open?"Kadronu kur":"Kadrom"],["sira","Sıralama"]].map(([v,l])=>`<button role="tab" data-act="fzTab" data-v="${v}" class="${tab===v?"on":""}" aria-selected="${tab===v}">${l}</button>`).join("")}</div>`;
-  const ft=`<details class="fz-tb"><summary>Puanlar nasıl hesaplanır?</summary><div>${[["Maçta oynadı","+1"],["Gol: forvet / orta saha / defans / kaleci","+4 / +5 / +6 / +8"],["Asist","+3"],["Takımı kazandı / berabere","+2 / +1"],["Kaleci ya da defans: takımı 5 ya da az gol yedi","+2"],["Kaleci: 3 ya da az gol yedi","+3 daha"],["Kaleci: yediği her 4 gol","−1"],["Kendi kalesine gol","−2"],["Saha verisi varsa: 5 km+ koşu, 10+ top kapma","+1'er"],["Kaptan","2 kat"]].map(([a,b])=>`<p><span>${a}</span><b>${b}</b></p>`).join("")}</div></details>
+  const R=fzRates(m);const q=o=>`+${o.FV} / +${o.OS} / +${o.DF} / +${o.KL}`;const oq=o=>FZ_R.slice().reverse().map(r=>r+" "+(o[r]==null?"–":fN(o[r]))).join(" · ");
+  const ft=`<details class="fz-tb"><summary>Puanlar nasıl hesaplanır?</summary><div>${[["Maçta oynadı","+1"],["Gol: forvet / orta saha / defans / kaleci",q(R.gol)],["Asist: forvet / orta saha / defans / kaleci",q(R.ast)],["Takımı kazandı / berabere","+2 / +1"],
+      ["Kaleci ya da defans: takımı ortalamadan ("+fN1(R.yen)+") az gol yedi","KL +3 · DF +2"],["Kaleci: "+fN1(Math.max(0,R.yen-3))+" ya da daha az gol yedi","+2 daha"],["Kaleci: "+fN1(R.yen+3)+" ya da daha çok gol yedi","her 3 golde −1"],["Kendi kalesine gol","−2"],["Saha verisi varsa: mevki ortalamasından çok koşu / top kapma","+1'er"],["Kaptan","2 kat"]].map(([a,b])=>`<p><span>${a}</span><b>${b}</b></p>`).join("")}
+      <small class="fz-tbn">${R.n?`Değerler bu maçtan önceki ${R.n} maçın verisinden hesaplanır ve her hafta yenilenir. Bir mevkide gol ya da asist ne kadar seyrekse o kadar çok puan getirir.<br>Maç başına gol: ${oq(R.ortG)}<br>Maç başına asist: ${oq(R.ortA)}`:"Henüz oynanmış maç yok; başlangıç değerleri kullanılıyor."}</small></div></details>
     <p class="fz-not">Para yok, bahis değil; sadece puan. Puanlar skordan ve maç kaydındaki istatistiklerden gelir; oylar ve maç notu sayılmaz. Kadrolar maç başlayınca herkese açılır.</p>`;
   if(!FZ.rows)return hd+`<p class="muted small" style="margin:18px 0">Yükleniyor…</p>`;
   if(tab==="sira"){const sz=sh.sz==="sezon";const L=sz?fzSeason():fzWeek(m);
@@ -1693,7 +1710,7 @@ function sheetFz(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=
     return hd+seg+`<div class="fz-lb">${L.map((r,i)=>{const p=P(r.p);return `<div class="fz-r${r.p===me?" me":""}"><span class="fz-k num">${i+1}</span>${p?avatar(p,"sm"):""}<span class="fz-t"><b>${r.p===me?"Sen":esc(shortName(nameOf(r.p)))}</b><small>${sz?r.n+" maç · en iyi "+r.best:"Kaptan: "+esc(shortName(nameOf(r.cap)))+(fzSc(m,r.cap)!=null?" · "+fzSc(m,r.cap)+" ×2":"")}</small></span><b class="fz-p num">${r.pts}</b></div>`}).join("")}</div>`+ft}
   if(open){const sel=fzSel(m);const B=fzBudget(m);const sum=Math.round(sel.picks.reduce((a,id)=>a+fzPr(id),0)*10)/10;const left=Math.round((B-sum)*10)/10;const gk=fzGks(m);const fl=S.f.fzF||"";
     const nA=sel.picks.filter(id=>sideOf(m,id)==="A").length,nB=sel.picks.filter(id=>sideOf(m,id)==="B").length;const hasGk=sel.picks.some(id=>gk.includes(id));
-    const why=id=>{if(sel.picks.includes(id))return"";if(sel.picks.length>=5)return"Kadro dolu";const sd=sideOf(m,id);if((sd==="A"?nA:nB)>=3)return"Bu takımdan 3 oyuncu aldın";if(gk.includes(id)&&hasGk)return"Kalecin var";if(!gk.includes(id)&&gk.length&&!hasGk&&sel.picks.length>=4)return"Son yer kaleciye";if(fzPr(id)>left+0.001)return"Bütçe yetmiyor";return""};
+    const why=id=>{if(sel.picks.includes(id))return"";if(sel.picks.length>=5)return"Kadro dolu";const sd=sideOf(m,id);if((sd==="A"?nA:nB)>=3)return"Bu takımdan 3 oyuncu aldın";if(gk.includes(id)&&hasGk)return"Kalecin var";{const ms=fzMiss(m,sel.picks);const rl=fzRole(m,id);if(ms.length>=5-sel.picks.length&&!ms.includes(rl))return"Kalan yer "+ms.map(r=>FZ_AD[r]).join(", ")+" için"}if(fzPr(id)>left+0.001)return"Bütçe yetmiyor";return""};
     const slots=[0,1,2,3,4].map(i=>{const id=sel.picks[i];if(!id)return `<div class="fz-sl"><span>+</span></div>`;const p=P(id);const c=sel.cap===id;
       return `<button class="fz-sl on${c?" cap":""}" data-act="fzCap" data-p="${esc(id)}" aria-label="${esc(nameOf(id))} kaptan olsun" aria-pressed="${c}">${p?avatar(p,"sm"):""}<b>${esc(firstName(nameOf(id)))}</b>${c?`<em>C</em>`:""}</button>`}).join("");
     const L=fzPool(m).filter(id=>!fl||fzRole(m,id)===fl).sort((a,b)=>fzPr(b)-fzPr(a));
@@ -1702,7 +1719,7 @@ function sheetFz(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=
     const err=fzCheck(m,sel);const mine=fzMine(m);const same=mine&&mine.cap===sel.cap&&mine.picks.length===sel.picks.length&&mine.picks.every(id=>sel.picks.includes(id));
     return hd+`<div class="fz-bd"><span><small>Kalan bütçe</small><b class="num">${fN1(left)} M €</b><em>/ ${B} M €</em></span><small>${sel.picks.length} / 5 oyuncu</small></div>
       <div class="fz-bar"><i style="width:${B?Math.min(100,Math.round(sum/B*100)):0}%"></i></div>
-      <div class="fz-sls">${slots}</div><p class="fz-ip">${sel.picks.length?"Kaptan yapmak için seçtiğin oyuncuya dokun":"1 kaleci + 4 oyuncu · bir takımdan en çok 3"}</p>
+      <div class="fz-sls">${slots}</div><p class="fz-ip">${sel.picks.length?"Kaptan yapmak için seçtiğin oyuncuya dokun":"1 kaleci, en az 1 defans, 1 orta saha, 1 forvet · bir takımdan en çok 3"}</p>
       <div class="fz-fl">${[["","Hepsi"],["KL","KL"],["DF","DF"],["OS","OS"],["FV","FV"]].map(([v,l])=>`<button data-act="fzF" data-v="${v}" class="${fl===v?"on":""}" aria-pressed="${fl===v}">${l}</button>`).join("")}</div>
       <div class="fz-ls">${rows}</div>${ft}
       <div class="fz-go"><button class="btn primary block" data-act="fzSave" data-id="${esc(m.id)}"${err||same?" disabled":""}>${err||(same?"Kadron kayıtlı":mine?"Değişikliği kaydet":"Kadroyu kaydet")}</button></div>`}
