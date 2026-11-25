@@ -5379,3 +5379,5 @@ html.dk .sheet:has(.fzmark) .av{background:#34343C!important;color:#fff!importan
 .sheet:has(.fzmark) .ptk-n{background:rgba(18,18,20,.88)!important}.sheet:has(.fzmark) .tcard::after{background:var(--fz)!important}
 html.dk .sheet:has(.fzmark) .fz-go .btn.primary:disabled{background:#2C2C32!important;border-color:#2C2C32!important;color:#A9A9B3!important}
 html.dk .thk.th2.thF{background:#1E1E22!important}html.dk .th2.thF .th2-r .th2-g>div,html.dk .th2.thF .th2-p{background:#121214!important}
+.ymf.ymf-fz{background:#1E1E22}.ymf-fz small,.ymf-fz>i{color:var(--fza)}.ymf-fz .fzh{margin:0;flex:none;width:40px;height:40px;border-radius:12px}.ymf-fz .fzh svg{width:24px;height:24px}
+.fz-ks{flex:none;width:32px;height:32px;border-radius:50%;background:var(--fz);color:var(--fzk);display:grid;place-items:center}.fz-ks svg{width:16px;height:16px}

@@ -40,13 +40,13 @@ window.supabase={createClient:()=>({auth:{getSession:async()=>({data:{session:SE
 const TN=RL?RL.s.g+" · Deneme":"Deneme FC";const open=()=>D.matches.find(m=>m.state==="takim");const fins=()=>D.matches.filter(m=>m.state==="bitti").sort((a,b)=>a.date<b.date?-1:1);
 const mts=m=>Date.parse(m.date+"T"+m.time+":00");
 const mon=s=>{const d=new Date(s+"T12:00:00");const w=(d.getDay()+6)%7;d.setDate(d.getDate()-w);return ymd(d)};
-function fzJson(){const me=ME;const rows=D.fz.filter(r=>{const m=D.matches.find(x=>x.id===r.m);return m&&(r.p===me||mts(m)<=Date.now()||m.state==="bitti")});const n={};D.fz.forEach(r=>n[r.m]=(n[r.m]||0)+1);return{ok:true,rows,n}}
+function fzJson(){const me=ME;const rows=D.fz.filter(r=>{const m=D.matches.find(x=>x.id===r.m);return m&&(r.p===me||mts(m)<=Date.now()||m.state==="bitti")});const n={},who={};D.fz.forEach(r=>{n[r.m]=(n[r.m]||0)+1;(who[r.m]=who[r.m]||[]).push(r.p)});return{ok:true,rows,n,who}}
 function kings(){const L=fins();const lm=L[L.length-1];if(!lm)return[];const pl=[...lm.team_a,...lm.team_b].filter(x=>x!==ME);const a=pl[2],b=pl[5],c=pl[8];return[{m:lm.id,p:a,top:[{p:a,w:3,l:0,n:3},{p:b,w:2,l:1,n:3},{p:c,w:1,l:1,n:2}],pick:null,pm:null}]}
 function betKral(){const L=fins();const lm=L[L.length-1];if(!lm)return{ok:true};const pl=[...lm.team_a,...lm.team_b].filter(x=>x!==ME);return{ok:true,wk:mon(lm.date),p:pl[4],net:4350,top:[{p:pl[4],net:4350,n:4,won:3},{p:pl[1],net:2100,n:3,won:2},{p:ME,net:800,n:2,won:1}]}}
 const RPC={
   my_membership:()=>({status:"onayli",role:"uye",player_id:ME}),team_rev:()=>({r:D.k,p:D.k}),player_ages:()=>D.players.map((p,i)=>({id:p.id,age:p.by?2026-p.by:(RL?null:24+((i*7)%17))})).filter(x=>x.age!=null),
   my_teams:()=>[{id:1,name:TN,slug:"deneme",tag:"uye"}],my_follows:()=>[],teams_hub:()=>({mine:[{id:1,name:TN,slug:"deneme",tag:"uye"}],all:[]}),
-  fantasy_list:()=>fzJson(),
+  fantasy_list:()=>{const m=open();if(m&&!D.fz.some(r=>r.m===m.id&&r.p!==ME)){otherFz(m);save(D)}return fzJson()},
   fantasy_save:a=>{const m=open();if(!m||m.id!==a.p_match||Date.now()>=mts(m))return{ok:false,error:"closed"};if(!a.p_picks||a.p_picks.length!==5)return{ok:false,error:"sayi"};
     D.fz=D.fz.filter(r=>!(r.m===m.id&&r.p===ME));D.fz.push({m:m.id,p:ME,picks:a.p_picks,cap:a.p_cap,prices:a.p_prices,budget:a.p_budget});save(D);return fzJson()},
   duel_list:()=>({ok:true,rows:[],kings:kings()}),bet_kral:()=>betKral(),
