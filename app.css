@@ -5553,3 +5553,14 @@ body.gpf .fz-yb span{color:#A9A9B3}body.gpf .fz-yb b{color:#fff}
 .cupa-k>svg{display:block;width:26px;height:26px;margin:0}
 .cupa .cupa-k svg,.cupa .cupn svg{position:static;inset:auto;width:26px;height:26px}
 .fz-vz{display:block;width:100%;min-height:44px;margin-top:6px;border:0;background:none;color:var(--fzm,#B7A9E8);font:700 .8125rem/1 Inter,sans-serif;cursor:pointer}
+/* Kullanım: bölümler */
+.xu{padding:4px 0!important}
+.xu-g+.xu-g{border-top:1px solid var(--c-line)}
+.xu-h{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto 70px 40px auto;align-items:center;gap:10px;min-height:52px;padding:8px 14px;border:0;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer}
+.xu-d{width:10px;height:10px;border-radius:50%}
+.xu-h>span{font:700 .9375rem/1.2 Inter,sans-serif;min-width:0}
+.xu-h>em{font:700 .75rem/1 Inter,sans-serif;font-style:normal;color:var(--c-ink3)}
+.xu-b{display:block;height:8px;border-radius:4px;background:var(--c-card2);overflow:hidden}.xu-b i{display:block;height:100%;border-radius:4px}
+.xu-h>b{font:800 1.125rem/1 var(--display);text-align:right}
+.xu-c{font-style:normal;color:var(--c-ink3);transition:transform .2s}.xu-g.op .xu-c{transform:rotate(90deg)}
+.xu-l{padding:0 14px 10px 34px}.xu-l .xbr{padding:6px 0}.xu-l .xbr span{font-size:.8125rem}
