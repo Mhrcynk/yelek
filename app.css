@@ -5083,27 +5083,6 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .ezl-r>span{flex:1;min-width:0}.ezl-r b{display:block;font:700 .875rem/1.25 Inter,sans-serif;color:#fff}.ezl-r small{display:block;margin-top:2px;font:500 .7812rem/1.3 Inter,sans-serif;color:#C9BFE6}
 .ezl-r i{font:800 .875rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;flex:none}.ezl-r i.a{color:var(--c-pink)}.ezl-r i.b{color:var(--c-cyan)}
 .btn.ezl-b{background:#5FE3F5;color:#06222A;border:0;margin-bottom:12px}
-/* kariyer sekmesi */
-.kry-hero{position:relative;overflow:hidden;border-radius:20px;padding:16px;background:linear-gradient(135deg,#5B2BD6 0%,#7B3FF2 45%,#FF3EA5 100%);color:#fff;display:grid;gap:12px}
-.kry-ht{display:flex;justify-content:space-between;gap:8px;font:800 .6875rem/1.2 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;position:relative}
-.kry-sp{position:absolute;left:0;right:0;top:34px;width:100%;height:56px;opacity:.28;pointer-events:none}
-.kry-h3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;position:relative}.kry-h3 b{display:block;font:900 2.6rem/.95 var(--display)}.kry-h3 small{display:block;margin-top:4px;font:600 .7812rem/1.2 Inter,sans-serif}
-.kry-h3.sm{padding-top:12px;border-top:1px solid rgba(255,255,255,.25)}.kry-h3.sm b{font-size:1.3125rem}
-.kry-cmp{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:8px}
-.kry-fc{width:112px;border-radius:12px;padding:10px 10px 0;background:linear-gradient(160deg,#4A2AB8,#24165A);color:#fff;overflow:hidden}.kry-fc.n{background:linear-gradient(160deg,#FF3EA5,#7B3FF2)}
-.kry-fc small{display:block;font:800 .6875rem/1.2 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}.kry-fc b{display:block;font:900 2.6rem/1 var(--display);margin:4px 0 2px}
-.kry-fc>span{display:block;margin:8px -10px 0;padding:6px 4px;background:#fff;color:#1C1240;text-align:center;font:800 .7812rem/1.1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kry-ar{display:grid;justify-items:center;gap:2px;color:var(--muted)}.kry-ar b{font:900 1.3125rem/1 var(--display)}.kry-ar i{font-style:normal;font-weight:800}.kry-ar.up{color:#00C777}.kry-ar.dn{color:#FF6B86}
-.kry-a{display:grid;gap:10px;margin-top:14px}.kry-a>div{display:grid;grid-template-columns:minmax(0,1.2fr) 26px minmax(0,1fr) 62px;align-items:center;gap:8px;font:600 .875rem/1.2 Inter,sans-serif}
-.kry-a small{color:var(--muted);text-align:right;font-size:.7812rem}.kry-a b{text-align:right;font-weight:800}.kry-a em{font-style:normal;font-weight:800}
-.kry-b{position:relative;height:8px;border-radius:999px;background:var(--card3);overflow:hidden}.kry-b u,.kry-b s{position:absolute;top:0;bottom:0}.kry-b u{left:0;background:#7C3AED}
-.kry-b s.up{background:#0A9B5C}.kry-b s.dn{background:#D9334F}.kry-a em.up{color:#00C777}.kry-a em.dn{color:#FF6B86}
-.rk-g.kry-g{margin:8px 0 0}.kry-g .rk-b{cursor:default}.kry-g button.rk-b{cursor:pointer}.kry-g .rk-b>b i{font:700 .875rem/1 Inter,sans-serif;font-style:normal;color:#fff}.kry-g .rk-b small{color:#C9BFE6}
-.kry-ss{display:grid;gap:8px;margin-top:8px}.kry-s{display:flex;align-items:center;gap:12px;background:rgba(127,110,220,.13);border-radius:12px;padding:10px 14px 10px 10px}
-.kry-sn{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--card3);font:900 1.125rem/1 var(--display)}.kry-sn.g{background:#FFD400;color:#2A1F00}
-.kry-sx{flex:1;min-width:0;display:grid;gap:3px}.kry-sx b{font:800 .875rem/1.2 Inter,sans-serif}.kry-sx small{font:500 .7812rem/1.2 Inter,sans-serif;color:var(--muted)}
-.kry-w{display:flex;gap:2px;height:6px;border-radius:999px;overflow:hidden;margin-top:3px}.kry-w i{display:block}.kry-w .g{background:#0A9B5C}.kry-w .b{background:#9A93B5}.kry-w .m{background:#D9334F}
-.kry-s em{flex:none;font:900 1.75rem/1 var(--display);font-style:normal}
 /* sezon hedefleri */
 .hdf{display:grid;gap:16px}.hdf-r>div:first-child{display:flex;align-items:center;gap:8px}.hdf-r b{flex:1;min-width:0;font:700 .875rem/1.25 Inter,sans-serif}.hdf-r span{font:700 .875rem/1 Inter,sans-serif}
 .hdf-r button{width:40px;height:40px;margin:-8px -8px -8px 0;border:0;border-radius:999px;background:none;color:var(--muted);font:700 1.125rem/1 Inter,sans-serif;cursor:pointer}
@@ -5111,7 +5090,6 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .hdf-r small,.hdf-x{display:block;margin-top:6px;font:500 .7812rem/1.3 Inter,sans-serif;color:var(--muted)}.hdf-x{margin:0}
 .hdf-n{display:grid;gap:8px}.hdf-n>b{font:800 .875rem/1 Inter,sans-serif}.hdf-g{display:flex;flex-wrap:wrap;gap:8px}
 .hdf-g button{min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--card3);color:inherit;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}.hdf-g button.on,.hdf-g.v button{background:#FF3EA5;color:#fff}
-.kry-a em.up,.kry-d.up{color:#00C777}.kry-a em.dn,.kry-d.dn{color:#FF6B86}
 /* Bu hafta: sezon ödül töreni şeridi */
 .ymf.ymf-od{background:linear-gradient(90deg,#4A3800,#3A2E00)}.ymf-od em{flex:none;font-style:normal;font-size:1.5rem;line-height:1}
 /* sezon töreni hikâyesi: açılış ve özet */
@@ -5130,19 +5108,9 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .hdf-o{display:grid;gap:6px;padding:12px;border-radius:12px;background:rgba(127,110,220,.13)}.hdf-o b{font:800 .875rem/1.25 Inter,sans-serif}.hdf-o span{font:600 .7812rem/1.3 Inter,sans-serif;color:var(--muted)}.hdf-o span.ok{color:#00C777}.hdf-o .btn{justify-self:start;margin-top:4px}
 /* Ben üst kartı: solda fotoğraf */
 .mzh-t.benh-t{align-items:center;justify-content:flex-start;gap:14px}.benh-t .av{flex:none;width:60px;height:60px;font-size:1.125rem}
-/* kariyer özeti: halka ve çubuklar */
-.kry-k{border-radius:20px;padding:16px;background:rgba(127,110,220,.13);display:grid;gap:14px}
-.kry-kh{font:800 .6875rem/1.2 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.kry-kb{display:flex;align-items:center;gap:16px}.kry-ring{flex:none;position:relative;width:112px;height:112px;display:grid;place-content:center;justify-items:center;gap:2px}.kry-ring svg{position:absolute;inset:0;width:100%;height:100%}.kry-ring b{position:relative;font:900 1.75rem/1 var(--display)}.kry-ring small{position:relative;font:700 .6875rem/1 Inter,sans-serif;color:var(--muted)}
-.kry-bars{flex:1;min-width:0;display:grid;gap:12px}.kry-bars>div>div{display:flex;justify-content:space-between;gap:8px;font:700 .7812rem/1.2 Inter,sans-serif}
-.kry-bars i{display:block;height:8px;border-radius:999px;background:rgba(127,110,220,.25);margin-top:6px;overflow:hidden}.kry-bars u{display:block;height:100%;border-radius:999px}
-.kry-kc{display:flex;flex-wrap:wrap;gap:8px}.kry-kc span{padding:7px 12px;border-radius:999px;background:rgba(127,110,220,.2);font:700 .7812rem/1 Inter,sans-serif}
-/* kariyer: sezon başı ve şimdiki kart yan yana */
-.kry-k2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}.kry-kt{display:grid;gap:6px;justify-items:center}
-.kry-kt>small{font:800 .6875rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.kry-kt .fut{cursor:default}
-.kry-dp{margin-left:8px;padding:5px 10px;border-radius:999px;background:rgba(127,110,220,.2);font:800 .7812rem/1 Inter,sans-serif;vertical-align:middle;white-space:nowrap}.kry-dp.up{background:#0E3B2A;color:#4FF0A6}.kry-dp.dn{background:#4A1522;color:#FF9DB0}
-/* kariyer gelişimi: bugünkü kart ve ilk günden bugüne fark listesi */
-.kry-kg{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr);gap:14px;align-items:center;margin-top:10px}.kry-kg .fut{cursor:default}
-.kry-kl{display:grid;gap:9px}.kry-kl>div{display:flex;justify-content:space-between;gap:8px;font:700 .875rem/1.2 Inter,sans-serif}.kry-kl>div>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.kry-kl>div>span:last-child{flex:none;color:var(--muted)}.kry-kl b{color:var(--ink,#fff)}.kry-kl em{font-style:normal;font-weight:800;display:inline-block;min-width:26px;text-align:right}.kry-kl em.up{color:#00C777}.kry-kl em.dn{color:#FF6B86}
-.kry-kl .t{padding-bottom:9px;border-bottom:1px solid rgba(127,110,220,.3)}
+/* oyuncu kartı: Sezon | Kariyer düğmesi, özellik farkı, rozet düğmesi; Ben: Kartım */
+.pv-sk{display:flex;gap:4px;margin-top:14px;padding:4px;border-radius:999px;background:var(--c-card);width:max-content}.pv-sk button{min-height:36px;padding:0 16px;border:0;border-radius:999px;background:none;color:#C9BFE6;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}.pv-sk button.on{background:#fff;color:#1C1240}
+.pv-st.sk{margin-top:8px}
+.ia-g button b i{font:800 .6875rem/1 Inter,sans-serif;font-style:normal;margin-left:3px;vertical-align:top}.ia-g button b i.up{color:#4FF0A6}.ia-g button b i.dn{color:#FF9DB0}.ia-g button.on b i{color:#fff}
+.rzt-a{margin-top:10px}
+.benh-t .benh-k{flex:none;margin-left:auto;display:inline-flex;align-items:center;gap:2px;font:700 .7812rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;white-space:nowrap}.benh-k svg{width:14px;height:14px}.benh-t b{flex:0 1 auto}
