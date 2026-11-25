@@ -878,6 +878,7 @@ function routeAfter(){const r=S._route;if(!r||!S.loaded)return;const p=decodeURI
   if(p[0]==="iddia"&&p[1]==="yorum"&&p[2]){const id=p[2];S.sheet={type:"betCom",id};BET.com=null;render(true);rpc("bet_comments_read",{p_coupon:id}).then(x=>{if(x&&x.ok){betComPut(id,x);if(S.sheet&&S.sheet.type==="betCom")render(true)}}).catch(()=>{});return}
   if(p[0]==="mac"&&p[1]==="oda"){const me=myPid();const m=S.matches.filter(x=>!x.archived&&!isExt(x)&&x.state==="takim"&&sideOf(x,me)).sort((a,b)=>matchTs(a)-matchTs(b))[0];if(m){S.sheet={type:"oda",mid:m.id,tab:["gorev","rakip"].includes(p[2])?p[2]:"sohbet",from:+LS.get("y_oda_"+m.id)||0,nwP:true};odaSeen(m.id);render(true);odaYerles();odaLoad(m.id,true)}return}
   const el=p[0]==="iddia"&&p[2]?"bk-"+p[2]:(p[0]!=="m"&&p[1]?p[1]:null);if(!el){window.scrollTo(0,0);return}
+  if(p[0]==="mac"){const t=/^(tahmin|duel|duello)/.test(p[1])?"oyun":"mac";if(S.f.bht!==t){S.f.bht=t;render(true)}}// bağlantıdaki bölüm hangi sekmedeyse o açılsın
   let n=0;const go=()=>{const e=document.getElementById(el);if(e){if(e.tagName==="DETAILS")e.open=true;e.scrollIntoView({behavior:"smooth",block:"center"});e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1800)}else if(n++<20)setTimeout(go,300)};setTimeout(go,150)}
 function routeGo(r){S._route=r;S._r0=r;S._r0t=Date.now();S.sheet=null;routeTab(r);render(true);routeAfter()}
 addEventListener("hashchange",()=>{if(typeof shHist==="function"&&Date.now()-(shHist.t||0)<700)return; // pencere kapanırken yapılan geri adımı sayfa değişimi sayma
@@ -1548,11 +1549,17 @@ function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];
 
 /* ================= Maç sekmesi ================= */
 const openMatch=()=>S.matches.filter(m=>!mDone(m)&&!isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b))[0];
+/* Bu hafta sekmeleri: Maç / Oyunlar / Haberler */
+let BH=null;const bh=(k,x)=>{if(BH&&x){BH[k].push(x);return""}return x||""};
+function bhWrap(top,mac){const B=BH;BH=null;const T=[["mac","Maç",mac+B.mac.join("")],["oyun","Oyunlar",B.oyun.join("")],["haber","Haberler",B.haber.join("")]].filter(t=>t[2].trim());
+  if(T.length<2)return top+(T[0]?T[0][2]:"");let k=S.f.bht;if(!T.some(t=>t[0]===k))k=T[0][0];const nh=B.haber.length;
+  return top+`<div class="bht" role="tablist">${T.map(([id,l])=>`<button class="${id===k?"on":""}" role="tab" aria-selected="${id===k}" data-act="bhTab" data-v="${id}">${l}${id==="haber"&&nh&&k!=="haber"?`<u>${nh}</u>`:""}</button>`).join("")}</div><div class="bhp">${T.find(t=>t[0]===k)[2]}</div>`}
 function viewMac(){
   if(!S.players.length)return `<section class="card"><div class="empty emp2">${empIc("kisi","pink")}<h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
-  const om=openMatch();if(om){const busy=(S.draft&&S.draft.mid===om.id)||(S.teams&&S.teams.mid===om.id);if(S.admin&&S.f.macY&&!busy)return macYonet(om);return hero(om)+odSerit()+muafKart(om)+duKapKart(om)+matchBody(om)}
+  const om=openMatch();if(om){const busy=(S.draft&&S.draft.mid===om.id)||(S.teams&&S.teams.mid===om.id);if(S.admin&&S.f.macY&&!busy)return macYonet(om);if(busy)return hero(om)+matchBody(om);
+    BH={mac:[],oyun:[],haber:[]};bh("haber",SZ_ON?"":odSerit());bh("haber",muafKart(om));bh("oyun",duKapKart(om));const body=matchBody(om);return bhWrap(hero(om)+(SZ_ON?odSerit():"")+(BH.top||""),body)}
   const lm=lastFinM();if(lm&&!lm.archived&&S.mInfo[lm.id])return macSonra(lm);
-  return (S.admin?createHero():noMatchHero())+odSerit()+duelWait();
+  BH={mac:[],oyun:[],haber:[]};bh("haber",odSerit());bh("oyun",duelWait());return bhWrap(S.admin?createHero():noMatchHero(),"")
 }
 /* maç bitti, sıradaki maç henüz girilmedi: maç önü ekranıyla aynı kalıpta sonuç ekranı */
 const odaKapan=m=>{const d=parseYmd(m.date);d.setDate(d.getDate()+2);return d.getTime()};
@@ -1708,18 +1715,18 @@ function th2Kart(cls,ic,t,pill,B,btn){return `<div class="thk th2 ${cls}"><div c
 function _macSonra(m){const M=esc(m.id);const inf=S.mInfo[m.id]||{pts:{}};const me=myPid();
   const STAR='<svg viewBox="0 0 24 24" fill="none" stroke="#2A1F00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8L12 3z"/></svg>';
   const PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-  let h=hero(m)+odSerit()+rztSerit(m)+odaCard(m);
+  BH={mac:[],oyun:[],haber:[]};const top=hero(m)+(SZ_ON?odSerit():"");bh("haber",SZ_ON?"":odSerit());bh("haber",rztSerit(m));let h=odaCard(m);
   {const L=Object.entries(inf.pts||{}).filter(([id,r])=>r&&realP(id)&&isFinite(r.pts)).sort((a,b)=>b[1].pts-a[1].pts);
     if(L.length){const mo=inf.motm&&P(inf.motm)?inf.motm:null;const mine=me&&inf.pts[me]&&isFinite(inf.pts[me].pts)?inf.pts[me]:null;
       h+=th2Kart("thG",STAR,vOn(m)?"Oylama":"Maç notları","Sonuçlandı",[mo?["Maçın adamı",esc(shortName(nameOf(mo)))]:["En iyi",esc(shortName(nameOf(L[0][0])))],mine?["Senin notun",fN(mine.pts)]:["En yüksek not",fN(L[0][1].pts)]],`<button class="thk-c" data-act="${m.vsum?"oySonuc":"msGo"}" data-id="${M}" data-v="notlar">Sıralama</button>`)}}
   if(isMember()&&!S.fol&&me&&!tahminYok()){const W=BET.week[m.id];betLoad("week",m.id);const Ls=BET.lists[me];if(!Ls)betLoad("list",me);
     const mine=Ls?Ls.rows.filter(c=>c.m===m.id):[];const dn=mine.filter(c=>c.z==="kazandi"||c.z==="kaybetti");const net=dn.reduce((a,c)=>a+((c.py||0)-c.st),0);const won=mine.filter(c=>c.z==="kazandi").length;
-    if(mine.length||(W&&W.n))h+=th2Kart("",dIcon("bilet","green",24),"Tahmin",mine.some(c=>c.z==="acik")?"Sonuç bekleniyor":"Sonuçlandı",mine.length?[["Kazanılan sikke",(net>0?"+":net<0?"−":"")+fJ(Math.abs(net))],["Tutan tahmin",won+"/"+mine.length]]:[["Yapılan tahmin",W.n||0],["Tutan tahmin",W.won||0]],`<button class="thk-c" data-act="thkGo" data-v="kupon">Sonuçlar</button>`)}
-  h+=duelCard(m)||duelWait();
+    if(mine.length||(W&&W.n))h+=bh("oyun",th2Kart("",dIcon("bilet","green",24),"Tahmin",mine.some(c=>c.z==="acik")?"Sonuç bekleniyor":"Sonuçlandı",mine.length?[["Kazanılan sikke",(net>0?"+":net<0?"−":"")+fJ(Math.abs(net))],["Tutan tahmin",won+"/"+mine.length]]:[["Yapılan tahmin",W.n||0],["Tutan tahmin",W.won||0]],`<button class="thk-c" data-act="thkGo" data-v="kupon">Sonuçlar</button>`))}
+  h+=bh("oyun",duelCard(m)||duelWait());
   if(S.admin){const d=S.f.newDate||nextDay(+S.settings.day);const tm=S.f.newTime||S.settings.time;const D=parseYmd(d);
     h+=th2Kart("thP",PLUS,"Sıradaki maç","Yönetici",[["Tarih",D.getDate()+" "+AYLAR[D.getMonth()].slice(0,3)+" "+GUNLER[D.getDay()].slice(0,3)],["Saat",esc(String(tm||"").slice(0,5))]],`<button class="thk-c" data-act="tog" data-k="nmOpen" aria-expanded="${!!S.f.nmOpen}">${S.f.nmOpen?"Kapat":"Maçı aç"}</button>`);
     if(S.f.nmOpen)h+=createForm()}
-  return h}
+  return bhWrap(top,h)}
 function lastCard(m,...r){return inM(m,()=>_lastCard(m,...r))}
 function _lastCard(m){const inf=S.mInfo[m.id]||{pts:{}};const sa=+m.score_a||0,sb=+m.score_b||0;const M=esc(m.id);const mo=inf.motm;const r=mo&&inf.pts[mo];
   return `<section class="card lastc"><div class="ch"><div><div class="eyebrow">Son maç · ${fmtShort(m.date)}</div></div><button class="btn sm" data-act="viewm" data-id="${M}">Maç detayı ›</button></div>
@@ -2106,7 +2113,7 @@ function matchBody(m){
   let h=S.admin?nextStep(m):"";
   if(m.state==="kayit"){
     {const lf=lastFinM();if(lf)h+=inM(lf,()=>odaCard(lf))}// kadro açıklanana kadar geçen maçın sohbeti açık kalır
-    h+=duelWait();h+=kadroCard(m);
+    h+=bh("oyun",duelWait());h+=kadroCard(m);
     // kadro seçilmeden önce "Sıradaki adım" kutusu aynı işi görür; aynı düğme iki kez çıkmasın
     if(S.admin&&S.players.filter(p=>!p.guest&&(m.rsvp||{})[p.id]==="g"&&!UNAVAIL.includes(stOf(p))).length>=4)h+=macYKart(m);
   }else{
@@ -2114,8 +2121,8 @@ function matchBody(m){
     const av=k=>{const L=plOf(m,k);return L.slice(0,3).map(id=>pFace(id)).join("")+(L.length>3?`<em>+${L.length-3}</em>`:"")};
     const kadroH=`<details class="card kdd kq" id="kadrolar"><summary><span class="kq-h"><span class="kq-i">${dIcon("yelek","pink",22)}</span><span class="kq-t"><i>Kadrolar</i><small>${plOf(m,"A").length} · ${plOf(m,"B").length} oyuncu</small></span><span class="kq-p"><span class="c">Dizilişi gör</span><span class="o">Kapat</span>${CHVD}</span></span><span class="kq-2">${["A","B"].map(k=>`<span class="kq-tm">${crest(nmOf(m,k),k,22)}<span class="kq-av">${av(k)}</span></span>`).join("")}</span></summary>${teamsView(m,true)}${ended?"":`<div class="kq-pv">${preview(m)}</div>`}</details>`;
     if(macGunu)h+=kadroH;
-    h+=odaCard(m);if(vOpen(m))h+=voteCard(m);else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
-    h+=tahminKart(m);h+=duelCard(m);
+    h+=odaCard(m);if(vOpen(m)){const v=voteCard(m);if(BH)BH.top=(BH.top||"")+v;else h+=v}else if(ended&&vPend(m)&&!S.admin)h+=`<section class="nxs"><span class="nxs-x"><small>Oylama</small><b>Skor bekleniyor</b><span>Yönetici maç skorunu girince oylama açılır</span></span></section>`;
+    h+=bh("oyun",tahminKart(m));h+=bh("oyun",duelCard(m));
     if(!macGunu)h+=kadroH;
     if(S.admin)h+=macYKart(m);
   }
@@ -3719,6 +3726,7 @@ document.addEventListener("click",async e=>{
       S.flist=null;S.follows=null;if(S.hub)hubLoad();render(true);break}
     case"folOpen":{const on=el.dataset.v==="1";try{const r=await rpc("admin_set_followable",{p_on:on});if(r&&r.ok){S.settings.followable=on;toast(on?"Lig takibe açıldı":"Lig takibe kapandı");render(true)}else toast("Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"meSheet":if(S.fol){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break}if((isMember()&&!S.admin)||(S.me&&P(S.me)&&el.id==="meBtn")){S.f.setp="";S.view=null;goTab("ben");render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
+    case"bhTab":{const y0=el.getBoundingClientRect().top;S.f.bht=el.dataset.v;render();const b=document.querySelector('.bht [data-v="'+el.dataset.v+'"]');if(b){const dy=b.getBoundingClientRect().top-y0;if(Math.abs(dy)>1){const y=scrollY;kayDuz(b,dy);if(scrollY===y)window.scrollBy(0,dy)}}break}
     case"tog":{if(el.dataset.k==="mem_x"){const f=S.f.mem||(S.f.mem={});f["x_"+el.dataset.u]=!f["x_"+el.dataset.u]}else{const k=el.dataset.k,on=!S.f[k];// aynı gruptan biri açılınca öncekiler kapanır
       if(on){const g=(/^(pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];// krallık başlıkları birbirini kapatmaz: üstteki kapanınca basılan başlık kayıyordu
       if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}
