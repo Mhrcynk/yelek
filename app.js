@@ -1769,6 +1769,26 @@ function cupData(){const c=FZ.cup;if(!c)return null;const D=(c.draw||[]).slice()
   const R=[[]];for(let i=0;i+1<D.length;i+=2)R[0].push(play(D[i],D[i+1],W[0]));if(D.length%2)R[0].push({a:D[D.length-1],b:null,w:D[D.length-1],bye:true});
   for(let r=1;r<4;r++){const P=R[r-1];if(P.length<2)break;const nx=[];for(let i=0;i<P.length;i+=2)nx.push(play(P[i].w,P[i+1]?P[i+1].w:null,W[r]));R.push(nx)}
   const F=R[R.length-1];const ch=F.length===1&&F[0].w||null;return{R,W,ch}}
+// ayna ağaç: iki yarı ortada finalde buluşur; düğümler yüz, çizgiler bağlantı
+function cupAyna(d,cur){const me=myPid();const R=d.R;const VW=360,X=i=>16+i*(VW-32)/8;const RH=48,H=RH*8+8;const yr=k=>8+RH/2+k*RH;
+  const N=[],Ls=[];const nd=(p,x,y,out,r,sz)=>N.push({p,x,y,out,r,sz});
+  const ln=(x1,y1,x2,y2)=>Ls.push(`M${x1} ${y1}H${(x1+x2)/2}V${y2}H${x2}`);
+  const o=(e,p)=>!!(e&&e.w&&p&&e.w!==p);
+  for(const sd of [0,1]){const c=k=>sd?X(8-k):X(k);
+    const r0=(R[0]||[]).slice(sd*4,sd*4+4),r1=(R[1]||[]).slice(sd*2,sd*2+2),r2=(R[2]||[])[sd],f=(R[3]||[])[0];
+    r0.forEach((e,i)=>{[e.a,e.b].forEach((p,j)=>{if(!p&&j)return;const y=yr(2*i+j);nd(p,c(0),y,o(e,p),0,26);ln(c(0),y,c(1),(yr(2*i)+yr(2*i+1))/2)})});
+    const y2=i=>(yr(4*i)+yr(4*i+1)+yr(4*i+2)+yr(4*i+3))/4,y1=k=>(yr(2*k)+yr(2*k+1))/2;
+    r1.forEach((e,i)=>{[e.a,e.b].forEach((p,j)=>{const y=y1(2*i+j);nd(p,c(1),y,o(e,p),1,28);ln(c(1),y,c(2),y2(i))})});
+    if(!r1.length)for(let k=0;k<4;k++)nd(null,c(1),y1(k),false,1,28);
+    const ym=(y2(0)+y2(1))/2;[0,1].forEach(i=>{const p=r2?(i?r2.b:r2.a):null;nd(p,c(2),y2(i),o(r2,p),2,30);ln(c(2),y2(i),c(3),ym)});
+    const fp=f?(sd?f.b:f.a):null;nd(fp,c(3),ym,o(f,fp),3,32);Ls.push(`M${c(3)} ${ym}H${X(4)}`)}
+  const ym=H/2;const chP=d.ch&&P(d.ch);
+  const face=n=>{const p=n.p&&P(n.p);const cls=`cupn${n.p===me?" me":""}${n.out?" out":""}${n.r===cur?" now":""}`;const st=`left:${(n.x/VW*100).toFixed(2)}%;top:${n.y}px;--s:${n.sz}px`;
+    return p?`<button class="${cls}" style="${st}" data-act="cupN" data-p="${esc(n.p)}" data-r="${n.r}" aria-label="${esc(nameOf(n.p))}">${avatar(p)}</button>`:`<span class="${cls} q" style="${st}">?</span>`};
+  return `<div class="cupa-h">${["1. tur","Çeyrek","Yarı","Final","","Final","Yarı","Çeyrek","1. tur"].map((t,i)=>`<span style="left:${(X(i)/VW*100).toFixed(2)}%" class="${(i<4?i:8-i)===cur&&t?"on":""}">${t}</span>`).join("")}</div>
+  <div class="cupa" style="height:${H}px"><svg viewBox="0 0 ${VW} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${Ls.join("")}" fill="none" stroke="#3A3A42" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
+  ${N.map(face).join("")}<div class="cupa-k" style="left:50%;top:${ym}px">${chP?avatar(chP):dIcon("kupa","gold",26)}</div>${chP?`<b class="cupa-ad" style="top:${ym+30}px">${esc(shortName(nameOf(d.ch)))}</b>`:""}</div>
+  <p class="cupa-i">Yüze dokununca isim ve puanı görünür.</p>`}
 function cupHtml(m){const d=cupData();if(!d)return `<p class="muted small" style="margin:18px 0">Turnuva yükleniyor…</p>`;const me=myPid();
   const nm=p=>p?(p===me?"Sen":esc(shortName(nameOf(p)))):"?";
   let cur=d.R.findIndex(L=>L.some(x=>!x.bye&&!x.w));if(cur<0)cur=d.R.length-1;
@@ -1779,8 +1799,8 @@ function cupHtml(m){const d=cupData();if(!d)return `<p class="muted small" style
   const box=x=>{if(x.bye)return `<div class="cbx bye${x.a===me?" my":""}"><div class="w"><span>${nm(x.a)}</span><i>BAY</i></div></div>`;
     const ln=(p,v)=>`<div class="${x.w?(x.w===p?"w":"l"):""}"><span>${nm(p)}</span><i class="num">${v==null?"–":v}</i></div>`;
     return `<div class="cbx${me&&(x.a===me||x.b===me)?" my":""}">${ln(x.a,x.x)}${ln(x.b,x.y)}</div>`};
-  const cols=d.R.map((L,r)=>`<div class="ccol${r===cur?" now":""}"><h4>${CUP_AD[r]}<small>${d.W[r]?esc(fmtShort(d.W[r].date)):"&nbsp;"}</small></h4><div class="ccb">${L.map(box).join("")}</div></div>`).join("");
-  return top+`<div class="cup-br" data-cur="${cur}">${cols}<div class="ccol cch"><h4>Şampiyon<small>&nbsp;</small></h4><div class="ccb"><div class="cup-ch">${dIcon("kupa","gold",30)}<b>${d.ch?nm(d.ch):"?"}</b></div></div></div></div>
+  const cl=d.R[cur]||[];const lst=`<div class="cup-lh"><b>${CUP_AD[cur]}</b>${d.W[cur]?`<small>${esc(fmtShort(d.W[cur].date))} maçı</small>`:""}</div><div class="cup-ls">${cl.map(box).join("")}</div>`;
+  return top+cupAyna(d,cur)+lst+`
     <button class="dv-all" data-act="fzShare" data-v="${d.ch?"fsamp":"fcup"}">${mnI("fw")}<span>${d.ch?"Şampiyonu paylaş":"Eşleşmeleri paylaş"}</span></button>
     <p class="fz-not">15 oyuncu kurayla eşleşti. Her tur bir maç haftası: o haftanın fantezi puanı yüksek olan tur atlar, kadro kurmayan 0 puan alır. Eşitlikte kaptanın puanına, o da eşitse sezon puanına bakılır.</p>`}
 const PG_BK='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';
@@ -4032,6 +4052,7 @@ document.addEventListener("click",async e=>{
     case"duKralShare":S.f.pm={tab:"duello",item:"dkral",mid:id,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
     case"macY":S.f.macY=!!el.dataset.v;render(true);window.scrollTo(0,0);break;
     case"pgBack":pgBack();break;
+    case"cupN":{const d=cupData();const r=+el.dataset.r;const p=el.dataset.p;const e=d&&(d.R[r]||[]).find(x=>x.a===p||x.b===p);const v=e?(e.a===p?e.x:e.y):null;toast(`${nameOf(p)} · ${CUP_AD[r]}${v!=null?": "+v+" puan":""}${e&&e.bye?": bay":""}${e&&e.w&&!e.bye?(e.w===p?" · tur atladı":" · elendi"):""}`);break}
     case"rzK":S.f.rzK=S.f.rzK===el.dataset.v?"":el.dataset.v;render(true);break;
     case"fzShare":S.f.pm={tab:"fantezi",item:el.dataset.v||"fmen",fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
     case"gmInfo":S.sheet={type:"gmInfo",v:el.dataset.v};render(true);break;
