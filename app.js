@@ -582,7 +582,7 @@ async function idbGet(k){const db=await idbOpen();if(!db)return null;return new 
 async function idbSet(k,v){const db=await idbOpen();if(!db)return;try{db.transaction("kv","readwrite").objectStore("kv").put(v,k+"_"+TID)}catch(_){}}
 async function photosLoadCache(){try{let c=await idbGet("ph");
     if(!c){const old=JSON.parse(localStorage.getItem("y_cph")||"null");if(old){c={ph:old,v:{}};LS.del("y_cph");LS.del("y_cpv")}}
-    if(c&&c.ph&&!Object.keys(S.photos||{}).length){S.photos=c.ph;S.phv=c.v||{};render(true)}}catch(_){}}
+    if(c&&c.ph&&!Object.keys(S.photos||{}).length){S.photos=c.ph;S.phv=c.v||{};render(true)}}catch(_){}setTimeout(photoNormAll,50)}
 /* takım logosu: sürümü değişince bir kez iner, telefonda saklanır */
 async function logoSync(){if(S.logoT!==TID){S.logo="";S.logoV=0;S.logoT=TID}const v=+(S.settings&&S.settings.logo_v)||0;
   if(!v){if(S.logo){S.logo="";S.logoV=0;idbSet("lg","");phdRender()}return}
@@ -602,7 +602,7 @@ async function photosSync(pl){S.phv=S.phv||{};const want={};pl.forEach(p=>{if(p.
   const need=Object.keys(want).filter(id=>S.phv[id]!==want[id]);
   for(let i=0;i<need.length;i+=8){const part=need.slice(i,i+8);
     try{const rows=await sbGet("player_photos?select=player_id,data&player_id=in.("+part.join(",")+")");rows.forEach(r=>{S.photos[r.player_id]=r.data;S.phv[r.player_id]=want[r.player_id]});part.forEach(id=>{if(!rows.some(r=>r.player_id===id)){delete S.photos[id];S.phv[id]=want[id]}});ch=true}catch(_){break}}
-  if(ch&&!S.fol)idbSet("ph",{ph:S.photos,v:S.phv})}
+  if(ch&&!S.fol)idbSet("ph",{ph:S.photos,v:S.phv});setTimeout(photoNormAll,50)}
 const hhmm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
 /* tek seferlik: fotoğrafları hizala (sunucuda hazırlanan dönüşüm, yönetici telefonunda uygulanır) */
 async function photoFixRun(){if(!S.admin||S._pf)return;S._pf=true;
@@ -1491,7 +1491,29 @@ const maskOf=(n,o,k)=>{let i=(_fnv(n)>>>7)%MASK.length;if(o&&k==="B"&&o!==n&&((_
 function crest(name,k,sz,other){sz=sz||32;if(other===undefined&&typeof TEAM!=="undefined")other=name===TEAM.A?TEAM.B:name===TEAM.B?TEAM.A:"";const col=`var(--t${k==="A"?"A":"B"})`;
   return `<svg class="crest" viewBox="0 0 64 64" width="${sz}" height="${sz}" aria-hidden="true"><circle cx="32" cy="32" r="30" style="fill:${col}"/><circle cx="32" cy="32" r="26.5" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="1.5"/><g transform="translate(9.6 9.6) scale(.7)">${MASK[maskOf(name,other,k)](col)}</g></svg>`}
 const lastSide=id=>{const F=fin();for(let i=F.length-1;i>=0;i--){const sd=playSide(F[i],id);if(sd)return sd}return""};
-const photoOf=id=>{const d=S.photos[id];return d&&/^data:image\//.test(d)?d:""};
+// fotoğraf hizalama: saydam kesik fotoğrafta başı bul, herkesi aynı ölçek ve konuma getir
+function photoNormC(img){const W=256,H=320;const c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d",{willReadFrequently:true});g.drawImage(img,0,0,W,H);
+  const d=g.getImageData(0,0,W,H).data;const row=y=>{let a=-1,b=-1,n=0;for(let x=0;x<W;x++){if(d[(y*W+x)*4+3]>60){if(a<0)a=x;b=x;n++}}return{a,b,n}};
+  let y0=-1;for(let y=0;y<H;y++){if(row(y).n>=6){y0=y;break}}if(y0<0)return null;
+  // önce kaba baş genişliği, sonra baş ortasındaki satırlardan ölçüm
+  const band=(f,t)=>{const L=[];for(let y=Math.round(y0+f);y<=Math.min(H-1,Math.round(y0+t));y++){const r=row(y);if(r.n>=6)L.push(r)}return L};
+  const med=A=>{const s=A.slice().sort((x,y)=>x-y);return s.length?s[s.length>>1]:0};
+  const w0=med(band(10,24).map(r=>r.b-r.a))||40;const hh=w0*1.45;
+  const B=band(hh*.30,hh*.60);if(B.length<4)return null;const hw=med(B.map(r=>r.b-r.a));const cx=med(B.map(r=>(r.a+r.b)/2));
+  // gövde başlamadan önceki en geniş baş satırını kullan: kulaklar dahil
+  if(hw<20)return null;return{y0,hw,cx}}
+function photoNorm(src){return new Promise(ok=>{const img=new Image();img.onload=()=>{try{const m=photoNormC(img);if(!m)return ok(null);
+  const W=256,H=320,HW=124,TOP=24;const s=Math.max(.55,Math.min(1.9,HW/m.hw));const c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");g.imageSmoothingQuality="high";
+  g.setTransform(s,0,0,s,W/2-m.cx*s,TOP-m.y0*s);g.drawImage(img,0,0,W,H);g.setTransform(1,0,0,1,0,0);
+  const gr=g.createLinearGradient(0,236,0,300);gr.addColorStop(0,"rgba(0,0,0,1)");gr.addColorStop(1,"rgba(0,0,0,0)");g.globalCompositeOperation="destination-in";g.fillStyle=gr;g.fillRect(0,0,W,H);
+  let u=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(u))u=c.toDataURL("image/png");ok({u,m,s})}catch(e){ok(null)}};img.onerror=()=>ok(null);img.src=src})}
+const PHN={};const phKey=d=>d?d.length+":"+d.slice(-32):"";
+// bütün fotoğrafları aynı ölçeğe getir; sonuç telefonda saklanır, foto değişince yeniden yapılır
+async function photoNormAll(){if(photoNormAll.b)return;photoNormAll.b=1;try{if(!photoNormAll.c){photoNormAll.c=1;const c=await idbGet("phn");if(c&&c.v===1&&c.m)Object.assign(PHN,c.m)}
+  let ch=0;for(const[id,d]of Object.entries(S.photos||{})){if(!/^data:image\//.test(d||""))continue;const k=phKey(d);if(PHN[id]&&PHN[id].k===k)continue;const r=await photoNorm(d);PHN[id]={k,u:r?r.u:""};ch++}
+  for(const id of Object.keys(PHN))if(!(S.photos||{})[id])delete PHN[id];
+  if(ch){idbSet("phn",{v:1,m:PHN});render(true)}}catch(_){}finally{photoNormAll.b=0}}
+const photoOf=id=>{const d=S.photos[id];if(!d||!/^data:image\//.test(d))return"";const n=PHN[id];if(n&&n.k===phKey(d))return n.u||d;if(!photoNormAll.q){photoNormAll.q=1;setTimeout(()=>{photoNormAll.q=0;photoNormAll()},300)}return d};
 function avatar(p,size){const ph=photoOf(p.id);return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
 function avatarO(p){return `<span class="avw">${avatar(p)}<b class="ab num">${ovrOf(p.id)}</b></span>`}
 const ANIM=new Set();const anim=k=>ANIM.has(k)?"":(ANIM.add(k)," anim");

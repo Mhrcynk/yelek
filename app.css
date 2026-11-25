@@ -5564,3 +5564,7 @@ body.gpf .fz-yb span{color:#A9A9B3}body.gpf .fz-yb b{color:#fff}
 .xu-h>b{font:800 1.125rem/1 var(--display);text-align:right}
 .xu-c{font-style:normal;color:var(--c-ink3);transition:transform .2s}.xu-g.op .xu-c{transform:rotate(90deg)}
 .xu-l{padding:0 14px 10px 34px}.xu-l .xbr{padding:6px 0}.xu-l .xbr span{font-size:.8125rem}
+/* Oyuncu fotoğrafları: her yerde aynı ölçek ve hiza (fotoğraflar uygulamada aynı kadraja getirilir) */
+.av img,.tok .shirt img,.mph img,.lth img,.btkc img,.mafcap img,.ptk-p img,.mzpl-p img,.mzpod-a img,.av.pl img,.lth.pl img,.mecp img,.ldp img,.yl-a img,.pr-a img,.fcr img,.mav img,.mzme-av.ph img,.cupn .av img{object-fit:cover!important;object-position:50% 0!important;transform:none!important}
+.av.hasph,.ptk-p,.mzpl-p,.mzpod-a,.tok .shirt,.mph,.lth,.btkc,.mafcap{overflow:hidden}
+.av img,.tok .shirt img,.mph img,.lth img,.btkc img,.mafcap img,.ptk-p img,.mzpl-p img,.mzpod-a img,.mecp img,.ldp img,.yl-a img,.pr-a img,.fcr img,.mav img,.mzme-av.ph img,.cupn .av img{transform:scale(1.32)!important;transform-origin:50% 22%!important}
