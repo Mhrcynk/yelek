@@ -194,12 +194,12 @@ const sLen=()=>Math.max(2,+S.settings.season_len||8);
 const seasonsAll=()=>{const st=new Set(fin().map(m=>+m.season||0).filter(Boolean));return[...st].sort((a,b)=>a-b)};
 const sonYr=()=>{const L=seasonsAll();return L.length?L[L.length-1]:1};
 // yeni sezon: son sezon bittiyse ve sıradaki iç maç açıldıysa sezon o an döner (numara veritabanına maç bitince yazılır)
-const yeniSez=()=>{const L=seasonsAll();if(!L.length)return 0;const n=L[L.length-1];return seasonDoneR(n)&&(S.matches||[]).some(m=>m.state!=="bitti"&&!m.archived&&m.kind!=="dis")?n+1:0};
+const yeniSez=()=>{const L=seasonsAll();if(!L.length)return 0;const n=L[L.length-1];if(SZ_ON===2)return n+1;return seasonDoneR(n)&&(S.matches||[]).some(m=>m.state!=="bitti"&&!m.archived&&m.kind!=="dis")?n+1:0};
 const curYr=()=>yeniSez()||sonYr();
 const seasonCount=n=>fin().filter(m=>+m.season===n).length;
 const seasonDoneR=n=>seasonCount(n)>=sLen()||n<=(+S.settings.season_closed||0);
 // önizleme: yönetici kendi ekranında sezonu bitmiş gibi görür; hiçbir şey kaydedilmez, sayfa yenilenince kapanır
-let SZ_ON=false;const seasonDone=n=>seasonDoneR(n)||(SZ_ON&&n===sonYr());
+let SZ_ON=0;const seasonDone=n=>seasonDoneR(n)||(SZ_ON&&n===sonYr());
 const seasonStart=n=>{const F=fin().filter(m=>+m.season===n);return F.length?matchTs(F[0]):Infinity};
 const yrOf=m=>{if(+m.season)return +m.season;if(m.state!=="bitti"&&m.kind!=="dis"&&yeniSez())return yeniSez();const t=matchTs(m);const L=seasonsAll();let r=L[0]||1;for(const n of L)if(seasonStart(n)<=t)r=n;return r};
 const selYr=()=>S.yr??curYr();
@@ -744,9 +744,10 @@ function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return""
         return `<button class="yl-r" data-act="open" data-id="${esc(o.id)}"><span class="yl-k num">${j+4}</span><span class="yl-a">${x?`<img src="${esc(x)}" alt="">`:esc(initials(p.name))}</span><span class="yl-n"><b>${esc(p.name)}</b><small>${esc(e)} · ${o.n} maç</small></span><span class="yl-b"><i class="g${pg}" style="width:${Math.max(4,Math.round(o.tot/mx*100))}%"></i></span><b class="yl-v num">${fP(o.tot)}</b></button>`}).join("")}
       ${L.length>8?`<button class="yl-m" data-act="tog" data-k="mvpAll">${all?"Daha az göster":`Tüm sıralama · ${L.length} oyuncu`}</button>`:""}</div>`})():""}</section>`}
 function stSeason(n){const w=seasonAwards(n);if(!w||!w.champ){toast("Bu sezonda maç yok");return}
-  const ph=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:`<span class="stini">${esc(initials(nameOf(id)))}</span>`};const c=w.champ;const P2=[];
+  const ph=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:`<span class="stini">${esc(initials(nameOf(id)))}</span>`};const c=w.champ;const P2=[];const OL=odulList(w);
+  P2.push({k:"aw",ns:1,h:`<span class="stey">${n}. sezon · ${w.F.length} maç</span><div class="sttr" aria-hidden="true">🏆</div><h2>Ödül töreni</h2><span class="stey">${OL.length+1} ödül sahibini buluyor</span><div class="stch"><span>Şampiyon</span>${OL.map(x=>`<span>${x[1]}</span>`).join("")}</div>`});
   P2.push({k:"motm",h:`<span class="stey">${n}. sezon · Şampiyon</span><span class="sthl">🏆 TAHTIN SAHİBİ</span><div class="stph">${ph(c.id)}</div><h2>${esc(nameOf(c.id))}</h2><div class="stkv"><div class="w"><b class="num">${c.p}</b><small>Puan</small></div><div><b class="num">${c.G}-${c.B}-${c.M}</b><small>G-B-M</small></div><div><b class="num">${c.av>0?"+":""}${c.av}</b><small>Averaj</small></div></div>`});
-  odulList(w).forEach(([hl,t,L,u])=>{const o=L[0];P2.push({k:"motm",h:`<span class="stey">${n}. sezon · ${t}</span><span class="sthl">${hl}</span><div class="stph">${ph(o.id)}</div><h2>${esc(nameOf(o.id))}</h2><div class="stkv"><div class="w"><b class="num">${o.v}</b><small>${u}</small></div>${L.slice(1).map((r,j)=>`<div><b class="num">${r.v}</b><small>${j+2}. ${esc(shortName(nameOf(r.id)))}</small></div>`).join("")}</div>`})});
+  OL.forEach(([hl,t,L,u])=>{const o=L[0];P2.push({k:"motm",h:`<span class="stey">${n}. sezon · ${t}</span><span class="sthl">${hl}</span><div class="stph">${ph(o.id)}</div><h2>${esc(nameOf(o.id))}</h2><div class="stkv"><div class="w"><b class="num">${o.v}</b><small>${u}</small></div>${L.slice(1).map((r,j)=>`<div><b class="num">${r.v}</b><small>${j+2}. ${esc(shortName(nameOf(r.id)))}</small></div>`).join("")}</div>`})});
   {const R=tahminYok()?[]:seztRows(n);if(R.length){const gk=w.g&&w.g.id;const K=R.map(r=>({p:r.p,c:r.c===c.id,g:!!gk&&r.g===gk})).filter(x=>x.c||x.g).sort((a,b)=>(b.c+b.g)-(a.c+a.g)||nameOf(a.p).localeCompare(nameOf(b.p),"tr")).slice(0,10);
     P2.push({k:"totw",h:`<span class="stey">${n}. sezon · Sezon tahmini</span><span class="sthl">KÂHİNLER</span>${K.length?`<ol class="sttw sttw-s">${K.map(x=>`<li><span class="sttp">${ph(x.p)}</span><span><b>${esc(nameOf(x.p))}</b><small>${x.c&&x.g?"Şampiyonu da gol kralını da bildi":x.c?"Şampiyonu bildi":"Gol kralını bildi"}</small></span><b class="num">${x.c+x.g}/2</b></li>`).join("")}</ol>`:`<h2>Kimse bilemedi</h2>`}<span class="stey">${R.length} kişi sezon başında tahmin etmişti. Para yok, bahis değil; sadece keyfine.</span>`})}}
   P2.push({k:"totw",h:`<span class="stey">${n}. sezon · Puan durumu</span><span class="sthl">SON SÖZÜ TABLO SÖYLER</span><ol class="sttw sttw-s">${w.L.slice(0,10).map((o,i)=>`<li><span class="sttp">${ph(o.id)}</span><span><b>${i+1}. ${esc(nameOf(o.id))}</b><small>${o.G}G ${o.B}B ${o.M}M · averaj ${o.av>0?"+":""}${o.av}</small></span><b class="num">${o.p}</b></li>`).join("")}</ol>`});
@@ -1538,7 +1539,7 @@ const DU_T={gol:"Gol düellosu",asist:"Asist düellosu",ga:"Skor katkısı düel
 const DU_TR={km:1,pa:1,tk:1,pas:1,isa:1};const duK=k=>DU_K[k]||"Notum seninkinden yüksek olur";const duT=k=>DU_T[k]||"Düello";
 /* sezon tahmini: ilk maç başlamadan şampiyon ve gol kralı tahmini; sikkesiz, sadece keyfine */
 const SP={at:0,d:null};
-function spLoad(force){if(!isMember()||S.fol||tahminYok())return;if(!force&&Date.now()-SP.at<60000)return;SP.at=Date.now();
+function spLoad(force){if(SZ_ON||!isMember()||S.fol||tahminYok())return;if(!force&&Date.now()-SP.at<60000)return;SP.at=Date.now();
   rpc("season_picks",{}).then(r=>{if(r&&r.ok){const o=JSON.stringify(SP.d);SP.d=r;if(o!==JSON.stringify(r)&&!S.sheet&&!S.view&&(S.tab==="mac"||S.tab==="lig"))render(true)}}).catch(()=>{})}
 const seztOk=()=>isMember()&&!S.fol&&!tahminYok()&&!!myPid();
 const seztRows=n=>((SP.d&&SP.d.rows)||[]).filter(r=>+r.s===+n&&P(r.p));
@@ -1830,7 +1831,7 @@ function odulList(w){const F=w.F;const ilk=(o,L)=>o?[o,...L.filter(x=>x.id!==o.i
   return A.filter(x=>x[2].length)}
 /* Bu hafta: biten sezonun ödül töreni şeridi (yeni sezonun ilk maçı bitene kadar durur) */
 function odSerit(){if(S.fol)return"";const n=sonYr();if(!seasonDone(n))return seztKart();const w=seasonAwards(n);if(!w||!w.champ)return"";const ys=yeniSez();
-  return (ys?`<div class="ymf ymf-ys"><em aria-hidden="true">🏁</em><span><b>${ys}. SEZON BAŞLIYOR</b><small>Tablo sıfırlandı, herkes eşit. İlk düdük bu maçta.</small></span></div>`:"")+seztKart()+(SZ_ON?`<button class="ymf ymf-on" data-act="szOnTog"><span><b>Önizleme açık</b><small>Sezon bitmiş gibi görünüyor. Yalnızca sende, kayıt yok.</small></span><i>Kapat</i></button>`:"")+`<button class="ymf ymf-od" data-act="odulOpen" data-id="${n}"><em aria-hidden="true">🏆</em><span><b>${n}. sezon ödül töreni</b><small>Şampiyon ${esc(nameOf(w.champ.id))} · ödüller sahiplerini buldu</small></span><i aria-hidden="true">›</i></button>`}
+  return (SZ_ON?`<button class="ymf ymf-on" data-act="szOnTog"><span><b>Önizleme açık</b><small>${SZ_ON===2?"Yeni sezon başlamış":"Sezon bitmiş"} gibi görünüyor. Yalnızca sende, kayıt yok.</small></span><i>Kapat</i></button>`:"")+(ys?`<div class="ymf ymf-ys"><em aria-hidden="true">🏁</em><span><b>${ys}. SEZON BAŞLIYOR</b><small>Tablo sıfırlandı, herkes eşit. İlk düdük bu maçta.</small></span></div>`:"")+seztKart()+`<button class="ymf ymf-od" data-act="odulOpen" data-id="${n}"><em aria-hidden="true">🏆</em><span><b>${n}. sezon ödül töreni</b><small>Şampiyon ${esc(nameOf(w.champ.id))} · ödüller sahiplerini buldu</small></span><i aria-hidden="true">›</i></button>`}
 function sheetOdul(){const n=+S.sheet.n;const w=seasonAwards(n);const hd=sub=>`<div class="mzvh"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><div><h2>Ödül töreni</h2>${sub?`<small>${sub}</small>`:""}</div></div>`;
   if(!w||!w.champ)return hd("")+`<p class="muted">Bu sezonda maç yok.</p>`;
   const c=w.champ;const gl=odulGelisen(w.F);
@@ -2941,7 +2942,7 @@ function karHtml(p){const s=S.stats[p.id]||{};const all=s.hist||[],H=all.filter(
   return h+rztHtml(p.id)}
 /* sezon hedefleri: yalnızca oyuncunun kendi telefonunda durur */
 const HDF={gol:["Gol",[10,15,20]],asist:["Asist",[5,10,15]],not:["Not ortalaması",[7,7.5,8]],sira:["Lig sırası",[3,5]],motm:["Maçın adamı",[1,2,3]]};
-const hdfKey=y=>"y_hdf_"+TID+"_"+(y||curYr());const hdfF=v=>String(v).replace(".",",");
+const hdfKey=y=>"y_hdf_"+TID+"_"+(y||curYr())+(SZ_ON===2&&!y?"_o":"");const hdfF=v=>String(v).replace(".",",");
 const hdfGet=y=>{try{const a=JSON.parse(LS.get(hdfKey(y))||"[]");return Array.isArray(a)?a.filter(x=>x&&HDF[x.k]&&isFinite(+x.v)).slice(0,3):[]}catch(_){return[]}};
 const hdfSet=a=>{try{LS.set(hdfKey(),JSON.stringify(a))}catch(_){}};
 function hdfStat(me,yy){const y=yy||curYr();const F=fin().filter(m=>yrOf(m)===y);let n=0,g=0,a=0,pt=0,mo=0;for(const m of F){const inf=S.mInfo[m.id];const r=inf&&inf.pts[me];if(!r)continue;n++;g+=r.g;a+=r.a;pt+=r.pts;if(inf.motm===me)mo++}
@@ -3572,7 +3573,7 @@ function setSub(k){const url=teamLink();
       <div class="szd">${Array.from({length:L},(_,i)=>`<i class="${i<n?"on":""}"></i>`).join("")}</div>${seasonDone(curYr())?'<p class="snote" style="margin:0">Bir sonraki maç yeni sezonu başlatır.</p>':""}</section>
     <section class="card" style="display:grid;gap:12px"><label class="f" for="sLen">Bir sezondaki maç sayısı<select id="sLen" data-bind="sLen">${[4,5,6,7,8,9,10,12,14,16].map(n=>`<option value="${n}"${n===+(S.f.sLen||sLen())?" selected":""}>${n} maç</option>`).join("")}</select></label>
       <button class="btn primary block" data-act="seasonSave">Kaydet</button></section>
-    ${seasonDoneR(curYr())||!n?"":`<section class="card szx"><b>Sezon bitince ne olur?</b><p class="snote" style="margin:0">Sezonu bitirmeden önizle: şerit, ödül töreni, şampiyonlar. Yalnızca senin ekranında görünür, hiçbir şey kaydedilmez; uygulamayı yenileyince kapanır.</p><button class="btn ${SZ_ON?"ghost":"primary"} block" data-act="szOnTog">${SZ_ON?"Önizlemeyi kapat":"Sezon bitmiş gibi göster"}</button></section>`}
+    ${!SZ_ON&&(seasonDoneR(sonYr())||!seasonCount(sonYr()))?"":`<section class="card szx"><b>Sezon bitince ne olur?</b><p class="snote" style="margin:0">Sezonu bitirmeden önizle. Yalnızca senin ekranında görünür, hiçbir şey kaydedilmez; uygulamayı yenileyince kapanır.</p>${SZ_ON?`<button class="btn ghost block" data-act="szOnTog">Önizlemeyi kapat</button>`:`<button class="btn primary block" data-act="szOnTog" data-v="1">Sezon bitmiş gibi göster</button><p class="snote" style="margin:0">Şerit, ödül töreni, şampiyonlar.</p><button class="btn primary block" data-act="szOnTog" data-v="2">Yeni sezon başlamış gibi göster</button><p class="snote" style="margin:0">Yeni sezon şeridi, sıfırlanan tablo, sezon tahmini, hedefleri taşıma.</p>`}</section>`}
     ${seasonDone(curYr())||!n?"":`<section class="card szx"><b>Sezonu erken bitir</b><p class="snote" style="margin:0">Oynanan maçlarla sezon kapanır, şampiyon belli olur. Geri alınamaz.</p><button class="btn ghost danger block" data-act="seasonClose">${S.f.sClose?"Emin misin? Sezon "+curYr()+" şimdi bitsin":"Sezonu şimdi bitir"}</button></section>`}
     ${(()=>{const F=fin(),fz=F.filter(m=>m.calc).length;return `<section class="card szx"><b>Kart puanları</b><p class="snote" style="margin:0">Biten maçların puanları kesinleşir; kurallar değişse de geçmiş aynı kalır. ${F.length?fz+"/"+F.length+" maç kesin.":""}</p><p class="snote" style="margin:0">Yeniden hesaplarsan bu sezonun bütün maçları güncel kurallarla baştan hesaplanır, kartlar değişebilir.</p><button class="btn ghost block" data-act="calcReset">${S.f.cReset?"Emin misin? Sezon "+curYr()+" yeniden hesaplansın":"Bu sezonu yeniden hesapla"}</button></section>`})()}`}
   else if(k==="tel")h+=`<p class="snote" style="margin:0 4px 10px">Ana ekrana eklersen uygulama gibi tam ekran açılır.</p><div class="sbox">
@@ -3686,6 +3687,7 @@ document.addEventListener("click",async e=>{
     case"seztC":if(S.sheet&&S.sheet.type==="sezt"){S.sheet.c=id;render(true)}break;
     case"seztG":if(S.sheet&&S.sheet.type==="sezt"){S.sheet.g=id;render(true)}break;
     case"seztSave":{const sh=S.sheet;if(!sh||sh.type!=="sezt"||!sh.c||!sh.g||sh.busy)break;sh.busy=true;render(true);
+      if(SZ_ON){SP.d.mine={c:sh.c,g:sh.g};SP.d.n=1;S.sheet=null;toast("Önizleme: tahmin kaydedilmedi");render(true);break}
       try{const r=await rpc("season_pick_set",{p_champ:sh.c,p_gol:sh.g});if(r&&r.ok){SP.d=r;SP.at=Date.now();S.sheet=null;toast("Tahminin kaydedildi")}else{sh.busy=false;toast({kapali:"İlk maç başladı, tahmin kapandı",yas:"Tahmin oyunu 18 yaş altına kapalı",oyuncu:"Bu oyuncu seçilemiyor"}[r&&r.error]||"Kaydedilemedi");if(r&&r.error==="kapali")spLoad(true)}}catch(_){sh.busy=false;toast("Bağlantı yok")}render(true);break}
     case"hdfTasi":{const G=hdfGet(curYr()-1);if(G.length&&!hdfGet().length){hdfSet(G);toast("Hedefler bu sezona taşındı")}render(true);break}
     case"hdfDel":hdfSet(hdfGet().filter(x=>x.k!==el.dataset.v));render(true);break;
@@ -3930,8 +3932,9 @@ document.addEventListener("click",async e=>{
     case"shareSeason":{if(S.story)stPause(true);await shareSeason(+id);break}
     case"seasonSave":{const L=+(S.f.sLen||sLen());await A("admin_season",{p_len:L,p_close:false},"Sezon ayarı kaydedildi");await load(true);break}
     case"calcReset":{if(!S.f.cReset){S.f.cReset=1;render(true);break}S.f.cReset=0;const r=await A("admin_calc_reset",{p_season:curYr()},"Kartlar yeniden hesaplanıyor");if(r){await load(true);compute();const n=await calcSync();toast(n+" maç yeniden hesaplandı");render(true)}break}
-    case"szOnTog":{if(!S.admin)break;if(SZ_ON){SZ_ON=false;S.sheet=null;toast("Önizleme kapandı");render(true);break}
-      if(yeniSez()){toast("Yeni sezon zaten başladı");break}SZ_ON=true;const w=seasonAwards(sonYr());if(!w||!w.champ){SZ_ON=false;toast("Bu sezonda biten maç yok");break}S.f.setp="";S.tab="mac";S.sheet=null;render(true);stSeason(sonYr());break}
+    case"szOnTog":{if(!S.admin)break;if(SZ_ON){if(SZ_ON===2)try{localStorage.removeItem(hdfKey())}catch(_){}SZ_ON=0;SP.d=null;SP.at=0;S.sheet=null;toast("Önizleme kapandı");render(true);break}
+      if(yeniSez()){toast("Yeni sezon zaten başladı");break}const w=seasonAwards(sonYr());if(!w||!w.champ){toast("Bu sezonda biten maç yok");break}const mod=el.dataset.v==="2"?2:1;SZ_ON=mod;S.f.setp="";S.tab="mac";S.sheet=null;
+      if(mod===2){SP.d={ok:true,season:sonYr()+1,open:true,n:0,mine:null,rows:[]};render(true);toast("Önizleme: yeni sezon başlamış gibi")}else{render(true);stSeason(sonYr())}break}
     case"seasonClose":{if(!S.f.sClose){S.f.sClose=1;render(true);break}S.f.sClose=0;await A("admin_season",{p_len:sLen(),p_close:true},"Sezon bitirildi");await load(true);break}
     case"story":S._stChain=false;stOpen(id,0);break;
     case"stDetail":stClose();S.view=id;S.tab="gecmis";render(true);window.scrollTo(0,0);break;
