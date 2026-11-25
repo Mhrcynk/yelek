@@ -5472,3 +5472,24 @@ html.dk body.gpf .iosband{background:#121214}html.dk body.gpd .iosband{backgroun
 .yp.yp-fz .yp-dul{background:rgba(10,10,12,.55)}.yp.yp-fz .yp-dul small{color:#FFB08F}.yp.yp-fz .yp-dul b{color:#FF7A45}
 body.gpf .dv-all{background:#2C2C32!important;color:#fff!important;margin-top:12px}
 .yp.yp-fz .yp-odl b{background:#FF7A45;color:#1A0A03}
+/* Rozetler: açılır kategoriler */
+.rzk-w{display:grid;gap:8px;margin-top:10px}
+.rzk{background:rgba(127,110,220,.13);border-radius:16px;overflow:hidden}
+.rzk-h{width:100%;display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 14px;border:0;background:none;color:#fff;font:inherit;text-align:left;cursor:pointer}
+.rzk-m{display:flex;flex:none}.rzk-m .rzm.sm{margin-right:-8px;box-shadow:0 0 0 2px #221656}.rzk-m .rzm.sm:last-child{margin-right:0}
+.rzk-m .rzm.lk{background:#2A2058!important}.rzk-m .rzm.lk svg{fill:#5E5196}
+.rzk-h>b{flex:1;min-width:0;font:800 1rem/1.1 var(--display);text-transform:uppercase;letter-spacing:.02em;margin-left:6px}
+.rzk-h>em{font:700 .75rem/1 Inter,sans-serif;font-style:normal;color:var(--c-ink3)}
+.rzk-p{flex:none;width:44px;height:6px;border-radius:3px;background:#2A1F5C;overflow:hidden}.rzk-p i{display:block;height:100%}
+.rzk-c{font-style:normal;color:var(--c-ink3);font-size:1.1rem;transition:transform .2s}.rzk.op .rzk-c{transform:rotate(90deg)}
+.rzk-l{padding:0 12px 6px}
+.rzk-r{display:flex;align-items:center;gap:12px;padding:10px 2px;border-top:1px solid #2E2260}
+.rzk-r .rzm{width:42px;height:42px}.rzk-r .rzm svg{width:23px;height:23px}
+.rzk-r.rr .rzm{box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 0 0 2.5px #1C1240,0 0 0 4.5px #FFD400,0 0 12px #FFD40066}
+.rzk-r.lk .rzm{background:#2A2058!important;box-shadow:none}.rzk-r.lk .rzm svg{fill:#5E5196}
+.rzk-t{flex:1;min-width:0;display:grid;gap:2px}.rzk-t b{font:700 .875rem/1.2 Inter,sans-serif}.rzk-r.lk .rzk-t b{color:var(--c-ink3)}
+.rzk-t small{font:500 .75rem/1.3 Inter,sans-serif;color:var(--c-ink3)}.rzk-t em{font:600 .6875rem/1.3 Inter,sans-serif;font-style:normal;color:#FFD400}
+.rzk-b{display:block;height:5px;border-radius:3px;background:#2A1F5C;margin-top:5px;overflow:hidden}.rzk-b i{display:block;height:100%;background:var(--c)}
+.rzk-s{flex:none;font:800 .75rem/1 Inter,sans-serif;color:#00E58A;white-space:nowrap}.rzk-s svg{width:16px;height:16px}.rzk-s.no{color:#8F84BD;font-weight:700;font-size:.6875rem}
+.rzk-r.sh .rzk-s{color:#FF5C7A}
+.rzk-m{width:76px}

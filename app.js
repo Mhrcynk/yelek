@@ -1937,10 +1937,29 @@ const RZ_M={"Hat-trick":["hat","gol"],"Süper Hat-trick":["hat5","gol"],"Golcü"
   "Ters Köşe":["ters","utanc"],"Fiyasko Ustası":["sasir","utanc"]};
 function rzIc(k,c,cls){return `<span class="rzm ${cls||""}" style="--c:${RZ_C[c]};background:${RZ_C[c]}" aria-hidden="true"><svg viewBox="0 0 256 256" fill="#160E33">${RZ_I[k]}</svg></span>`}
 function rzMed(t,cls){const m=RZ_M[t]||["yildiz","saha"];return `<span class="rzm ${cls||""}" style="--c:${RZ_C[m[1]]};background:${RZ_C[m[1]]}" aria-hidden="true"><svg viewBox="0 0 256 256" fill="#160E33">${RZ_I[m[0]]}</svg></span>`}
-function rztHtml(pid){const L=rztList(pid);if(!L.length)return"";const c=rztCnt();const N=L.filter(b=>!b.shame),n=N.filter(b=>b.on).length;const all=!!S.f.rzAll;const V=all?L:L.filter(b=>b.on);
-  return `<div><h3>Rozetler <span class="rzt-n">${n} / ${N.length}</span></h3>${V.length?`<div class="rzt">${V.map(b=>`<div class="${b.on?(b.shame?"sh":c[b.t]<=2?"rr":""):"lk"}">${rzMed(b.t)}<b>${esc(b.t)}</b><small>${esc(b.d)}</small></div>`).join("")}</div>`:`<p class="muted small" style="margin:8px 0 0">Henüz rozet yok.</p>`}
-    ${V.some(b=>b.on&&!b.shame&&c[b.t]<=2)?`<p class="rzt-k">Altın çerçeve: takımda en çok 2 kişide olan rozet.</p>`:""}
-    <button class="btn sm ghost rzt-a" data-act="tog" data-k="rzAll" aria-expanded="${all}">${all?"Sadece kazanılanlar":"Tüm rozetleri gör"}</button></div>`}
+const RZ_D={"Hat-trick":"Tek maçta 3 gol at","Süper Hat-trick":"Tek maçta 5 gol at","Golcü":"Sezonda 10 gol at","Haftanın Golü":"Haftanın golünü at","Bitirici":"Forvet oynarken 3 maç üst üste gol at","Fırsatçı":"Forvette takımının gollerinin yarısından fazlasını at","Çift Tabanca":"Aynı maçta 2 gol, 2 asist yap","Seri Golcü":"3 maç üst üste gol at",
+  "Pasör":"Sezonda 10 asist yap","Orkestra Şefi":"Orta sahada bir maçta 3 asist yap","Metronom":"Bir maçta 20 pas at, %90 isabet tut",
+  "Duvar":"3 maçta en çok 5 gol ye","Temizlikçi":"Defansta bir maçta 15 pas arası yap","Bek Golü":"Defans oynarken gol at","Mıknatıs":"Bir maçta 10 top kap",
+  "Kale Bekçisi":"Kalede bir maçta en çok 3 gol ye","Gol Atan Kaleci":"Kaleciyken gol ya da asist yap",
+  "Maratoncu":"Bir maçta 5 km koş","Roket":"28 km/s hıza çık","Maçın En Hızlısı":"Bir maçta takımın en hızlısı ol",
+  "Maçın Adamı":"Oylamada maçın adamı seçil","Haftanın Takımı":"Haftanın takımına gir","Kaptan":"Kaptan olduğun maçı kazan","Dev Avcısı":"Kâğıt üstünde zayıf takımla kazan","Yükselen":"Bir sezonda reytingini 3 artır",
+  "Tahmin Kralı":"Haftanın tahmin kralı ol","Sürpriz Avcısı":"5,00 üstü bir oranı tuttur","Seri Tahminci":"3 tahmini üst üste tuttur","Kombine Ustası":"3'lü bir kombineyi tuttur","Düello Kralı":"Haftanın en çok düello kazananı ol",
+  "Haftanın Menajeri":"Fantezide haftanın birincisi ol","Podyum":"Fantezide 3 kez ilk üçe gir","Müdavim":"5 hafta üst üste fantezi kadrosu kur","Doğru Kaptan":"Fantezi kaptanın haftanın en çok puan alanı olsun","Değer Avcısı":"Kadrondaki en ucuz oyuncu en çok puanı alsın","50 Puan Kulübü":"Bir haftada 50 fantezi puanını geç","Turnuva Şampiyonu":"Fantezi turnuvasını kazan","Finalist":"Fantezi turnuvasında finale çık","Yarı Finalist":"Fantezi turnuvasında yarı finale kal",
+  "Ters Köşe":"Kendi kalene gol at","Fiyasko Ustası":"2 kez maçın fiyaskosu seçil"};
+const RZ_FZ=["Haftanın Menajeri","Podyum","Müdavim","Doğru Kaptan","Değer Avcısı","50 Puan Kulübü","Turnuva Şampiyonu","Finalist","Yarı Finalist"];
+const RZ_K=[["gol","Gol"],["pas","Pas"],["def","Savunma"],["kl","Kaleci"],["saha","Kondisyon"],["odul","Ödüller"],["oyun","Tahmin ve Düello"],["fz","Fantezi Kadro"],["utanc","Eğlencelik"]];
+const rzKat=t=>RZ_FZ.includes(t)?"fz":((RZ_M[t]||[])[1]||"saha");
+function rztHtml(pid){const L=rztList(pid);if(!L.length)return"";const c=rztCnt();const N=L.filter(b=>!b.shame),n=N.filter(b=>b.on).length;
+  const G=RZ_K.map(([k,ad])=>({k,ad,L:L.filter(b=>rzKat(b.t)===k)})).filter(g=>g.L.length);
+  let op=S.f.rzK;if(op===undefined){const f=G.find(g=>g.L.some(b=>b.on));op=f?f.k:""}
+  const sag=b=>{if(!b.on){const m=String(b.d||"").match(/^(\d+(?:,\d+)?) \/ (\d+)/);return m?`<span class="rzk-s no">${m[1]} / ${m[2]}</span>`:`<span class="rzk-s no">Kilitli</span>`}
+    const k=String(b.d||"").match(/^(\d+) (kez|maçta|maç)\b/);return `<span class="rzk-s">${k&&+k[1]>1?k[1]+"×":ICON.check}</span>`};
+  const row=b=>{const pr=!b.on&&String(b.d||"").match(/^(\d+(?:,\d+)?) \/ (\d+)/);const pc=pr?Math.min(100,Math.round(parseFloat(pr[1].replace(",","."))/ +pr[2]*100)):0;
+    return `<div class="rzk-r ${b.on?(b.shame?"sh":c[b.t]<=2?"rr":""):"lk"}">${rzMed(b.t)}<span class="rzk-t"><b>${esc(b.t)}</b><small>${esc(RZ_D[b.t]||b.d||"")}</small>${b.on&&b.d&&RZ_D[b.t]&&b.d!==RZ_D[b.t]?`<em>${esc(b.d)}</em>`:""}${pr?`<i class="rzk-b" style="--c:${RZ_C[(RZ_M[b.t]||[])[1]]||"#B9A8FF"}"><i style="width:${pc}%"></i></i>`:""}</span>${sag(b)}</div>`};
+  const kat=g=>{const on=g.L.filter(b=>b.on);const tot=g.L.filter(b=>!b.shame).length||g.L.length;const o=op===g.k;const col=RZ_C[g.k==="fz"?"oyun":g.k];
+    return `<div class="rzk${o?" op":""}"><button class="rzk-h" data-act="rzK" data-v="${g.k}" aria-expanded="${o}"><span class="rzk-m">${(on.length?on:g.L).slice(0,3).map(b=>rzMed(b.t,"sm"+(on.length?"":" lk"))).join("")}</span><b>${g.ad}</b><em class="num">${on.length}/${tot}</em><span class="rzk-p"><i style="width:${Math.round(on.length/tot*100)}%;background:${col}"></i></span><i class="rzk-c" aria-hidden="true">›</i></button>${o?`<div class="rzk-l">${g.L.map(row).join("")}</div>`:""}</div>`};
+  return `<div><h3>Rozetler <span class="rzt-n">${n} / ${N.length}</span></h3><div class="rzk-w">${G.map(kat).join("")}</div>
+    ${L.some(b=>b.on&&!b.shame&&c[b.t]<=2)?`<p class="rzt-k">Altın çerçeve: takımda en çok 2 kişide olan rozet.</p>`:""}</div>`}
 function rztPop(me){if(!S.stats[me])return false;const on=rztList(me).filter(b=>b.on&&!b.shame&&!b.bet).map(b=>b.t);const k="y_rzt_"+TID;let seen=null;try{seen=JSON.parse(LS.get(k)||"null")}catch(_){}
   try{LS.set(k,JSON.stringify(on))}catch(_){}if(!Array.isArray(seen))return false;const yeni=on.filter(t=>!seen.includes(t));if(!yeni.length)return false;S.sheet={type:"rztyeni",ts:yeni,i:0};render(true);return true}
 function sheetRztYeni(){const sh=S.sheet,L=rztList(myPid());const T=(sh.ts||[]).map(t=>L.find(b=>b.t===t)).filter(Boolean);const b=T[sh.i]||T[0];if(!b)return"";const last=sh.i>=T.length-1;const n=rztCnt()[b.t]||1;
@@ -4005,6 +4024,7 @@ document.addEventListener("click",async e=>{
     case"duKralShare":S.f.pm={tab:"duello",item:"dkral",mid:id,fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
     case"macY":S.f.macY=!!el.dataset.v;render(true);window.scrollTo(0,0);break;
     case"pgBack":pgBack();break;
+    case"rzK":S.f.rzK=S.f.rzK===el.dataset.v?"":el.dataset.v;render(true);break;
     case"fzShare":S.f.pm={tab:"fantezi",item:el.dataset.v||"fkadro",fmt:(S.f.pm&&S.f.pm.fmt)||"post"};S.sheet={type:"pm"};render(true);ypFonts().then(()=>{if(S.sheet&&S.sheet.type==="pm")render(true)});break;
     case"gmInfo":S.sheet={type:"gmInfo",v:el.dataset.v};render(true);break;
     case"gmNotes":S.sheet={type:"gmNotes",v:el.dataset.v};render(true);break;
