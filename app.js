@@ -2320,8 +2320,9 @@ function hero(om){
   const fld=(S.settings&&S.settings.field_name)||"";const gun=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"][d.getDay()];
   const ms=matchTs(om)-Date.now();const kal=ended?"Maç bitti":ms<=0?"Başladı":ms<864e5?`${Math.floor(ms/36e5)} sa ${Math.floor(ms%36e5/6e4)} dk`:ms<3*864e5?`${Math.floor(ms/864e5)} gün ${Math.floor(ms%864e5/36e5)} sa`:`${Math.floor(ms/864e5)} gün`;
   const row=k=>`<span class="mzh-t t${k}${me&&me!==k?" o":""}"><i class="mzd"></i><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:""}</span>`;const ts=matchTs(om);
-  return `<section class="mzh"><div class="mzg">${ended?`<span class="e">Maç bitti</span>`:""}<span>${MZI.cal}${gun}</span><span>${MZI.clk}${esc(String(om.time||"").slice(0,5))}</span>${fld?`<span class="f">${MZI.pin}<i>${esc(fld)}</i></span>`:""}</div>
-    <div class="mzh-vs">${row("A")}${row("B")}</div>${ended?"":`<div class="mcd"><div class="mcd-r"><small>İlk düdüğe</small><b class="num" data-mcd="${ts}" role="timer" aria-label="Maça kalan süre">${mcdT(ts)}</b></div><div class="mcd-b"><i style="width:${mcdP(ts)}%"></i>${dIcon("duduk","gold",24)}</div></div>`}${mDone(om)?"":haftaAkis(om)}
+  const wx=ended?null:wxBox(om);
+  return `<section class="mzh"><div class="mzg">${ended?`<span class="e">Maç bitti</span>`:""}<span>${MZI.cal}${gun}</span><span>${MZI.clk}${esc(String(om.time||"").slice(0,5))}</span>${fld?`<span class="f">${MZI.pin}<i>${esc(fld)}</i></span>`:""}${wx?wx.box:""}</div>
+    <div class="mzh-vs">${row("A")}${row("B")}</div>${wx?wx.o:""}${ended?"":`<div class="mcd"><div class="mcd-r"><small>İlk düdüğe</small><b class="num" data-mcd="${ts}" role="timer" aria-label="Maça kalan süre">${mcdT(ts)}</b></div><div class="mcd-b"><i style="width:${mcdP(ts)}%"></i>${dIcon("duduk","gold",24)}</div></div>`}${mDone(om)?"":haftaAkis(om)}
     </section>`;
 }
 function mzTiles(){const F=fin().filter(m=>!isExt(m));const lf=F[F.length-1];if(!lf)return"";const sa=+lf.score_a||0,sb=+lf.score_b||0;
@@ -2445,6 +2446,26 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
   const ok=await A("admin_vote_close",{p_match:m.id,p_perf:voters>=6?perf:{},p_sum:C},"Oylama kapandı, notlar kesinleşti");
   if(ok){S.f.vClose=null;delete S.vst[m.id];compute();if(m.state==="bitti")await notesSync(m.id);render(true)}}
 // Bu hafta: haftanın dört adımı ve tahmin kartı
+/* Hava durumu: maç saatine göre, Open-Meteo (anahtarsız, ücretsiz). Saatte bir yenilenir, telefonda saklanır. */
+const WX_LL=[41.0082,28.9784];const WX={d:null,at:0,b:0};
+function wxLoad(){if(WX.b||Date.now()-WX.at<36e5&&WX.d)return;if(!WX.d)try{const c=JSON.parse(LS.get("y_wx")||"null");if(c&&c.d){WX.d=c.d;WX.at=c.at;if(Date.now()-c.at<36e5)return}}catch(_){}
+  WX.b=1;fetch(`https://api.open-meteo.com/v1/forecast?latitude=${WX_LL[0]}&longitude=${WX_LL[1]}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m&timezone=Europe%2FIstanbul&forecast_days=16`).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.hourly){WX.d=j.hourly;WX.at=Date.now();try{LS.set("y_wx",JSON.stringify({d:WX.d,at:WX.at}))}catch(_){}if(S.tab==="mac")render(true)}}).catch(()=>{}).finally(()=>{WX.b=0})}
+function wxAt(ts){const H=WX.d;if(!H||!H.time)return null;const d=new Date(ts);const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")+"T"+String(d.getHours()).padStart(2,"0")+":00";const i=H.time.indexOf(k);if(i<0)return null;
+  const g=j=>j>=0&&j<H.time.length?{h:+H.time[j].slice(11,13),t:Math.round(H.temperature_2m[j]),f:Math.round(H.apparent_temperature[j]),p:H.precipitation_probability[j]??0,c:H.weather_code[j],w:Math.round(H.wind_speed_10m[j])}:null;return{m:g(i),L:[g(i-1),g(i),g(i+1)].filter(Boolean)}}
+function wxIc(c,h,sz){const n=h>=19||h<6;const cl='<path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.1 11 3.5 3.5 0 0 0 7 18z" fill="#C9D3FF"/>';
+  const b=c===0||c===1?(n?'<path d="M19 14.5A7.5 7.5 0 1 1 9.5 5a6 6 0 0 0 9.5 9.5z" fill="#FFD400"/>':'<circle cx="12" cy="12" r="4.6" fill="#FFD400"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7 7 17M17 7l1.7-1.7" stroke="#FFD400" stroke-width="1.8" stroke-linecap="round"/>'):
+    c<=3?(n?'<path d="M17 9.5A5 5 0 1 1 10.5 3a4 4 0 0 0 6.5 6.5z" fill="#FFD400"/>':'<circle cx="15.5" cy="8" r="3.6" fill="#FFD400"/>')+cl:
+    c<=48?cl+'<path d="M5 21h14M7 23h10" stroke="#C9D3FF" stroke-width="1.6" stroke-linecap="round"/>':
+    c<=67||(c>=80&&c<=82)?cl+'<path d="M9 20l-1 2.5M13 20l-1 2.5M17 20l-1 2.5" stroke="#5FE3F5" stroke-width="1.8" stroke-linecap="round"/>':
+    c<=77||c===85||c===86?cl+'<path d="M9 21h.01M13 22h.01M17 21h.01" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>':
+    cl+'<path d="M12.5 17l-2 3.5h3l-2 3.5" stroke="#FFD400" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+  return `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}" aria-hidden="true">${b}</svg>`}
+const WX_AD=c=>c===0?"Açık":c<=3?"Parçalı bulutlu":c<=48?"Sisli":c<=57?"Çiseleme":c<=67?"Yağmurlu":c<=77?"Karlı":c<=82?"Sağanak":c<=86?"Kar sağanağı":"Gök gürültülü";
+function wxOneri(x){if(!x)return"";if(x.c>=95)return"⛈️ Fırtına bekleniyor: maç saatinde gökyüzünü kontrol et";if((x.c>=71&&x.c<=77)||x.c===85||x.c===86)return"❄️ Kar bekleniyor: kalın giyin, zemin kaygan olabilir";
+  if(x.p>=60)return"☔ Yağmur bekleniyor: yedek çorap al";if(x.w>=30)return"💨 Rüzgârlı: uzun toplar sapabilir";if(x.f<=3)return"🥶 Soğuk: ısınmaya erken başla, eldivenini al";if(x.p>=30)return"🌦️ Yağmur ihtimali var: yedek tişört iyi olur";if(x.t>=30)return"🥵 Sıcak: bol su getir";return""}
+function wxBox(om){const ts=matchTs(om);if(!ts||ts<Date.now()-2*36e5||ts>Date.now()+15*864e5)return null;wxLoad();const W=wxAt(ts);if(!W||!W.m)return null;const m=W.m;
+  const box=`<span class="mzw" title="${WX_AD(m.c)} · hissedilen ${m.f}° · rüzgâr ${m.w} km/s · yağış %${m.p} · Open-Meteo" aria-label="Maç saatinde hava: ${WX_AD(m.c)}, ${m.t} derece">${wxIc(m.c,m.h,18)}${m.t}°</span>`;
+  const o=wxOneri(m);return{box,o:o?`<p class="mzw-o">${o}</p>`:""}}
 function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const ty=tahminYok();const cur0=!kadro?0:vOpen(m)?3:acik?1:2;const cur=ty?(cur0>=2?cur0-1:cur0===1?1:0):cur0;
   return `<ol class="hak" aria-label="Haftanın akışı">${(ty?["Kadro","Maç","Oylama"]:["Kadro","Tahmin","Maç","Oylama"]).map((l,i)=>`<li class="${i<cur?"ok":i===cur?"on":""}"${i===cur?' aria-current="step"':""}><i></i>${l}</li>`).join("")}</ol>`}
 const MZI={cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>',clk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.800 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>'};
