@@ -776,7 +776,7 @@ function mvpHtml(F){const L=yelekAll(F).filter(o=>o.tot>0);if(!L.length)return""
   const ph=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:`<b>${esc(initials(nameOf(id)))}</b>`};
   const tr='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M12 13v4M8 20h8M7 6H4a3 3 0 0 0 3 3M17 6h3a3 3 0 0 1-3 3"/></svg>';
   const l=top[0];
-  return `<section class="mzsez"><button class="mzyl" data-act="open" data-id="${esc(l.id)}">${tr}<span><small>Sezonun yeleği · lider</small><b>${esc(nameOf(l.id))}</b></span><em class="num">${fP(l.tot)}<small>puan</small></em></button>
+  return `<section class="mzsez">
     ${top.length>1?`<div class="mzpod">${ord.map(i=>{const o=top[i];return P(o.id)?`<button class="p${i+1}" data-act="open" data-id="${esc(o.id)}"><span class="mzpod-a">${ph(o.id)}</span><span class="mzpod-b"><b>${i+1}.</b><small>${esc(shortName(nameOf(o.id)))}</small><em class="num">${fP(o.tot)}<i>puan</i></em></span></button>`:""}).join("")}</div>`:""}
     ${L.length>3?(()=>{const all=!!S.f.mvpAll;const R=L.slice(3,all?L.length:8);const mx=L[0].tot||1;
       return `<div class="yl-l">${R.map((o,j)=>{const p=P(o.id);if(!p)return"";const x=photoOf(o.id);const e=eposOf(p);const pg=(EPOS[e]||["OS"])[0];
@@ -2524,7 +2524,7 @@ function viewSaha(){const F=fin().filter(inYr),TM=F.filter(trkHas);let h=oyTabs(
   const ini=id=>{const x=photoOf(id);return x?`<img src="${esc(x)}" alt="">`:esc(initials(nameOf(id)))};
   const subOf=x=>mode==="son"?(x?esc(nmOf(last,x)):""):x+" maç";
   const LK=k=>rows.filter(r=>r[1][k]!=null).sort((a,b)=>b[1][k]-a[1][k]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));
-  const segM=`<label class="yrsel shsel"><span>${mode==="son"?"Son maç":"Sezon"}</span><i>${CHVD}</i><select data-bind="sahaM" aria-label="Dönem seç"><option value="son"${mode==="son"?" selected":""}>Son maç · ${esc(fmtShort(last.date))}</option><option value="sez"${mode==="sez"?" selected":""}>Sezon ortalaması</option></select></label>`;
+  const segM=`<label class="yrsel shsel"><span>${mode==="son"?"Son maç":"Sezon"}</span><i>${CHVD}</i><select data-bind="sahaM" aria-label="Dönem seç"><option value="son"${mode==="son"?" selected":""}>Son maç</option><option value="sez"${mode==="sez"?" selected":""}>Sezon ortalaması</option></select></label>`;
   // Krallar'daki liste kartı
   const board=(k)=>{const A=LK(k);if(!A.length)return"";const bk="bxs_"+k;const open=!!S.f[bk];const more=A.length>3;
     return `<section class="card tsb"><${more?`button class="tsh" data-act="tog" data-k="${bk}" aria-expanded="${open}"`:'h3 class="tsh"'}>${esc(TRKN[k].l)}${more?`<i class="${open?"op":""}">${CHV}</i>`:""}</${more?"button":"h3"}><ol>${A.slice(0,open?A.length:3).map(([id,o,x],i)=>`<li data-act="open" data-id="${esc(id)}"><span class="tsr num">${i+1}</span><span class="tsp ${tierOf(ovrOf(id))}${photoOf(id)?"":" ni"}">${ini(id)}</span><span class="tsn"><b>${esc(nameOf(id))}</b><small>${subOf(x)}</small></span><b class="tsv num">${fv(k,o[k])}${unit(k)?" "+unit(k):""}</b></li>`).join("")}</ol></section>`};

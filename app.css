@@ -5229,3 +5229,15 @@ html.dk .bsx .szx{background:var(--c-card);border-radius:18px;padding:14px;margi
 .hbf-e{flex:none;width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:1.125rem}
 .hbf-c{flex:none;font-style:normal;font-size:1.375rem;line-height:1;color:var(--c-ink3)}
 .hbf .rzs-x small{white-space:normal}
+
+/* sekme paneli: kartlar arası boşluk */
+.bhp{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-content:start}
+.bhp>*{margin:0!important}
+/* oda düğmesi odanın rengini alır */
+.od2.oda-A .od2-go{background:#FF3EA5!important;color:#fff!important}
+.od2.oda-B .od2-go{background:#5FE3F5!important;color:#06222A!important}
+.od2.oda-X .od2-go{background:#FFD400!important;color:#2A1F00!important}
+.od2.oda-T .od2-go{background:#00E58A!important;color:#06261A!important}
+/* kürsü: puan yazısı taşmasın */
+.mzpod .mzpod-b{height:auto!important;padding-bottom:12px}
+.mzpod .p1 .mzpod-b{min-height:130px}.mzpod .p2 .mzpod-b{min-height:108px}.mzpod .p3 .mzpod-b{min-height:94px}
