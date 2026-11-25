@@ -161,6 +161,7 @@ const ICON_GRID='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
   ben:sv('<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/>'),
   ayar:sv('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>'),
   check:sv('<path d="m5 12.5 4.5 4.5L19 7"/>'),
+  undo:sv('<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>'),
   clock:sv('<circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/>'),
   x:sv('<path d="M7 7l10 10M17 7 7 17"/>'),
   plus:sv('<path d="M12 5v14M5 12h14"/>'),
@@ -2493,7 +2494,7 @@ function statEntry(m){
   else body=perfBlock(m,sd);
   const last=sd.undo.length?JSON.parse(sd.undo[sd.undo.length-1]).l:"";
   const bot=`<div class="stBot">${conf?`<div class="stSum">${esc(TEAM.A)} <b>${sd.a} – ${sd.b}</b> ${esc(TEAM.B)} · ${gA+gB} gol${sd.motm?" · ★ "+esc(shortName(nameOf(sd.motm))):" · Maçın Adamı yok"} · ${nPerf} değerlendirme</div>`:""}
-    <div class="stBtns"><button class="btn" data-act="undo" data-m="${M}" ${sd.undo.length?"":"disabled"} title="${esc(last)}" aria-label="Geri al${last?": "+esc(last):""}">↶</button>
+    <div class="stBtns"><button class="btn" data-act="undo" data-m="${M}" ${sd.undo.length?"":"disabled"} title="${esc(last)}" aria-label="Geri al${last?": "+esc(last):""}">${ICON.undo} Geri al</button>
     <button class="btn ${conf?"primary":"turf"} block" data-act="finish" data-id="${M}" ${sd.touched?"":"disabled"}>${ICON.check} ${m.state==="bitti"?(conf?"Onayla ve kaydet":"Değişiklikleri kaydet"):conf?"Onayla ve bitir":sd.touched?"Maçı bitir":"Önce golleri gir"}</button></div></div>`;
   return `${top}${body}${bot}`;
 }
