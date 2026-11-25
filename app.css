@@ -5421,3 +5421,47 @@ html.dk body.gpd .nav{background:#0C2A2E!important;border-color:#1A4A50!importan
 html.dk body.gpd .nav button[aria-current="page"]{background:#5FE3F5!important;color:#04262B!important;box-shadow:0 6px 18px rgba(95,227,245,.4)!important}
 html:has(body.gpd),html.dk body.gpd{background:#06191C!important}html.dk body.gpd .bjh.gph{background:#06191C}html.dk body.gpd .bjh.gph .bj-b,html.dk body.gpd .bjh.gph .bj-i{background:#0C2A2E!important}html.dk body.gpd .mzseg{background:#0C2A2E!important}
 html.dk body.gpd::before,html.dk body.gpf::before{background:none!important}
+/* ===== Fantezi (grafit) ve Düello (turkuaz) sayfa temaları: tahmin temasıyla aynı yöntem ===== */
+body.gpf{--c-bg:#121214;--c-card:#1E1E22;--c-card2:#2C2C32;--c-line:#3A3A42;--c-line2:#4A4A54;--c-ink2:#E4E4EA;--c-ink3:#A9A9B3;--c-pink:#FF7A45;
+ --bg:#121214;--bg2:#18181C;--card:#1E1E22;--card2:#1E1E22;--card3:#2C2C32;--line:#2C2C32;--line2:#3A3A42;--muted:#A9A9B3;--dim:#83838C;
+ --acc:#FF7A45;--plb:#FF7A45;--glow:rgba(255,122,69,.45);background:#121214!important}
+body.gpd{--c-bg:#06191C;--c-card:#0C2A2E;--c-card2:#12373C;--c-line:#1A4A50;--c-line2:#27626A;--c-ink2:#D2F1F5;--c-ink3:#8FC3CB;--c-pink:#5FE3F5;
+ --bg:#06191C;--bg2:#0A2226;--card:#0C2A2E;--card2:#0C2A2E;--card3:#12373C;--line:#12373C;--line2:#1A4A50;--muted:#8FC3CB;--dim:#6BA3AB;
+ --acc:#5FE3F5;--plb:#5FE3F5;--glow:rgba(95,227,245,.45);background:#06191C!important}
+html.dk body.gpf .sheet{background:#1A1A1E!important}html.dk body.gpd .sheet{background:#0A2428!important}
+html.dk body.gpf .mzseg{background:#1E1E22!important;border-color:#2C2C32!important}html.dk body.gpd .mzseg{background:#0C2A2E!important;border-color:#1A4A50!important}
+html.dk body.gpd .mzseg button.on{background:#5FE3F5!important;color:#04262B!important}
+body.gpf .bn button{background:#26262B}body.gpd .bn button{background:#12373C}
+body.gpf .bn button.new{background:linear-gradient(90deg,rgba(255,122,69,.18),rgba(255,122,69,.05));box-shadow:inset 3px 0 0 #FF7A45}
+body.gpd .bn button.new{background:linear-gradient(90deg,rgba(95,227,245,.18),rgba(95,227,245,.05));box-shadow:inset 3px 0 0 #5FE3F5}
+html.dk body.gpf .sw.on{background:#FF7A45!important}html.dk body.gpd .sw.on{background:#5FE3F5!important}
+body.gpd ol.gmi li i{background:#5FE3F5;color:#04262B}
+html.dk body.gpf .btn.sm:not(.primary),html.dk body.gpf .btn:not(.primary){background:#2C2C32!important;border-color:#3A3A42!important;color:#F2F2F4!important}
+html.dk body.gpd .btn.sm:not(.primary),html.dk body.gpd .btn:not(.primary){background:#12373C!important;border-color:#1A4A50!important;color:#E6FAFD!important}
+html.dk body.gpd .btn.primary{background:#5FE3F5!important;border-color:#5FE3F5!important;color:#04262B!important}
+body.gpf .sheet .grab::before,body.gpf .sheet .grab{--c:#3A3A42}body.gpd .sheet .grab{--c:#1A4A50}
+html.dk body.gpd .dv-all{background:#12373C!important;color:#E6FAFD!important}
+body.gpf .fz-tbn,body.gpf .fz-not,body.gpf .eyebrow{color:#A9A9B3!important}body.gpd .eyebrow,body.gpd .gpg p.muted{color:#8FC3CB!important}
+body.gpf .fz-tb>div>p,body.gpf .fz-tb div p{border-color:#2C2C32!important}
+/* Fantezi turnuva ağacı */
+.cup-top{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border-radius:16px;background:linear-gradient(135deg,#3A2014,#1E1E22);box-shadow:inset 0 0 0 1.5px var(--fz)}
+.cup-top.off{background:#1E1E22;box-shadow:none}
+.cup-top>span:last-child{display:grid;gap:3px;min-width:0}.cup-top small{font:700 .6875rem/1.2 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--fza)}.cup-top b{font:800 1.25rem/1.1 var(--display);text-transform:uppercase}
+.cup-k{flex:none;width:40px;height:40px;border-radius:12px;background:var(--fz);display:grid;place-items:center}.cup-k svg{width:24px;height:24px;fill:#2A1003}
+.cup-br{display:flex;gap:10px;overflow-x:auto;margin:14px calc(-1*max(16px,env(safe-area-inset-left,0px))) 0;padding:0 16px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.ccol{flex:none;width:142px;display:flex;flex-direction:column;scroll-snap-align:start}
+.ccol h4{margin:0 0 6px;font:700 .75rem/1.2 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#A9A9B3;display:grid;gap:2px}.ccol h4 small{font-weight:600;letter-spacing:0;text-transform:none;color:#83838C}
+.ccol.now h4{color:var(--fz)}
+.ccb{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:8px}
+.cbx{background:#1E1E22;border-radius:10px;overflow:hidden;min-height:60px;display:flex;flex-direction:column;justify-content:center}
+.cbx>div{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 9px;font:600 .8125rem/1.2 Inter,sans-serif;color:#C9C9D1;min-height:30px}
+.cbx>div+div{border-top:1px solid #2C2C32}
+.cbx>div span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbx i{font:800 .9375rem/1 var(--display);font-style:normal;color:#A9A9B3}
+.cbx .w{color:#fff;font-weight:700}.cbx .w i{color:var(--fz)}.cbx .l{color:#8A8A93}.cbx .l i{color:#8A8A93}
+.cbx.my{box-shadow:inset 0 0 0 1.5px var(--fz)}
+.cbx.bye{background:transparent;border:1.5px dashed #3A3A42}.cbx.bye i{color:var(--fz);font-size:.8125rem}
+.cch{width:120px}.cup-ch{display:grid;justify-items:center;gap:8px;padding:14px 8px;border-radius:14px;background:#1E1E22;text-align:center}.cup-ch b{font:800 1.125rem/1.1 var(--display);text-transform:uppercase}
+.ccol h4 small{font-size:.75rem}
+.cup-br{scroll-padding-left:16px}
+html.dk body.gpf .iosband{background:#121214}html.dk body.gpd .iosband{background:#06191C}
