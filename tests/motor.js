@@ -59,21 +59,23 @@ let fails=0;const ok=(c,m)=>{if(!c){console.log("HATA: "+m);fails++}};
   {const d=R.dfK;ok(sameSign(d,-1),"kötü maçta bir özellik arttı (defans)");ok(Math.abs(d.def_bil-d.def_mud)<.01,"kötü maçta savunma özellikleri eşit düşmedi")}
   // 5. az gol yiyen kaleci: refleks ve yer tutma öne çıkar
   ok(top(R.kl,2).some(k=>k==="ref_ref"||k==="poz_yer"),"kalecide refleks/yer tutma artmadı: "+top(R.kl,3));ok(sameSign(R.kl,1),"iyi maçta bir özellik düştü (kaleci)");
-  // 6. not eşikteyse kart değişmez
-  ok(!Object.keys(R.sifir).length,"not eşikteyken değişim olmamalı");
-  // 7. gol atıp kötü oynayan: hiçbir özellik artmaz
-  ok(sameSign(R.golKotu,-1),"kötü maçta gol özelliği arttı");
+  // 6. not eşikteyken asist yapan: pas artar, başka bir şey artmaz (toplam reyting sabit kalsın diye kalanlar hafif düşer)
+  ok(R.sifir.pas_kis>0&&R.sifir.pas_viz>0,"eşikte asist pası artırmadı");ok(Object.entries(R.sifir).every(([k,v])=>/^pas_/.test(k)||v<=0),"eşikte pas dışında bir özellik arttı");
+  // 7. gol atıp kötü oynayan: bitiricilik düşmez, golle ilgisiz özellikler artmaz
+  ok(R.golKotu.sut_bit>0,"kötü maçta gol atanın bitiriciliği düştü");ok(Object.entries(R.golKotu).every(([k,v])=>/^sut_/.test(k)||v<=0),"kötü maçta golle ilgisiz bir özellik arttı");
+  // 7b. tek maçta hiçbir alt özellik 2 puandan fazla oynamaz
+  ok(Object.values(R).every(d=>Object.values(d).every(v=>Math.abs(v)<=2.0001)),"tek maçta bir özellik 2 puandan fazla oynadı");
 
   // 8-12: bütün sezon hesabı
   const H=await E(`(()=>{compute();const o={};for(const p of S.all){const s=S.stats[p.id];o[p.id]={hist:s.hist.map(h=>({k:h.kind,d:h.d,ch:h.ch,nD:h.r?Math.max(-NOTE.katMax,Math.min(NOTE.katMax,(h.r.pts-h.r.esik)*NOTE.kat)):0})),attrs:s.attrs,genX:s.genX}}
     compute();const again=S.all.every(p=>S.stats[p.id].genX===o[p.id].genX);return{o,again}})()`);
   let mixed=0,absent=0,genOff=0;
   for(const[id,s]of Object.entries(H.o))for(const h of s.hist){
-    const vs=h.ch.filter(c=>c[1]!==0).map(c=>c[1]);if(vs.some(v=>v>0)&&vs.some(v=>v<0))mixed++;
+    if(h.ch.some(c=>Math.abs(c[1])>2.6))mixed++;
     if(h.k==="gelmedi"&&(h.ch.length||h.d))absent++;
     if(h.k==="oynadi"&&Math.abs(h.d-h.nD)>.15)genOff++}
-  // 8. bir maçta özellikler hep aynı yöne gider
-  ok(mixed===0,mixed+" maçta özellikler zıt yöne gitti");
+  // 8. bütün sezonda tek maçta bir özellik en çok 2 puan (artı dengeleme payı) oynar
+  ok(mixed===0,mixed+" maçta bir özellik sınırdan fazla oynadı");
   // 9. maça gelmeyenin kartı değişmez
   ok(H.o[ids[7]].hist.some(h=>h.k==="gelmedi"),"gelmeyen oyuncu senaryosu kurulamadı");ok(absent===0,"maça gelmeyenin kartı değişti");
   // 10. genel puan değişimi maç notunun söylediği kadar

@@ -100,7 +100,8 @@ const ATTR_GK=[["dal","PLO","Plonjon",[["uza","Uzanma"],["kos","Köşe kurtarı�
 const attrSet=pos=>pos==="Kaleci"?ATTR_GK:ATTR_OUT;
 const subVal=(a,k,sk)=>clamp(Math.round(+a[k+"_"+sk]||+a[k]||65),30,99);
 // yuvarlama yok: küsürat atılır (74,99 → 74); hesaplar her zaman küsüratlı değerle yapılır
-const flo=v=>Math.floor(v+1e-9);
+// kartta görünen reyting ve ana özellik en yakın tam sayıya yuvarlanır (eskiden aşağı yuvarlanırdı: küçük düşüş hemen, artış geç görünüyordu)
+const flo=v=>Math.round(v+1e-9);
 const mainX=(a,k,pos)=>{const d=attrSet(pos).find(x=>x[0]===k);if(!d)return +a[k]||65;return d[3].reduce((s,[sk])=>s+subVal(a,k,sk),0)/d[3].length};
 const mainVal=(a,k,pos)=>flo(mainX(a,k,pos));
 const W={KL:{ref:.25,dal:.22,poz:.22,ell:.15,ayk:.08,hiz:.08},
@@ -339,7 +340,7 @@ function baseOf(p){const set=attrSet(p.pos);const a=p.attrs||{};let ep=eposOf(p)
   let s=0,t=0;for(const[k]of set){const x=w[k]??0;s+=x*mainX(a,k,p.pos);t+=x}return flo(t?s/t:set.reduce((q,[k])=>q+mainX(a,k,p.pos),0)/set.length)}
 
 /* ===== Özellik motoru: maçta yapılan iş alt özellikleri değiştirir, GEN özelliklerden hesaplanır ===== */
-const ENG={step:2,cap:8,decay:.05,maxGen:.3,motmGen:.5,ev:.35,evShare:.5,roleW:.5};
+const ENG={step:2,cap:8,decay:.05,maxGen:.3,motmGen:.5,ev:.35,evShare:.5,roleW:.5,maxStep:2,evMin:.1};
 const SUBN={hiz_acc:"Hızlanma",hiz_spr:"Sprint hızı",hiz_cab:"Çabukluk",sut_bit:"Bitiricilik",sut_guc:"Şut gücü",sut_poz:"Pozisyon alma",pas_kis:"Kısa pas",pas_uzn:"Uzun pas",pas_viz:"Vizyon",
   dri_kon:"Top kontrolü",dri_sur:"Top sürme",dri_cev:"Çeviklik",def_kes:"Top kesme",def_bil:"Savunma bilinci",def_mud:"Ayakta müdahale",fiz_day:"Dayanıklılık",fiz_guc:"Güç",fiz_agr:"Agresiflik",
   dal_uza:"Uzanma",dal_kos:"Köşe kurtarışı",ref_ref:"Refleks",ref_yak:"Yakın mesafe",ell_tut:"Top tutma",ell_bas:"Elle oyun başlatma",ayk_pas:"Ayakla pas",ayk_deg:"Uzun degaj",poz_yer:"Yer tutma",poz_bir:"Bire birde çıkış"};
@@ -390,19 +391,22 @@ function matchChanges(p,r,m,st,ctx){const ch=[];const add=(k,v,why)=>{if(v)ch.pu
 // kendi alt özelliğine doğrudan yazılır; GEN değişiminin kalanı oynadığı mevkinin ve kartının ağırlıklarına göre bütün alt özelliklere yayılır.
 const ROLE_EP={KL:"KL",DF:"STP",OS:"MO",FV:"SNT"};
 function noteSpread(p,cur,ch,D,role){
-  // Bir maçta bütün özellikler aynı yöne gider: not iyiyse hepsi artar, kötüyse hepsi düşer.
-  // Maçta yapılan iş (gol → şut, asist → pas, yenen gol → savunma) yalnızca payın büyüğünü alır, başkasından düşülmez.
+  // Maçta yapılan iş kendi özelliğine kendi yönünde yazılır: gol atan düşük notta da bitiriciliğini korur, çok koşanın dayanıklılığı artar.
+  // GEN değişiminin toplamı yine nota bağlıdır; iş payından kalan bütün özelliklere yayılır. Tek maçta bir alt özellik en çok ±maxStep oynar.
   const imp=M=>{const c={...cur};for(const k in M)c[k]+=M[k];return genF(p,c)-genF(p,cur)};
-  if(Math.abs(D)<.005)return [];const sg=Math.sign(D);
-  const E={},why={};for(const[k,v,w]of ch)if(k in cur&&Math.sign(v)===sg){E[k]=(E[k]||0)+Math.abs(v);why[k]=why[k]||w}
+  const Ep={},En={},why={};for(const[k,v,w]of ch){if(!(k in cur)||!v)continue;const T=v>0?Ep:En;T[k]=(T[k]||0)+Math.abs(v);why[k]=why[k]||w}
+  const hp=Object.keys(Ep).length>0,hn=Object.keys(En).length>0;if(Math.abs(D)<.005&&!hp&&!hn)return [];const sg=Math.sign(D);
   const set=attrSet(p.pos);let ep=eposOf(p);if((ep==="KL")!==(p.pos==="Kaleci"))ep=DEF_EPOS[p.pos]||"MO";const wc=W[ep]||{};const wr=p.pos==="Kaleci"?wc:(W[ROLE_EP[role]]||wc);
   const U={};for(const[k,,,subs]of set){const w=(1-ENG.roleW)*(wc[k]??0)+ENG.roleW*(wr[k]??0);if(w<=0)continue;for(const[sk]of subs)if((k+"_"+sk) in cur)U[k+"_"+sk]=w/subs.length}
-  const out={},tag={};const put=(M,share,w)=>{const iu=imp(M);if(Math.abs(iu)<1e-6)return false;const f=share/iu;for(const k in M){out[k]=(out[k]||0)+M[k]*f;tag[k]=tag[k]||(typeof w==="string"?w:w[k])}return true};
-  const hasE=Object.keys(E).length>0;let eS=hasE?D*ENG.evShare:0;if(hasE&&!put(E,eS,why))eS=0;put(U,D-eS,"maç notu");
-  return Object.keys(out).map(k=>[k,out[k],tag[k]])}
+  const out={},tag={};const put=(M,share,w)=>{const iu=imp(M);if(Math.abs(iu)<1e-6)return 0;let f=share/iu;let mx=0;for(const k in M)mx=Math.max(mx,Math.abs(M[k]*f));if(mx>ENG.maxStep)f*=ENG.maxStep/mx;
+    for(const k in M){out[k]=(out[k]||0)+M[k]*f;tag[k]=tag[k]||(typeof w==="string"?w:w[k])}return iu*f};
+  const big=Math.max(Math.abs(D)*ENG.evShare,ENG.evMin);let used=0;
+  if(hp)used+=put(Ep,sg>0?big:ENG.evMin,why);if(hn)used+=put(En,-(sg<0?big:ENG.evMin),why);
+  if(Math.abs(D-used)>1e-4)put(U,D-used,"maç notu");
+  return Object.keys(out).map(k=>[k,clamp(out[k],-ENG.maxStep,ENG.maxStep),tag[k]]).filter(x=>Math.abs(x[1])>1e-6)}
 // Maç sonu puanları dondurulur: yönetici cihazı bitmiş maçların sonucunu sırayla maç kaydına yazar.
 // Sonraki hesaplar donmuş maçı yeniden hesaplamaz; kurallar değişse de geçmiş aynı kalır. Maç düzeltilirse sunucu o maçı ve sonrakileri çözer.
-const ENG_V="2026-11-18";
+const ENG_V="2026-11-25";
 const dlPack=DL=>{const o={};for(const k in DL){const v=Math.round(DL[k]*1000)/1000;if(v)o[k]=v}return o};
 function calcOf(m,id,KS){const e=m.calc&&m.calc.p&&m.calc.p[id];if(!e||!e.dl||typeof e.dl!=="object")return null;
   for(const k in e.dl)if(!KS.includes(k))return null;return e}// mevki kaleciyle saha oyuncusu arasında değiştiyse yeniden hesapla
@@ -3079,7 +3083,7 @@ function viewKurallar(inSheet){
   <details class="card rdet"><summary>${dIcon("kisi","lila",28)}<h2>Herkes için</h2></summary><div class="rules">${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy)+" (Kötü de seçildiyse "+f(n.fiy*n.fiyKotu)+")")}${row("Kendi kalesine gol",f(n.kk))}</div></details>
   <details class="card rdet"><summary>${dIcon("kart","pink",28)}<h2>Kart</h2></summary><p>Eşik notu <b>maçın not ortalamasıdır</b>. Notu bunun üstünde olanın kartı yükselir, altında olanınki düşer: <b>kart değişimi = (not − eşik) × ${String(n.kat).replace(".",",")}</b>, tek maçta en fazla ±${fN(n.katMax)}. Bir maçta yükselenlerle düşenlerin toplamı sıfıra yakındır, reytingler toplu şişmez.</p>
    <p class="muted small">Yüksek kartlı oyuncudan beklenti de yüksektir: maçtaki ortalama karttan her 1 puan yukarıda olan için eşik ${String(n.esikAdim).replace(".",",")} artar, aşağıda olan için azalır.</p></details>
-  <details class="card rdet"><summary>${dIcon("grafik","green",28)}<h2>Karttaki özellikler</h2></summary><p>Bir maçta bütün özellikler <b>aynı yöne</b> gider: kart yükseliyorsa hepsi artar, düşüyorsa hepsi düşer. Değişimin yarısı maçta yapılan işe yazılır, yarısı o maç oynadığın mevkinin ve kartının önemli özelliklerine yayılır.</p>
+  <details class="card rdet"><summary>${dIcon("grafik","green",28)}<h2>Karttaki özellikler</h2></summary><p>Kartın toplam değişimi maç notuna bağlıdır. Maçta yaptığın iş <b>kendi özelliğine</b> yazılır: gol bitiriciliği, asist pası, çok koşmak dayanıklılığı artırır; notun düşük olsa da bu özellik düşmez. Değişimin kalanı o maç oynadığın mevkinin ve kartının önemli özelliklerine yayılır. Tek maçta bir özellik en çok <b>2 puan</b> oynar. Kartta reyting ve özellikler en yakın tam sayıya yuvarlanır.</p>
    <div class="rules">${row("Gol","bitiricilik ve pozisyon alma; hat-trick şut gücü")}${row("Asist","kısa pas ve vizyon; 2+ asist uzun pas")}${row("Defansta yenilen gol ve galibiyet","savunma bilinci, top kesme ve müdahaleye eşit")}${row("Kalecide yenilen gol","refleks ve yer tutma")}${row("Galibiyet (diğer mevkiler)","mevkinin oyun zekâsı: forvette pozisyon alma, orta sahada vizyon, kalecide yer tutma")}${row("Saha verisi","koşu, hız, pas, top kapma gibi veriler ilgili özelliğe")}${row("Kart düşerken","maçta yapılan iş düşüşten korunmaz ama ayrıca da düşmez; düşüş kartın geneline yayılır")}</div>
    <div class="rules">${row("Biten maç","puanı kesinleşir; kurallar sonradan değişse de geçmiş maçlar değişmez")}${row("Maç düzeltilirse","o maç ve sonraki maçlar yeniden hesaplanır")}${row("Maça gelmeyen","kartı değişmez")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("Reyting","küsüratlı hesaplanır, kartta tam kısmı görünür (74,99 → 74)")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
    <p class="muted small">Haftanın Takımı, form ve ortalamalar da maç notuna göre hesaplanır.</p></details>
