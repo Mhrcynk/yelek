@@ -4189,9 +4189,10 @@ async function phCut(img){
   if(found&&hh>peak*.8&&hh<peak*2.2){hw=peak;let s=0,n=0;for(let y=y0;y<=vy;y++){s+=R[y].c*R[y].n;n+=R[y].n}cx=s/n*rx}
   else{hw=(br-bl+1)*rx*.45;cx=(bl+br+1)/2*rx}
   const OW=256,OH=320,c=document.createElement("canvas");c.width=OW;c.height=OH;const g=c.getContext("2d");g.imageSmoothingQuality="high";
-  const z=OW*.47/hw,ty=24-y0*ry*z;g.drawImage(wc,OW/2-cx*z,ty,W*z,H*z);
-  const fe=Math.min(288,Math.floor(ty+y1*ry*z)),gr=g.createLinearGradient(0,fe-70,0,fe);gr.addColorStop(0,"rgba(0,0,0,1)");gr.addColorStop(1,"rgba(0,0,0,0)");
-  g.globalCompositeOperation="destination-in";g.fillStyle=gr;g.fillRect(0,0,OW,OH);
+  /* oyuncunun altı kartın altına otursun: gerekirse biraz yakınlaştır, kalan boşluğu aşağı kaydırarak kapat; alt kenarda solma yok */
+  let z=OW*.47/hw,ty=24-y0*ry*z;const sh=(y1+1-y0)*ry;
+  if(ty+(y1+1)*ry*z<OH){const z2=Math.min((OH-24)/sh,z*1.35);if(z2>z){z=z2;ty=24-y0*ry*z}const bb=ty+(y1+1)*ry*z;if(bb<OH)ty+=OH-bb}
+  g.drawImage(wc,OW/2-cx*z,ty,W*z,H*z);
   let d=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(d))d=c.toDataURL("image/png");
   if(d.length>=240000){const c2=document.createElement("canvas");c2.width=192;c2.height=240;c2.getContext("2d").drawImage(c,0,0,192,240);d=c2.toDataURL("image/png")}
   return d}
