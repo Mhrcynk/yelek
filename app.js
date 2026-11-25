@@ -1459,10 +1459,10 @@ const lastFinM=()=>S.matches.filter(x=>mDone(x)&&!isExt(x)).sort((a,b)=>matchTs(
 const lastTotw=()=>{const m=lastFinM();return m&&S.mInfo[m.id]?S.mInfo[m.id].totw||[]:[]};
 function card(p,big){
   const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{},lastD:0};const st=stOf(p);const o=s.ovr;
-  const tr=s.lastO>0?`<span class="trend up">▲${s.lastO}</span>`:s.lastO<0?`<span class="trend down">▼${-s.lastO}</span>`:`<span class="trend">&nbsp;</span>`;
+  const tr=s.lastD>0?`<span class="trend up">▲${fA(s.lastD)}</span>`:s.lastD<0?`<span class="trend down">▼${fA(s.lastD)}</span>`:`<span class="trend">&nbsp;</span>`;
   const at=attrSet(p.pos).map(([k,l])=>{const dd=s.attrD?.[k]||0;const av=+(s.attrs?.[k])||0;return `<span style="--v:${Math.max(0,Math.min(100,av))}"><b>${s.attrs?.[k]??"–"}</b>${l}${dd?`<i class="ad ${dd>0?"up":"dn"}">${dd>0?"▲":"▼"}</i>`:""}</span>`}).join("");const ph=photoOf(p.id);
   const x=STATUS[st];const flag=st!=="hazir"?`<span class="flag ${x.cls==="bad"?"":x.cls}">${x.cls==="bad"?"✚ ":""}${x.flag}</span>`:"";
-  const tw=lastTotw().includes(p.id);const chp=reigningChamp()===p.id;const cls=(s.lastO>0?" rise":s.lastO<0?" fall":"")+(tw?" totw":"")+(chp?" champ":"")+(!big&&S.me===p.id?" me":"")+(big?anim("fb_"+p.id)+(s.lastO>0&&!ANIM.has("pop_"+p.id)?(ANIM.add("pop_"+p.id)," pop"):""):"");
+  const tw=lastTotw().includes(p.id);const chp=reigningChamp()===p.id;const cls=(s.lastD>0?" rise":s.lastD<0?" fall":"")+(tw?" totw":"")+(chp?" champ":"")+(!big&&S.me===p.id?" me":"")+(big?anim("fb_"+p.id)+(s.lastD>0&&!ANIM.has("pop_"+p.id)?(ANIM.add("pop_"+p.id)," pop"):""):"");
   return `<button class="fut ${tierOf(o)}${UNAVAIL.includes(st)?" out":""}${big?" big":""}${cls}" ${big?'tabindex="-1"':`data-act="open" data-id="${esc(p.id)}"`} aria-label="${esc(p.name)} kartı, reyting ${o}">
     <span class="face"><span class="tl"><span class="ovr num">${o}</span><span class="ps">${eposOf(p)}</span>${tr}${p.guest?"":p.yedek?'<span class="sq">YEDEK</span>':'<span class="sq as">AS</span>'}</span>
     ${chp?'<span class="chb" title="Son şampiyon">🏆</span>':""}<span class="stripe"></span>${tw?'<span class="xi">XI</span>':""}<span class="pic">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span><span class="nm">${esc(up(shortName(p.name)))}</span>${kondBar(p.id,"fk")}<span class="at">${at}</span>${BALL}</span>${flag}</button>`;
@@ -2670,7 +2670,7 @@ function viewKartlar(){
   return h;
 }
 function mzRow(p,rk){const s=S.stats[p.id]||{ovr:baseOf(p),lastD:0};const st=stOf(p);const o=s.ovr;const ph=photoOf(p.id);const x=STATUS[st];
-  const tr=s.lastO>0?`<span class="mzpl-tr up">▲${s.lastO}</span>`:s.lastO<0?`<span class="mzpl-tr dn">▼${-s.lastO}</span>`:"";
+  const tr=s.lastD>0?`<span class="mzpl-tr up">▲${fA(s.lastD)}</span>`:s.lastD<0?`<span class="mzpl-tr dn">▼${fA(s.lastD)}</span>`:"";
   const srt=S.f.sort;const sub=srt==="mv"?`<span class="mzpl-mv">${fM(mvOf(p.id))}</span>${ageOf(p)!=null?`<span class="mzpl-t">${ageOf(p)} yaş</span>`:""}`:srt==="form"?formNotes(s):`${kondChip(p.id)}<span class="mzpl-t">${eposOf(p)}</span>${altOf(p)?`<span class="mzpl-t alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="mzpl-t yd">Yedek</span>':""}`;
   return `<button class="mzpl-r${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzpl-k num">${rk}</span><span class="mzpl-p ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>
     <span class="mzpl-x"><b>${esc(p.name)}</b><span class="mzpl-s">${sub}${st!=="hazir"&&x?`<span class="mzpl-t st">${x.flag} ${esc(x.label)}</span>`:""}</span></span><span class="mzpl-o"><b class="num ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}">${o}</b>${tr}</span></button>`}
@@ -2681,7 +2681,7 @@ function formNotes(s){const L=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r&&x.r
   return L.length?`<span class="fnts" aria-label="Son ${L.length} maç notu">${L.map(x=>`<i class="f${noteCls(x.r.pts)}">${fN(x.r.pts)}</i>`).join("")}</span>`:'<span class="muted small">Henüz maç yok</span>'}
 function listRow(p,rk){
   const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{},lastD:0};const st=stOf(p);const o=s.ovr;const ph=photoOf(p.id);const x=STATUS[st];
-  const tr=s.lastO>0?`<span class="trend up">▲${s.lastO}</span>`:s.lastO<0?`<span class="trend down">▼${-s.lastO}</span>`:"";
+  const tr=s.lastD>0?`<span class="trend up">▲${fA(s.lastD)}</span>`:s.lastD<0?`<span class="trend down">▼${fA(s.lastD)}</span>`:"";
   const flag=st!=="hazir"?`<span class="lflag ${x.cls==="bad"?"":x.cls}">${x.flag}</span>`:"";
   return `<button class="lrow${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}">
     <span class="lth ${tierOf(o)}">${ph?`<img src="${esc(ph)}" alt="">`:SIL}</span>
@@ -2841,7 +2841,7 @@ function istAttr(p){const s=S.stats[p.id]||{};const a=p.attrs||{};const cur=s.cu
     return `<div class="ia-r"><span><span>${sl}</span><b class="num">${f1(c)}${Math.abs(dd)>=.05?`<em class="${dd>0?"up":"dn"}">${fD(dd)}</em>`:""}</b></span><i><i style="width:${Math.round(c)}%"></i></i></div>`}).join("")}</div>`}
 function pHead(p,inline){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=photoOf(p.id);
   const H=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r);
-  const tr=s.lastO>0?`<span class="pv-ch up">▲ ${s.lastO} son maç</span>`:s.lastO<0?`<span class="pv-ch dn">▼ ${-s.lastO} son maç</span>`:"";
+  const tr=s.lastD>0?`<span class="pv-ch up">▲ ${fA(s.lastD)} son maç</span>`:s.lastD<0?`<span class="pv-ch dn">▼ ${fA(s.lastD)} son maç</span>`:"";
   const gx=isFinite(s.genX)?s.genX:o;const gs=f1(gx).split(",");
   return `<div class="pv-h"><div class="pv-c ${tierOf(o)}"><b class="num" aria-label="Reyting ${gs.join(",")}">${gs[0]}<i>,${gs[1]}</i></b><small>${eposOf(p)}</small><span class="pv-ph">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</span></div>
     <div class="pv-x"><b class="pv-n">${esc(p.name)}</b><span class="pv-dl"><small>Mevki</small><b>${EPOS[eposOf(p)][1]}</b>${altOf(p)?`<small>2. mevki</small><b>${EPOS[altOf(p)][1]}</b>`:""}</span><span class="pv-chs">${reigningChamp()===p.id?`<span class="pv-ch ch">🏆 Şampiyon</span>`:""}${ageOf(p)!=null?`<span class="pv-ch">${ageOf(p)} yaş</span>`:""}<span class="pv-ch">Değer ${fN1(mvOf(p.id))} M€</span>${ligRank(p.id)!=="–"?`<span class="pv-ch">Ligde ${ligRank(p.id)}</span>`:""}${tr}</span></div>
@@ -3014,8 +3014,8 @@ function _viewSezon(){
   const played=p=>!p.guest&&(S.stats[p.id]?.games||0)>0;
   const rk=S.players.filter(played).sort((a,b)=>genOf(b.id)-genOf(a.id)||a.name.localeCompare(b.name,"tr"));
   const prk=S.players.filter(played).sort((a,b)=>prevO(b.id)-prevO(a.id)||a.name.localeCompare(b.name,"tr")).map(p=>p.id);
-  const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastO||0;
-    return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):""}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2.4em;text-align:right">${d?(d>0?"+":"−")+Math.abs(d):""}</span></span></li>`}).join("");
+  const rkRows=(S.f.rkAll?rk:rk.slice(0,10)).map((p,i)=>{const mv=fin().length>1?prk.indexOf(p.id)-i:0;const d=S.stats[p.id]?.lastD||0;
+    return `<li data-act="open" data-id="${esc(p.id)}"><span><span class="rk">${i+1}</span>${esc(p.name)} <span class="pchip" style="margin-left:4px">${eposOf(p)}</span></span><span class="rv2"><span class="mv ${mv>0?"up":mv<0?"down":""}">${mv>0?"▲"+mv:mv<0?"▼"+(-mv):""}</span><b class="num ${vcls(ovrOf(p.id))}">${ovrOf(p.id)}</b><span class="delta ${d>0?"pos":d<0?"neg":"zero"}" style="min-width:2.4em;text-align:right">${d?(d>0?"+":"−")+fA(d):""}</span></span></li>`}).join("");
   const rkCard=`<section class="card board rank"><div class="ch"><div><h3>Reyting sıralaması</h3></div></div><ol>${rkRows}</ol>${rk.length>10?`<button class="btn sm ghost" data-act="rkAll">${S.f.rkAll?"Daha az göster":"Tümünü göster ("+rk.length+")"}</button>`:""}</section>`;
   if(S.f.sezV==="rekor")S.f.sezV="";
   let h=`${oyTabs("sezon")}<!--TRK-->`;
@@ -4323,9 +4323,9 @@ async function drawFut(x,p,cx,cy,cw,opt){opt=opt||{};const f=cw/700,cw0=700,ch=1
   x.strokeStyle="rgba(255,255,255,.18)";x.lineWidth=10;for(let i=-4;i<10;i++){x.beginPath();x.moveTo(cw0*.55+i*34,40);x.lineTo(cw0*.55+i*34-160,640);x.stroke()}
   const pw=430,ph=540;if(im){drawPhoto(x,im,cw0-pw-40,60,pw,ph,0);const fd=x.createLinearGradient(0,60+ph*.7,0,60+ph);fd.addColorStop(0,"rgba(0,0,0,0)");fd.addColorStop(1,c2);x.fillStyle=fd;x.fillRect(cw0-pw-40,60+ph*.7,pw,ph*.3+2)}
   else{x.fillStyle=tx;x.globalAlpha=.35;x.font=`900 170px ${SD}`;x.textAlign="center";x.textBaseline="alphabetic";x.fillText(initials(p.name),cw0-pw/2-20,400);x.globalAlpha=1}
-  x.restore();const border=opt.border||(s.lastO>0?"#00E676":tw?"#7B3FF2":"rgba(255,255,255,.4)");rr(x,0,0,cw0,ch,56);x.lineWidth=opt.border||s.lastO>0||tw?8:3;x.strokeStyle=border;x.stroke();
+  x.restore();const border=opt.border||(s.lastD>0?"#00E676":tw?"#7B3FF2":"rgba(255,255,255,.4)");rr(x,0,0,cw0,ch,56);x.lineWidth=opt.border||s.lastD>0||tw?8:3;x.strokeStyle=border;x.stroke();
   x.textBaseline="alphabetic";x.fillStyle=tx;x.textAlign="center";x.font=`900 190px ${SD}`;x.fillText(p.guest?"MİS":String(o),150,230);x.font=`900 56px ${SD}`;x.fillText(opt.ep||eposOf(p),150,300);
-  if(s.lastO&&!opt.noTrend){x.font=`900 44px ${SD}`;x.fillStyle=s.lastO>0?"#0A8A45":"#C8372D";x.fillText((s.lastO>0?"▲":"▼")+Math.abs(s.lastO),150,365)}
+  if(s.lastD&&!opt.noTrend){x.font=`900 44px ${SD}`;x.fillStyle=s.lastD>0?"#0A8A45":"#C8372D";x.fillText((s.lastD>0?"▲":"▼")+fA(s.lastD),150,365)}
   if(tw){x.font=`900 34px ${SD}`;const t="HAFTANIN TAKIMI";const w=x.measureText(t).width+30;rr(x,150-w/2,400,w,50,12);x.fillStyle="#FF3EA5";x.fill();x.fillStyle="#fff";x.fillText(t,150,437)}
   x.fillStyle=tx;fitFont(x,up(shortName(p.name)),84,48,900,SD,cw0-80);x.fillText(up(shortName(p.name)),cw0/2,690);
   x.globalAlpha=.3;x.fillRect(60,720,cw0-120,3);x.globalAlpha=1;
