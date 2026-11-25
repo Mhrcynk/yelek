@@ -5353,11 +5353,29 @@ html.dk .th2.thF .th2-r .thk-c{background:var(--fz);color:var(--fzk)}
 .fz-go.ust{position:static;margin:0 0 14px;padding:0}.fz-go.ust .btn{box-shadow:none!important}
 .fz-ls{padding-bottom:16px}
 html.dk .fz-go .btn.primary:disabled,.fz-go .btn.primary:disabled{background:#3A2C78!important;border-color:#3A2C78!important;color:#D9CFFF!important;opacity:1!important}
-/* Fantezi Kadro arka planı: koyu kahve */
-html.dk .sheet:has(.fzmark){background:#1C0F09!important}
-.sheet:has(.fzmark) .fz-sl,.sheet:has(.fzmark) .fz-yb,.sheet:has(.fzmark) .mzseg,.sheet:has(.fzmark) .fz-tb,.sheet:has(.fzmark) .fz-ok,.sheet:has(.fzmark) .fz-ip2,.sheet:has(.fzmark) .fz-bos{background:#2B170D!important}
-.sheet:has(.fzmark) .fz-pl,.sheet:has(.fzmark) .fz-r,.sheet:has(.fzmark) .fz-dk>div,.sheet:has(.fzmark) .fz-tb p{border-color:#3A2214!important}
-.sheet:has(.fzmark) .fz-sl{border-color:#4A2C1A!important}.sheet:has(.fzmark) .fz-sl.akt{border-color:var(--fz)!important}.sheet:has(.fzmark) .fz-sl.cap{background:#3D1E0E!important}
-.sheet:has(.fzmark) .fz-bar{background:#3A2214}.sheet:has(.fzmark) .fz-r.me{background:#3D1E0E}
-.sheet:has(.fzmark) .fz-fl button:not(.on),.sheet:has(.fzmark) .fz-sz button:not(.on),.sheet:has(.fzmark) .fz-yb button:not(.on){background:#3A2214}
-.fz-yb button{display:inline-flex;align-items:center;gap:6px}.fz-cpi{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#160E33;color:#FFD400;font:800 .6875rem/1 Inter,sans-serif;font-style:normal}
+/* Fantezi yarı saha */
+html.dk .field.fzp{aspect-ratio:68/86;max-width:420px;border-radius:18px;border:1px solid rgba(255,255,255,.08)!important;--pl:rgba(255,255,255,.22)}
+.fzp .fzl{position:absolute;inset:0;width:100%;height:100%}.fzp .fzl *{fill:none;stroke:var(--pl);stroke-width:1.5px;vector-effect:non-scaling-stroke}.fzp .fzl circle{fill:var(--pl)}
+html.dk .field.fzp-a{background:linear-gradient(180deg,#232329,#151517)!important}
+html.dk .field.fzp-b{background:repeating-linear-gradient(180deg,#24242A 0 12.5%,#1B1B20 12.5% 25%)!important;--pl:rgba(255,255,255,.3)}
+html.dk .field.fzp-c{background:linear-gradient(180deg,#1C1C20,#121214)!important;--pl:rgba(255,122,69,.6)}
+html.dk .field.fzp-d{background:radial-gradient(circle,rgba(255,255,255,.09) 1px,transparent 1.4px) 0 0/14px 14px,#141416!important;--pl:rgba(255,255,255,.16)}
+.fzp .ptk.lg .ptk-c{width:50px;height:50px}
+
+/* Fantezi Kadro paleti: grafit */
+html.dk .sheet:has(.fzmark){background:#121214!important}
+.sheet:has(.fzmark) .fz-sl,.sheet:has(.fzmark) .fz-yb,.sheet:has(.fzmark) .mzseg,.sheet:has(.fzmark) .fz-tb,.sheet:has(.fzmark) .fz-ok,.sheet:has(.fzmark) .fz-ip2,.sheet:has(.fzmark) .fz-bos{background:#1E1E22!important}
+.sheet:has(.fzmark) .fz-pl,.sheet:has(.fzmark) .fz-r,.sheet:has(.fzmark) .fz-dk>div,.sheet:has(.fzmark) .fz-tb p{border-color:#2A2A30!important}
+.sheet:has(.fzmark) .fz-sl{border-color:#3A3A42!important}.sheet:has(.fzmark) .fz-sl.akt{border-color:var(--fz)!important}.sheet:has(.fzmark) .fz-sl.dolu{background:#2C2C32!important}.sheet:has(.fzmark) .fz-sl.cap{background:#3A2014!important}
+.sheet:has(.fzmark) .fz-bar{background:#2C2C32!important}.sheet:has(.fzmark) .fz-r.me{background:#3A2014!important}
+.sheet:has(.fzmark) .fz-fl button:not(.on),.sheet:has(.fzmark) .fz-sz button:not(.on),.sheet:has(.fzmark) .fz-yb button:not(.on){background:#2C2C32!important;color:#F2F2F4!important}
+html.dk .sheet:has(.fzmark) .mzseg button.on{background:#FF7A45!important;color:#1A0A03!important}html.dk .sheet:has(.fzmark) .mzseg button:not(.on){color:#A9A9B3!important;background:transparent!important}
+.sheet:has(.fzmark) .fz-t small,.sheet:has(.fzmark) .fz-bd small,.sheet:has(.fzmark) .fz-bd em,.sheet:has(.fzmark) .fz-ip,.sheet:has(.fzmark) .fz-st small,.sheet:has(.fzmark) .fz-not,.sheet:has(.fzmark) .mzvh small,.sheet:has(.fzmark) .fz-tbn,.sheet:has(.fzmark) .fz-ok span,.sheet:has(.fzmark) .fz-sl>small,.sheet:has(.fzmark) .fz-k,.sheet:has(.fzmark) .fz-dk span{color:#A9A9B3!important}
+.sheet:has(.fzmark),.sheet:has(.fzmark) .fz-t b,.sheet:has(.fzmark) .fz-sl>b,.sheet:has(.fzmark) .fz-pl{color:#F2F2F4}
+html.dk .sheet:has(.fzmark) .av{background:#34343C!important;color:#fff!important}
+.sheet:has(.fzmark) .ptk-p{background:linear-gradient(160deg,#4A4A54,#26262C)!important;color:rgba(255,255,255,.55)!important}
+.sheet:has(.fzmark) .ptk.a .ptk-p,.sheet:has(.fzmark) .ptk.b .ptk-p{box-shadow:0 0 0 2.5px var(--fz),0 6px 14px rgba(0,0,0,.45)!important}
+.sheet:has(.fzmark) .ptk.a .ptk-o,.sheet:has(.fzmark) .ptk.b .ptk-o{box-shadow:inset 0 0 0 1.5px var(--fz)!important;background:#121214!important}
+.sheet:has(.fzmark) .ptk-n{background:rgba(18,18,20,.88)!important}.sheet:has(.fzmark) .tcard::after{background:var(--fz)!important}
+html.dk .sheet:has(.fzmark) .fz-go .btn.primary:disabled{background:#2C2C32!important;border-color:#2C2C32!important;color:#A9A9B3!important}
+html.dk .thk.th2.thF{background:#1E1E22!important}html.dk .th2.thF .th2-r .th2-g>div,html.dk .th2.thF .th2-p{background:#121214!important}

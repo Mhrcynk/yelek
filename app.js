@@ -1695,12 +1695,14 @@ function fzCheck(m,sel){const B=fzBudget(m);const P5=fzSlots(sel);const sum=P5.r
 function fzSel(m){const f=S.f.fz;if(f&&f.mid===m.id)return f;const r=fzMine(m);const sl=r?fzFit(m,r.picks.filter(id=>fzPool(m).includes(id))):[null,null,null,null,null];
   return S.f.fz={mid:m.id,slots:sl,cap:r&&sl.includes(r.cap)?r.cap:null,act:Math.max(0,sl.findIndex(x=>!x))}}
 // uygulamanın saha görünümü: 5 oyuncu yerine göre sıralara dizilir
+// yarı saha: kale altta; KL, DF, OS, FV sıraları
+let FZ_SAHA="d";
+const FZ_SVG='<svg class="fzl" viewBox="0 0 68 86" preserveAspectRatio="none" aria-hidden="true"><rect x="2" y="1" width="64" height="84" rx="1.5"/><path d="M24 1a10 10 0 0 0 20 0"/><circle cx="34" cy="1" r=".8"/><rect x="14" y="62" width="40" height="23"/><rect x="25" y="76" width="18" height="9"/><path d="M27 62a7.5 7.5 0 0 1 14 0"/><circle cx="34" cy="70" r=".7"/></svg>';
 function fzField(m,ids,cap,ptsOf){const rows={KL:[],DF:[],OS:[],FV:[]};ids.forEach((id,k)=>{if(!id)return;const y=FZ_Y[k]==="SB"?fzRole(m,id):FZ_Y[k];(rows[y]||rows.OS).push(id)});
-  const PS=[],L=[];const xs=n=>n===1?[50]:n===2?[30,70]:[22,50,78];
-  const gk=rows.KL[0];PS.push([50,7,"KL"]);L.push(gk||null);
-  [["DF",23],["OS",51],["FV",83]].forEach(([r,y])=>{const X=xs(rows[r].length);rows[r].forEach((id,i)=>{PS.push([X[i],y,r]);L.push(id)})});
-  const notes=ptsOf?{pts:Object.fromEntries(L.filter(Boolean).map(id=>[id,{pts:ptsOf(id)}]).filter(x=>x[1].pts!=null)),motm:null}:null;
-  return fieldHtml("A",PS,[],L,[],false,null,{A:cap},notes).replace(/<i class="nt [^"]*"([^>]*)>([^<]*)<\/i>/g,(_,a,v)=>`<i class="nt fzn"${a}>${v.replace(/,0$/,"")}</i>`).replace('class="field ','class="field fzf ')}
+  const xs=n=>n===1?[50]:n===2?[30,70]:[18,50,82];const Y={FV:15,OS:38,DF:61,KL:84};const T=[];
+  ["FV","OS","DF","KL"].forEach(r=>{const X=xs(rows[r].length);rows[r].forEach((id,i)=>T.push({id,k:"A",i:T.length,r,ep:r==="KL"?"KL":slotPos(X[i],50,r),l:X[i],t:Y[r]}))});
+  const notes=ptsOf?{pts:Object.fromEntries(T.map(x=>[x.id,{pts:ptsOf(x.id)}]).filter(x=>x[1].pts!=null)),motm:null}:null;
+  return (`<div class="field single cards fzp fzp-${FZ_SAHA}">${FZ_SVG}${T.map(x=>cardTok(x,"A",{A:cap},notes,false,null)).join("")}</div>`).replace(/<i class="nt [^"]*"([^>]*)>([^<]*)<\/i>/g,(_,a,v)=>`<i class="nt fzn"${a}>${v.replace(/,0$/,"")}</i>`)}
 // Oyunlar sekmesindeki kart
 function fzKart(m){const me=myPid();if(!isMember()||S.fol||!me||!m||isExt(m))return"";fzLoad();const M=esc(m.id);const B=(t,v)=>`<button class="thk-c" data-act="fzOpen" data-id="${M}" data-v="${v||""}">${t}</button>`;
   const SZ=FZ.rows?fzSeason():[];const sz=[["Sezon puanın",SZ.find(r=>r.p===me)?SZ.find(r=>r.p===me).pts:"–"],["Sezon sıran",fzRk(SZ,me)]];
