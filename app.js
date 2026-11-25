@@ -3018,14 +3018,14 @@ function viewLig(){const avg=false;const F=fin().filter(inYr);const L=ligTable(F
   const fd=f=>f.slice(-5).map(r=>`<i class="lf ${r}" title="${r==="G"?"Galibiyet":r==="B"?"Beraberlik":"Mağlubiyet"}"></i>`).join("");
   const elg=avg?L.filter(o=>o.n>=2).length:L.length;const nb=elg>=6?elg-3:-1;const MED=["g1","g2","g3"];
   const pt=o=>avg?fN(o.ppm):String(o.p);
-  const sy=selYr();const sonCh=sy===curYr()&&!seasonDone(sy)?reigningChamp():null;let champId=null;if(sy!=="all"&&!avg){const done=seasonDone(sy);const rem=done?0:Math.max(0,sLen()-seasonCount(sy));if(L.length>1&&(done||L.slice(1).every(r=>r.p+3*rem<L[0].p)))champId=L[0].id;
+  const sy=selYr();let champId=null;if(sy!=="all"&&!avg){const done=seasonDone(sy);const rem=done?0:Math.max(0,sLen()-seasonCount(sy));if(L.length>1&&(done||L.slice(1).every(r=>r.p+3*rem<L[0].p)))champId=L[0].id;
     if(done&&L[0]){const w=seasonAwards(sy);if(w&&w.champ)h+=odulCard(sy,w)}}
 
   const mv=(o,i)=>{if(!prev)return"";const j=prev.indexOf(o.id);const d=j<0?0:j-i;return d>0?`<small class="lmv up">▲${d}</small>`:d<0?`<small class="lmv dn">▼${-d}</small>`:""};
   const sub=o=>`${o.n} maç · ${o.G}G ${o.B}B ${o.M}M · ${o.av>0?"+":""}${o.av}`;
   const lead=L[0],lp=P(lead.id);
   h+=`<section class="card ltb lt2"><div class="ltb-h"><span>#</span><span></span><span>Oyuncu</span><span>O</span><span>G</span><span>B</span><span>M</span><span>AV</span><span>P</span><span>Form</span></div>`+L.map((o,i)=>{const p=P(o.id);
-      return `<button class="ltb-r${o.id===S.me?" me":""}${i===nb?" rl":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.n} maç, ${o.G} galibiyet, ${o.B} beraberlik, ${o.M} mağlubiyet, averaj ${o.av}, ${o.p} puan"><span class="rk${i<3?" m"+(i+1):""}"><b class="num">${i+1}</b>${mv(o,i)}</span>${avatar(p,"sm")}<span class="nm">${esc(p.name)}${o.id===champId?' <em class="chmp" title="Şampiyon">🏆</em>':o.id===sonCh?' <em class="chmp" title="Son şampiyon" aria-label="Son şampiyon">👑</em>':""}</span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num avj ${o.av>0?"p":o.av<0?"n":""}">${o.av>0?"+":""}${o.av}</span><b class="ltp num">${pt(o)}</b><span class="lfs">${fd((o.f||[]).slice(-3))}</span></button>`}).join("")+`</section>`;
+      return `<button class="ltb-r${o.id===S.me?" me":""}${i===nb?" rl":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}: ${i+1}. sıra, ${o.n} maç, ${o.G} galibiyet, ${o.B} beraberlik, ${o.M} mağlubiyet, averaj ${o.av}, ${o.p} puan"><span class="rk${i<3?" m"+(i+1):""}"><b class="num">${i+1}</b>${mv(o,i)}</span>${avatar(p,"sm")}<span class="nm">${esc(p.name)}${o.id===champId?' <em class="chmp" title="Şampiyon">🏆</em>':""}</span><span class="num">${o.n}</span><span class="num">${o.G}</span><span class="num">${o.B}</span><span class="num">${o.M}</span><span class="num avj ${o.av>0?"p":o.av<0?"n":""}">${o.av>0?"+":""}${o.av}</span><b class="ltp num">${pt(o)}</b><span class="lfs">${fd((o.f||[]).slice(-3))}</span></button>`}).join("")+`</section>`;
   const cw=champWall();
   return h+cw}
 function viewSezon(){return _viewSezon().replace("<!--TRK-->","")}
