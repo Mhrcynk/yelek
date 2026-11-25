@@ -434,7 +434,7 @@ function compute(){computeCore(null);const lv={};
   for(const[pid,st]of Object.entries(S.stats)){let prev=st.baseX??st.base;for(const h of st.hist){(lv[h.m.id]??={})[pid]=prev;prev=h.gx??h.ovr}}
   computeCore(lv)}
 function computeCore(LV){
-  const F=fin();const mInfo={};const out={};const lvOf=(mid,id)=>LV?.[mid]?.[id]??(P(id)?baseOf(P(id)):NOTE.ref);
+  const F=fin();const lastF=F.length?F[F.length-1]:null;const mInfo={};const out={};const lvOf=(mid,id)=>LV?.[mid]?.[id]??(P(id)?baseOf(P(id)):NOTE.ref);
   for(const m of F){const motm=m.motm||null,fiy=m.fiy_id||topVote(m,"fiyasko"),gol=m.gol_id||topVote(m,"gol");
     const pl=plAll(m);const pts=matchNotes(m,motm,gol,fiy,id=>lvOf(m.id,id));
     if(m.calc&&m.calc.p)for(const id in pts){const e=m.calc.p[id];if(e&&isFinite(e.pts)){pts[id].pts=e.pts;if(isFinite(e.esik))pts[id].esik=e.esik;pts[id].fz=true}}
@@ -446,14 +446,45 @@ function computeCore(LV){
     const KS=subKeys(p.pos);const pa=p.attrs||{};const B0={},DL={};for(const k of KS){const[mk,sk]=k.split("_");B0[k]=subVal(pa,mk,sk);DL[k]=0}
     const curOf=()=>{const c={};for(const k of KS)c[k]=clamp(B0[k]+DL[k],30,99);return c};let gen=genF(p,curOf());let ovr=flo(gen);
     let att=0,fvDry=0,osDry=0;
-    const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,hat5=0,kb=0,gk=0,tmz=0,bg=0,os3=0,met=0,fvR=0,fvM=0,fir=0,ct=0,gR=0,gM=0,kap=0,dev=0,hz1=0,ogn=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
+    const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,hat5=0,kb=0,gk=0,tmz=0,bg=0,os3=0,met=0,fvR=0,fvM=0,fir=0,ct=0,gR=0,gM=0,kap=0,dev=0,hz1=0,ogn=0,mk=0,mt=0,mh=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
+    function rzB(){const rzt=[];const RZ=(on,i,e,t,d,off,shame)=>{if(shame&&!on)return;rzt.push(Object.assign({i,e,t,d:on?d:off,on:!!on},shame?{shame:true}:{}))};
+    RZ(hat,"3","🎩","Hat-trick",hat+" kez tek maçta 3+ gol","Tek maçta 3 gol at");
+    RZ(hat5,"5","🌟","Süper Hat-trick",hat5+" kez tek maçta 5+ gol","Tek maçta 5 gol at");
+    RZ(motm,"★","⭐","Maçın Adamı",motm+" kez seçildi","Maçın adamı seçil");
+    RZ(totw,"XI","🏅","Haftanın Takımı",totw+" kez seçildi","Haftanın takımına gir");
+    RZ(goals>=10,"10","⚽","Golcü",goals+" gol attı",goals+" / 10 gol");
+    RZ(ast>=10,"A","👟","Pasör",ast+" asist yaptı",ast+" / 10 asist");
+    RZ(cs>=3,"0","🧱","Duvar",cs+" maçta en fazla 5 gol yedi",cs+" / 3 maçta en çok 5 gol ye");
+    {RZ(mk>=5,"KM","🏃","Maratoncu","Bir maçta "+fN1(mk)+" km koştu","Bir maçta 5 km koş");RZ(mh>=28,"HZ","🚀","Roket","Maks hız "+fN1(mh)+" km/s","28 km/s hıza çık");RZ(mt>=10,"TK","🧲","Mıknatıs","Bir maçta "+mt+" top kapma","Bir maçta 10 top kap")}
+    RZ(golu,"G","🥅","Haftanın Golü",golu+" kez","Haftanın golünü at");
+    // mevkiye özel
+    RZ(kb,"KB","🧤","Kale Bekçisi",kb+" maçta kaleyi 3 golle kapattı","Kaleci oynadığın maçta en fazla 3 gol ye");
+    RZ(gk,"GK","🦸","Gol Atan Kaleci",gk+" kez kaleden gol ya da asist","Kaleci oynarken gol ya da asist yap");
+    RZ(tmz,"TM","🧹","Temizlikçi",tmz+" maçta 15+ pas arası","Defans oynarken bir maçta 15 pas arası yap");
+    RZ(bg,"BG","🎯","Bek Golü",bg+" kez defanstan gol","Defans oynarken gol at");
+    RZ(os3,"OŞ","🎼","Orkestra Şefi",os3+" kez orta sahadan 3+ asist","Orta saha oynarken bir maçta 3 asist yap");
+    RZ(met,"MT","⏱️","Metronom",met+" maçta 20+ pas, %90+ isabet","Bir maçta 20 pas at, %90 isabet tut");
+    RZ(fvM>=3,"BT","🏹","Bitirici",fvM+" forvet maçı üst üste gol",Math.min(fvM,3)+" / 3 forvet maçında üst üste gol at");
+    RZ(fir,"FR","🦊","Fırsatçı",fir+" kez takımın gollerinin yarısından fazlası","Forvet oynarken takımının gollerinin yarısından fazlasını at");
+    // genel
+    RZ(ct,"ÇT","🔫","Çift Tabanca",ct+" kez aynı maçta 2+ gol, 2+ asist","Aynı maçta 2 gol, 2 asist yap");
+    RZ(gM>=3,"SG","📈","Seri Golcü",gM+" maç üst üste gol",Math.min(gM,3)+" / 3 maç üst üste gol at");
+    RZ(kap,"C","🎖️","Kaptan",kap+" kez kaptanken kazandı","Kaptan olduğun maçı kazan");
+    RZ(dev,"DA","🪨","Dev Avcısı",dev+" kez zayıf görünen takımla kazandı","Kâğıt üstünde zayıf takımla kazan");
+    {let up=0;const by={};for(const h of hist){const y=yrOf(h.m);(by[y]=by[y]||[]).push(h)}for(const y in by){const L=by[y];up=Math.max(up,L[L.length-1].gx-(L[0].gx-L[0].d))}
+      RZ(up>=3,"YK","🌱","Yükselen","Bir sezonda reyting +"+fN1(up),"Bir sezonda reytingini 3 artır")}
+    RZ(hz1,"EH","⚡","Maçın En Hızlısı",hz1+" maçta en yüksek hız","Bir maçta takımın en hızlısı ol");
+    RZ(ogn,"TK2","🙃","Ters Köşe",ogn+" kez kendi kalesine","",true);
+    RZ(fiy>=2,"?!","🙈","Fiyasko Ustası",fiy+" kez seçildi","",true);
+    return rzt}
+    let rzPre=null;
     for(const m of F){
-      if(matchTs(m)<joined)continue;const inf=mInfo[m.id];const r=inf.pts[p.id];if(!r&&(p.yedek||sideOf(m,p.id)))continue;elig++;let ch,line;
+      if(matchTs(m)<joined)continue;const inf=mInfo[m.id];const r=inf.pts[p.id];if(!r&&(p.yedek||sideOf(m,p.id)))continue;if(m===lastF&&r)rzPre=rzB().filter(b=>b.on&&!b.shame).map(b=>b.t);elig++;let ch,line;
       if(r){games++;streak++;best=Math.max(best,streak);goals+=r.g;ast+=r.a;if(r.g>=3)hat++;if(r.g>=5)hat5++;
         if(r.res==="G")W++;else if(r.res==="B")D++;else L++;
         if(inf.motm===p.id)motm++;if(inf.fiy===p.id)fiy++;if(inf.gol===p.id)golu++;if(inf.totw.includes(p.id))totw++;
         if(r.op<=5&&(r.role==="KL"||r.role==="DF"))cs++;
-        {const t=trkOf(m,p.id)||{},my=r.side==="A"?+m.score_a:+m.score_b,sd=r.side,os=sd==="A"?"B":"A";
+        {const t=trkOf(m,p.id)||{},my=r.side==="A"?+m.score_a:+m.score_b,sd=r.side,os=sd==="A"?"B":"A";mk=Math.max(mk,+t.km||0);mt=Math.max(mt,+t.tk||0);mh=Math.max(mh,+t.hiz||0);
           if(r.role==="KL"){if(r.op<=3)kb++;if(r.g+r.a>0)gk++}
           if(r.role==="DF"){if((+t.pa||0)>=15)tmz++;if(r.g>0)bg++}
           if(r.role==="OS"&&r.a>=3)os3++;
@@ -483,43 +514,14 @@ function computeCore(LV){
     }
     const last=hist[hist.length-1];const cur=curOf();const attrs={},attrD={};
     for(const[k,,,subs]of attrSet(p.pos)){const v=subs.reduce((q,[sk])=>q+cur[k+"_"+sk],0)/subs.length,b=subs.reduce((q,[sk])=>q+B0[k+"_"+sk],0)/subs.length;attrs[k]=flo(v);attrD[k]=flo(v)-flo(b)}
-    const rzt=[];const RZ=(on,i,e,t,d,off,shame)=>{if(shame&&!on)return;rzt.push(Object.assign({i,e,t,d:on?d:off,on:!!on},shame?{shame:true}:{}))};
-    RZ(hat,"3","🎩","Hat-trick",hat+" kez tek maçta 3+ gol","Tek maçta 3 gol at");
-    RZ(hat5,"5","🌟","Süper Hat-trick",hat5+" kez tek maçta 5+ gol","Tek maçta 5 gol at");
-    RZ(motm,"★","⭐","Maçın Adamı",motm+" kez seçildi","Maçın adamı seçil");
-    RZ(totw,"XI","🏅","Haftanın Takımı",totw+" kez seçildi","Haftanın takımına gir");
-    RZ(goals>=10,"10","⚽","Golcü",goals+" gol attı",goals+" / 10 gol");
-    RZ(ast>=10,"A","👟","Pasör",ast+" asist yaptı",ast+" / 10 asist");
-    RZ(cs>=3,"0","🧱","Duvar",cs+" maçta en fazla 5 gol yedi",cs+" / 3 maçta en çok 5 gol ye");
-    {let mk=0,mt=0,mh=0;for(const m of F){const t=trkOf(m,p.id);if(!t)continue;mk=Math.max(mk,+t.km||0);mt=Math.max(mt,+t.tk||0);mh=Math.max(mh,+t.hiz||0)}
-      RZ(mk>=5,"KM","🏃","Maratoncu","Bir maçta "+fN1(mk)+" km koştu","Bir maçta 5 km koş");RZ(mh>=28,"HZ","🚀","Roket","Maks hız "+fN1(mh)+" km/s","28 km/s hıza çık");RZ(mt>=10,"TK","🧲","Mıknatıs","Bir maçta "+mt+" top kapma","Bir maçta 10 top kap")}
-    RZ(golu,"G","🥅","Haftanın Golü",golu+" kez","Haftanın golünü at");
-    // mevkiye özel
-    RZ(kb,"KB","🧤","Kale Bekçisi",kb+" maçta kaleyi 3 golle kapattı","Kaleci oynadığın maçta en fazla 3 gol ye");
-    RZ(gk,"GK","🦸","Gol Atan Kaleci",gk+" kez kaleden gol ya da asist","Kaleci oynarken gol ya da asist yap");
-    RZ(tmz,"TM","🧹","Temizlikçi",tmz+" maçta 15+ pas arası","Defans oynarken bir maçta 15 pas arası yap");
-    RZ(bg,"BG","🎯","Bek Golü",bg+" kez defanstan gol","Defans oynarken gol at");
-    RZ(os3,"OŞ","🎼","Orkestra Şefi",os3+" kez orta sahadan 3+ asist","Orta saha oynarken bir maçta 3 asist yap");
-    RZ(met,"MT","⏱️","Metronom",met+" maçta 20+ pas, %90+ isabet","Bir maçta 20 pas at, %90 isabet tut");
-    RZ(fvM>=3,"BT","🏹","Bitirici",fvM+" forvet maçı üst üste gol",Math.min(fvM,3)+" / 3 forvet maçında üst üste gol at");
-    RZ(fir,"FR","🦊","Fırsatçı",fir+" kez takımın gollerinin yarısından fazlası","Forvet oynarken takımının gollerinin yarısından fazlasını at");
-    // genel
-    RZ(ct,"ÇT","🔫","Çift Tabanca",ct+" kez aynı maçta 2+ gol, 2+ asist","Aynı maçta 2 gol, 2 asist yap");
-    RZ(gM>=3,"SG","📈","Seri Golcü",gM+" maç üst üste gol",Math.min(gM,3)+" / 3 maç üst üste gol at");
-    RZ(kap,"C","©️","Kaptan",kap+" kez kaptanken kazandı","Kaptan olduğun maçı kazan");
-    RZ(dev,"DA","🪨","Dev Avcısı",dev+" kez zayıf görünen takımla kazandı","Kâğıt üstünde zayıf takımla kazan");
-    {let up=0;const by={};for(const h of hist){const y=yrOf(h.m);(by[y]=by[y]||[]).push(h)}for(const y in by){const L=by[y];up=Math.max(up,L[L.length-1].gx-(L[0].gx-L[0].d))}
-      RZ(up>=3,"YK","🌱","Yükselen","Bir sezonda reyting +"+fN1(up),"Bir sezonda reytingini 3 artır")}
-    RZ(hz1,"EH","⚡","Maçın En Hızlısı",hz1+" maçta en yüksek hız","Bir maçta takımın en hızlısı ol");
-    RZ(ogn,"TK2","🙃","Ters Köşe",ogn+" kez kendi kalesine","",true);
-    RZ(fiy>=2,"?!","🙈","Fiyasko Ustası",fiy+" kez seçildi","",true);
+    const rzt=rzB();const rztNew=rzPre?rzt.filter(b=>b.on&&!b.shame&&!rzPre.includes(b.t)).map(b=>({e:b.e,t:b.t,d:b.d})):[];
     const badges=rzt.filter(b=>b.on).map(b=>Object.assign({i:b.i,t:b.t,d:b.d},b.shame?{shame:true}:{}));
     const hp=hist.filter(h=>h.r);const run=f=>{let n=0;for(let i=hp.length-1;i>=0&&f(hp[i].r);i--)n++;return n};
     const sW=run(r=>r.res==="G"),sU=run(r=>r.res!=="M"),sL=run(r=>r.res==="M"),sNW=run(r=>r.res!=="G"),sG=run(r=>r.g>0),sNG=run(r=>r.g===0);const grp=posOf(p);
     const stkO=sW>=3?{hot:1,t:sW+" maçtır kazanıyor"}:sU>=4?{hot:1,t:sU+" maçtır yenilmiyor"}:sG>=2&&grp!=="KL"?{hot:1,t:sG+" maçtır gol atıyor"}
       :sL>=3?{t:sL+" maçtır kaybediyor"}:sNG>=3&&grp==="FV"?{t:sNG+" maçtır gol atamıyor"}:sNW>=5?{t:sNW+" maçtır kazanamıyor"}:null;
     const f3=hp.slice(-3);const form=f3.length?f3.reduce((q,h)=>q+h.r.pts,0)/f3.length:null;
-    out[p.id]={streak:stkO,form,base,ovr,genX:gen,baseX:genF(p,B0),hist,series,games,goals,ast,W,D,L,motm,fiy,golu,totw,elig,best,late,ptsSum,bestM,avgPts:games?ptsSum/games:null,att:elig?games/elig:null,lastO:last?last.od:0,lastD:last?last.d:0,attrs,attrD,cur,B0,badges,rzt};
+    out[p.id]={streak:stkO,form,base,ovr,genX:gen,baseX:genF(p,B0),hist,series,games,goals,ast,W,D,L,motm,fiy,golu,totw,elig,best,late,ptsSum,bestM,avgPts:games?ptsSum/games:null,att:elig?games/elig:null,lastO:last?last.od:0,lastD:last?last.d:0,attrs,attrD,cur,B0,badges,rzt,rztNew};
   }
   S.stats=out;S.mInfo=mInfo;
   const tog={},vs={};const key=(a,b)=>a<b?a+"|"+b:b+"|"+a;const real=id=>{const q=P(id);return q&&!q.guest};
@@ -1706,7 +1708,7 @@ function th2Kart(cls,ic,t,pill,B,btn){return `<div class="thk th2 ${cls}"><div c
 function _macSonra(m){const M=esc(m.id);const inf=S.mInfo[m.id]||{pts:{}};const me=myPid();
   const STAR='<svg viewBox="0 0 24 24" fill="none" stroke="#2A1F00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1L12 16.9 6.6 19.8l1.1-6.1L3.2 9.4l6.1-.8L12 3z"/></svg>';
   const PLUS='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-  let h=hero(m)+odSerit()+odaCard(m);
+  let h=hero(m)+odSerit()+rztSerit(m)+odaCard(m);
   {const L=Object.entries(inf.pts||{}).filter(([id,r])=>r&&realP(id)&&isFinite(r.pts)).sort((a,b)=>b[1].pts-a[1].pts);
     if(L.length){const mo=inf.motm&&P(inf.motm)?inf.motm:null;const mine=me&&inf.pts[me]&&isFinite(inf.pts[me].pts)?inf.pts[me]:null;
       h+=th2Kart("thG",STAR,vOn(m)?"Oylama":"Maç notları","Sonuçlandı",[mo?["Maçın adamı",esc(shortName(nameOf(mo)))]:["En iyi",esc(shortName(nameOf(L[0][0])))],mine?["Senin notun",fN(mine.pts)]:["En yüksek not",fN(L[0][1].pts)]],`<button class="thk-c" data-act="${m.vsum?"oySonuc":"msGo"}" data-id="${M}" data-v="notlar">Sıralama</button>`)}}
@@ -1826,6 +1828,11 @@ function odulList(w){const F=w.F;const ilk=(o,L)=>o?[o,...L.filter(x=>x.id!==o.i
     ["YÜKSELEN YILDIZ","En çok gelişen",odulGelL(F).slice(0,3).map(o=>({id:o.id,v:"+"+o.d})),"Reyting"]];
   return A.filter(x=>x[2].length)}
 /* Bu hafta: biten sezonun ödül töreni şeridi (yeni sezonun ilk maçı bitene kadar durur) */
+/* bu haftanın yeni rozetleri: son maçta kazanılanlar, herkese görünür */
+function rztSerit(m){const F=fin();if(!m||!F.length||F[F.length-1].id!==m.id||S.fol)return"";
+  const L=S.players.filter(p=>realP(p.id)&&(S.stats[p.id]?.rztNew||[]).length).map(p=>[p,S.stats[p.id].rztNew]);if(!L.length)return"";
+  const n=L.reduce((q,[,b])=>q+b.length,0);L.sort((a,b)=>b[1].length-a[1].length);const me=myPid();
+  return `<section class="rzs"><small>Bu hafta ${n} yeni rozet</small><b>Rozet avcıları</b>${L.slice(0,8).map(([p,B])=>`<button class="rzs-r" data-act="open" data-id="${esc(p.id)}">${avatar(p)}<span class="rzs-x"><b>${esc(shortName(p.name))}${p.id===me?" (sen)":""}</b><small>${B.map(b=>esc(b.t)).join(" · ")}</small></span><em aria-hidden="true">${B.map(b=>b.e).join("")}</em></button>`).join("")}${L.length>8?`<p class="rzs-m">ve ${L.length-8} kişi daha</p>`:""}</section>`}
 function odSerit(){if(S.fol)return"";const n=sonYr();if(!seasonDone(n))return"";const w=seasonAwards(n);if(!w||!w.champ)return"";const ys=yeniSez();
   return (SZ_ON?`<button class="ymf ymf-on" data-act="szOnTog"><span><b>Önizleme açık</b><small>${SZ_ON===2?"Yeni sezon başlamış":"Sezon bitmiş"} gibi görünüyor. Yalnızca sende, kayıt yok.</small></span><i>Kapat</i></button>`:"")+(ys?`<div class="ymf ymf-ys"><em aria-hidden="true">🏁</em><span><b>${ys}. SEZON BAŞLIYOR</b><small>Tablo sıfırlandı, herkes eşit. İlk düdük bu maçta.</small></span></div>`:"")+`<button class="ymf ymf-od" data-act="odulOpen" data-id="${n}"><em aria-hidden="true">🏆</em><span><b>${n}. Sezon ödül töreni</b><small>Şampiyon ${esc(nameOf(w.champ.id))} · ödüller sahiplerini buldu</small></span><i aria-hidden="true">›</i></button>`}
 function viewGecmis(){
