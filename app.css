@@ -5360,3 +5360,4 @@ html.dk .sheet:has(.fzmark){background:#1C0F09!important}
 .sheet:has(.fzmark) .fz-sl{border-color:#4A2C1A!important}.sheet:has(.fzmark) .fz-sl.akt{border-color:var(--fz)!important}.sheet:has(.fzmark) .fz-sl.cap{background:#3D1E0E!important}
 .sheet:has(.fzmark) .fz-bar{background:#3A2214}.sheet:has(.fzmark) .fz-r.me{background:#3D1E0E}
 .sheet:has(.fzmark) .fz-fl button:not(.on),.sheet:has(.fzmark) .fz-sz button:not(.on),.sheet:has(.fzmark) .fz-yb button:not(.on){background:#3A2214}
+.fz-yb button{display:inline-flex;align-items:center;gap:6px}.fz-cpi{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#160E33;color:#FFD400;font:800 .6875rem/1 Inter,sans-serif;font-style:normal}
