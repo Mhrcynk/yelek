@@ -5241,3 +5241,7 @@ html.dk .bsx .szx{background:var(--c-card);border-radius:18px;padding:14px;margi
 /* kürsü: puan yazısı taşmasın */
 .mzpod .mzpod-b{height:auto!important;padding-bottom:12px}
 .mzpod .p1 .mzpod-b{min-height:130px}.mzpod .p2 .mzpod-b{min-height:108px}.mzpod .p3 .mzpod-b{min-height:94px}
+
+/* alt menü: seçili düğme çubukla aynı eğimde (iç yarıçap = dış yarıçap - boşluk) */
+@media (max-width:1099px){html.dk .nav{border-radius:34px!important;padding:0 6px!important}
+html.dk .nav button,html.dk .nav button.ctr{border-radius:28px!important}}
