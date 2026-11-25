@@ -1884,7 +1884,7 @@ function sheetFz(){const sh=S.pg,m=S.matches.find(x=>x.id===sh.mid);const me=myP
       :`<p class="fz-ip">${ay==="SB"?"Serbest yere kaleci dışında herkes girer":FZ_YA[ay]+" yeri için oyuncu seç"} · alternatif mevkisi uyan oyuncular da listede</p>`;
     return hd+`<div class="fz-bd"><span><small>Kalan bütçe</small><b class="num">${fN1(left)} M €</b><em>/ ${B} M €</em></span><small>${P5.length} / 5 oyuncu</small></div>
       <div class="fz-bar"><i style="width:${B?Math.min(100,Math.round(sum/B*100)):0}%"></i></div>
-      <div class="fz-sls">${slots}</div>${bar}<div class="fz-go ust"><button class="btn primary block" data-act="fzSave" data-id="${esc(m.id)}"${err||same?" disabled":""}>${err||(same?"Kadron kayıtlı":mine?"Değişikliği kaydet":"Kadroyu kaydet")}</button></div>
+      <div class="fz-sls">${slots}</div>${bar}<div class="fz-go ust">${same?`<button class="btn primary block" data-act="fzVaz">Dizilişe dön</button>`:`<button class="btn primary block" data-act="fzSave" data-id="${esc(m.id)}"${err?" disabled":""}>${err||(mine?"Değişikliği kaydet":"Kadroyu kaydet")}</button>${mine?`<button class="fz-vz" data-act="fzVaz">Vazgeç, kayıtlı kadroya dön</button>`:""}`}</div>
       <div class="fz-lh"><b>${FZ_YA[ay]} · ${L.length} oyuncu</b><span class="fz-fl">${[["fiyat","Pahalı"],["ucuz","Ucuz"],["puan","Puan"]].map(([v,l])=>`<button data-act="fzS" data-v="${v}" class="${srt===v?"on":""}" aria-pressed="${srt===v}">${l}</button>`).join("")}</span></div>
       <div class="fz-ls">${rows||`<p class="fz-ip">Bu yere uyan oyuncu yok</p>`}</div>${ft}
       `}
@@ -4062,6 +4062,7 @@ document.addEventListener("click",async e=>{
     case"fzSz":if(S.pg&&S.pg.type==="fz"){S.pg.sz=el.dataset.v||"";render(true)}break;
     case"fzS":S.f.fzS=el.dataset.v||"fiyat";render(true);break;
     case"fzDuz":S.f.fzEdit=true;render(true);break;
+    case"fzVaz":{const mid=S.pg&&S.pg.mid;S.f.fzEdit=false;S.f.fz=null;try{if(mid)LS.set("y_fzsel_"+mid,"");LS.set("y_fzed","")}catch(_){}render(true);window.scrollTo(0,0);break}
     case"fzYer":{const m=S.pg&&S.matches.find(x=>x.id===S.pg.mid);if(!m||!fzOpen(m))break;fzSel(m).act=+el.dataset.i;render(true);break}
     case"fzCik":{const m=S.pg&&S.matches.find(x=>x.id===S.pg.mid);if(!m||!fzOpen(m))break;const sel=fzSel(m);const k=+el.dataset.i;const o=sel.slots[k];sel.slots[k]=null;if(sel.cap===o)sel.cap=fzSlots(sel)[0]||null;render(true);break}
     case"fzPick":{const m=S.pg&&S.matches.find(x=>x.id===S.pg.mid);if(!m||!fzOpen(m))break;const sel=fzSel(m);const p=el.dataset.p;const k=Math.min(4,Math.max(0,sel.act|0));
