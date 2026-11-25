@@ -2739,7 +2739,7 @@ function _viewBen(){const p=P(S.me);if(!p)return `<section class="card"><div cla
   const stK=stOf(p);
   const IC=x=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${x}</svg>`;
   const B=(act,t,ex)=>`<button class="thk-c" data-act="${act}" ${ex||""}>${t}</button>`;const pos=EPOS[eposOf(p)]?.[1]||eposOf(p);
-  let h=`<section class="mzh benh" data-act="open" data-id="${esc(p.id)}" role="button" tabindex="0"><div class="mzg"><span class="e">${esc(pos)}</span>${p.yedek?`<span>Yedek</span>`:""}</div><div class="mzh-vs"><span class="mzh-t tA benh-t">${avatar(p)}<b style="font-size:${mzFs(p.name)}">${esc(p.name)}</b><i class="benh-k">Kartım ${CHVR}</i></span></div></section>`;
+  let h=`<section class="mzh benh" data-act="open" data-id="${esc(p.id)}" role="button" tabindex="0">${p.yedek?`<div class="mzg"><span>Yedek</span></div>`:""}<div class="mzh-vs"><span class="mzh-t tA benh-t">${avatar(p)}<b style="font-size:${mzFs(p.name)}">${esc(p.name)}</b><i class="benh-k">Kartım ${CHVR}</i></span></div></section>`;
   if(S.session&&isMember()){const om=openMatch();const kd=!om?"Maç yok":om.state==="kayit"?((om.rsvp||{})[p.id]==="g"?"Kadrodasın":"Belli değil"):plAll(om).includes(p.id)?"Kadrodasın":"Kadroda yoksun";const sl=esc((STATUS[stK]||{}).label||"Hazır");
     h+=th1Kart("",IC('<path d="m5 12 4.5 4.500L19 7"/>'),"Bu hafta durumum",sl,[["Durum",sl],["Kadro",kd]],B("tog",S.f.benSt?"Kapat":"Değiştir",`data-k="benSt" aria-expanded="${!!S.f.benSt}"`));
     if(S.f.benSt){const bs=S.f.bst&&S.f.bst.type?S.f.bst:(S.f.bst={type:stK,until:(p.status&&p.status.until)||"",note:(p.status&&p.status.note)||""});const pk=bs.type;
