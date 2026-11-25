@@ -66,13 +66,15 @@ function otherFz(m,me){const pool=[...m.team_a,...m.team_b];const gks=[m.lineup_
   (me?[ME,...shuf(others).slice(0,7)]:shuf(others).slice(0,7)).forEach(p=>{const gk=pick(gks);const out=shuf(pool.filter(x=>!gks.includes(x)));const L=[];let na=m.team_a.includes(gk)?1:0,nb=1-na;const rl=x=>{const sd=m.team_a.includes(x)?"a":"b";const i=m["lineup_"+sd].indexOf(x);const ps=m["pos_"+sd];return ps&&ps[i]?ps[i][2]:"OS"};
     for(const need of ["DF","OS","FV",null])for(const x of out){if(L.length>=4||L.includes(x))continue;if(need&&rl(x)!==need)continue;const a=m.team_a.includes(x);if(a&&na>=3||!a&&nb>=3)continue;L.push(x);a?na++:nb++;if(need)break}
     const picks=[gk,...L];D.fz.push({m:m.id,p,picks,cap:pick(L),prices:picks.map(()=>5),budget:40})})}
+// sayfayı yenilemeden uygulamaya yeni veriyi yükle (deneme sayfası cihaza kayıt tutamayabilir)
+async function tazele(msg){save(D);try{await window.__YD('(async()=>{S.sheet=null;S.view=null;S.f.fz=null;FZ.at=0;DU.at=0;S.tab="mac";S.f.bht="";await load(true);fzLoad(true);duLoad(true);render(true)})()');scrollTo(0,0)}catch(e){console.error("YD tazele",e&&e.message);location.reload()}if(msg)alert0(msg)}
 const ACT={
-  bitir(){const m=open();if(!m){alert0("Açık maç yok, önce yeni hafta aç");return}if(!D.fz.some(r=>r.m===m.id&&r.p!==ME))otherFz(m);seed=Date.now()%233280;finish(m);m.date=ymd(new Date(Date.now()-DAY));D.k++;save(D);location.reload()},
-  baslat(){const m=open();if(!m)return;m.date=ymd(new Date(Date.now()-DAY));otherFz(m);D.k++;save(D);location.reload()},
-  hafta(){if(open()){alert0("Zaten açık bir maç var");return}const n=++D.k;seed=Date.now()%233280;D.matches.push(mkMatch(n+10,ymd(new Date(Date.now()+DAY)),"takim"));save(D);location.reload()},
-  sifirla(){try{Object.keys(ls).forEach(k=>ls.removeItem(k));ls.setItem("yd_v",VER)}catch(_){}location.reload()}};
-function alert0(t){const e=document.getElementById("ydMsg");if(e){e.textContent=t;setTimeout(()=>e.textContent="",2500)}}
-addEventListener("DOMContentLoaded",()=>{const b=document.createElement("div");b.id="yd";b.innerHTML=`<button id="ydT" aria-expanded="false">Deneme</button><div id="ydP" hidden><b>Deneme sürümü</b><small>Temsili takım, sahte veri. Hiçbir şey sunucuya gitmez.</small>
+  bitir(){const m=open();if(!m){alert0("Açık maç yok, önce yeni hafta aç");return}if(!D.fz.some(r=>r.m===m.id&&r.p!==ME))otherFz(m);seed=Date.now()%233280;finish(m);m.date=ymd(new Date(Date.now()-DAY));D.k++;tazele("Maç bitti. Oyunlar → Fantezi Kadro")},
+  baslat(){const m=open();if(!m){alert0("Açık maç yok");return}m.date=ymd(new Date(Date.now()-DAY));if(!D.fz.some(r=>r.m===m.id&&r.p!==ME))otherFz(m);D.k++;tazele("Maç başladı, kadrolar kilitlendi")},
+  hafta(){if(open()){alert0("Zaten açık bir maç var");return}const n=++D.k;seed=Date.now()%233280;D.matches.push(mkMatch(n+10,ymd(new Date(Date.now()+DAY)),"takim"));tazele("Yeni hafta açıldı")},
+  sifirla(){try{Object.keys(ls).forEach(k=>{if(k!=="yd_v")ls.removeItem(k)})}catch(_){}D=gen();tazele("Baştan başladı")}};
+function alert0(t){try{if(window.__YD){window.__YD("toast("+JSON.stringify(t)+")");return}}catch(_){}const e=document.getElementById("ydMsg");if(e){e.textContent=t;setTimeout(()=>e.textContent="",2500)}}
+addEventListener("DOMContentLoaded",()=>{const b=document.createElement("div");b.id="yd";b.innerHTML=`<button id="ydT" aria-expanded="false">Deneme</button><div id="ydP" hidden><b>Deneme sürümü</b><small>Hiçbir şey sunucuya gitmez. Sıra: Oyunlar → Fantezi Kadro'da kadronu kur → burada "Maçı bitir" → Oyunlar → Fantezi Kadro'da puanına bak.</small>
   <button data-yd="baslat">Maçı başlat (kadrolar kilitlenir)</button><button data-yd="bitir">Maçı bitir (rastgele skor)</button><button data-yd="hafta">Yeni hafta aç</button><button data-yd="sifirla">Baştan başla</button><span id="ydMsg"></span></div>`;document.body.appendChild(b);
-  const P=b.querySelector("#ydP"),T=b.querySelector("#ydT");T.onclick=()=>{P.hidden=!P.hidden;T.setAttribute("aria-expanded",String(!P.hidden))};b.querySelectorAll("[data-yd]").forEach(x=>x.onclick=()=>ACT[x.dataset.yd]())});
+  const P=b.querySelector("#ydP"),T=b.querySelector("#ydT");T.onclick=()=>{P.hidden=!P.hidden;T.setAttribute("aria-expanded",String(!P.hidden))};b.querySelectorAll("[data-yd]").forEach(x=>x.onclick=()=>{ACT[x.dataset.yd]();setTimeout(()=>{P.hidden=true;T.setAttribute("aria-expanded","false")},1800)})});
 })();

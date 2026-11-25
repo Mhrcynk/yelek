@@ -17,7 +17,7 @@ const page=`<title>Yelek Deneme</title>
 ${body}
 ${gd?`<script>window.YD_REAL=${esc(JSON.stringify({players:JSON.parse(fs.readFileSync(path.join(gd,"players.json"),"utf8")),...(({s,m})=>({s,matches:m}))(JSON.parse(fs.readFileSync(path.join(gd,"matches.json"),"utf8"))),me:fs.readFileSync(path.join(gd,"me"),"utf8").trim()}))}</script>`:""}
 <script>${esc(fs.readFileSync(path.join(__dirname,"deneme-shim.js"),"utf8"))}</script>
-<script>${esc(fs.readFileSync(path.join(root,"app.js"),"utf8"))}</script>`;
+<script>${esc((()=>{const j=fs.readFileSync(path.join(root,"app.js"),"utf8");if(!j.includes("function compute(){"))throw new Error("kanca yeri yok");return j.replace("function compute(){","window.__YD=s=>eval(s);function compute(){")})())}</script>`;
 fs.writeFileSync(path.join(out,"index.html"),page);
 for(const d of ["fonts"])for(const f of fs.readdirSync(path.join(root,d))){fs.mkdirSync(path.join(out,d),{recursive:true});fs.copyFileSync(path.join(root,d,f),path.join(out,d,f))}
 fs.mkdirSync(path.join(out,"vendor"),{recursive:true});fs.copyFileSync(path.join(root,"vendor/html2canvas-1.4.1.min.js"),path.join(out,"vendor/html2canvas-1.4.1.min.js"));
