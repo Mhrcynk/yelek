@@ -5128,3 +5128,12 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 /* yeni sezon şeridi ve geçen sezon hedef karnesi */
 .ymf.ymf-ys{background:linear-gradient(90deg,#0B5E3A,#0A3F52);margin-bottom:8px}.ymf-ys em{flex:none;font-style:normal;font-size:1.5rem;line-height:1}.ymf-ys b{font-family:var(--display);font-size:1.125rem;letter-spacing:.02em}
 .hdf-o{display:grid;gap:6px;padding:12px;border-radius:12px;background:rgba(127,110,220,.13)}.hdf-o b{font:800 .875rem/1.25 Inter,sans-serif}.hdf-o span{font:600 .7812rem/1.3 Inter,sans-serif;color:var(--muted)}.hdf-o span.ok{color:#00C777}.hdf-o .btn{justify-self:start;margin-top:4px}
+/* Ben üst kartı: solda fotoğraf */
+.mzh-t.benh-t{align-items:center;justify-content:flex-start;gap:14px}.benh-t .av{flex:none;width:60px;height:60px;font-size:1.125rem}
+/* kariyer özeti: halka ve çubuklar */
+.kry-k{border-radius:20px;padding:16px;background:rgba(127,110,220,.13);display:grid;gap:14px}
+.kry-kh{font:800 .6875rem/1.2 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kry-kb{display:flex;align-items:center;gap:16px}.kry-ring{flex:none;position:relative;width:112px;height:112px;display:grid;place-content:center;justify-items:center;gap:2px}.kry-ring svg{position:absolute;inset:0;width:100%;height:100%}.kry-ring b{position:relative;font:900 1.75rem/1 var(--display)}.kry-ring small{position:relative;font:700 .6875rem/1 Inter,sans-serif;color:var(--muted)}
+.kry-bars{flex:1;min-width:0;display:grid;gap:12px}.kry-bars>div>div{display:flex;justify-content:space-between;gap:8px;font:700 .7812rem/1.2 Inter,sans-serif}
+.kry-bars i{display:block;height:8px;border-radius:999px;background:rgba(127,110,220,.25);margin-top:6px;overflow:hidden}.kry-bars u{display:block;height:100%;border-radius:999px}
+.kry-kc{display:flex;flex-wrap:wrap;gap:8px}.kry-kc span{padding:7px 12px;border-radius:999px;background:rgba(127,110,220,.2);font:700 .7812rem/1 Inter,sans-serif}
