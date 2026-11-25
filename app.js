@@ -2322,7 +2322,7 @@ function hero(om){
   const row=k=>`<span class="mzh-t t${k}${me&&me!==k?" o":""}"><i class="mzd"></i><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:""}</span>`;const ts=matchTs(om);
   const wx=ended?null:wxBox(om);
   return `<section class="mzh"><div class="mzg">${ended?`<span class="e">Maç bitti</span>`:""}<span>${MZI.cal}${wx?["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"][d.getDay()]:gun}</span><span>${MZI.clk}${esc(String(om.time||"").slice(0,5))}</span>${fld?`<span class="f">${MZI.pin}<i>${esc(fld)}</i></span>`:""}${wx?wx.box:""}</div>
-    <div class="mzh-vs">${row("A")}${row("B")}</div>${wx?wx.o:""}${mDone(om)?"":haftaAkis(om)}
+    <div class="mzh-vs">${row("A")}${row("B")}</div>${mDone(om)?"":haftaAkis(om)}
     </section>`;
 }
 function mzTiles(){const F=fin().filter(m=>!isExt(m));const lf=F[F.length-1];if(!lf)return"";const sa=+lf.score_a||0,sb=+lf.score_b||0;
