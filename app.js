@@ -438,19 +438,33 @@ function computeCore(LV){
   for(const m of F){const motm=m.motm||null,fiy=m.fiy_id||topVote(m,"fiyasko"),gol=m.gol_id||topVote(m,"gol");
     const pl=plAll(m);const pts=matchNotes(m,motm,gol,fiy,id=>lvOf(m.id,id));
     if(m.calc&&m.calc.p)for(const id in pts){const e=m.calc.p[id];if(e&&isFinite(e.pts)){pts[id].pts=e.pts;if(isFinite(e.esik))pts[id].esik=e.esik;pts[id].fz=true}}
-    const totw=totwOf(pl,pts);mInfo[m.id]={motm,fiy,gol,pts,totw}}
+    const totw=totwOf(pl,pts);const avS=sd=>{const L=plOf(m,sd);return L.length?L.reduce((q,id)=>q+lvOf(m.id,id),0)/L.length:0};
+    let hz=0;if(m.track&&typeof m.track==="object")for(const id in m.track){const t=m.track[id];if(t&&typeof t==="object")hz=Math.max(hz,+t.hiz||0)}
+    mInfo[m.id]={motm,fiy,gol,pts,totw,str:{A:avS("A"),B:avS("B")},hz}}
   for(const p of S.all){
     const base=baseOf(p);const joined=p.created_at?new Date(new Date(p.created_at).toDateString()).getTime():0;
     const KS=subKeys(p.pos);const pa=p.attrs||{};const B0={},DL={};for(const k of KS){const[mk,sk]=k.split("_");B0[k]=subVal(pa,mk,sk);DL[k]=0}
     const curOf=()=>{const c={};for(const k of KS)c[k]=clamp(B0[k]+DL[k],30,99);return c};let gen=genF(p,curOf());let ovr=flo(gen);
     let att=0,fvDry=0,osDry=0;
-    const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,hat5=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
+    const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,hat5=0,kb=0,gk=0,tmz=0,bg=0,os3=0,met=0,fvR=0,fvM=0,fir=0,ct=0,gR=0,gM=0,kap=0,dev=0,hz1=0,ogn=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
     for(const m of F){
       if(matchTs(m)<joined)continue;const inf=mInfo[m.id];const r=inf.pts[p.id];if(!r&&(p.yedek||sideOf(m,p.id)))continue;elig++;let ch,line;
       if(r){games++;streak++;best=Math.max(best,streak);goals+=r.g;ast+=r.a;if(r.g>=3)hat++;if(r.g>=5)hat5++;
         if(r.res==="G")W++;else if(r.res==="B")D++;else L++;
         if(inf.motm===p.id)motm++;if(inf.fiy===p.id)fiy++;if(inf.gol===p.id)golu++;if(inf.totw.includes(p.id))totw++;
-        if(r.op<=5&&(r.role==="KL"||r.role==="DF"))cs++;ptsSum+=r.pts;if(!bestM||r.pts>bestM.pts)bestM={pts:r.pts,date:m.date};
+        if(r.op<=5&&(r.role==="KL"||r.role==="DF"))cs++;
+        {const t=trkOf(m,p.id)||{},my=r.side==="A"?+m.score_a:+m.score_b,sd=r.side,os=sd==="A"?"B":"A";
+          if(r.role==="KL"){if(r.op<=3)kb++;if(r.g+r.a>0)gk++}
+          if(r.role==="DF"){if((+t.pa||0)>=15)tmz++;if(r.g>0)bg++}
+          if(r.role==="OS"&&r.a>=3)os3++;
+          if((+t.pas||0)>=20&&(+t.isa||0)>=90)met++;
+          if(r.role==="FV"){if(r.g>0){fvR++;fvM=Math.max(fvM,fvR)}else fvR=0;if(r.g>0&&r.g*2>my)fir++}
+          if(r.g>=2&&r.a>=2)ct++;
+          if(r.g>0){gR++;gM=Math.max(gM,gR)}else gR=0;
+          if(r.res==="G"&&(m["cap_"+sd.toLowerCase()]===p.id))kap++;
+          if(r.res==="G"&&inf.str&&inf.str[sd]&&inf.str[os]&&inf.str[os]-inf.str[sd]>=1)dev++;
+          if(inf.hz>0&&(+t.hiz||0)>=inf.hz)hz1++;
+          if(((m.stats||{})[p.id]||{}).og>0)ogn++}ptsSum+=r.pts;if(!bestM||r.pts>bestM.pts)bestM={pts:r.pts,date:m.date};
         att++;fvDry=r.role==="FV"&&!r.g?fvDry+1:0;osDry=!r.g&&!r.a?osDry+1:0;
         ch=matchChanges(p,r,m,(m.stats||{})[p.id]||{},{fvDry,osDry,att,motm:inf.motm===p.id});line={kind:"oynadi",r};
       }else{streak=0;att=0;ch=[];line={kind:"gelmedi"}} // maça gelmeyenin kartı değişmez
@@ -480,6 +494,24 @@ function computeCore(LV){
     {let mk=0,mt=0,mh=0;for(const m of F){const t=trkOf(m,p.id);if(!t)continue;mk=Math.max(mk,+t.km||0);mt=Math.max(mt,+t.tk||0);mh=Math.max(mh,+t.hiz||0)}
       RZ(mk>=5,"KM","🏃","Maratoncu","Bir maçta "+fN1(mk)+" km koştu","Bir maçta 5 km koş");RZ(mh>=28,"HZ","🚀","Roket","Maks hız "+fN1(mh)+" km/s","28 km/s hıza çık");RZ(mt>=10,"TK","🧲","Mıknatıs","Bir maçta "+mt+" top kapma","Bir maçta 10 top kap")}
     RZ(golu,"G","🥅","Haftanın Golü",golu+" kez","Haftanın golünü at");
+    // mevkiye özel
+    RZ(kb,"KB","🧤","Kale Bekçisi",kb+" maçta kaleyi 3 golle kapattı","Kaleci oynadığın maçta en fazla 3 gol ye");
+    RZ(gk,"GK","🦸","Gol Atan Kaleci",gk+" kez kaleden gol ya da asist","Kaleci oynarken gol ya da asist yap");
+    RZ(tmz,"TM","🧹","Temizlikçi",tmz+" maçta 15+ pas arası","Defans oynarken bir maçta 15 pas arası yap");
+    RZ(bg,"BG","🎯","Bek Golü",bg+" kez defanstan gol","Defans oynarken gol at");
+    RZ(os3,"OŞ","🎼","Orkestra Şefi",os3+" kez orta sahadan 3+ asist","Orta saha oynarken bir maçta 3 asist yap");
+    RZ(met,"MT","⏱️","Metronom",met+" maçta 20+ pas, %90+ isabet","Bir maçta 20 pas at, %90 isabet tut");
+    RZ(fvM>=3,"BT","🏹","Bitirici",fvM+" forvet maçı üst üste gol",Math.min(fvM,3)+" / 3 forvet maçında üst üste gol at");
+    RZ(fir,"FR","🦊","Fırsatçı",fir+" kez takımın gollerinin yarısından fazlası","Forvet oynarken takımının gollerinin yarısından fazlasını at");
+    // genel
+    RZ(ct,"ÇT","🔫","Çift Tabanca",ct+" kez aynı maçta 2+ gol, 2+ asist","Aynı maçta 2 gol, 2 asist yap");
+    RZ(gM>=3,"SG","📈","Seri Golcü",gM+" maç üst üste gol",Math.min(gM,3)+" / 3 maç üst üste gol at");
+    RZ(kap,"C","©️","Kaptan",kap+" kez kaptanken kazandı","Kaptan olduğun maçı kazan");
+    RZ(dev,"DA","🪨","Dev Avcısı",dev+" kez zayıf görünen takımla kazandı","Kâğıt üstünde zayıf takımla kazan");
+    {let up=0;const by={};for(const h of hist){const y=yrOf(h.m);(by[y]=by[y]||[]).push(h)}for(const y in by){const L=by[y];up=Math.max(up,L[L.length-1].gx-(L[0].gx-L[0].d))}
+      RZ(up>=3,"YK","🌱","Yükselen","Bir sezonda reyting +"+fN1(up),"Bir sezonda reytingini 3 artır")}
+    RZ(hz1,"EH","⚡","Maçın En Hızlısı",hz1+" maçta en yüksek hız","Bir maçta takımın en hızlısı ol");
+    RZ(ogn,"TK2","🙃","Ters Köşe",ogn+" kez kendi kalesine","",true);
     RZ(fiy>=2,"?!","🙈","Fiyasko Ustası",fiy+" kez seçildi","",true);
     const badges=rzt.filter(b=>b.on).map(b=>Object.assign({i:b.i,t:b.t,d:b.d},b.shame?{shame:true}:{}));
     const hp=hist.filter(h=>h.r);const run=f=>{let n=0;for(let i=hp.length-1;i>=0&&f(hp[i].r);i--)n++;return n};
