@@ -5247,27 +5247,25 @@ html.dk .bsx .szx{background:var(--c-card);border-radius:18px;padding:14px;margi
 html.dk .nav button,html.dk .nav button.ctr{border-radius:28px!important}}
 
 /* rozet madalyonu */
-.rzm{flex:none;position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--c);background:#211547;
-  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 32%,#2A1D58),#1C1240 75%);
-  box-shadow:inset 0 0 0 3px var(--c),inset 0 0 0 6px #1C1240,inset 0 0 0 7px color-mix(in srgb,var(--c) 45%,transparent)}
-.rzm svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.rzm.sm{width:30px;height:30px;box-shadow:inset 0 0 0 2px var(--c)}.rzm.sm svg{width:16px;height:16px;stroke-width:2.2}
-.rzm.big{width:96px;height:96px;box-shadow:inset 0 0 0 4px var(--c),inset 0 0 0 9px #1C1240,inset 0 0 0 10px color-mix(in srgb,var(--c) 45%,transparent)}.rzm.big svg{width:44px;height:44px}
-.rzm.yp{width:46px;height:46px;background:#1C1240!important;box-shadow:none!important;border:3px solid var(--c)}.rzm.yp svg{width:22px;height:22px}
+.rzm{flex:none;position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--c);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.rzm svg{display:block;width:30px;height:30px}
+.rzm.sm{width:30px;height:30px;box-shadow:none}.rzm.sm svg{width:18px;height:18px}
+.rzm.big{width:96px;height:96px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.18),0 0 0 6px #1C1240,0 0 0 8px var(--c)}.rzm.big svg{width:52px;height:52px}
+.rzm.rzp{width:46px;height:46px;box-shadow:none}.rzm.rzp svg{width:26px;height:26px}
 .rzt>div{display:grid;justify-items:center}
 .rzt .rzm{margin:0 auto 2px}
-.rzt .rr{box-shadow:none!important}.rzt .rr .rzm{box-shadow:inset 0 0 0 3px #FFD400,inset 0 0 0 6px #1C1240,inset 0 0 0 7px #FFD40099,0 0 16px #FFD40055}
-.rzt .lk .rzm{background:#211547;color:#5E5196;box-shadow:inset 0 0 0 2px #3A2C78}.rzt .lk i{filter:none;opacity:1}
+.rzt .rr{box-shadow:none!important}.rzt .rr .rzm{box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 0 0 3px #1C1240,0 0 0 5px #FFD400,0 0 16px #FFD40066}
+.rzt .lk .rzm{background:#2A2058!important;box-shadow:none}.rzt .lk .rzm svg{fill:#5E5196}.rzt .lk i{filter:none;opacity:1}
 .rzt .sh{box-shadow:none!important}
 .rzs-ms{flex:none;display:flex;gap:4px}
-.hbf .rzm.sm{width:36px;height:36px}.hbf .rzm.sm svg{width:18px;height:18px}
+.hbf .rzm.sm{width:36px;height:36px}.hbf .rzm.sm svg{width:21px;height:21px}
 
 /* haber ayrıntı penceresi */
 html.dk .hbk .eyebrow,html.dk .hbk .krl-t,html.dk .hbk .krl-n{color:var(--hc)!important}
 .hbk .krl-av{background:linear-gradient(135deg,var(--hc),#7C3AED)}
 .hbk .krl-av img,.hbk .krl-av>span{background:#211547}
-.hbk-md{position:absolute!important;left:50%;top:-30px;transform:translateX(-50%);width:56px!important;height:56px!important;z-index:2;background:#1C1240!important}
-.hbk-md svg{width:26px!important;height:26px!important}
+.hbk-md{position:absolute!important;left:50%;top:-30px;transform:translateX(-50%);width:56px!important;height:56px!important;z-index:2;box-shadow:0 0 0 4px #1C1240}
+.hbk-md svg{width:32px!important;height:32px!important}
 .hbk .krl-av{margin-top:40px}
 .hbk-o{display:inline-flex;margin:6px 0 0;padding:8px 16px;border-radius:999px;background:var(--c-card2);font:700 .875rem/1.2 Inter,sans-serif;color:#fff}
 .hbk .krl-l em{color:var(--hc)!important}
