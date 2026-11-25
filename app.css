@@ -5119,3 +5119,8 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .benh-t .benh-k{flex:none;margin-left:auto;display:inline-flex;align-items:center;gap:2px;font:700 .7812rem/1 Inter,sans-serif;font-style:normal;color:#C9BFE6;white-space:nowrap}.benh-k svg{width:14px;height:14px}.benh-t b{flex:0 1 auto}
 /* kart başlığı: tek biçimli satırlar */
 .pv-dl{gap:6px 12px}.pv-dl b i{font-style:normal;font-weight:600;color:var(--c-ink3);margin-left:6px}.pv-dl b.up{color:#3DF2A6}.pv-dl b.dn{color:#FF7A93}
+
+/* takipçiye katılma çağrısı */
+.folk{display:flex;align-items:center;gap:12px;padding:12px 14px;margin-top:8px;border:1.5px solid var(--acc)}
+.folk .setx{flex:1;min-width:0}.folk .setx b{display:block}.folk .setx small{display:block;color:var(--muted);white-space:normal}
+.folk .btn{flex:none;min-height:44px}

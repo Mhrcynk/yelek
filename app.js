@@ -3149,7 +3149,7 @@ async function afterAuth(){
       if(S.mem.role==="yonetici"){S.admin=true;S.pin=S.pin||"";setTimeout(notesSync,1500)}
       if(!LS.get("y_hos")&&!S.sheet)S.sheet={type:"hos"}}
     if(S.sheet&&S.sheet.type==="login")S.sheet=null;
-    S.fol=false;if(TID>0&&!isMember()){try{if(LS.get("y_folnext")===String(TID)){LS.del("y_folnext");await rpc("follow_set",{p_team:TID,p_on:true})}S.follows=await rpc("my_follows",{});S.fol=(S.follows||[]).some(t=>t.id===TID)}catch(_){}}
+    S.fol=false;if(TID>0&&!isMember()){try{if(LS.get("y_folnext")===String(TID)){LS.del("y_folnext");await rpc("follow_set",{p_team:TID,p_on:true})}S.follows=await rpc("my_follows",{});S.fol=(S.follows||[]).some(t=>t.id===TID)&&LS.get("y_kat")!==String(TID)}catch(_){}}
     if(!isMember()&&!S.fol&&(TID===0||!LS.get("y_team"))&&!(S.mem&&S.mem.status==="bekliyor")){try{S.myTeams=await rpc("my_teams",{})}catch(_){S.myTeams=null}
       const ok=(S.myTeams||[]).find(t=>t.status==="onayli")||(S.myTeams||[])[0];
       if(ok&&ok.id!==TID){teamGo(ok.id,ok.slug);return}
@@ -3217,7 +3217,7 @@ function joinFlow(sess){
     return `<section class="fl">${tmHead("Katılma isteği")}${flowSteps(3)}<div class="fbox"><span class="fwi">${SVG_WAIT}</span><b>İsteğin yöneticide</b><p>${nm?`<b>${esc(nm)}</b> ${cl?"kartıyla":"adıyla yeni kart isteyerek"} katılmak istedin. `:""}Yönetici onaylayınca kartın hesabına bağlanır ve takım açılır.</p></div>${waitPush()}
       ${S.f.chg?`<h3 class="flq">Hangisi sensin?</h3>${pickBox("Seçimi güncelle")}<button class="lnk flalt" data-act="tog" data-k="chg">Vazgeç</button>`:`<button class="lnk flalt" data-act="tog" data-k="chg">Yanlış kartı mı seçtin? Değiştir</button>`}${flFoot()}</section>`}
   if(st==="reddedildi")return `<section class="fl">${tmHead("Katılma isteği")}<div class="fbox no"><span class="fwi">${ICON.x}</span><b>İsteğin onaylanmadı</b><p>Bir yanlışlık olduysa takımın yöneticisiyle konuş.</p></div>${myTeamsList()}${flFoot()}</section>`;
-  return `<section class="fl">${tmHead("Takıma katıl")}${flowSteps(2)}${S.f.ncOpen?`<h3 class="flq">Yeni kart iste</h3>${newCardForm()}<button class="lnk flalt" data-act="tog" data-k="ncOpen">Listeden kartımı seçeyim</button>`:`<h3 class="flq">Hangisi sensin?</h3>${pickBox("Katılma isteği gönder")}<button class="lnk flalt" data-act="tog" data-k="ncOpen">Kartım listede yok</button>`}${myTeamsList()}${flFoot()}</section>`}
+  return `<section class="fl">${tmHead("Takıma katıl")}${flowSteps(2)}${S.f.ncOpen?`<h3 class="flq">Yeni kart iste</h3>${newCardForm()}<button class="lnk flalt" data-act="tog" data-k="ncOpen">Listeden kartımı seçeyim</button>`:`<h3 class="flq">Hangisi sensin?</h3>${pickBox("Katılma isteği gönder")}<button class="lnk flalt" data-act="tog" data-k="ncOpen">Kartım listede yok</button>`}${LS.get("y_kat")===String(TID)?`<button class="lnk flalt" data-act="intSet" data-v="takip">Vazgeç, takibe dön</button>`:""}${myTeamsList()}${flFoot()}</section>`}
 function claimForm(sel,btn){const L=claimList().sort((a,b)=>a.n.localeCompare(b.n,"tr"));const v=S.f.claim||sel||"";
   return `<div class="clm"><label class="f" for="claimSel">Hangisi sensin?<select id="claimSel" data-bind="claim"><option value="">Kartını seç…</option>${L.map(p=>`<option value="${esc(p.id)}"${p.id===v?" selected":""}>${esc(p.n)}</option>`).join("")}</select></label><button class="btn primary sm" data-act="joinReq">${btn}</button></div>`}
 /* takımlar */
@@ -3227,13 +3227,13 @@ function myTeamsList(){if(!S.session)return"";if(!S.myTeams){teamsLoad();return"
   return `<div class="mtl"><small>Takımların</small>${L.map(t=>`<button class="mtr" data-act="${t.status==="takim_onay"?"noop":"teamGo"}" data-id="${t.id}" data-v="${esc(t.slug||"")}"><b>${esc(t.name)}</b><span>${t.status==="takim_onay"?"Takım onay bekliyor":t.status==="bekliyor"?"Onay bekliyor":t.role==="yonetici"?"Yönetici":"Üye"} ›</span></button>`).join("")}</div>`}
 const FTABS=["gecmis","lig"],FBLOCK=["open","viewm","seasonStory","story","stDetail","cmpOpen","pmOpen","tab"];
 const ICON_EYE='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
-function folBar(){return `<section class="card folb"><span class="seti">${ICON_EYE}</span><span class="setx"><b>${esc(S.settings.group_name||"")}</b><small>Takip ediyorsun · fikstür ve puan durumu</small></span><button class="btn sm" data-act="ligs">Ligler</button></section>${pushAsk()}`}
+function folBar(){return `<section class="card folb"><span class="seti">${ICON_EYE}</span><span class="setx"><b>${esc(S.settings.group_name||"")}</b><small>Takip ediyorsun · fikstür ve puan durumu</small></span><button class="btn sm" data-act="ligs">Ligler</button></section><section class="card folk"><span class="setx"><b>Bu takımda oynuyor musun?</b><small>Şu an sadece izliyorsun. Kartın ve oylama için takıma katıl.</small></span><button class="btn sm primary" data-act="folKatil">Takıma katıl</button></section>${pushAsk()}`}
 async function hubLoad(){let r=null;try{r=await rpc("teams_hub",{})}catch(_){}S.hub={mine:(r&&r.mine)||[],all:(r&&r.all)||[]};render(true)}
 const HTAG={yonetici:"Yönetici",uye:"Üye",bekliyor:"Onay bekliyor",takim_onay:"Takım onayı bekliyor",takip:"Takip"};
 function hubResults(){const H=S.hub||{all:[]};const mine=new Map((H.mine||[]).map(t=>[t.id,t]));const q=trq(S.f.hq||"");
   const L=q?H.all.filter(t=>trq(t.name).includes(q)):H.all.filter(t=>!mine.has(t.id)).slice(0,8);
   if(!L.length)return `<p class="muted small hube">${q?"Bu adla takım yok.":"Şimdilik başka takım yok."}</p>`;
-  return L.map(t=>{const m=mine.get(t.id);const btn=m&&m.tag!=="takip"?`<span class="htag">${HTAG[m.tag]||""}</span>`:`<span class="hbt"><button class="btn sm primary" data-act="hubJoin" data-id="${t.id}" data-v="${esc(t.slug||"")}">Katıl</button>${t.followable&&!m?`<button class="btn sm" data-act="folSet" data-id="${t.id}" data-v="1">Takip</button>`:""}</span>`;
+  return L.map(t=>{const m=mine.get(t.id);const btn=m&&m.tag!=="takip"?`<span class="htag">${HTAG[m.tag]||""}</span>`:`<span class="hbt"><button class="btn sm primary" data-act="hubJoin" data-id="${t.id}" data-v="${esc(t.slug||"")}">Katıl</button>${t.followable&&!m?`<button class="btn sm" data-act="folSet" data-id="${t.id}" data-v="1">Sadece takip</button>`:""}</span>`;
     return `<div class="hrow"><span class="seti">${SI.grup}</span><span class="setx"><b>${esc(t.name)}</b><small>${t.field?esc(t.field)+" · ":""}${t.players} oyuncu</small></span>${btn}</div>`}).join("")}
 function hubBody(){if(!S.hub){hubLoad();return `<div class="vskl"><i style="height:180px"></i></div>`}
   const M=S.hub.mine||[];
@@ -3315,11 +3315,12 @@ function teamCardTop(sess){const c=S.tcard;if(c===undefined){S.tcard=null;tcardL
   if(!c.followable)return `<section class="fl">${tmHead("Takım")}<p class="fls">Bu takım sadece üyelerine açık. Takımda oynuyorsan katılma isteği gönder.</p><button class="btn primary block flbig" data-act="intSet" data-v="katil">Takıma katıl</button>${sess?myTeamsList()+flFoot():`<button class="lnk flalt" data-act="loginSheet">Zaten üyeysen giriş yap</button>`}</section>`;
   const L=c.last;const top=c.top||[];
   return `<section class="fl">${tmHead("Lig")}
+    <h3 class="flq">Bu takımda oynuyor musun?</h3>
+    <button class="btn primary block flbig" data-act="intSet" data-v="katil">Evet, oynuyorum · Takıma katıl</button>
+    <button class="btn block flbig" data-act="${sess?"folJoin":"folLogin"}">Hayır, sadece takip edeceğim</button>
+    <p class="fls c">Oyuncuysan katıl: kartın, oylama ve sohbet açılır. Takipçiler yalnızca skoru ve puan durumunu görür.</p>
     ${L?`<div class="tcl"><small>Son maç · ${esc(fmtShort(L.date))}</small><div class="tcs"><span>${esc(L.na)}</span><b class="num">${L.a}–${L.b}</b><span>${esc(L.nb)}</span></div></div>`:`<p class="fls">Sezonun ilk maçı henüz oynanmadı.</p>`}
-    ${top.length?`<div class="tct"><small>Puan durumu · ilk ${top.length}</small>${top.map((r,i)=>`<div class="tcr"><i>${i+1}</i><span>${esc(r.n)}</span><em>${r.o} maç</em><b class="num">${r.p}</b></div>`).join("")}</div>`:""}
-    <button class="btn primary block flbig" data-act="${sess?"folJoin":"folLogin"}">${sess?"Ligi takip et":"Giriş yap ve takip et"}</button>
-    <p class="fls c">Skor ve puan durumu takipçilere açık, kartlar ve notlar takım üyelerine özel. Maç bitince sonuç bildirim olarak gelir.</p>
-    <button class="lnk flalt" data-act="intSet" data-v="katil">Bu takımda oynuyorum, katılmak istiyorum</button>${sess?flFoot():""}</section>`}
+    ${top.length?`<div class="tct"><small>Puan durumu · ilk ${top.length}</small>${top.map((r,i)=>`<div class="tcr"><i>${i+1}</i><span>${esc(r.n)}</span><em>${r.o} maç</em><b class="num">${r.p}</b></div>`).join("")}</div>`:""}${sess?flFoot():""}</section>`}
 function iabCard(){const br=brName(),u=curLink();
   return `<section class="fl"><div class="flh"><span class="fcr">${SVG_EXT}</span><div><small>${esc(inAppName())} tarayıcısı</small><b>E-postanla giriş yap</b></div></div>
     <p class="fls">${esc(inAppName())} içinde Google ile giriş çalışmaz. E-postana gelen kodla burada girebilir ya da Yelek'i ${br}'de açabilirsin.</p>${otpForm()}
@@ -3651,9 +3652,10 @@ document.addEventListener("click",async e=>{
     case"tab":{let tt=el.dataset.tab;S.f.macY=false;listKapat();document.body.style.minHeight="";if(tt==="ayarlar")tt="ben";if(tt==="ben")S.f.setp="";if(S.f.sezV==="rekor"){S.f.sezV="";if(tt==="sezon"&&S.tab==="sezon"){render(true);window.scrollTo(0,0);break}}goTab(tt);if(tt===S.tab)render(true);break}
     case"ptab":S.f.ptab=el.dataset.v;render(true);{const sh=document.querySelector(".sheet");if(sh)sh.scrollTop=0}break;
     case"open":S.f.ptab="genel";S.sheet={type:"player",id};S.f.st=null;S.f.stOpen=false;S.f.ed=null;S.f.delP=null;render(true);break;
-    case"intSet":LS.set("y_int",el.dataset.v);render(true);window.scrollTo(0,0);break;
+    case"intSet":LS.set("y_int",el.dataset.v);if(el.dataset.v==="takip"&&LS.get("y_kat")){LS.del("y_kat");await load(true)}render(true);window.scrollTo(0,0);break;
+    case"folKatil":LS.set("y_int","katil");LS.set("y_kat",String(TID));S.fol=false;S.sheet=null;await load(true);render(true);window.scrollTo(0,0);break;
     case"folLogin":LS.set("y_folnext",String(TID));S.sheet={type:"login"};render(true);break;
-    case"folJoin":{try{const r=await rpc("follow_set",{p_team:TID,p_on:true});if(r&&r.ok){S.fol=true;S.follows=null;S.tab="lig";await load(true);toast("Takip ediyorsun")}else toast(r&&r.error==="kapali"?"Bu lig takibe kapalı":"Yapılamadı")}catch(_){toast("Yapılamadı")}break}
+    case"folJoin":{try{const r=await rpc("follow_set",{p_team:TID,p_on:true});if(r&&r.ok){LS.set("y_int","takip");LS.del("y_kat");S.fol=true;S.follows=null;S.tab="lig";await load(true);toast("Takip ediyorsun")}else toast(r&&r.error==="kapali"?"Bu lig takibe kapalı":"Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"ligs":case"hub":S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break;
     case"folSet":{const on=el.dataset.v==="1";const tid=+id;try{const r=await rpc("follow_set",{p_team:tid,p_on:on});if(!r||!r.ok){toast(r&&r.error==="kapali"?"Bu lig takibe kapalı":"Yapılamadı");break}}catch(_){toast("Yapılamadı");break}
       toast(on?"Takip ediyorsun":"Takibi bıraktın");if(!on&&S.fol&&tid===TID){const mt=(S.myTeams||await rpc("my_teams",{}).catch(()=>[])||[]).find(t=>t.status==="onayli");teamGo(mt?mt.id:0,mt?mt.slug:"");break}

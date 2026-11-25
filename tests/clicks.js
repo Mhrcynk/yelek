@@ -141,6 +141,8 @@ const RPC={team_rev:{r:1,p:1},player_ages:[],my_membership:{status:"onayli",role
   const p3=await page(DB1);await E(p3,`AUTH.ready=true;S.session={access_token:"x",user:{id:"22222222-2222-2222-2222-222222222222",email:"f@x"}};S.mem={status:"yok"};S.fol=true;render(true)`);
   await T("Takip modu",async()=>{await p3.waitForTimeout(300);const n=await p3.evaluate(()=>document.querySelectorAll("#navIn button").length);ok(n===2,"takipçide "+n+" sekme var");
     ok(await p3.locator(".folb").count()===1,"takip şeridi yok");await click(p3,"#meBtn");ok(await p3.locator("#tCode").count()===1,"takipçide Takımlar açılmadı")});
+  await T("Takipçiden katılmaya geçiş",async()=>{await E(p3,"S.sheet=null;render(true)");await p3.waitForTimeout(200);ok(await p3.locator('[data-act="folKatil"]').count()===1,"katıl çağrısı yok");await click(p3,'[data-act="folKatil"]');await p3.waitForTimeout(600);
+    ok(await p3.locator(".folb").count()===0,"takip şeridi hâlâ duruyor");ok(await p3.locator("section.fl").count()===1,"katılma ekranı açılmadı")});
   if(p3.errs.length)fails.push("JS hatası (takipçi): "+p3.errs.join(" | "));await p3.ctx.close();
 
   // --- silinmiş takım hatırlanıyorsa tanıtıma dön ---
