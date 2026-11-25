@@ -13,7 +13,7 @@ let P0={};
 function teams(pl){const gks=pl.filter(id=>P0[id].pos==="Kaleci");const out=shuf(pl.filter(id=>!gks.includes(id)));const A=[gks[0],...out.slice(0,6)],B=[gks[1],...out.slice(6,12)];return[A,B]}
 function finish(m,pl){const[A,B]=[m.team_a,m.team_b];const sa=ri(3,11),sb=ri(3,11);m.score_a=sa;m.score_b=sb;const st={};
   const give=(T,n)=>{const sh=T.slice(1);const at=sh.filter(id=>P0[id].pos!=="Defans");for(let i=0;i<n;i++){const s=pick(at.length&&rnd()<.7?at:sh);(st[s]=st[s]||{g:0,a:0}).g++;if(rnd()<.6){const a=pick(T.filter(x=>x!==s));(st[a]=st[a]||{g:0,a:0}).a++}}};give(A,sa);give(B,sb);
-  for(const id of [...A,...B])st[id]=st[id]||{g:0,a:0};m.stats=st;const tr={};for(const id of [...A,...B])tr[id]={km:+(3+rnd()*2.6).toFixed(1),pas:ri(8,30),hiz:+(22+rnd()*8).toFixed(1),spr:ri(2,14),isa:ri(62,95),tk:ri(2,12),pa:ri(1,14),dri:ri(0,8),pp:ri(0,6),pt:ri(0,6)};m.track=tr;
+  for(const id of [...A,...B])st[id]=st[id]||{g:0,a:0};for(const T of [A,B]){if(rnd()<.35)st[T[0]].ps=1;if(rnd()<.35)st[pick(T.slice(1))].cl=1;if(rnd()<.25)st[pick(T.slice(1))].pm=1;if(rnd()<.25)st[pick(T.slice(1))].pen=1}m.stats=st;const tr={};for(const id of [...A,...B])tr[id]={km:+(3+rnd()*2.6).toFixed(1),pas:ri(8,30),hiz:+(22+rnd()*8).toFixed(1),spr:ri(2,14),isa:ri(62,95),tk:ri(2,12),pa:ri(1,14),dri:ri(0,8),pp:ri(0,6),pt:ri(0,6)};m.track=tr;
   const sc=id=>(st[id].g*3+st[id].a*2+rnd()*3);const all=[...A,...B].sort((x,y)=>sc(y)-sc(x));m.motm=all[0];m.gol_id=Object.keys(st).find(id=>st[id].g>0)||null;m.fiy_id=all[all.length-1];
   m.state="bitti";m.finished_at=new Date(Date.parse(m.date)+22*36e5).toISOString()}
 const act=()=>Object.keys(P0).filter(id=>!P0[id].archived&&!P0[id].guest);

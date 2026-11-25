@@ -1652,21 +1652,21 @@ const fzMine=m=>(FZ.rows||[]).find(r=>r.m===m.id&&r.p===myPid())||null;
 // puan değerleri her maç için o maçtan önceki bütün maçlardan hesaplanır: bir mevkide gol/asist ne kadar seyrekse o kadar değerli
 const FZ_R=["KL","DF","OS","FV"];const FZC={};
 function fzRates(m){const F=fin().filter(x=>!isExt(x)&&x.id!==m.id&&matchTs(x)<matchTs(m)&&x.score_a!=null);const key=m.id+":"+F.map(x=>x.id).join(",");if(FZC[m.id]&&FZC[m.id].k===key)return FZC[m.id].v;
-  const ap={},g={},a={},km={},tk={};let conc=0,cn=0,tg=0,ta=0,tn=0;
+  const ap={},g={},a={},km={},tk={},pa={};let conc=0,cn=0,tg=0,ta=0,tn=0;
   F.forEach(x=>{for(const sd of["A","B"]){const L=lineupOf(x,sd).length?lineupOf(x,sd):(sd==="A"?x.team_a:x.team_b)||[];L.forEach(id=>{if(!realP(id))return;const r=fzRole(x,id);const o=(x.stats||{})[id]||{};
-      ap[r]=(ap[r]||0)+1;g[r]=(g[r]||0)+(+o.g||0);a[r]=(a[r]||0)+(+o.a||0);tg+=+o.g||0;ta+=+o.a||0;tn++;const t=trkOf(x,id);if(t){if(isFinite(+t.km))(km[r]=km[r]||[]).push(+t.km);if(isFinite(+t.tk))(tk[r]=tk[r]||[]).push(+t.tk)}});
+      ap[r]=(ap[r]||0)+1;g[r]=(g[r]||0)+(+o.g||0);a[r]=(a[r]||0)+(+o.a||0);tg+=+o.g||0;ta+=+o.a||0;tn++;const t=trkOf(x,id);if(t){if(isFinite(+t.km))(km[r]=km[r]||[]).push(+t.km);if(isFinite(+t.tk))(tk[r]=tk[r]||[]).push(+t.tk);if(isFinite(+t.pa))(pa[r]=pa[r]||[]).push(+t.pa)}});
     conc+=sd==="A"?+x.score_b:+x.score_a;cn++}});
   const W=5,gA=tn?tg/tn:1,aA=tn?ta/tn:.9;const cl=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));const av=L=>L&&L.length?L.reduce((x,y)=>x+y,0)/L.length:null;
-  const v={n:F.length,gol:{},ast:{},km:{},tk:{},yen:cn?Math.round(conc/cn*10)/10:6,ortG:{},ortA:{}};
+  const v={n:F.length,gol:{},ast:{},km:{},tk:{},pa:{},yen:cn?Math.round(conc/cn*10)/10:6,ortG:{},ortA:{}};
   FZ_R.forEach(r=>{const n=ap[r]||0;const og=((g[r]||0)+W*gA)/(n+W),oa=((a[r]||0)+W*aA)/(n+W);v.ortG[r]=n?(g[r]||0)/n:null;v.ortA[r]=n?(a[r]||0)/n:null;
-    v.gol[r]=F.length?cl(Math.round(6/Math.max(og,.01)),2,8):{FV:4,OS:5,DF:6,KL:8}[r];v.ast[r]=F.length?cl(Math.round(3/Math.max(oa,.01)),1,4):3;if(r==="KL"){v.gol.KL=10;v.ast.KL=8}const k=av(km[r]),t=av(tk[r]);if(k!=null)v.km[r]=Math.round(k*10)/10;if(t!=null)v.tk[r]=Math.round(t)});
+    v.gol[r]=F.length?cl(Math.round(6/Math.max(og,.01)),2,8):{FV:4,OS:5,DF:6,KL:8}[r];v.ast[r]=F.length?cl(Math.round(3/Math.max(oa,.01)),1,4):3;if(r==="KL"){v.gol.KL=10;v.ast.KL=8}const k=av(km[r]),t=av(tk[r]);if(k!=null)v.km[r]=Math.round(k*10)/10;if(t!=null)v.tk[r]=Math.round(t);const q=av(pa[r]);if(q!=null)v.pa[r]=Math.round(q)});
   FZC[m.id]={k:key,v};return v}
 const fzReady=m=>!!m&&mDone(m)&&m.score_a!=null&&m.score_b!=null;
 function fzScore(m,id){if(!fzReady(m)||!plAll(m).includes(id)||!realP(id))return null;const sd=sideOf(m,id);if(!sd)return null;const rl=fzRole(m,id);const o=(m.stats||{})[id]||{};const R=fzRates(m);
   const my=sd==="A"?+m.score_a:+m.score_b,op=sd==="A"?+m.score_b:+m.score_a;const L=[["Oynadı",1]];const g=+o.g||0,a=+o.a||0,og=+o.og||0;
   if(g)L.push([g+" gol",g*R.gol[rl]]);if(a)L.push([a+" asist",a*R.ast[rl]]);if(my>op)L.push(["Galibiyet",2]);else if(my===op)L.push(["Beraberlik",1]);
   if(rl==="KL"||rl==="DF"){if(op<R.yen)L.push(["Ortalamadan az gol yedi",rl==="KL"?3:2]);if(rl==="KL"&&op<=R.yen-3)L.push(["Çok az gol yedi",2]);if(rl==="KL"&&op>=R.yen+3)L.push(["Çok gol yedi",-Math.floor((op-R.yen)/3)])}
-  if(og)L.push(["Kendi kalesine",-2*og]);const t=trkOf(m,id);if(t){if(R.km[rl]!=null&&+t.km>R.km[rl])L.push(["Mevki ortalamasından çok koştu",1]);if(R.tk[rl]!=null&&+t.tk>R.tk[rl])L.push(["Mevki ortalamasından çok top kaptı",1])}
+  if(og)L.push(["Kendi kalesine",-2*og]);const ps=+o.ps||0,cl=+o.cl||0,pm=+o.pm||0,pn=+o.pen||0;if(ps)L.push([ps+" penaltı kurtardı",5*ps]);if(cl)L.push([cl+" kez çizgiden çıkardı",3*cl]);if(pm)L.push([pm+" penaltı kaçırdı",-2*pm]);if(pn)L.push([pn+" penaltı yaptırdı",-1*pn]);const t=trkOf(m,id);if(t){if(R.km[rl]!=null&&+t.km>R.km[rl])L.push(["Mevki ortalamasından çok koştu",1]);if(R.tk[rl]!=null&&+t.tk>R.tk[rl])L.push(["Mevki ortalamasından çok top kaptı",1]);if((rl==="DF"||rl==="OS")&&R.pa[rl]!=null&&+t.pa>R.pa[rl])L.push(["Mevki ortalamasından çok pas arası",1])}
   return{pts:L.reduce((x,y)=>x+y[1],0),L}}
 const fzSc=(m,id)=>{const r=fzScore(m,id);return r?r.pts:null};
 function fzPts(m,r){if(!fzReady(m)||!r)return null;let s=0;(r.picks||[]).forEach(id=>{const v=fzSc(m,id);if(v!=null)s+=v*(id===r.cap?2:1)});return s}
@@ -1716,7 +1716,7 @@ function sheetFz(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid);const me=
     <div class="mzseg" role="tablist">${[["kadro",open&&(S.f.fzEdit||!fzMine(m))?"Kadronu kur":"Kadrom"],["sira","Sıralama"]].map(([v,l])=>`<button role="tab" data-act="fzTab" data-v="${v}" class="${tab===v?"on":""}" aria-selected="${tab===v}">${l}</button>`).join("")}</div>`;
   const R=fzRates(m);const q=o=>`+${o.FV} / +${o.OS} / +${o.DF} / +${o.KL}`;const oq=o=>FZ_R.slice().reverse().map(r=>r+" "+(o[r]==null?"–":fN(o[r]))).join(" · ");
   const ft=`<details class="fz-tb"><summary>Puanlar nasıl hesaplanır?</summary><div>${[["Maçta oynadı","+1"],["Gol: forvet / orta saha / defans / kaleci",q(R.gol)],["Asist: forvet / orta saha / defans / kaleci",q(R.ast)],["Takımı kazandı / berabere","+2 / +1"],
-      ["Kaleci ya da defans: takımı ortalamadan ("+fN1(R.yen)+") az gol yedi","KL +3 · DF +2"],["Kaleci: "+fN1(Math.max(0,R.yen-3))+" ya da daha az gol yedi","+2 daha"],["Kaleci: "+fN1(R.yen+3)+" ya da daha çok gol yedi","her 3 golde −1"],["Kendi kalesine gol","−2"],["Saha verisi varsa: mevki ortalamasından çok koşu / top kapma","+1'er"],["Kaptan","2 kat"]].map(([a,b])=>`<p><span>${a}</span><b>${b}</b></p>`).join("")}
+      ["Kaleci ya da defans: takımı ortalamadan ("+fN1(R.yen)+") az gol yedi","KL +3 · DF +2"],["Kaleci: "+fN1(Math.max(0,R.yen-3))+" ya da daha az gol yedi","+2 daha"],["Kaleci: "+fN1(R.yen+3)+" ya da daha çok gol yedi","her 3 golde −1"],["Penaltı kurtardı","+5"],["Çizgiden çıkardı","+3"],["Penaltı kaçırdı","−2"],["Penaltı yaptırdı","−1"],["Kendi kalesine gol","−2"],["Saha verisi varsa: mevki ortalamasından çok koşu / top kapma","+1'er"],["Saha verisi varsa, defans ve orta saha: mevki ortalamasından çok pas arası","+1"],["Kaptan","2 kat"]].map(([a,b])=>`<p><span>${a}</span><b>${b}</b></p>`).join("")}
       <small class="fz-tbn">${R.n?`Değerler bu maçtan önceki ${R.n} maçın verisinden hesaplanır ve her hafta yenilenir. Bir mevkide gol ya da asist ne kadar seyrekse o kadar çok puan getirir.<br>Maç başına gol: ${oq(R.ortG)}<br>Maç başına asist: ${oq(R.ortA)}`:"Henüz oynanmış maç yok; başlangıç değerleri kullanılıyor."}</small></div></details>
     <p class="fz-not">Para yok, bahis değil; sadece puan. Puanlar skordan ve maç kaydındaki istatistiklerden gelir; oylar ve maç notu sayılmaz. Kadrolar maç başlayınca herkese açılır.</p>`;
   if(!FZ.rows)return hd+`<p class="muted small" style="margin:18px 0">Yükleniyor…</p>`;
