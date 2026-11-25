@@ -5585,3 +5585,8 @@ body.gpf .fz-yb span{color:#A9A9B3}body.gpf .fz-yb b{color:#fff}
 .mzh.hw .mzh-vs .mzh-t{padding-right:112px}
 .mzg .mzw{position:static;display:inline-flex;align-items:center;gap:6px;transform:none}
 .mzg .mzw svg{flex:none}
+/* maç kartı üst etiketleri: kartın başından sonuna eşit yayılır */
+.mzh .mzg{display:flex;flex-wrap:nowrap;gap:6px;width:100%}
+.mzh .mzg>span{flex:1 1 auto;justify-content:center;padding:0 8px;min-width:0;white-space:nowrap}
+.mzh .mzg>span.f{flex:1 1 0;min-width:72px}
+.mzh .mzg>span.f{flex:1 1 auto;min-width:0}
