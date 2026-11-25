@@ -5350,3 +5350,13 @@ html.dk .th2.thF .th2-r .thk-c{background:var(--fz);color:var(--fzk)}
 .fz-tb summary{color:var(--fza)}
 .fz-ok{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--fzd);display:grid;gap:4px}.fz-ok b{font-size:.9375rem}.fz-ok span{font-size:.8125rem;color:#D9CFFF;line-height:1.45}
 .fz-alt{white-space:nowrap}
+.fz-go.ust{position:static;margin:0 0 14px;padding:0}.fz-go.ust .btn{box-shadow:none!important}
+.fz-ls{padding-bottom:16px}
+html.dk .fz-go .btn.primary:disabled,.fz-go .btn.primary:disabled{background:#3A2C78!important;border-color:#3A2C78!important;color:#D9CFFF!important;opacity:1!important}
+/* Fantezi Kadro arka planı: koyu kahve */
+html.dk .sheet:has(.fzmark){background:#1C0F09!important}
+.sheet:has(.fzmark) .fz-sl,.sheet:has(.fzmark) .fz-yb,.sheet:has(.fzmark) .mzseg,.sheet:has(.fzmark) .fz-tb,.sheet:has(.fzmark) .fz-ok,.sheet:has(.fzmark) .fz-ip2,.sheet:has(.fzmark) .fz-bos{background:#2B170D!important}
+.sheet:has(.fzmark) .fz-pl,.sheet:has(.fzmark) .fz-r,.sheet:has(.fzmark) .fz-dk>div,.sheet:has(.fzmark) .fz-tb p{border-color:#3A2214!important}
+.sheet:has(.fzmark) .fz-sl{border-color:#4A2C1A!important}.sheet:has(.fzmark) .fz-sl.akt{border-color:var(--fz)!important}.sheet:has(.fzmark) .fz-sl.cap{background:#3D1E0E!important}
+.sheet:has(.fzmark) .fz-bar{background:#3A2214}.sheet:has(.fzmark) .fz-r.me{background:#3D1E0E}
+.sheet:has(.fzmark) .fz-fl button:not(.on),.sheet:has(.fzmark) .fz-sz button:not(.on),.sheet:has(.fzmark) .fz-yb button:not(.on){background:#3A2214}
