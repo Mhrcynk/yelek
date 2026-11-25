@@ -100,8 +100,8 @@ const ATTR_GK=[["dal","PLO","Plonjon",[["uza","Uzanma"],["kos","Köşe kurtarı�
 const attrSet=pos=>pos==="Kaleci"?ATTR_GK:ATTR_OUT;
 const subVal=(a,k,sk)=>clamp(Math.round(+a[k+"_"+sk]||+a[k]||65),30,99);
 // yuvarlama yok: küsürat atılır (74,99 → 74); hesaplar her zaman küsüratlı değerle yapılır
-// kartta görünen reyting ve ana özellik en yakın tam sayıya yuvarlanır (eskiden aşağı yuvarlanırdı: küçük düşüş hemen, artış geç görünüyordu)
-const flo=v=>Math.round(v+1e-9);
+// listelerde reyting ve ana özellik aşağı yuvarlanmış tam sayıdır; küsuratlı hâli oyuncu kartının içinde görünür (f1)
+const flo=v=>Math.floor(v+1e-9);const f1=v=>(Math.floor(v*10+1e-6)/10).toFixed(1).replace(".",",");
 const mainX=(a,k,pos)=>{const d=attrSet(pos).find(x=>x[0]===k);if(!d)return +a[k]||65;return d[3].reduce((s,[sk])=>s+subVal(a,k,sk),0)/d[3].length};
 const mainVal=(a,k,pos)=>flo(mainX(a,k,pos));
 const W={KL:{ref:.25,dal:.22,poz:.22,ell:.15,ayk:.08,hiz:.08},
@@ -2777,9 +2777,9 @@ function meFilter(q){q=trq((q||"").trim());const L=$("#meL");if(!L)return;{const
 function rtHist(s){const h=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.gx!=null);if(!h.length)return"";
   const arr=[s.baseX??s.base,...h.map(x=>x.gx)];const lab=["Başl.",...h.map(x=>fmtShort(x.m.date))];
   const W=260,H=86,pad=16,mn=Math.min(...arr)-.4,mx=Math.max(...arr)+.4;const X=i=>arr.length<2?W/2:pad+i*(W-2*pad)/(arr.length-1),Y=v=>10+(mx-v)/(mx-mn)*(H-36);
-  const d=arr.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(" ");const dO=flo(arr[arr.length-1])-flo(arr[0]);const dx=arr[arr.length-1]-arr[0];const c=dx>.05?"var(--ok)":dx<-.05?"var(--bad)":"var(--acc)";
-  return `<div class="rth"><div class="rthh"><span class="eyebrow">Reyting geçmişi</span><b class="num">${flo(arr[0])} → ${flo(arr[arr.length-1])}${dO?` <small style="color:${c}">${dO>0?"▲":"▼"}${Math.abs(dO)}</small>`:""}</b></div>
-    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Reyting geçmişi: başlangıç ${flo(arr[0])}, şimdi ${flo(arr[arr.length-1])}"><line x1="${pad}" x2="${W-pad}" y1="${Y(arr[0]).toFixed(1)}" y2="${Y(arr[0]).toFixed(1)}" stroke="var(--line2)" stroke-dasharray="3 4"/>
+  const d=arr.map((v,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)).join(" ");const dx=arr[arr.length-1]-arr[0];const dO=Math.round(dx*10)/10;const c=dx>.05?"var(--ok)":dx<-.05?"var(--bad)":"var(--acc)";
+  return `<div class="rth"><div class="rthh"><span class="eyebrow">Reyting geçmişi</span><b class="num">${f1(arr[0])} → ${f1(arr[arr.length-1])}${dO?` <small style="color:${c}">${dO>0?"▲":"▼"}${f1(Math.abs(dO))}</small>`:""}</b></div>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Reyting geçmişi: başlangıç ${f1(arr[0])}, şimdi ${f1(arr[arr.length-1])}"><line x1="${pad}" x2="${W-pad}" y1="${Y(arr[0]).toFixed(1)}" y2="${Y(arr[0]).toFixed(1)}" stroke="var(--line2)" stroke-dasharray="3 4"/>
     <path d="${d}" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
     ${arr.map((v,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${i===arr.length-1?4.5:3}" fill="${i===arr.length-1?c:"var(--bg2)"}" stroke="${c}" stroke-width="2"/>`).join("")}
     ${arr.length<=7?lab.map((l,i)=>`<text x="${X(i).toFixed(1)}" y="${H-4}" text-anchor="${i===0&&arr.length>1?"start":i===arr.length-1&&arr.length>1?"end":"middle"}" class="rtl">${esc(l)}</text>`).join(""):""}</svg></div>`}
@@ -2834,15 +2834,16 @@ function istTrk(p){const F=fin().filter(pvIn).filter(m=>trkOf(m,p.id));if(!F.len
     return `<div class="it-t"><small>${l}</small><span><b class="num">${fTrk(k,a)}${u&&u!=="%"?`<em>${u}</em>`:""}</b>${d!=null?`<i class="${cl}">${z?"=":d>0?"▲":"▼"} ${z?"0":fTrk(k,Math.abs(d)).replace("%","")}</i>`:""}</span></div>`}).join("");
   return `<div class="ist-h"><h3>Saha verileri</h3><small>maç başına · ${F.length} maç · ok: takım ort.</small></div><div class="it-g">${tiles}</div>`}
 function istAttr(p){const s=S.stats[p.id]||{};const a=p.attrs||{};const cur=s.cur||{};const AS=attrSet(p.pos);const sel=AS.some(x=>x[0]===S.f.iaG)?S.f.iaG:AS[0][0];
-  const g=AS.find(x=>x[0]===sel);
-  return `<div class="ist-h"><h3>Özellikler</h3><small>${esc(g[2])} · fark: ilk karttan bugüne</small></div><div class="at-g ia-g">${AS.map(([k,l])=>{const mv=s.attrs?.[k]??mainVal(a,k,p.pos);const sb=AS.find(x=>x[0]===k)[3];const a0=flo(sb.reduce((q,[sk])=>q+clamp(+(s.B0||{})[k+"_"+sk]||0,30,99),0)/sb.length);const d=s.B0?(+mv||0)-a0:0;
-    return `<button data-act="iaG" data-v="${k}" class="${k===sel?"on":""}" aria-pressed="${k===sel}"><b class="num">${mv}${d?`<i class="${d>0?"up":"dn"}">${d>0?"+":""}${d}</i>`:""}</b><span>${l}</span></button>`}).join("")}</div>
-  <div class="ia-l">${g[3].map(([sk,sl])=>{const b=subVal(a,sel,sk);const c=cur[sel+"_"+sk]??b;const v=Math.round(c);const dd=Math.round((c-b)*10)/10;
-    return `<div class="ia-r"><span><span>${sl}</span><b class="num">${v}${Math.abs(dd)>=.5?`<em class="${dd>0?"up":"dn"}">${fD(dd)}</em>`:""}</b></span><i><i style="width:${v}%"></i></i></div>`}).join("")}</div>`}
+  const g=AS.find(x=>x[0]===sel);const ort=(k,subs,f)=>subs.reduce((q,[sk])=>q+f(k,sk),0)/subs.length;
+  return `<div class="ist-h"><h3>Özellikler</h3><small>${esc(g[2])} · fark: ilk karttan bugüne</small></div><div class="at-g ia-g">${AS.map(([k,l,,subs])=>{const b0=ort(k,subs,(k,sk)=>subVal(a,k,sk));const mv=ort(k,subs,(k,sk)=>cur[k+"_"+sk]??subVal(a,k,sk));const d=Math.round((mv-b0)*10)/10;
+    return `<button data-act="iaG" data-v="${k}" class="${k===sel?"on":""}" aria-pressed="${k===sel}"><b class="num">${f1(mv)}</b><span>${l}</span>${d?`<i class="${d>0?"up":"dn"}">${d>0?"+":"−"}${f1(Math.abs(d))}</i>`:""}</button>`}).join("")}</div>
+  <div class="ia-l">${g[3].map(([sk,sl])=>{const b=subVal(a,sel,sk);const c=cur[sel+"_"+sk]??b;const dd=Math.round((c-b)*10)/10;
+    return `<div class="ia-r"><span><span>${sl}</span><b class="num">${f1(c)}${Math.abs(dd)>=.05?`<em class="${dd>0?"up":"dn"}">${fD(dd)}</em>`:""}</b></span><i><i style="width:${Math.round(c)}%"></i></i></div>`}).join("")}</div>`}
 function pHead(p,inline){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=photoOf(p.id);
   const H=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r);
   const tr=s.lastO>0?`<span class="pv-ch up">▲ ${s.lastO} son maç</span>`:s.lastO<0?`<span class="pv-ch dn">▼ ${-s.lastO} son maç</span>`:"";
-  return `<div class="pv-h"><div class="pv-c ${tierOf(o)}"><b class="num">${o}</b><small>${eposOf(p)}</small><span class="pv-ph">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</span></div>
+  const gx=isFinite(s.genX)?s.genX:o;const gs=f1(gx).split(",");
+  return `<div class="pv-h"><div class="pv-c ${tierOf(o)}"><b class="num" aria-label="Reyting ${gs.join(",")}">${gs[0]}<i>,${gs[1]}</i></b><small>${eposOf(p)}</small><span class="pv-ph">${ph?`<img src="${esc(ph)}" alt="">`:SILH}</span></div>
     <div class="pv-x"><b class="pv-n">${esc(p.name)}</b><span class="pv-dl"><small>Mevki</small><b>${EPOS[eposOf(p)][1]}</b>${altOf(p)?`<small>2. mevki</small><b>${EPOS[altOf(p)][1]}</b>`:""}</span><span class="pv-chs">${reigningChamp()===p.id?`<span class="pv-ch ch">🏆 Şampiyon</span>`:""}${ageOf(p)!=null?`<span class="pv-ch">${ageOf(p)} yaş</span>`:""}<span class="pv-ch">Değer ${fN1(mvOf(p.id))} M€</span>${ligRank(p.id)!=="–"?`<span class="pv-ch">Ligde ${ligRank(p.id)}</span>`:""}${tr}</span></div>
     ${inline?"":`<div class="pv-b"><button class="mzic" data-act="close" aria-label="Kapat">${ICON.x}</button><button class="mzic" data-act="cmpOpen" data-id="${esc(p.id)}" aria-label="Karşılaştır">${ICON.scale}</button></div>`}</div>
     ${(()=>{const y=curYr(),Hs=H.filter(x=>yrOf(x.m)===y);const iki=H.length>0;const kar=iki&&S.f.pvK==="k";const L=kar?H:Hs;const N=L.filter(x=>x.r.pts!=null);const g=L.reduce((t,x)=>t+(x.r.g||0),0),a=L.reduce((t,x)=>t+(x.r.a||0),0);
@@ -3083,7 +3084,7 @@ function viewKurallar(inSheet){
   <details class="card rdet"><summary>${dIcon("kisi","lila",28)}<h2>Herkes için</h2></summary><div class="rules">${row("Maçın Adamı",f(n.motm))}${row("Fiyasko",f(n.fiy)+" (Kötü de seçildiyse "+f(n.fiy*n.fiyKotu)+")")}${row("Kendi kalesine gol",f(n.kk))}</div></details>
   <details class="card rdet"><summary>${dIcon("kart","pink",28)}<h2>Kart</h2></summary><p>Eşik notu <b>maçın not ortalamasıdır</b>. Notu bunun üstünde olanın kartı yükselir, altında olanınki düşer: <b>kart değişimi = (not − eşik) × ${String(n.kat).replace(".",",")}</b>, tek maçta en fazla ±${fN(n.katMax)}. Bir maçta yükselenlerle düşenlerin toplamı sıfıra yakındır, reytingler toplu şişmez.</p>
    <p class="muted small">Yüksek kartlı oyuncudan beklenti de yüksektir: maçtaki ortalama karttan her 1 puan yukarıda olan için eşik ${String(n.esikAdim).replace(".",",")} artar, aşağıda olan için azalır.</p></details>
-  <details class="card rdet"><summary>${dIcon("grafik","green",28)}<h2>Karttaki özellikler</h2></summary><p>Kartın toplam değişimi maç notuna bağlıdır. Maçta yaptığın iş <b>kendi özelliğine</b> yazılır: gol bitiriciliği, asist pası, çok koşmak dayanıklılığı artırır; notun düşük olsa da bu özellik düşmez. Değişimin kalanı o maç oynadığın mevkinin ve kartının önemli özelliklerine yayılır. Tek maçta bir özellik en çok <b>2 puan</b> oynar. Kartta reyting ve özellikler en yakın tam sayıya yuvarlanır.</p>
+  <details class="card rdet"><summary>${dIcon("grafik","green",28)}<h2>Karttaki özellikler</h2></summary><p>Kartın toplam değişimi maç notuna bağlıdır. Maçta yaptığın iş <b>kendi özelliğine</b> yazılır: gol bitiriciliği, asist pası, çok koşmak dayanıklılığı artırır; notun düşük olsa da bu özellik düşmez. Değişimin kalanı o maç oynadığın mevkinin ve kartının önemli özelliklerine yayılır. Tek maçta bir özellik en çok <b>2 puan</b> oynar. Listelerde reyting tam sayıdır; küsuratlı hâli oyuncunun kartını açınca görünür.</p>
    <div class="rules">${row("Gol","bitiricilik ve pozisyon alma; hat-trick şut gücü")}${row("Asist","kısa pas ve vizyon; 2+ asist uzun pas")}${row("Defansta yenilen gol ve galibiyet","savunma bilinci, top kesme ve müdahaleye eşit")}${row("Kalecide yenilen gol","refleks ve yer tutma")}${row("Galibiyet (diğer mevkiler)","mevkinin oyun zekâsı: forvette pozisyon alma, orta sahada vizyon, kalecide yer tutma")}${row("Saha verisi","koşu, hız, pas, top kapma gibi veriler ilgili özelliğe")}${row("Kart düşerken","maçta yapılan iş düşüşten korunmaz ama ayrıca da düşmez; düşüş kartın geneline yayılır")}</div>
    <div class="rules">${row("Biten maç","puanı kesinleşir; kurallar sonradan değişse de geçmiş maçlar değişmez")}${row("Maç düzeltilirse","o maç ve sonraki maçlar yeniden hesaplanır")}${row("Maça gelmeyen","kartı değişmez")}${row("Yedek kadrodaki oyuncu","Gelmemek kartı etkilemez")}${row("Reyting","küsüratlı hesaplanır, kartta tam kısmı görünür (74,99 → 74)")}${row("Bir özellik başlangıçtan en fazla","±8")}${row("Eski maçların etkisi her maç","%5 azalır")}</div>
    <p class="muted small">Haftanın Takımı, form ve ortalamalar da maç notuna göre hesaplanır.</p></details>
