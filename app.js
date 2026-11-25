@@ -1787,7 +1787,7 @@ function cupAyna(d,cur){const me=myPid();const R=d.R;const VW=360,X=i=>16+i*(VW-
     return p?`<button class="${cls}" style="${st}" data-act="cupN" data-p="${esc(n.p)}" data-r="${n.r}" aria-label="${esc(nameOf(n.p))}">${avatar(p)}</button>`:`<span class="${cls} q" style="${st}">?</span>`};
   return `<div class="cupa-h">${["1. tur","Çeyrek","Yarı","Final","","Final","Yarı","Çeyrek","1. tur"].map((t,i)=>`<span style="left:${(X(i)/VW*100).toFixed(2)}%" class="${(i<4?i:8-i)===cur&&t?"on":""}">${t}</span>`).join("")}</div>
   <div class="cupa" style="height:${H}px"><svg viewBox="0 0 ${VW} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${Ls.join("")}" fill="none" stroke="#3A3A42" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>
-  ${N.map(face).join("")}<div class="cupa-k" style="left:50%;top:${ym}px">${chP?avatar(chP):dIcon("kupa","gold",26)}</div>${chP?`<b class="cupa-ad" style="top:${ym+30}px">${esc(shortName(nameOf(d.ch)))}</b>`:""}</div>
+  ${N.map(face).join("")}<div class="cupa-k" style="left:50%;top:${ym}px">${chP?avatar(chP):`<svg viewBox="0 0 256 256" fill="#2A1003" aria-hidden="true">${RZ_I.kupa2}</svg>`}</div>${chP?`<b class="cupa-ad" style="top:${ym+30}px">${esc(shortName(nameOf(d.ch)))}</b>`:""}</div>
   <p class="cupa-i">Yüze dokununca isim ve puanı görünür.</p>`}
 function cupHtml(m){const d=cupData();if(!d)return `<p class="muted small" style="margin:18px 0">Turnuva yükleniyor…</p>`;const me=myPid();
   const nm=p=>p?(p===me?"Sen":esc(shortName(nameOf(p)))):"?";
