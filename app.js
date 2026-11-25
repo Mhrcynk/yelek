@@ -2856,10 +2856,10 @@ function pHead(p,inline){const s=S.stats[p.id]||{};const o=ovrOf(p.id);const ph=
 const USE_L={"tab:mac":"Maç","tab:gecmis":"Fikstür","tab:lig":"Lig · Puan durumu","tab:sezon":"Lig · İstatistikler","tab:kartlar":"Oyuncular","tab:ben":"Ben","sheet:player":"Oyuncu kartı","sheet:cmp":"Karşılaştır","sheet:pm":"Paylaşım merkezi","sheet:share":"Paylaş","sheet:vote":"Oylama","sheet:trk":"Saha verisi girişi","sheet:pedit":"Kartı düzenle","act:sezV_yelek":"İstatistik · Yelek","act:sezV_kral":"İstatistik · Krallar","act:sezV_mevki":"İstatistik · Mevkiler","act:sezV_saha":"İstatistik · Saha","act:statSheet":"Skor girişi","act:autoKadro":"Otomatik kadro","act:shareImg":"Görsel paylaşma","act:voteOpen":"Oy verme","act:cmpOpen":"Karşılaştır düğmesi","act:viewm":"Maç detayı","act:story":"Hikâye"};
 function usageView(){if(!S.usage){S.usage="…";rpc("admin_usage",{p_pin:S.pin||""}).then(r=>{S.usage=(r&&r.rows)||[];render(true)}).catch(()=>{S.usage=[];render(true)});return `<div class="vskl"><i></i><i></i></div>`}
   if(S.usage==="…")return `<div class="vskl"><i></i><i></i></div>`;
-  const R=S.usage;if(!R.length)return `<section class="card"><p class="muted small" style="margin:0">Henüz sayım yok. Sayım bu sürümle başladı; birkaç hafta içinde hangi bölümlerin kullanıldığı burada görünür.</p></section>`;
+  const R=S.usage;if(!R.length)return `<section class="card"><p class="muted small" style="margin:0">Henüz sayım yok. Sayım 25 Kasım 2026’da başladı; bir iki hafta içinde hangi bölümlerin kullanıldığı burada görünür.</p></section>`;
   const W=[...new Set(R.map(r=>r.w))].sort().slice(-6);const K={};R.forEach(r=>{if(W.includes(r.w))(K[r.k]||(K[r.k]={}))[r.w]=r.n});
   const rows=Object.entries(K).map(([k,o])=>[k,W.reduce((t,w)=>t+(o[w]||0),0),o]).sort((a,b)=>b[1]-a[1]);
-  const lab=k=>USE_L[k]||k.replace(/^(tab|sheet|act):/,"");
+  const lab=k=>USE_L[k]||(k.startsWith("set:")?"Ben · ":"")+k.replace(/^(tab|sheet|act|set):/,"");
   return `<section class="card"><p class="muted small" style="margin:0 0 10px">Son ${W.length} haftada her bölümün kaç kez açıldığı. Kimin açtığı tutulmaz. Az kullanılan bölümleri sadeleştirme kararı için.</p>
     <div class="scroll-x"><table class="tbl"><thead><tr><th>Bölüm</th>${W.map(w=>`<th>${esc(fmtShort(w))}</th>`).join("")}<th>Toplam</th></tr></thead><tbody>${rows.map(([k,t,o])=>`<tr><td>${esc(lab(k))}</td>${W.map(w=>`<td>${o[w]||0}</td>`).join("")}<td><b>${t}</b></td></tr>`).join("")}</tbody></table></div></section>`}
 // kartın son maçta neden değiştiği, tek cümle
@@ -3666,7 +3666,8 @@ document.addEventListener("click",async e=>{
     case"folOpen":{const on=el.dataset.v==="1";try{const r=await rpc("admin_set_followable",{p_on:on});if(r&&r.ok){S.settings.followable=on;toast(on?"Lig takibe açıldı":"Lig takibe kapandı");render(true)}else toast("Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"meSheet":if(S.fol){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break}if((isMember()&&!S.admin)||(S.me&&P(S.me)&&el.id==="meBtn")){S.f.setp="";S.view=null;goTab("ben");render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"tog":{if(el.dataset.k==="mem_x"){const f=S.f.mem||(S.f.mem={});f["x_"+el.dataset.u]=!f["x_"+el.dataset.u]}else{const k=el.dataset.k,on=!S.f[k];// aynı gruptan biri açılınca öncekiler kapanır
-      if(on){const g=(/^(kg_|pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}
+      if(on){const g=(/^(pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];// krallık başlıkları birbirini kapatmaz: üstteki kapanınca basılan başlık kayıyordu
+      if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}
       // öncekiler kapanınca basılan başlık parmağın altından kaymasın
       const y0=el.getBoundingClientRect().top;render(true);
       {const n=[...document.querySelectorAll('[data-act="tog"]')].find(x=>x.dataset.k===el.dataset.k&&(el.dataset.u==null||x.dataset.u===el.dataset.u));if(n){const dy=n.getBoundingClientRect().top-y0;kayDuz(n,dy)}}break}
@@ -3717,7 +3718,7 @@ document.addEventListener("click",async e=>{
     case"pushNo":LS.set("y_pushask","1");render(true);break;
     case"memDel":S.f.memDel=id||"";render(true);break;
     case"memRole":{const f=S.f.mem||(S.f.mem={});f["r_"+id]=!f["r_"+id];render(true);break}
-    case"setp":{const nv=el.dataset.v||"";const st=S.f.setpS||(S.f.setpS=[]);if(st.length&&st[st.length-1]!==(S.f.setp||""))st.length=0;if(!nv)st.length=0;else{const i=st.indexOf(nv);if(i>=0)st.length=i+1;else st.push(nv)}}S.f.setp=el.dataset.v||"";if(S.f.setp==="platform"){S.perr=null;S.plat=null}render(true);window.scrollTo(0,0);break;
+    case"setp":{const nv=el.dataset.v||"";if(nv)useHit("set:"+nv.replace(/[^a-zA-Z0-9_]/g,"").slice(0,24));const st=S.f.setpS||(S.f.setpS=[]);if(st.length&&st[st.length-1]!==(S.f.setp||""))st.length=0;if(!nv)st.length=0;else{const i=st.indexOf(nv);if(i>=0)st.length=i+1;else st.push(nv)}}S.f.setp=el.dataset.v||"";if(S.f.setp==="platform"){S.perr=null;S.plat=null}render(true);window.scrollTo(0,0);break;
     case"memNew":{const m=(S.memList||[]).find(x=>x.user_id===id);const c=m&&m.new_card;if(!c)break;const pos=GROUP_POS[EPOS[c.epos]?.[0]]||"Orta saha";
       const a={};for(const[k,,,subs]of attrSet(pos))for(const[sk]of subs)a[k+"_"+sk]=65;
       const r=await A("admin_save_player_v2",{p_id:null,p_name:c.name,p_pos:pos,p_epos:c.epos,p_alt:c.alt||"",p_attrs:cleanAttrs(pos,a)});if(!r||!r.id)break;
