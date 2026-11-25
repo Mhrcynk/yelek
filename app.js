@@ -748,8 +748,9 @@ function stSeason(n){const w=seasonAwards(n);if(!w||!w.champ){toast("Bu sezonda 
   P2.push({k:"aw",ns:1,h:`<span class="stey">${n}. sezon · ${w.F.length} maç</span><div class="sttr" aria-hidden="true">🏆</div><h2>Ödül töreni</h2><span class="stey">${OL.length+1} ödül sahibini buluyor</span><div class="stch"><span>Şampiyon</span>${OL.map(x=>`<span>${x[1]}</span>`).join("")}</div>`});
   P2.push({k:"motm",h:`<span class="stey">${n}. sezon · Şampiyon</span><span class="sthl">🏆 TAHTIN SAHİBİ</span><div class="stph">${ph(c.id)}</div><h2>${esc(nameOf(c.id))}</h2><div class="stkv"><div class="w"><b class="num">${c.p}</b><small>Puan</small></div><div><b class="num">${c.G}-${c.B}-${c.M}</b><small>G-B-M</small></div><div><b class="num">${c.av>0?"+":""}${c.av}</b><small>Averaj</small></div></div>`});
   OL.forEach(([hl,t,L,u])=>{const o=L[0];P2.push({k:"motm",h:`<span class="stey">${n}. sezon · ${t}</span><span class="sthl">${hl}</span><div class="stph">${ph(o.id)}</div><h2>${esc(nameOf(o.id))}</h2><div class="stkv"><div class="w"><b class="num">${o.v}</b><small>${u}</small></div>${L.slice(1).map((r,j)=>`<div><b class="num">${r.v}</b><small>${j+2}. ${esc(shortName(nameOf(r.id)))}</small></div>`).join("")}</div>`})});
-  {const R=tahminYok()?[]:seztRows(n);if(R.length){const gk=w.g&&w.g.id;const K=R.map(r=>({p:r.p,c:r.c===c.id,g:!!gk&&r.g===gk})).filter(x=>x.c||x.g).sort((a,b)=>(b.c+b.g)-(a.c+a.g)||nameOf(a.p).localeCompare(nameOf(b.p),"tr")).slice(0,10);
-    P2.push({k:"totw",h:`<span class="stey">${n}. sezon · Sezon tahmini</span><span class="sthl">KÂHİNLER</span>${K.length?`<ol class="sttw sttw-s">${K.map(x=>`<li><span class="sttp">${ph(x.p)}</span><span><b>${esc(nameOf(x.p))}</b><small>${x.c&&x.g?"Şampiyonu da gol kralını da bildi":x.c?"Şampiyonu bildi":"Gol kralını bildi"}</small></span><b class="num">${x.c+x.g}/2</b></li>`).join("")}</ol>`:`<h2>Kimse bilemedi</h2>`}<span class="stey">${R.length} kişi sezon başında tahmin etmişti. Para yok, bahis değil; sadece keyfine.</span>`})}}
+  {const R=tahminYok()?[]:seztRows(n);if(R.length){const ya=yelekAll(w.F)[0];const W={c:c.id,mvp:ya&&ya.tot>0?ya.id:null,g:w.g&&w.g.id,a:w.a&&w.a.id};POS_AW.forEach(([k])=>{W[k]=w.pos[k]&&w.pos[k].id});
+    const K=R.map(r=>{const ok=SEZT.filter(([k])=>W[k]&&r.k[k]===W[k]);return{p:r.p,n:ok.length,t:ok.map(x=>x[2]).join(", "),m:seztN(r.k)}}).filter(x=>x.n).sort((a,b)=>b.n-a.n||nameOf(a.p).localeCompare(nameOf(b.p),"tr")).slice(0,10);
+    P2.push({k:"totw",h:`<span class="stey">${n}. sezon · Sezon tahmini</span><span class="sthl">KÂHİNLER</span>${K.length?`<ol class="sttw sttw-s">${K.map(x=>`<li><span class="sttp">${ph(x.p)}</span><span><b>${esc(nameOf(x.p))}</b><small>${esc(x.t)}</small></span><b class="num">${x.n}/${x.m}</b></li>`).join("")}</ol>`:`<h2>Kimse bilemedi</h2>`}<span class="stey">${R.length} kişi sezon başında tahmin etmişti. Para yok, bahis değil; sadece keyfine.</span>`})}}
   P2.push({k:"totw",h:`<span class="stey">${n}. sezon · Puan durumu</span><span class="sthl">SON SÖZÜ TABLO SÖYLER</span><ol class="sttw sttw-s">${w.L.slice(0,10).map((o,i)=>`<li><span class="sttp">${ph(o.id)}</span><span><b>${i+1}. ${esc(nameOf(o.id))}</b><small>${o.G}G ${o.B}B ${o.M}M · averaj ${o.av>0?"+":""}${o.av}</small></span><b class="num">${o.p}</b></li>`).join("")}</ol>`});
   S._stChain=false;S.story={mid:String(n),i:0,P:P2,season:n};document.body.classList.add("lock");stDraw();confetti(160)}
 async function shareSeason(n){await fontsOk();const w=seasonAwards(n);if(!w||!w.champ)return;const c=w.champ;
@@ -1542,21 +1543,28 @@ const SP={at:0,d:null};
 function spLoad(force){if(SZ_ON||!isMember()||S.fol||tahminYok())return;if(!force&&Date.now()-SP.at<60000)return;SP.at=Date.now();
   rpc("season_picks",{}).then(r=>{if(r&&r.ok){const o=JSON.stringify(SP.d);SP.d=r;if(o!==JSON.stringify(r)&&!S.sheet&&!S.view&&(S.tab==="mac"||S.tab==="lig"))render(true)}}).catch(()=>{})}
 const seztOk=()=>isMember()&&!S.fol&&!tahminYok()&&!!myPid();
-const seztRows=n=>((SP.d&&SP.d.rows)||[]).filter(r=>+r.s===+n&&P(r.p));
-function seztKart(){if(!seztOk())return"";spLoad();const d=SP.d;if(!d||!d.open)return"";const m=d.mine;
-  return `<button class="ymf ymf-st" data-act="seztOpen"><em aria-hidden="true">🔮</em><span><b>${d.season}. sezon tahmini</b><small>${m&&P(m.c)&&P(m.g)?"Şampiyon "+esc(shortName(nameOf(m.c)))+" · gol kralı "+esc(shortName(nameOf(m.g)))+" · ilk maça kadar değiştirebilirsin":"Şampiyon kim olur, gol kralı kim olur? İlk maç başlayana kadar açık."}</small></span><i aria-hidden="true">›</i></button>`}
+const SEZT=[["c","🏆","Şampiyon"],["mvp","🏅","Sezonun oyuncusu"],["g","⚽","Gol kralı"],["a","👟","Asist kralı"],["KL","🧤","Sezonun kalecisi"],["DF","🧱","Sezonun defansı"],["OS","🎯","Sezonun orta sahası"],["FV","🔥","Sezonun forveti"]];
+const seztRows=n=>((SP.d&&SP.d.rows)||[]).filter(r=>+r.s===+n&&P(r.p)&&r.k);
+const seztN=v=>SEZT.filter(([k])=>v&&P(v[k])).length;
+function seztKart(){if(!seztOk())return"";spLoad();const d=SP.d;if(!d||!d.open)return"";const n=seztN(d.mine);
+  return `<button class="ymf ymf-st" data-act="seztOpen"><em aria-hidden="true">🔮</em><span><b>${d.season}. sezon tahmini</b><small>${n?SEZT.length+" tahminden "+n+" tanesini yaptın · ilk maça kadar değiştirebilirsin":"Şampiyon, krallar, mevkilerin en iyileri: sezon başlamadan söyle."}</small></span><i aria-hidden="true">›</i></button>`}
 function seztLig(){if(!seztOk())return"";spLoad();const d=SP.d;if(!d||d.open||selYr()!==d.season)return"";const R=seztRows(d.season);if(!R.length)return"";
-  return `<button class="ymf ymf-st" data-act="seztOpen"><em aria-hidden="true">🔮</em><span><b>${d.season}. sezon tahminleri</b><small>${R.length} kişi şampiyonu ve gol kralını tahmin etti. Kim ne dedi?</small></span><i aria-hidden="true">›</i></button>`}
+  return `<button class="ymf ymf-st" data-act="seztOpen"><em aria-hidden="true">🔮</em><span><b>${d.season}. sezon tahminleri</b><small>${R.length} kişi sezon başında tahmin etti. Kim ne dedi?</small></span><i aria-hidden="true">›</i></button>`}
 function sheetSezt(){const sh=S.sheet,d=SP.d;if(!d)return"";const not=`<p class="szt-x">Para yok, bahis değil; sadece keyfine.</p>`;
-  if(d.open){const L=S.players.filter(p=>!p.guest&&!p.archived).sort((a,b)=>a.name.localeCompare(b.name,"tr"));const g=(k,act)=>`<div class="szt-g">${L.map(p=>`<button class="szt-c${sh[k]===p.id?" on":""}" data-act="${act}" data-id="${esc(p.id)}" aria-pressed="${sh[k]===p.id}">${avatar(p,"sm")}<span>${esc(shortName(p.name))}</span></button>`).join("")}</div>`;
-    return `<div class="szt"><span class="eyebrow">${d.season}. sezon tahmini</span><h2>Sezon başlamadan söyle</h2><p class="muted small" style="margin:0">İlk maç başlayınca tahminler kilitlenir ve herkese açılır. Sezon sonu töreninde bilenler açıklanır.${d.n?" Şimdiye kadar "+d.n+" kişi tahmin etti.":""}</p>
-      <h3>🏆 Şampiyon kim olur?</h3>${g("c","seztC")}<h3>⚽ Gol kralı kim olur?</h3>${g("g","seztG")}${not}
-      <button class="btn primary block" data-act="seztSave" ${sh.c&&sh.g&&!sh.busy?"":"disabled"}>${d.mine?"Tahmini güncelle":"Tahmini kaydet"}</button></div>`}
-  const R=seztRows(d.season);const say=k=>{const t={};R.forEach(r=>{if(P(r[k]))t[r[k]]=(t[r[k]]||0)+1});return Object.entries(t).sort((a,b)=>b[1]-a[1]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"))};
-  const dag=k=>`<div class="szt-d">${say(k).map(([id,n])=>`<div>${avatar(P(id),"sm")}<span>${esc(nameOf(id))}</span><i class="szt-b"><u style="width:${Math.round(n/R.length*100)}%"></u></i><b class="num">${n}</b></div>`).join("")}</div>`;
+  if(d.open){const v=sh.v||{};
+    if(sh.pk){const[k,ic,t]=SEZT.find(x=>x[0]===sh.pk);let L=S.players.filter(p=>!p.guest&&!p.archived);if(EPOS[k]){const Q=L.filter(p=>eposOf(p)===k||altOf(p)===k);if(Q.length)L=Q}L.sort((a,b)=>a.name.localeCompare(b.name,"tr"));
+      return `<div class="szt"><button class="szt-bk" data-act="seztPk" data-v="">${ICON_BACK} Tahminler</button><h2>${ic} ${t} kim olur?</h2>
+        <div class="szt-g">${L.map(p=>`<button class="szt-c${v[k]===p.id?" on":""}" data-act="seztSet" data-id="${esc(p.id)}" aria-pressed="${v[k]===p.id}">${avatar(p,"sm")}<span>${esc(shortName(p.name))}</span></button>`).join("")}</div>
+        ${v[k]?`<button class="btn ghost block" data-act="seztSet" data-id="">Seçimi kaldır</button>`:""}</div>`}
+    const n=seztN(v);
+    return `<div class="szt"><span class="eyebrow">${d.season}. sezon tahmini</span><h2>Sezon başlamadan söyle</h2><p class="muted small" style="margin:0">İstediğin kadarını seç. İlk maç başlayınca kilitlenir ve herkese açılır; bilenler sezon sonu töreninde açıklanır.${d.n?" Şimdiye kadar "+d.n+" kişi tahmin etti.":""}</p>
+      <div class="szt-r">${SEZT.map(([k,ic,t])=>{const q=P(v[k]);return `<button data-act="seztPk" data-v="${k}"><em aria-hidden="true">${ic}</em><span>${t}</span>${q?`<span class="szt-p">${avatar(q,"sm")}<b>${esc(shortName(q.name))}</b></span>`:`<i>Seç</i>`}${CHVR}</button>`}).join("")}</div>${not}
+      <button class="btn primary block" data-act="seztSave" ${n&&!sh.busy?"":"disabled"}>${n?n+" / "+SEZT.length+" tahmini kaydet":"Tahmini kaydet"}</button></div>`}
+  const R=seztRows(d.season);const kt=SEZT.some(x=>x[0]===sh.kt)?sh.kt:"c";const t={};R.forEach(r=>{const id=r.k[kt];if(P(id))t[id]=(t[id]||0)+1});const D=Object.entries(t).sort((a,b)=>b[1]-a[1]||nameOf(a[0]).localeCompare(nameOf(b[0]),"tr"));const tot=D.reduce((q,x)=>q+x[1],0);
   return `<div class="szt"><span class="eyebrow">${d.season}. sezon tahminleri</span><h2>Kim ne dedi?</h2><p class="muted small" style="margin:0">${R.length} kişi tahmin etti. Tahminler kilitlendi; bilenler sezon sonu töreninde açıklanır.</p>
-    <h3>🏆 Şampiyon adayları</h3>${dag("c")}<h3>⚽ Gol kralı adayları</h3>${dag("g")}
-    <h3>Tek tek</h3><div class="szt-l">${R.map(r=>`<div>${avatar(P(r.p),"sm")}<span><b>${esc(nameOf(r.p))}</b><small>Şampiyon ${P(r.c)?esc(shortName(nameOf(r.c))):"–"} · gol kralı ${P(r.g)?esc(shortName(nameOf(r.g))):"–"}</small></span></div>`).join("")}</div>${not}</div>`}
+    <div class="szt-k" role="tablist">${SEZT.map(([k,ic,t2])=>`<button role="tab" class="${k===kt?"on":""}" aria-selected="${k===kt}" data-act="seztKt" data-v="${k}">${ic} ${t2}</button>`).join("")}</div>
+    ${D.length?`<div class="szt-d">${D.map(([id,n])=>`<div>${avatar(P(id),"sm")}<span>${esc(nameOf(id))}</span><i class="szt-b"><u style="width:${Math.round(n/tot*100)}%"></u></i><b class="num">${n}</b></div>`).join("")}</div>
+    <h3>Tek tek</h3><div class="szt-l">${R.filter(r=>P(r.k[kt])).map(r=>`<div>${avatar(P(r.p),"sm")}<span><b>${esc(nameOf(r.p))}</b><small>${esc(nameOf(r.k[kt]))}</small></span></div>`).join("")}</div>`:`<p class="muted small" style="margin:0">Bu başlıkta kimse tahmin yapmadı.</p>`}${not}</div>`}
 const DU_ERR={yetki:"Bu hak yalnızca düello kralında",value:"Bu oyuncu seçilemiyor",closed:"Maç başladı, düello kapandı",dolu:"3 teklif hakkın doldu",rdolu:"Rakibin 3 düello kabul etmiş, yeri yok",kdolu:"3 kabul hakkın doldu",var:"Bu rakiple bu konuda zaten düellon var",uye:"Bu oyuncunun hesabı yok",kadro:"İkiniz de bu maçın kadrosunda olmalısınız",takim:"Bu düello için karşı takımlarda olmalısınız",kaleci:"Bu düello kaleciyle yapılır",yok:"Düello bulunamadı",auth:"Önce giriş yapmalısın",value:"Rakip ve iddia seç"};
 const DU_IC='<svg viewBox="0 0 24 24" fill="none" stroke="#06222A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l6 8-6 8M18 4l-6 8 6 8"/></svg>';
 function duLoad(force){if(!isMember()||S.fol||!myPid())return;if(DU.at===-1||(!force&&Date.now()-DU.at<60000))return;DU.at=-1;
@@ -3087,9 +3095,9 @@ function _viewSezon(){
   let h=`${oyTabs("sezon")}<!--TRK-->`;
   if(!F.length)h+=`<section class="card"><div class="empty emp2">${empIc("top","pink")}<h3>Sezon yeni başlıyor</h3><p>Krallık yarışı boş, ilk golü atan zirveye yerleşir.</p></div></section>`;
   const hasT=fin().some(trkHas);const VW=[["yelek","Yelek"],["kral","Krallıklar"],["mevki","Mevkiler"],...(hasT||S.admin?[["saha","Saha"]]:[])];
-  const sv=VW.some(x=>x[0]===S.f.sezV)?S.f.sezV:"";
+  const sv=F.length&&VW.some(x=>x[0]===S.f.sezV)?S.f.sezV:"";
   if(!sv){const IN={yelek:["yildiz","gold","Sezonun oyuncusu","Puan yarışı ve reyting sıralaması"],kral:["top","pink","Krallıklar","Gol, asist ve maçın adamı liderleri"],mevki:["yelek","cyan","Mevkiler","Panter, Duvar, Maestro, Golcü"],saha:["grafik","green","Saha verileri","Koşu, hız, pas ve top kazanma"]};
-    if(F.length||VW.some(x=>x[0]==="saha"))h+=`<div class="istg">${VW.filter(([k])=>F.length||k==="saha").map(([k])=>{const[ic,c,t,d]=IN[k];return `<button class="istc" data-act="tog1" data-k="sezV" data-v="${k}"><span class="istc-i">${dIcon(ic,c,26)}</span><b>${t}</b><small>${d}</small><i aria-hidden="true">${CHVR}</i></button>`}).join("")}</div>`;
+    if(F.length)h+=`<div class="istg">${VW.map(([k])=>{const[ic,c,t,d]=IN[k];return `<button class="istc" data-act="tog1" data-k="sezV" data-v="${k}"><span class="istc-i">${dIcon(ic,c,26)}</span><b>${t}</b><small>${d}</small><i aria-hidden="true">${CHVR}</i></button>`}).join("")}</div>`;
     return h}
   const SBK=`<button class="sback" data-act="tog1" data-k="sezV" data-v="">${ICON_BACK} İstatistik</button>`;if(sv!=="saha")h+=SBK;
   if(sv==="saha")return h+viewSaha().replace(oyTabs("saha"),"");
@@ -3683,12 +3691,14 @@ document.addEventListener("click",async e=>{
     case"szGo":S.sheet=null;S.view=id;S.tab="gecmis";S.f.mtab="ozet";render(true);window.scrollTo(0,0);break;
     case"hdfK":S.f.hdK=S.f.hdK===el.dataset.v?"":el.dataset.v;render(true);break;
     case"hdfAdd":{const G=hdfGet().filter(x=>x.k!==S.f.hdK);if(S.f.hdK&&HDF[S.f.hdK]&&G.length<3){G.push({k:S.f.hdK,v:+el.dataset.v});hdfSet(G)}S.f.hdK="";render(true);break}
-    case"seztOpen":{const d=SP.d;if(!d)break;S.sheet={type:"sezt",c:d.mine&&P(d.mine.c)?d.mine.c:null,g:d.mine&&P(d.mine.g)?d.mine.g:null};render(true);break}
-    case"seztC":if(S.sheet&&S.sheet.type==="sezt"){S.sheet.c=id;render(true)}break;
-    case"seztG":if(S.sheet&&S.sheet.type==="sezt"){S.sheet.g=id;render(true)}break;
-    case"seztSave":{const sh=S.sheet;if(!sh||sh.type!=="sezt"||!sh.c||!sh.g||sh.busy)break;sh.busy=true;render(true);
-      if(SZ_ON){SP.d.mine={c:sh.c,g:sh.g};SP.d.n=1;S.sheet=null;toast("Önizleme: tahmin kaydedilmedi");render(true);break}
-      try{const r=await rpc("season_pick_set",{p_champ:sh.c,p_gol:sh.g});if(r&&r.ok){SP.d=r;SP.at=Date.now();S.sheet=null;toast("Tahminin kaydedildi")}else{sh.busy=false;toast({kapali:"İlk maç başladı, tahmin kapandı",yas:"Tahmin oyunu 18 yaş altına kapalı",oyuncu:"Bu oyuncu seçilemiyor"}[r&&r.error]||"Kaydedilemedi");if(r&&r.error==="kapali")spLoad(true)}}catch(_){sh.busy=false;toast("Bağlantı yok")}render(true);break}
+    case"seztOpen":{const d=SP.d;if(!d)break;const v={};SEZT.forEach(([k])=>{if(d.mine&&P(d.mine[k]))v[k]=d.mine[k]});S.sheet={type:"sezt",v,pk:"",kt:"c"};render(true);break}
+    case"seztPk":if(S.sheet&&S.sheet.type==="sezt"){S.sheet.pk=el.dataset.v||"";render(true)}break;
+    case"seztKt":if(S.sheet&&S.sheet.type==="sezt"){S.sheet.kt=el.dataset.v;render(true)}break;
+    case"seztSet":if(S.sheet&&S.sheet.type==="sezt"&&S.sheet.pk){if(id)S.sheet.v[S.sheet.pk]=id;else delete S.sheet.v[S.sheet.pk];S.sheet.pk="";render(true)}break;
+    case"seztSave":{const sh=S.sheet;if(!sh||sh.type!=="sezt"||!seztN(sh.v)||sh.busy)break;
+      if(SZ_ON){SP.d.mine=Object.assign({},sh.v);SP.d.n=1;S.sheet=null;toast("Önizleme: tahmin kaydedilmedi");render(true);break}
+      sh.busy=true;render(true);
+      try{const r=await rpc("season_pick_save",{p_picks:sh.v});if(r&&r.ok){SP.d=r;SP.at=Date.now();S.sheet=null;toast("Tahminin kaydedildi")}else{sh.busy=false;toast({kapali:"İlk maç başladı, tahmin kapandı",yas:"Tahmin oyunu 18 yaş altına kapalı",oyuncu:"Bu oyuncu seçilemiyor",bos:"En az bir tahmin seç"}[r&&r.error]||"Kaydedilemedi");if(r&&r.error==="kapali")spLoad(true)}}catch(_){sh.busy=false;toast("Bağlantı yok")}render(true);break}
     case"hdfTasi":{const G=hdfGet(curYr()-1);if(G.length&&!hdfGet().length){hdfSet(G);toast("Hedefler bu sezona taşındı")}render(true);break}
     case"hdfDel":hdfSet(hdfGet().filter(x=>x.k!==el.dataset.v));render(true);break;
     case"rztNext":if(S.sheet&&S.sheet.type==="rztyeni"){S.sheet.i++;render(true)}break;
