@@ -5226,3 +5226,6 @@ html.dk .bsx .szx{background:var(--c-card);border-radius:18px;padding:14px;margi
 .bht button.on{background:var(--c-pink);color:#fff}
 .bht u{text-decoration:none;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#FFD400;color:#2A1F00;font:800 .75rem/20px Inter,sans-serif;text-align:center}
 .bhp{min-height:calc(100vh - 160px);min-height:calc(100dvh - 160px)}
+.hbf-e{flex:none;width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:1.125rem}
+.hbf-c{flex:none;font-style:normal;font-size:1.375rem;line-height:1;color:var(--c-ink3)}
+.hbf .rzs-x small{white-space:normal}
