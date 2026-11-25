@@ -5568,3 +5568,4 @@ body.gpf .fz-yb span{color:#A9A9B3}body.gpf .fz-yb b{color:#fff}
 .av img,.tok .shirt img,.mph img,.lth img,.btkc img,.mafcap img,.ptk-p img,.mzpl-p img,.mzpod-a img,.av.pl img,.lth.pl img,.mecp img,.ldp img,.yl-a img,.pr-a img,.fcr img,.mav img,.mzme-av.ph img,.cupn .av img{object-fit:cover!important;object-position:50% 0!important;transform:none!important}
 .av.hasph,.ptk-p,.mzpl-p,.mzpod-a,.tok .shirt,.mph,.lth,.btkc,.mafcap{overflow:hidden}
 .av img,.tok .shirt img,.mph img,.lth img,.btkc img,.mafcap img,.ptk-p img,.mzpl-p img,.mzpod-a img,.mecp img,.ldp img,.yl-a img,.pr-a img,.fcr img,.mav img,.mzme-av.ph img,.cupn .av img{transform:scale(1.32)!important;transform-origin:50% 22%!important}
+.av img,.tok .shirt img,.mph img,.lth img,.btkc img,.mafcap img,.ptk-p img,.mzpl-p img,.mzpod-a img,.mecp img,.ldp img,.yl-a img,.pr-a img,.fcr img,.mav img,.mzme-av.ph img,.cupn .av img{transform:translateY(-11%) scale(1.32)!important;transform-origin:50% 22%!important}
