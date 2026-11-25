@@ -5281,7 +5281,7 @@ html.dk .hbk .hbk-o{background:var(--c-card2)!important;color:#fff!important}
 .fz-bar{height:10px;border-radius:99px;background:#2E2160;overflow:hidden}.fz-bar i{display:block;height:100%;background:linear-gradient(90deg,#00E58A,#FFD400)}
 .fz-sls{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0 6px}
 .fz-sl{position:relative;min-height:76px;border-radius:14px;background:#2A1D58;border:0;color:#B7A9E8;display:grid;place-items:center;align-content:center;gap:4px;font:inherit;padding:6px 2px}
-.fz-sl>span{font-size:1.25rem;font-weight:700}.fz-sl.on{background:#3A2C78;color:#fff;cursor:pointer}.fz-sl.cap{background:#FF3EA5;color:#160E33}
+
 .fz-sl b{font-size:.6875rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fz-pa{position:relative;display:block}.fz-sl em,.fz-pp em{position:absolute;top:-6px;right:-4px;width:22px;height:22px;border-radius:50%;background:#FFD400;color:#160E33;font:800 .75rem/22px Inter,sans-serif;font-style:normal;text-align:center}
 .fz-ip{margin:0 0 12px;font-size:.75rem;color:#B7A9E8;font-weight:600}
@@ -5309,3 +5309,44 @@ html.dk .hbk .hbk-o{background:var(--c-card2)!important;color:#fff!important}
 .fz-ip2{margin-top:12px;padding:10px 12px;border-radius:12px;background:#211547;font-size:.8125rem;color:#D9CFFF;line-height:1.5}
 .fz-dk{display:grid;margin-top:12px}.fz-dk>div{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 0;border-bottom:1px solid #2A1D58}.fz-dk b{font-size:.875rem}.fz-dk span{grid-column:1;color:#B7A9E8;font-size:.75rem;font-weight:600}.fz-dk em{grid-row:1/3;grid-column:2;align-self:center;font:800 1.25rem var(--display);font-style:normal}
 .fz-tbn{display:block;padding:8px 0 4px;color:#B7A9E8;font-size:.75rem;line-height:1.5;font-weight:600}
+/* Fantezi Kadro: yerler + liste (v2) */
+.fz-sls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:14px 0 8px}
+.fz-sl{position:relative;min-height:96px;border-radius:14px;background:#211547;border:2px dashed #3A2C78;color:#B7A9E8;display:grid;justify-items:center;align-content:start;gap:4px;font:inherit;padding:7px 2px 6px;cursor:pointer}
+.fz-sl>small{font:800 .6875rem/1 Inter,sans-serif;letter-spacing:.08em;color:#B7A9E8}
+.fz-sl .fz-ar{font:700 1.375rem/30px Inter,sans-serif;height:30px;color:#D9CFFF}
+.fz-sl>b{font-size:.6875rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+.fz-sl>.num{font-size:.6875rem;font-weight:700;color:#D9CFFF}
+.fz-sl.dolu{border-style:solid;border-color:#3A2C78;background:#2A1D58}
+.fz-sl.akt{border:2px solid #FFD400;box-shadow:0 0 0 3px rgba(255,212,0,.18)}
+.fz-sl.cap{background:#3A1747}.fz-sl.cap>b{color:#fff}
+.fz-yb{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:8px 8px 8px 12px;border-radius:14px;background:#211547}
+.fz-yb>span{flex:1;min-width:0;font-size:.8125rem;color:#D9CFFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fz-yb button{min-height:44px;padding:0 14px;border-radius:99px;border:0;background:#3A2C78;color:#fff;font:700 .8125rem Inter,sans-serif;white-space:nowrap}
+.fz-yb button.on{background:#FFD400;color:#160E33}
+.fz-lh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 4px;flex-wrap:wrap}.fz-lh>b{font-size:.875rem}
+.fz-lh .fz-fl{margin:0}
+.fz-st{display:grid;justify-items:end;flex:none;min-width:44px}.fz-st b{font:800 1rem/1 var(--display)}.fz-st small{font-size:.6875rem;color:#B7A9E8;font-weight:600}
+.fz-pl{gap:10px}.fz-pl.ici{opacity:.75}
+.fz-tg{font-style:normal;font-size:.6875rem;font-weight:700;color:#FFD400;margin-left:6px}
+.fz-alt{font-style:normal;font-size:.6875rem;font-weight:800;color:#160E33;background:#5FE3F5;border-radius:6px;padding:1px 5px;margin-left:2px}
+.fz-saha{margin-top:14px}.fz-saha .field{margin:0}
+.field .nt.fzn{background:#FFD400;color:#160E33}
+/* Fantezi Kadro rengi: turuncu */
+:root{--fz:#FF7A45;--fzk:#2A1003;--fza:#FFB08F;--fzd:#2E1608;--fzdd:#1F0E05}
+html.dk .thk.th2.thF{background:var(--fzd)}html.dk .th2.thF .thk-i{background:var(--fz)!important}html.dk .th2.thF .thk-i svg{filter:none}html.dk .th2.thF .thk-i svg path{fill:var(--fzk)}
+.th2.thF .th2-p{background:var(--fzdd);color:var(--fza)}.th2.thF .th2-r .th2-g>div{background:var(--fzdd)!important}.th2.thF .th2-r .th2-g small{color:var(--fza)!important}
+html.dk .th2.thF .th2-r .thk-c{background:var(--fz);color:var(--fzk)}
+.fzh{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--fz);vertical-align:middle;margin-right:8px}.fzh svg{width:20px;height:20px}.fzh svg path{fill:var(--fzk)}
+.fz-bar i{background:linear-gradient(90deg,#FFB020,var(--fz))}
+.fz-sl.akt{border-color:var(--fz);box-shadow:0 0 0 3px rgba(255,122,69,.22)}.fz-sl.dolu{background:#2A1A3E}
+.fz-sl.cap{background:var(--fzd)}
+.fz-ad{border-color:var(--fz);color:var(--fz)}.fz-pl.on .fz-ad{background:var(--fz);color:var(--fzk)}
+.fz-tg{color:var(--fza)}
+.fz-go .btn.primary,html.dk .fz-go .btn.primary{background:var(--fz)!important;border-color:var(--fz)!important;color:var(--fzk)!important}
+.fz-r.me{background:var(--fzd)}.fz-r.me .fz-k{color:var(--fza)}
+.field .nt.fzn{background:var(--fz);color:var(--fzk)}
+.fz-sum b{color:var(--fza)}
+.fz-fl .on,.fz-sz .on{background:var(--fz);color:var(--fzk)}
+.fz-tb summary{color:var(--fza)}
+.fz-ok{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--fzd);display:grid;gap:4px}.fz-ok b{font-size:.9375rem}.fz-ok span{font-size:.8125rem;color:#D9CFFF;line-height:1.45}
+.fz-alt{white-space:nowrap}
