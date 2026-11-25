@@ -1660,7 +1660,7 @@ function fzRates(m){const F=fin().filter(x=>!isExt(x)&&x.id!==m.id&&matchTs(x)<m
   const W=5,gA=tn?tg/tn:1,aA=tn?ta/tn:.9;const cl=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));const av=L=>L&&L.length?L.reduce((x,y)=>x+y,0)/L.length:null;
   const v={n:F.length,gol:{},ast:{},km:{},tk:{},pa:{},yen:cn?Math.round(conc/cn*10)/10:6,ortG:{},ortA:{}};
   FZ_R.forEach(r=>{const n=ap[r]||0;const og=((g[r]||0)+W*gA)/(n+W),oa=((a[r]||0)+W*aA)/(n+W);v.ortG[r]=n?(g[r]||0)/n:null;v.ortA[r]=n?(a[r]||0)/n:null;
-    v.gol[r]=F.length?cl(Math.round(6/Math.max(og,.01)),2,8):{FV:4,OS:5,DF:6,KL:8}[r];v.ast[r]=F.length?cl(Math.round(3/Math.max(oa,.01)),1,4):3;if(r==="KL"){v.gol.KL=10;v.ast.KL=8}const k=av(km[r]),t=av(tk[r]);if(k!=null)v.km[r]=Math.round(k*10)/10;if(t!=null)v.tk[r]=Math.round(t);const q=av(pa[r]);if(q!=null)v.pa[r]=Math.round(q)});
+    v.gol[r]=F.length?cl(Math.round(6/Math.max(og,.01)),2,8):{FV:4,OS:5,DF:6,KL:8}[r];v.ast[r]=F.length?cl(Math.round(3/Math.max(oa,.01)),1,4):3;if(r==="KL"){v.gol.KL=10;v.ast.KL=8}if(r==="DF")v.ast.DF=6;const k=av(km[r]),t=av(tk[r]);if(k!=null)v.km[r]=Math.round(k*10)/10;if(t!=null)v.tk[r]=Math.round(t);const q=av(pa[r]);if(q!=null)v.pa[r]=Math.round(q)});
   FZC[m.id]={k:key,v};return v}
 const fzReady=m=>!!m&&mDone(m)&&m.score_a!=null&&m.score_b!=null;
 function fzScore(m,id){if(!fzReady(m)||!plAll(m).includes(id)||!realP(id))return null;const sd=sideOf(m,id);if(!sd)return null;const rl=fzRole(m,id);const o=(m.stats||{})[id]||{};const R=fzRates(m);
