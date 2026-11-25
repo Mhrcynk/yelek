@@ -1510,9 +1510,9 @@ function photoNorm(src){return new Promise(ok=>{const img=new Image();img.onload
 const PHN={};const phKey=d=>d?d.length+":"+d.slice(-32):"";
 // bütün fotoğrafları aynı ölçeğe getir; sonuç telefonda saklanır, foto değişince yeniden yapılır
 async function photoNormAll(){if(photoNormAll.b)return;photoNormAll.b=1;try{if(!photoNormAll.c){photoNormAll.c=1;const c=await idbGet("phn");if(c&&c.v===1&&c.m)Object.assign(PHN,c.m)}
-  let ch=0;for(const[id,d]of Object.entries(S.photos||{})){if(!/^data:image\//.test(d||""))continue;const k=phKey(d);if(PHN[id]&&PHN[id].k===k)continue;const r=await photoNorm(d);PHN[id]={k,u:r?r.u:""};ch++}
+  let ch=0,nc=0;const sw=new Map();for(const[id,d]of Object.entries(S.photos||{})){if(!/^data:image\//.test(d||""))continue;const k=phKey(d);if(PHN[id]&&PHN[id].k===k)continue;const r=await photoNorm(d);PHN[id]={k,u:r?r.u:""};if(r){ch++;sw.set(d,r.u)}else nc=1}
   for(const id of Object.keys(PHN))if(!(S.photos||{})[id])delete PHN[id];
-  if(ch){idbSet("phn",{v:1,m:PHN});render(true)}}catch(_){}finally{photoNormAll.b=0}}
+  if(ch||nc)idbSet("phn",{v:1,m:PHN});if(ch)document.querySelectorAll("img").forEach(im=>{const u=sw.get(im.getAttribute("src"));if(u)im.setAttribute("src",u)})}catch(_){}finally{photoNormAll.b=0}}
 const photoOf=id=>{const d=S.photos[id];if(!d||!/^data:image\//.test(d))return"";const n=PHN[id];if(n&&n.k===phKey(d))return n.u||d;if(!photoNormAll.q){photoNormAll.q=1;setTimeout(()=>{photoNormAll.q=0;photoNormAll()},300)}return d};
 function avatar(p,size){const ph=photoOf(p.id);return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
 function avatarO(p){return `<span class="avw">${avatar(p)}<b class="ab num">${ovrOf(p.id)}</b></span>`}
