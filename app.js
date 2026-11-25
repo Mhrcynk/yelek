@@ -2322,7 +2322,7 @@ function hero(om){
   const row=k=>`<span class="mzh-t t${k}${me&&me!==k?" o":""}"><i class="mzd"></i><b style="font-size:${mzFs(TEAM[k])}">${esc(TEAM[k])}</b>${scored?`<em class="num">${k==="A"?+om.score_a||0:+om.score_b||0}</em>`:""}</span>`;const ts=matchTs(om);
   const wx=ended?null:wxBox(om);
   return `<section class="mzh"><div class="mzg">${ended?`<span class="e">Maç bitti</span>`:""}<span>${MZI.cal}${gun}</span><span>${MZI.clk}${esc(String(om.time||"").slice(0,5))}</span>${fld?`<span class="f">${MZI.pin}<i>${esc(fld)}</i></span>`:""}${wx?wx.box:""}</div>
-    <div class="mzh-vs">${row("A")}${row("B")}</div>${wx?wx.o:""}${ended?"":`<div class="mcd"><div class="mcd-r"><small>İlk düdüğe</small><b class="num" data-mcd="${ts}" role="timer" aria-label="Maça kalan süre">${mcdT(ts)}</b></div><div class="mcd-b"><i style="width:${mcdP(ts)}%"></i>${dIcon("duduk","gold",24)}</div></div>`}${mDone(om)?"":haftaAkis(om)}
+    <div class="mzh-vs">${row("A")}${row("B")}</div>${wx?wx.o:""}${mDone(om)?"":haftaAkis(om)}
     </section>`;
 }
 function mzTiles(){const F=fin().filter(m=>!isExt(m));const lf=F[F.length-1];if(!lf)return"";const sa=+lf.score_a||0,sb=+lf.score_b||0;
@@ -2464,7 +2464,7 @@ const WX_AD=c=>c===0?"Açık":c<=3?"Parçalı bulutlu":c<=48?"Sisli":c<=57?"Çis
 function wxOneri(x){if(!x)return"";if(x.c>=95)return"⛈️ Fırtına bekleniyor: maç saatinde gökyüzünü kontrol et";if((x.c>=71&&x.c<=77)||x.c===85||x.c===86)return"❄️ Kar bekleniyor: kalın giyin, zemin kaygan olabilir";
   if(x.p>=60)return"☔ Yağmur bekleniyor: yedek çorap al";if(x.w>=30)return"💨 Rüzgârlı: uzun toplar sapabilir";if(x.f<=3)return"🥶 Soğuk: ısınmaya erken başla, eldivenini al";if(x.p>=30)return"🌦️ Yağmur ihtimali var: yedek tişört iyi olur";if(x.t>=30)return"🥵 Sıcak: bol su getir";return""}
 function wxBox(om){const ts=matchTs(om);if(!ts||ts<Date.now()-2*36e5||ts>Date.now()+15*864e5)return null;wxLoad();const W=wxAt(ts);if(!W||!W.m)return null;const m=W.m;
-  const box=`<span class="mzw" title="${WX_AD(m.c)} · hissedilen ${m.f}° · rüzgâr ${m.w} km/s · yağış %${m.p} · Open-Meteo" aria-label="Maç saatinde hava: ${WX_AD(m.c)}, ${m.t} derece">${wxIc(m.c,m.h,18)}${m.t}°</span>`;
+  const box=`<span class="mzw" title="Maç saatinde: ${WX_AD(m.c)} · hissedilen ${m.f}° · rüzgâr ${m.w} km/s · yağış %${m.p} · Open-Meteo" aria-label="Maç saatinde hava: ${WX_AD(m.c)}, ${m.t} derece">${wxIc(m.c,m.h,18)}${m.t}°</span>`;
   const o=wxOneri(m);return{box,o:o?`<p class="mzw-o">${o}</p>`:""}}
 function haftaAkis(m){const kadro=m.state!=="kayit";const ended=kadro&&mEnded(m);const bd=BET.board[m.id];const acik=kadro&&!ended&&(!bd||bd.open);const ty=tahminYok();const cur0=!kadro?0:vOpen(m)?3:acik?1:2;const cur=ty?(cur0>=2?cur0-1:cur0===1?1:0):cur0;
   return `<ol class="hak" aria-label="Haftanın akışı">${(ty?["Kadro","Maç","Oylama"]:["Kadro","Tahmin","Maç","Oylama"]).map((l,i)=>`<li class="${i<cur?"ok":i===cur?"on":""}"${i===cur?' aria-current="step"':""}><i></i>${l}</li>`).join("")}</ol>`}
