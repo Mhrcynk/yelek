@@ -5077,12 +5077,11 @@ function odaGrow(t){if(!t)return;t.style.height="auto";t.style.height=Math.min(t
 function sheetOda(){const sh=S.sheet,m=S.matches.find(x=>x.id===sh.mid),d0=ODA.d[sh.mid];
   const hd=(t,s,x)=>`<div class="oda-hd"><button class="oda-bk" data-act="close" aria-label="Geri"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><b>${t}</b>${s?`<small>${s}</small>`:""}</div>${x||""}</div>`;
   if(!m||!d0)return `<div class="oda">${hd("Soyunma odası","Yükleniyor…")}<div class="oda-sc"></div></div>`;
-  if(d0.guest&&sh.tab&&sh.tab!=="sohbet")sh.tab="sohbet";
+  sh.tab="sohbet";// oda yalnızca sohbet: görev ve rakip sekmeleri kaldırıldı
   const c=odaCtx();if(!c)return `<div class="oda">${hd("Soyunma odası","Oda kapalı")}<div class="oda-sc"><p class="muted">Oda kadrolar açıklanınca açılır ve yalnızca o maçta oynayanlara görünür.</p></div></div>`;
   const{d,live,sd,me,cap,tab,team,isH}=c;const kp=odaKapan(m)-Date.now()<864e5?"bu gece":"yarın gece";
   let h=`<div class="oda oda-${isH?"X":sd}">${hd(isH?"Maç sonu":esc(nmOf(m,sd)),isH?`Herkes yazabilir · ${kp} kapanır`:live?(d.guest?"Misafirsin · sadece sohbet":""):`Sadece okunur · ${kp} kapanır`,live?`<button class="oda-mu${d.mute?" on":""}" data-act="odaMute" aria-pressed="${!!d.mute}" aria-label="${d.mute?"Bildirimleri aç":"Sessize al"}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.6 2H4.4z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/>${d.mute?`<path d="M4 4l16 16"/>`:""}</svg></button>`:"")}`;
   if(d0.after)h+=`<div class="mzseg oda-sd" role="group" aria-label="Oda">${[...(d0.H?["H"]:[]),"A","B"].map(k=>`<button data-act="odaSide" data-v="${k}" class="${sd===k?"on":""}" aria-pressed="${sd===k}">${k==="H"?"Maç sonu":esc(nmOf(m,k))}</button>`).join("")}</div>`;
-  if(!d.guest&&!isH)h+=`<div class="mzseg oda-tb" role="tablist">${[["sohbet","Sohbet"],["rakip","Rakip"],["gorev","Görevler"]].map(([k,l])=>`<button role="tab" data-act="odaTab" data-v="${k}" class="${tab===k?"on":""}" aria-selected="${tab===k}">${l}</button>`).join("")}</div>`;
   if(tab==="sohbet"){
     h+=`<div id="odaPinW">${odaPinHtml(c)}</div>`;
     if(!live&&!isH){const best=d.msgs.filter(x=>x.up>0&&(x.k==="msg"||x.k==="quick")).sort((a,b)=>b.up-a.up)[0];if(best)h+=`<div class="oda-best">${dIcon("begen","gold",20)}<span><small>En çok beğenilen · ${best.up} beğeni</small><b>${esc(shortName(nameOf(best.p)))}:</b> ${esc(best.b)}</span></div>`}
