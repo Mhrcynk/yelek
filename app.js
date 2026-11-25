@@ -909,7 +909,7 @@ function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeou
   else if(S.loaded&&gated())h+=viewVitrin();
   else if(S.loaded)h+=(S.tab==="mac"?pushAsk():"")+({mac:viewMac,gecmis:viewGecmis,ben:viewBen,iddia:viewIddia,oyun:viewOyun,kartlar:viewKartlar,lig:viewLig,sezon:viewSezon,saha:viewSaha,kurallar:viewKurallar,ayarlar:viewAyarlar}[S.tab]||viewMac)();
   const v=$("#view");const tabI=t=>S.fol?TABS.findIndex(x=>x[0]===(t==="sezon"||t==="saha"?"lig":t)):NAV.findIndex(x=>x[0]===navOf(t));const chg=S._tab!==undefined&&S._tab!==S.tab;if(S._tab!==S.tab)useHit("tab:"+S.tab);{const sk=S.sheet&&S.sheet.type;if(sk&&sk!==S._shk)useHit("sheet:"+sk);S._shk=sk||null}const dir=tabI(S.tab)>=tabI(S._tab)?"r":"l";S._tab=S.tab;
-  {const vk=S.tab+"|"+(S.view||"");const same=v.dataset.vk===vk;const need=same?Math.round(innerHeight-v.getBoundingClientRect().top):0;v.dataset.vk=vk;v.style.paddingBottom="";v.style.minHeight="";keepX(v,()=>keepOpen(v,()=>{v.innerHTML=h}));if(same&&need>0){const hh=v.offsetHeight;if(need>hh){const pb=parseFloat(getComputedStyle(v).paddingBottom)||0;v.style.paddingBottom=Math.round(pb+need-hh)+"px"}}}v.removeAttribute("aria-busy");phdRender();qkRender();onbBind();ldBind();
+  {const vk=S.tab+"|"+(S.view||"");const same=v.dataset.vk===vk;const need=same?Math.round(innerHeight-v.getBoundingClientRect().top):0;v.dataset.vk=vk;v.style.paddingBottom="";v.style.minHeight="";keepX(v,()=>keepOpen(v,()=>{v.innerHTML=h}));if(same&&need>0){const hh=v.offsetHeight;if(need>hh){const pb=parseFloat(getComputedStyle(v).paddingBottom)||0;v.dataset.pb0=pb;v.style.paddingBottom=Math.round(pb+need-hh)+"px"}}}v.removeAttribute("aria-busy");phdRender();qkRender();onbBind();ldBind();
   if(chg&&!RM)reveal(v);
 
   renderSheet();wakeSync();{const b=document.querySelector(".cup-br");if(b&&!b.dataset.sc){b.dataset.sc=1;const c=b.children[+b.dataset.cur||0];if(c&&+b.dataset.cur>0)b.scrollLeft=Math.max(0,c.offsetLeft-b.children[0].offsetLeft)}}
@@ -3104,6 +3104,9 @@ const isOwner=()=>!!(S.session&&S.session.user&&S.session.user.id==="d8bac3ce-40
 // geri tuşu / geri kaydırma: açık pencereyi ya da alt ekranı kapatır
 function shHist(){try{const on=!!S.sheet||!!S.view||S.tab==="oyun";const st=!!(history.state&&history.state.sh);if(shHist.b)return;
   if(on&&!st)history.pushState({sh:1},"");else if(!on&&st){shHist.b=1;shHist.t=Date.now();history.back();setTimeout(()=>{shHist.b=0},500)}}catch(_){}}
+// içerik kısalınca kaydırma yeri korunsun diye eklenen boşluk, kullanıcı yukarı kaydırdıkça kırpılır: sayfa son içerikte biter
+addEventListener("scroll",()=>{const v=document.getElementById("view");if(!v||!v.style.paddingBottom)return;const ex=document.documentElement.scrollHeight-(scrollY+innerHeight);if(ex<=0)return;
+  const pb=parseFloat(v.style.paddingBottom)||0,b0=+v.dataset.pb0||0;const nw=pb-ex;if(nw<=b0)v.style.paddingBottom="";else v.style.paddingBottom=Math.round(nw)+"px"},{passive:true});
 addEventListener("popstate",()=>{if(shHist.b){shHist.b=0;try{const w="#"+S.tab;if(location.hash!==w&&TABS.some(x=>x[0]===S.tab))history.replaceState(null,"",location.pathname+location.search+w)}catch(_){}return}
   if(S.sheet){const c=document.querySelector('#modal [data-act="close"]');if(c)c.click();else shHist()}
   else if(S.tab==="oyun"){const c=document.querySelector('.gpg [data-act="duBack"]');if(c)c.click();else pgBack()}
