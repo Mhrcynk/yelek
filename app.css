@@ -5109,8 +5109,10 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 /* Ben üst kartı: solda fotoğraf */
 .mzh-t.benh-t{align-items:center;justify-content:flex-start;gap:14px}.benh-t .av{flex:none;width:60px;height:60px;font-size:1.125rem}
 /* oyuncu kartı: Sezon | Kariyer düğmesi, özellik farkı, rozet düğmesi; Ben: Kartım */
-.pv-sk{display:flex;gap:4px;margin-top:14px;padding:4px;border-radius:999px;background:var(--c-card);width:max-content}.pv-sk button{min-height:40px;padding:0 16px;border:0;border-radius:999px;background:none;color:#C9BFE6;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}.pv-sk button.on{background:#fff;color:#1C1240}
-.pv-st.pvs2{margin-top:8px}
+.pv-sb{margin-top:14px;border-radius:20px;background:var(--c-card);overflow:hidden}html.dk .pv-sb{border:1.5px solid var(--c-line)}
+.pv-sb .pv-st,html.dk .pv-sb .pv-st{margin:0;background:none!important;border:0!important;border-radius:0}
+.pv-sk{display:flex;gap:6px;padding:0 12px;border-bottom:1px solid var(--c-card2)}.pv-sk button{position:relative;min-height:44px;padding:0 6px;border:0;background:none;color:var(--c-ink3);font:800 .7812rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.pv-sk button.on{color:#fff}.pv-sk button.on::after{content:"";position:absolute;left:6px;right:6px;bottom:7px;height:2px;border-radius:2px;background:var(--c-pink)}
 .at-g.ia-g button{height:auto;min-height:64px;padding:8px 2px;gap:3px}.ia-g button b{font-size:1.125rem}.ia-g button>i{font:800 .6875rem/1 Inter,sans-serif;font-style:normal}.ia-g button>i.up{color:#4FF0A6}.ia-g button>i.dn{color:#FF9DB0}.ia-g button.on>i{color:#fff}
 .pv-c b i{font-size:.5em;font-style:normal}
 .rzt-a{margin-top:10px}
