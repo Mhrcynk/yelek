@@ -444,10 +444,10 @@ function computeCore(LV){
     const KS=subKeys(p.pos);const pa=p.attrs||{};const B0={},DL={};for(const k of KS){const[mk,sk]=k.split("_");B0[k]=subVal(pa,mk,sk);DL[k]=0}
     const curOf=()=>{const c={};for(const k of KS)c[k]=clamp(B0[k]+DL[k],30,99);return c};let gen=genF(p,curOf());let ovr=flo(gen);
     let att=0,fvDry=0,osDry=0;
-    const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
+    const hist=[],series=[base];let games=0,goals=0,ast=0,W=0,D=0,L=0,motm=0,fiy=0,golu=0,totw=0,hat=0,hat5=0,elig=0,streak=0,best=0,late=0,cs=0,ptsSum=0,bestM=null;
     for(const m of F){
       if(matchTs(m)<joined)continue;const inf=mInfo[m.id];const r=inf.pts[p.id];if(!r&&(p.yedek||sideOf(m,p.id)))continue;elig++;let ch,line;
-      if(r){games++;streak++;best=Math.max(best,streak);goals+=r.g;ast+=r.a;if(r.g>=3)hat++;
+      if(r){games++;streak++;best=Math.max(best,streak);goals+=r.g;ast+=r.a;if(r.g>=3)hat++;if(r.g>=5)hat5++;
         if(r.res==="G")W++;else if(r.res==="B")D++;else L++;
         if(inf.motm===p.id)motm++;if(inf.fiy===p.id)fiy++;if(inf.gol===p.id)golu++;if(inf.totw.includes(p.id))totw++;
         if(r.op<=5&&(r.role==="KL"||r.role==="DF"))cs++;ptsSum+=r.pts;if(!bestM||r.pts>bestM.pts)bestM={pts:r.pts,date:m.date};
@@ -471,13 +471,14 @@ function computeCore(LV){
     for(const[k,,,subs]of attrSet(p.pos)){const v=subs.reduce((q,[sk])=>q+cur[k+"_"+sk],0)/subs.length,b=subs.reduce((q,[sk])=>q+B0[k+"_"+sk],0)/subs.length;attrs[k]=flo(v);attrD[k]=flo(v)-flo(b)}
     const rzt=[];const RZ=(on,i,e,t,d,off,shame)=>{if(shame&&!on)return;rzt.push(Object.assign({i,e,t,d:on?d:off,on:!!on},shame?{shame:true}:{}))};
     RZ(hat,"3","🎩","Hat-trick",hat+" kez tek maçta 3+ gol","Tek maçta 3 gol at");
+    RZ(hat5,"5","🌟","Süper Hat-trick",hat5+" kez tek maçta 5+ gol","Tek maçta 5 gol at");
     RZ(motm,"★","⭐","Maçın Adamı",motm+" kez seçildi","Maçın adamı seçil");
     RZ(totw,"XI","🏅","Haftanın Takımı",totw+" kez seçildi","Haftanın takımına gir");
     RZ(goals>=10,"10","⚽","Golcü",goals+" gol attı",goals+" / 10 gol");
     RZ(ast>=10,"A","👟","Pasör",ast+" asist yaptı",ast+" / 10 asist");
     RZ(cs>=3,"0","🧱","Duvar",cs+" maçta en fazla 5 gol yedi",cs+" / 3 maçta en çok 5 gol ye");
     {let mk=0,mt=0,mh=0;for(const m of F){const t=trkOf(m,p.id);if(!t)continue;mk=Math.max(mk,+t.km||0);mt=Math.max(mt,+t.tk||0);mh=Math.max(mh,+t.hiz||0)}
-      RZ(mk>=6,"KM","🏃","Maratoncu","Bir maçta "+fN1(mk)+" km koştu","Bir maçta 6 km koş");RZ(mh>=30,"HZ","🚀","Roket","Maks hız "+fN1(mh)+" km/s","30 km/s hıza çık");RZ(mt>=6,"TK","🧲","Mıknatıs","Bir maçta "+mt+" top kapma","Bir maçta 6 top kap")}
+      RZ(mk>=5,"KM","🏃","Maratoncu","Bir maçta "+fN1(mk)+" km koştu","Bir maçta 5 km koş");RZ(mh>=28,"HZ","🚀","Roket","Maks hız "+fN1(mh)+" km/s","28 km/s hıza çık");RZ(mt>=10,"TK","🧲","Mıknatıs","Bir maçta "+mt+" top kapma","Bir maçta 10 top kap")}
     RZ(golu,"G","🥅","Haftanın Golü",golu+" kez","Haftanın golünü at");
     RZ(fiy>=2,"?!","🙈","Fiyasko Ustası",fiy+" kez seçildi","",true);
     const badges=rzt.filter(b=>b.on).map(b=>Object.assign({i:b.i,t:b.t,d:b.d},b.shame?{shame:true}:{}));
