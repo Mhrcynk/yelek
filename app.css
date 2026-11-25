@@ -5137,3 +5137,7 @@ html.dk .krl-du .krl-b .btn.primary{background:#5FE3F5!important;color:#06222A!i
 .kry-bars{flex:1;min-width:0;display:grid;gap:12px}.kry-bars>div>div{display:flex;justify-content:space-between;gap:8px;font:700 .7812rem/1.2 Inter,sans-serif}
 .kry-bars i{display:block;height:8px;border-radius:999px;background:rgba(127,110,220,.25);margin-top:6px;overflow:hidden}.kry-bars u{display:block;height:100%;border-radius:999px}
 .kry-kc{display:flex;flex-wrap:wrap;gap:8px}.kry-kc span{padding:7px 12px;border-radius:999px;background:rgba(127,110,220,.2);font:700 .7812rem/1 Inter,sans-serif}
+/* kariyer: sezon başı ve şimdiki kart yan yana */
+.kry-k2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}.kry-kt{display:grid;gap:6px;justify-items:center}
+.kry-kt>small{font:800 .6875rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}.kry-kt .fut{cursor:default}
+.kry-dp{margin-left:8px;padding:5px 10px;border-radius:999px;background:rgba(127,110,220,.2);font:800 .7812rem/1 Inter,sans-serif;vertical-align:middle;white-space:nowrap}.kry-dp.up{background:#0E3B2A;color:#4FF0A6}.kry-dp.dn{background:#4A1522;color:#FF9DB0}
