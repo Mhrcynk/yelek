@@ -47,7 +47,7 @@ const RPC={
   my_membership:()=>({status:"onayli",role:"uye",player_id:ME}),team_rev:()=>({r:D.k,p:D.k}),player_ages:()=>D.players.map((p,i)=>({id:p.id,age:p.by?2026-p.by:(RL?null:24+((i*7)%17))})).filter(x=>x.age!=null),
   my_teams:()=>[{id:1,name:TN,slug:"deneme",tag:"uye"}],my_follows:()=>[],teams_hub:()=>({mine:[{id:1,name:TN,slug:"deneme",tag:"uye"}],all:[]}),
   fantasy_list:()=>{const m=open();if(m&&!D.fz.some(r=>r.m===m.id&&r.p!==ME)){otherFz(m);save(D)}return fzJson()},
-  fantasy_save:a=>{const m=open();if(!m||m.id!==a.p_match||Date.now()>=mts(m))return{ok:false,error:"closed"};if(!a.p_picks||a.p_picks.length!==5)return{ok:false,error:"sayi"};
+  fantasy_save:a=>{const m=open();if(!m||m.id!==a.p_match||Date.now()>=mts(m))return{ok:false,error:"closed"};if(!a.p_picks||(a.p_picks.length<4||a.p_picks.length>5))return{ok:false,error:"sayi"};
     D.fz=D.fz.filter(r=>!(r.m===m.id&&r.p===ME));D.fz.push({m:m.id,p:ME,picks:a.p_picks,cap:a.p_cap,prices:a.p_prices,budget:a.p_budget});save(D);return fzJson()},
   duel_list:()=>({ok:true,rows:[],kings:kings()}),bet_kral:()=>betKral(),
   usage_hit:()=>({ok:true}),log_error:()=>null,push_prefs_get:()=>({ok:true,off:[],quiet:false})};
