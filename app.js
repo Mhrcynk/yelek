@@ -5004,7 +5004,7 @@ async function ultLoad(force){if(!ultOn()||!myPid()||!S.session)return;if(ULT_SR
     if(!ULT_SRV.lig||ULT_SRV.wk>=ULT_SRV.lig.start+7){const l=await rpc("ult_lig_start",{});if(l&&l.ok)ULT_SRV.lig={season:l.season,start:l.start,players:l.players}}
     ultLigOto();
     // değişiklik yoksa ekran yeniden çizilmez (sürükleme ve kaydırma bozulmasın)
-    ULT_SRV.sig=JSON.stringify([Object.values(ULT_SRV.dv).map(d=>d.k+(d.accepted_at?1:0)+(d.red_at?1:0)),ULT_SRV.ev.map(e=>e.id),r.upd,ULT_SRV.lig&&ULT_SRV.lig.season]);
+    ultYokla(true);ULT_SRV.sig=JSON.stringify([Object.values(ULT_SRV.dv).map(d=>d.k+(d.accepted_at?1:0)+(d.red_at?1:0)),ULT_SRV.ev.map(e=>e.id),r.upd,ULT_SRV.lig&&ULT_SRV.lig.season]);
     // rakip daveti kabul edip maçı başlattıysa (ya da seri maçı oynandıysa) maç hemen ekrana gelir
     const me=myPid(),st0=ultSt(),yeni=first?[]:ULT_SRV.ev.filter(e=>!eskiEv.has(e.kind+e.k)&&e.a!==me&&(e.b===me||String(e.k).includes(me))&&e.p&&e.p.ka&&!e.p.oto&&!(e.kind==="lig"?st0.lig:st0.ch).some(x=>x.k===e.k));
     if(yeni.length&&!UDRAG){const e=yeni[yeni.length-1];if(S.pg&&S.pg.type==="ult"&&!S.sheet){ultDvIzle(e.kind,e.k);return}toast(`${shortName(nameOf(e.a))} maçı başlattı · Ultimate › Maçlar`)}
@@ -5012,7 +5012,9 @@ async function ultLoad(force){if(!ultOn()||!myPid()||!S.session)return;if(ULT_SR
 // Ultimate açıkken davetler ve maçlar 12 saniyede bir yenilenir; bildirim gelince hemen yenilenir
 // uygulamaya geri dönünce de hemen yenile
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&typeof ULT_SRV!=="undefined"&&ULT_SRV.ok){ULT_SRV.at=0;ultLoad(true)}});
-setInterval(()=>{if(document.visibilityState==="visible"&&typeof ULT_SRV!=="undefined"&&ULT_SRV.ok&&S.pg&&S.pg.type==="ult"&&!UDRAG)ultLoad(true)},12000);
+// yoklama hafif: önce birkaç baytlık imza sorulur, ancak değişiklik varsa bütün veri indirilir
+async function ultYokla(kaydet){try{const r=await rpc("ult_imza",{});if(!r||!r.ok)return;const k=[r.ep,r.ev,r.dv,r.n,r.lg].join("|");if(ULT_SRV.imza!==k){const ilk=ULT_SRV.imza==null;ULT_SRV.imza=k;if(!ilk&&!kaydet){ULT_SRV.at=0;ultLoad(true)}}}catch(_){}}
+setInterval(()=>{if(document.visibilityState==="visible"&&typeof ULT_SRV!=="undefined"&&ULT_SRV.ok&&S.pg&&S.pg.type==="ult"&&!UDRAG&&ULT_SRV.at!==-1)ultYokla()},12000);
 // rakibin kaydettiği kadro (yoksa otomatik); senin kadronla çakışan oyuncu olursa otomatik kadro
 function ultRakipKadro(opp,ex){const pub=ULT_SRV.pubs[opp],B=ultBuild();if(pub&&pub.kadro&&pub.kadro.length===7&&pub.kadro.every(id=>id&&B.C.some(c=>c.id===id))){const L=pub.kadro.slice();if(!L.some(id=>ex&&ex.has((ultCard(id)||{}).pid))&&L.some(id=>(ultCard(id)||{}).pid===opp)){L.f=pub.f||"2-2-2";L.t=pub.t||"dengeli";L.gercek=1;return L}}return ultAuto(opp,null,ex)}
 const ultRole=id=>{const p=P(id);return p?(EPOS[eposOf(p)]||["OS"])[0]:"OS"};
@@ -5278,7 +5280,7 @@ function ultDvKayit(kind,k,e){const st=ultSt(),me=myPid(),L=kind==="lig"?st.lig:
 const ultLigKayit=(k,e)=>ultDvKayit("lig",k,e);
 function ultDvIzle(kind,k){const e=(ULT_SRV.ev||[]).find(x=>x.kind===kind&&x.k===k);if(!e)return;const me=myPid(),p=e.p||{};const odul=ultDvKayit(kind,k,e);
   const opp=p.h===me?(e.a===me?e.b:e.a):p.h;
-  if(!p.ka||!p.kb){toast(`Maç otomatik oynandı: ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`);render(true);return}
+  if(!p.ka||!p.kb){toast(p.ar?`Tekrar izleme 24 saat açık · sonuç ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`:`Maç otomatik oynandı: ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`);render(true);return}
   let P0=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+kind+k);if(p.h!==me)P0=ultFlip(P0);const R0=ultResult(P0);
   ULT.run={kind,k,opp,odul,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
 function ultStart(kind,opp){if(kind==="lig"){ultLigAks(opp);return}if(kind==="ch"){ultDvAks("ch",ultChKey(opp),opp);return}const st=ultSt();const me=myPid();const err=ultOk(ultMy());if(err){toast(err);return}
@@ -5719,7 +5721,7 @@ function ultSonLig(lg){if(!lg.real||!lg.fx)return"";const me=myPid();const f=[lg
   const hd=`<div class="ulsec-h"><h3>${f.w===lg.W?"Bu haftanın maçı":"Geçen haftanın maçı"}</h3><span class="ulplan-s">${f.w+1}. hafta</span></div>`;
   const vs=(g,y)=>`<div class="ulsl-vs"><span>${avatar(P(me),"sm")}<b>Sen</b></span><i class="${g>y?"w":g<y?"l":"d"}"><b class="num">${g} – ${y}</b><small>${g>y?"Kazandın":g<y?"Kaybettin":"Berabere"}</small></i><span>${avatar(P(f.op)||{id:f.op,name:"?"},"sm")}<b>${esc(shortName(nameOf(f.op)))}</b></span></div>`;
   if(!p.ka||!p.kb)return `<section class="card ulsec ulsl">${hd}${vs(f.g,f.y)}<p class="ult-n">Maç otomatik oynandı; ayrıntısı yok.</p></section>`;
-  let P0=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+"lig"+f.k);if(p.h!==me)P0=ultFlip(P0);const R0=ultResult(P0);
+  ULT.pc=ULT.pc||{};const ck=f.k+"|"+me;if(!ULT.pc[ck]){let Q=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+"lig"+f.k);if(p.h!==me)Q=ultFlip(Q);ULT.pc[ck]={P0:Q,R0:ultResult(Q)}}const{P0,R0}=ULT.pc[ck];
   const nmS=(X,j)=>{const c=X.cs[j];return c?esc(shortName(nameOf(c.pid))):""};
   const olay=[...R0.gl.map(g=>({dk:g.dk,us:g.us,t:`⚽ ${esc(shortName(nameOf(g.s)))}${g.t==="pen"?" (pen.)":""}`})),...P0.ev.filter(e=>e.fx==="kirmizi").map(e=>({dk:e.dk,us:e.us,t:`🟥 ${nmS(e.us?P0.a:P0.b,e.j)}`}))].sort((a,b)=>a.dk-b.dk);
   const sar=P0.ev.filter(e=>e.fx==="sari"||e.fx==="kirmizi"),ka=sar.filter(e=>e.us).length,kb=sar.length-ka,st=R0.st;
