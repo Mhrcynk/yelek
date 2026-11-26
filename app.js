@@ -178,11 +178,18 @@ const ICON_GRID='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 
 /* ================= Durum ================= */
 const LS={get(k){try{return localStorage.getItem(k)||""}catch(_){return""}},set(k,v){try{localStorage.setItem(k,v)}catch(_){}},del(k){try{localStorage.removeItem(k)}catch(_){}}};
+function sesGet(){try{const x=JSON.parse(sessionStorage.getItem("y_ses")||"null");return x&&Date.now()-x.t<12*3600e3?x:null}catch(_){return null}}
+function sesSave(){try{if(typeof S==="undefined")return;sessionStorage.setItem("y_ses",JSON.stringify({tab:S.tab,bht:S.f&&S.f.bht,pg:S.pg||null,y:Math.round(window.scrollY||0),t:Date.now()}))}catch(_){}}
 const S={all:[],players:[],matches:[],settings:{...DEF_SET},seasonVotes:[],me:LS.get("y_me"),pin:LS.get("y_pin"),admin:false,
   tab:"mac",sheet:null,guests:[],photos:{},pv:"",teams:null,draft:null,stats:{},mInfo:{},view:null,f:{},loaded:false,err:null,pending:false,filter:"all"};
 S.admin=false;S.pin="";LS.del("y_pin");
-{const old={hafta:"mac",oyuncular:"kartlar",kurallar:"ayarlar"};let t=LS.get("y_tab");t=old[t]||t;if(TABS.some(x=>x[0]===t)||t==="ben")S.tab=t;
- S._route=location.hash.slice(1);S._r0=S._route;S._r0t=Date.now();routeTab(S._route,old)}
+// açılış: uygulama arka plandan dönerse (ya da güncelleme için yenilenirse) kaldığı yerden; kapatılıp açılırsa "Bu hafta" ekranından başlar.
+// "oturum" bilgisi sessionStorage'da: telefon uygulamayı kapatınca kendiliğinden silinir.
+{const old={hafta:"mac",oyuncular:"kartlar",kurallar:"ayarlar"};const ses=sesGet();S._ses=ses;
+ if(ses){const t=old[ses.tab]||ses.tab;if(t==="oyun")S.tab="mac";else if(TABS.some(x=>x[0]===t)||t==="ben")S.tab=t;if(ses.bht)S.f.bht=ses.bht}else{S.tab="mac";S.f.bht="mac";LS.del("y_pg")}
+ S._route=location.hash.slice(1);let bd=false;try{const u=new URL(location.href);bd=u.searchParams.get("bd")==="1";if(bd){u.searchParams.delete("bd");history.replaceState(null,"",u.pathname+u.search+u.hash)}}catch(_){}
+ if(!bd&&!S._route.includes("/"))S._route="";// bildirimden ya da derin bağlantıdan gelmediyse adresteki eski sekme dikkate alınmaz// soğuk açılışta yalnızca derin bağlantı (bildirim vb.) yönlendirir
+ S._r0=S._route;S._r0t=Date.now();routeTab(S._route,old);if(!ses&&!S._route){try{history.replaceState(null,"","#mac")}catch(_){}}sesSave()}
 
 /* ================= Yardımcılar ================= */
 const $=s=>document.querySelector(s);
@@ -567,7 +574,7 @@ async function load(force){
   render();setTimeout(notesSync,800);
 }
 /* son veriyi telefonda sakla: zayıf internette uygulama yine açılsın */
-function applyData(st,pl,ms,sv2){S.settings={...DEF_SET,...(st[0]||{})};S.gate=!!S.settings.gate;TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;S.err=null;
+function applyData(st,pl,ms,sv2){S.settings={...DEF_SET,...(st[0]||{})};S.gate=!!S.settings.gate;TEAM.A=cleanName(S.settings.team_a_name)||"Yelekliler";TEAM.B=cleanName(S.settings.team_b_name)||"Yeleksizler";S.all=pl;S.players=pl.filter(p=>!p.archived&&!p.guest);S.guests=pl.filter(p=>p.guest&&!p.archived);S.matches=ms;S.seasonVotes=sv2;S.loaded=true;if(S._ses&&S._ses.y>0&&!sesGet.sc){sesGet.sc=1;const yy=S._ses.y;setTimeout(()=>{try{window.scrollTo(0,yy)}catch(_){}},60)}S.err=null;
   {const om=openMatch();if(om){if(cleanName(om.name_a||""))TEAM.A=cleanName(om.name_a);if(cleanName(om.name_b||""))TEAM.B=cleanName(om.name_b)}}}
 function cacheSave(st,pl,ms,sv2){if(S.fol)return;
   if(!pl.length){LS.del("y_cache");LS.del("y_cph");return}// kilitli ve üye değil: hiçbir şey saklama
@@ -651,7 +658,7 @@ addEventListener("resize",()=>navInd());
 /* sayfa değişimi: eski sayfa kayarak çekilirken yenisi aynı anda süzülür (View Transitions); boş kare yok */
 function goTab(t,fromNav){if(t===S.tab)return;const idx=x=>S.fol?TABS.findIndex(y=>y[0]===(x==="sezon"||x==="saha"?"lig":x)):NAV.findIndex(y=>y[0]===navOf(x));
   const LGO=S.fol?["lig","sezon","saha"]:["lig","gecmis","sezon","saha"];const LG=x=>LGO.includes(x);const dir=LG(S.tab)&&LG(t)?(LGO.indexOf(t)>=LGO.indexOf(S.tab)?"r":"l"):(idx(t)<0||idx(S.tab)<0)?"r":idx(t)===idx(S.tab)?(t==="iddia"?"r":"l"):(idx(t)>=idx(S.tab)?"r":"l");
-  const run=()=>{window.scrollTo(0,0);if(t!=="oyun"&&S.tab==="oyun"){S.pg=null;try{LS.set("y_pg","")}catch(_){}}S.tab=t;S.view=null;if(fromNav){LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab)}render(true)};
+  const run=()=>{window.scrollTo(0,0);if(t!=="oyun"&&S.tab==="oyun"){S.pg=null;try{LS.set("y_pg","")}catch(_){}}S.tab=t;S.view=null;if(fromNav){LS.set("y_tab",S.tab);history.replaceState(null,"","#"+S.tab)}render(true);sesSave()};
   if(RM||!document.startViewTransition){run();return}
   document.documentElement.dataset.pdir=dir;try{S._vt&&S._vt.skipTransition&&S._vt.skipTransition()}catch(_){}
   S._vt=document.startViewTransition(run);S._vt.finished.finally(()=>{S._vt=null})}
@@ -1856,9 +1863,9 @@ function cupHtml(m){const d=cupData();if(!d)return `<p class="muted small" style
     <button class="dv-all" data-act="fzShare" data-v="${d.ch?"fsamp":"fcup"}">${mnI("fw")}<span>${d.ch?"Şampiyonu paylaş":"Eşleşmeleri paylaş"}</span></button>
     <p class="fz-not">15 oyuncu kurayla eşleşti. Her tur bir maç haftası: o haftanın fantezi puanı yüksek olan tur atlar, kadro kurmayan 0 puan alır. Eşitlikte kaptanın puanına, o da eşitse sezon puanına bakılır.</p>`}
 const PG_BK='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';
-function pgOpen(o){const nw=S.tab!=="oyun";S.pg=o;S.sheet=null;S.view=null;S.tab="oyun";try{LS.set("y_pg",JSON.stringify({o,t:Date.now()}))}catch(_){}if(nw)window.scrollTo(0,0)}
-function pgBack(){S.pg=null;try{LS.set("y_pg","")}catch(_){}S.tab="mac";try{history.replaceState(null,"","#mac")}catch(_){}render(true);window.scrollTo(0,0)}
-function pgRestore(){if(pgRestore.d)return false;pgRestore.d=1;try{const x=JSON.parse(LS.get("y_pg")||"null");if(x&&x.o&&Date.now()-x.t<3*3600e3&&S.matches.some(m=>m.id===x.o.mid)){S.pg=x.o;S.tab="oyun";setTimeout(()=>render(true),0);if(x.o.type==="fz"&&LS.get("y_fzed")===x.o.mid)S.f.fzEdit=true;return true}}catch(_){}return false}
+function pgOpen(o){const nw=S.tab!=="oyun";S.pg=o;S.sheet=null;S.view=null;S.tab="oyun";try{LS.set("y_pg",JSON.stringify({o,t:Date.now()}))}catch(_){}if(nw)window.scrollTo(0,0);sesSave()}
+function pgBack(){S.pg=null;try{LS.set("y_pg","")}catch(_){}S.tab="mac";try{history.replaceState(null,"","#mac")}catch(_){}render(true);window.scrollTo(0,0);sesSave()}
+function pgRestore(){if(pgRestore.d)return false;pgRestore.d=1;try{const x=S._ses&&S._ses.pg?{o:S._ses.pg}:null;if(x&&x.o&&S.matches.some(m=>m.id===x.o.mid)){S.pg=x.o;S.tab="oyun";setTimeout(()=>render(true),0);if(x.o.type==="fz"&&LS.get("y_fzed")===x.o.mid)S.f.fzEdit=true;return true}}catch(_){}return false}
 const GM_BELL='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.6 2H4.4z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>';
 const GM_INFO='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><path d="M12 11v5.5"/><circle cx="12" cy="7.6" r=".9" fill="currentColor" stroke="none"/></svg>';
 function gmHead(g,X,t,v){const n=gmNotes(g).filter(x=>x.nw).length;const ad=g==="fz"?"Fantezi Kadro":"Düello";
@@ -4218,7 +4225,7 @@ document.addEventListener("click",async e=>{
     case"folOpen":{const on=el.dataset.v==="1";try{const r=await rpc("admin_set_followable",{p_on:on});if(r&&r.ok){S.settings.followable=on;toast(on?"Lig takibe açıldı":"Lig takibe kapandı");render(true)}else toast("Yapılamadı")}catch(_){toast("Yapılamadı")}break}
     case"meSheet":if(S.fol){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);break}if((isMember()&&!S.admin)||(S.me&&P(S.me)&&el.id==="meBtn")){S.f.setp="";S.view=null;goTab("ben");render(true);window.scrollTo(0,0)}else{S.sheet={type:"me"};render(true)}break;
     case"hbOpen":S.sheet={type:"haber",k:el.dataset.v,id:el.dataset.id,mid:el.dataset.m};render(true);break;
-    case"bhTab":{const y0=el.getBoundingClientRect().top;S.f.bht=el.dataset.v;render();const b=document.querySelector('.bht [data-v="'+el.dataset.v+'"]');if(b){const dy=b.getBoundingClientRect().top-y0;if(Math.abs(dy)>1){const y=scrollY;kayDuz(b,dy);if(scrollY===y)window.scrollBy(0,dy)}}break}
+    case"bhTab":{const y0=el.getBoundingClientRect().top;S.f.bht=el.dataset.v;render();sesSave();const b=document.querySelector('.bht [data-v="'+el.dataset.v+'"]');if(b){const dy=b.getBoundingClientRect().top-y0;if(Math.abs(dy)>1){const y=scrollY;kayDuz(b,dy);if(scrollY===y)window.scrollBy(0,dy)}}break}
     case"tog":{if(el.dataset.k==="mem_x"){const f=S.f.mem||(S.f.mem={});f["x_"+el.dataset.u]=!f["x_"+el.dataset.u]}else{const k=el.dataset.k,on=!S.f[k];// aynı gruptan biri açılınca öncekiler kapanır
       if(on){const g=(/^(pr_|bxs_|bx_|mw_|mn_)/.exec(k)||[])[1];// krallık başlıkları birbirini kapatmaz: üstteki kapanınca basılan başlık kayıyordu
       if(g){const G=g==="mw_"||g==="mn_"?["mw_","mn_"]:[g];Object.keys(S.f).forEach(x=>{if(x!==k&&G.some(p=>x.startsWith(p)))S.f[x]=false})}}S.f[k]=on}
@@ -4715,11 +4722,12 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=nu
 try{const u=new URL(location.href);if(u.searchParams.has("v")){u.searchParams.delete("v");history.replaceState(history.state,"",u.pathname+u.search+u.hash)}}catch(_){}
 async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
   const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
-  if(v&&v!=="dev"&&APP_V!=="dev"&&v!==APP_V){location.replace(location.pathname+"?v="+v+(S._r0&&Date.now()-S._r0t<30000?"#"+S._r0:location.hash));return true}}catch(_){}return false}
+  if(v&&v!=="dev"&&APP_V!=="dev"&&v!==APP_V){sesSave();location.replace(location.pathname+"?v="+v+(S._r0&&Date.now()-S._r0t<30000?"#"+S._r0:location.hash));return true}}catch(_){}return false}
 /* değişiklik var mı? sunucudan tek bir sayı sorulur, değiştiyse veri indirilir */
 async function revCheck(force){if(TID===0||!S.loaded||S._rc)return;S._rc=true;
   try{const r=await rpc("team_rev",{});if(!r){if(force)load();return}if(!S.rev||r.r!==S.rev.r||force){S.rev=r;await load()}}catch(_){}finally{S._rc=false}}
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){revCheck();wakeSync()}})}});
+window.addEventListener("pagehide",sesSave);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")sesSave();if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){revCheck();wakeSync()}})}});
 setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)revCheck()},30000);
 
 /* Sahada sürükle-bırak */

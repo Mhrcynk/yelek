@@ -25,5 +25,5 @@ self.addEventListener("fetch",e=>{const r=e.request;if(r.method!=="GET")return;c
     catch(_){const hit=await c.match(key);if(hit)return hit;return fetch(r)}})())});
 self.addEventListener("push",e=>{let d={};try{d=e.data?e.data.json():{}}catch(_){d={title:"Yelek",body:e.data&&e.data.text()}}
   e.waitUntil(self.registration.showNotification(d.title||"Yelek",{body:d.body||"",tag:d.tag,icon:"icon-192.png",badge:"icon-192.png",data:{url:d.url||"./"}}))});
-self.addEventListener("notificationclick",e=>{e.notification.close();const url=new URL((e.notification.data&&e.notification.data.url)||"./",self.registration.scope).href;
+self.addEventListener("notificationclick",e=>{e.notification.close();const u0=new URL((e.notification.data&&e.notification.data.url)||"./",self.registration.scope);u0.searchParams.set("bd","1");const url=u0.href;// bd=1: bildirimden açıldı, adresteki bölüme git
   e.waitUntil(self.clients.matchAll({type:"window",includeUncontrolled:true}).then(cs=>{for(const c of cs){if(c.url.startsWith(self.registration.scope)&&"focus"in c){const same=c.url.split("#")[0].split("?")[0]===url.split("#")[0].split("?")[0]&&(new URL(c.url).searchParams.get("t")||"")===(new URL(url).searchParams.get("t")||"");if(same)c.postMessage({t:"nav",url});else if(c.navigate)c.navigate(url).catch(()=>{});return c.focus()}}return self.clients.openWindow(url)}))});
