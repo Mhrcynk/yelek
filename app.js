@@ -4954,18 +4954,18 @@ function ultRakipSiz(L,opp){const me=myPid();const i=Array.from(L).findIndex(id=
   const c=ultCards().filter(c=>c.type==="temel"&&ultIzin(c,me)&&!used.has(c.pid)&&c.pid!==opp).sort((a,b)=>(ultRoles(b.pid).includes(role))-(ultRoles(a.pid).includes(role))||b.r-a.r)[0];const o=Array.from(L);o[i]=c?c.id:null;o.f=L.f;o.t=L.t;o.usta=L.usta;return o}
 function ultMy(){const st=ultSt();if(st.kadro.some(id=>id&&!ultIzin(ultCard(id),myPid()))){st.kadro=st.kadro.map(id=>id&&ultIzin(ultCard(id),myPid())?id:null);ultSave()}const L=st.kadro.slice();L.f=st.dz||"2-2-2";L.t=st.tk||"dengeli";L.usta=1;return L}
 const ultOn=()=>!!myPid();
-function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{})}return ULT.s}
+function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult2_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{})}return ULT.s}
 // sunucu: kulüp ve ilerleme hesapta saklanır (telefon sadece önbellek); başka cihazdan girince aynı kulüp gelir
 const ULT_SRV={at:0,busy:0,upd:null,pubs:{},lig:null,ev:[],wk:null,t:null,ok:false};
 function ultPub(){const st=ultSt(),B=ultBuild();const ok=id=>id&&B.C.some(c=>c.id===id);return{kadro:(st.kadro||[]).map(id=>ok(id)?id:null),f:st.dz||"2-2-2",t:st.tk||"dengeli"}}
 async function ultPush(){if(!ULT_SRV.ok||!S.session)return;ULT_SRV.busy=1;try{const r=await rpc("ult_save",{p_data:ULT.s,p_pub:ultPub(),p_upd:ULT_SRV.upd});
-    if(r&&r.ok)ULT_SRV.upd=r.upd;else if(r&&r.error==="conflict"){ULT.s=null;try{LS.set("y_ult_"+TID,JSON.stringify(r.me||{}))}catch(_){}ultSt();ULT_SRV.upd=r.upd;ULT.au={};toast("Başka cihazdaki ilerlemen yüklendi");render(true)}}catch(_){}ULT_SRV.busy=0}
-const ultSave=()=>{try{LS.set("y_ult_"+TID,JSON.stringify(ULT.s))}catch(_){}clearTimeout(ULT_SRV.t);ULT_SRV.t=setTimeout(ultPush,700)};
+    if(r&&r.ok)ULT_SRV.upd=r.upd;else if(r&&r.error==="conflict"){ULT.s=null;try{LS.set("y_ult2_"+TID,JSON.stringify(r.me||{}))}catch(_){}ultSt();ULT_SRV.upd=r.upd;ULT.au={};toast("Başka cihazdaki ilerlemen yüklendi");render(true)}}catch(_){}ULT_SRV.busy=0}
+const ultSave=()=>{try{LS.set("y_ult2_"+TID,JSON.stringify(ULT.s))}catch(_){}clearTimeout(ULT_SRV.t);ULT_SRV.t=setTimeout(ultPush,700)};
 async function ultLoad(force){if(!ultOn()||!myPid()||!S.session)return;if(ULT_SRV.at===-1||(!force&&Date.now()-ULT_SRV.at<60000))return;const first=!ULT_SRV.ok;ULT_SRV.at=-1;
   try{const r=await rpc("ult_get",{});ULT_SRV.at=Date.now();if(!r||!r.ok)return;
     const srvBos=!r.me||!Object.keys(r.me).length;ULT_SRV.ok=true;ULT_SRV.wk=r.wk;ULT_SRV.lig=r.lig;ULT_SRV.ev=r.ev||[];ULT_SRV.pubs={};for(const x of r.pubs||[])ULT_SRV.pubs[x.p]=x.pub||{};
     if(srvBos){ULT_SRV.upd=null;ultSt();await ultPush()}// ilk kez: telefondaki test verisi hesaba taşınır
-    else if(first||!ULT_SRV.busy&&String(r.upd)!==String(ULT_SRV.upd)){ULT.s=null;try{LS.set("y_ult_"+TID,JSON.stringify(r.me))}catch(_){}ultSt();ULT_SRV.upd=r.upd;ULT.au={}}
+    else if(first||!ULT_SRV.busy&&String(r.upd)!==String(ULT_SRV.upd)){ULT.s=null;try{LS.set("y_ult2_"+TID,JSON.stringify(r.me))}catch(_){}ultSt();ULT_SRV.upd=r.upd;ULT.au={}}
     if(!ULT_SRV.lig||ULT_SRV.wk>=ULT_SRV.lig.start+7){const l=await rpc("ult_lig_start",{});if(l&&l.ok)ULT_SRV.lig={season:l.season,start:l.start,players:l.players}}
     ultLigOto();if(S.tab==="oyun"&&S.pg&&S.pg.type==="ult"||S.sheet&&S.sheet.type==="ult")render(true)}catch(_){ULT_SRV.at=Date.now()-50000}}
 // rakibin kaydettiği kadro (yoksa otomatik); senin kadronla çakışan oyuncu olursa otomatik kadro
@@ -5485,7 +5485,7 @@ async function ultAct(a,el){const st=ultSt();const go=(tab,kf)=>{st.tab=tab;if(k
     case"ultEvoPick":{const c=ultCard(el.dataset.v);if(c){st.evo={cid:c.id,pid:c.pid,lv:0,prog:0,mi:ultBuild().F.length};ultSave()}render(true);break}
     case"ultEvoStop":st.evo=null;st.kadro=st.kadro.map(id=>id==="evo-run"?null:id);ultSave();S.sheet=null;render(true);break;
     case"ultHiz":{const e=st.evo;if(e&&st.hiz>0){st.hiz--;if(e.lv%2===0){e.prog++;if(e.prog>=2){e.lv++;e.prog=0}}else if(e.lv===1){e.lv=2;e.prog=0}else ultEvoDone();ultSave()}render(true);break}
-    case"ultReset":ULT.s={};LS.set("y_ult_"+TID,"");ULT.s=null;ultSt();ultSave();S.sheet=null;render(true);toast("Kulübün sıfırlandı");break;
+    case"ultReset":ULT.s={};LS.set("y_ult2_"+TID,"");ULT.s=null;ultSt();ultSave();S.sheet=null;render(true);toast("Kulübün sıfırlandı");break;
     default:return false}
   return true}
 
