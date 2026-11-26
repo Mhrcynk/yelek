@@ -4963,7 +4963,7 @@ const ULT_SL=ultSL("2-2-2");
 // kadro kuralı: kendi kartların + herkesin temel kartı; başkasının özel kartı sadece kiralıkla
 // kulüp = sahip olduğun kartlar. Kendi kartların hep senin; diğerleri paketten gelir.
 // sanal rakipler (diğer oyuncular) kendi kartları + temel kartların yaklaşık %60'ı ile oynar
-function ultOwn(){const st=ultSt(),a=st.kulup||[];if(!ULT.ow||ULT.ow.a!==a||ULT.ow.n!==a.length)ULT.ow={a,n:a.length,s:new Set(a)};return ULT.ow.s}
+function ultOwn(){const st=ultSt(),a=st.kulup||[],al=ultBuild().al||{};if(!ULT.ow||ULT.ow.a!==a||ULT.ow.n!==a.length||ULT.ow.al!==al)ULT.ow={a,n:a.length,al,s:new Set(a.flatMap(id=>al[id]?[id,al[id]]:[id]))};return ULT.ow.s}
 const ultIzin=(c,pid)=>{if(!c)return false;if(c.pid===pid)return true;if(pid===myPid())return !!(c.mine||c.type==="kira"||ultOwn().has(c.id));return c.type==="temel"&&ultRng(pid+"|"+c.pid)()<.6};
 // rakip senin kadronda ise o maç için yerine aynı mevkiden başka bir temel kart girer (kendi takımında oynar)
 // sanal lig daveti: kadro kilitlenir (kart bilgileriyle birlikte), maç iki kilitli kadrodan iki telefonda da aynı hesaplanır
@@ -5052,9 +5052,13 @@ function ultBuild(){const uk=typeof ULT_SRV!=="undefined"&&ULT_SRV.uyeK||"";if(U
         const EF=ultEfF(ep,epn,epr,pk);const o=ids().filter(id=>ultUye(id)&&(epn[E(id)]||0)>=hp).map(id=>[id,(ep[E(id)]||0)/(epn[E(id)]||1)*(EF[ultRole(id)]||1)]).sort((a,b)=>b[1]-a[1]);if(o[0]&&o[0][1]>0){const prev=pw[pw.length-1];
           if(prev&&prev.first===o[0][0]&&o[1]){add("efsane",o[0][0],ultBonG("efsane")+1,m,"2. kez");add("efsane",o[1][0],ultBonG("efsane"),m,"Yeni efsane")}else add("efsane",o[0][0],ultBonG("efsane"),m);pw.push({first:o[0][0],pk})}}}});
   const cur=sz[sz.length-1]||yrOf({});
+  // bu sezon henüz maça çıkmamış oyuncunun da temel kartı olur (yöneticinin verdiği reytingle); maça çıkınca gerçek temel kartı onun yerini alır
+  const al={};{const has=new Set(C.filter(c=>c.type==="temel"&&String(c.season)===String(cur)).map(c=>c.pid));
+    for(const c of C)if(c.type==="temel")al["temel-"+c.pid+"-yok-"+c.season]=c.id;
+    for(const p of S.players){if(p.guest||p.archived||has.has(p.id))continue;const b=Math.floor(+ovrOf(p.id)||0);if(!b)continue;C.push({id:"temel-"+p.id+"-yok-"+cur,type:"temel",pid:p.id,base:b,bn:"henüz maça çıkmadı",r:b,up:0,mid:null,season:cur,date:"",extra:"",yok:1})}}
   // kimya: son 20 maçta, ikisinin de oynadığı maçların en az yarısında aynı tarafta (en az 2 maç)
   const sw={},bw={};for(const m of F.slice(-20)){const A=plOf(m,"A"),Bb=plOf(m,"B"),all=A.concat(Bb);for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const k=pairKey(all[i],all[j]);bw[k]=(bw[k]||0)+1;if(A.includes(all[i])===A.includes(all[j]))sw[k]=(sw[k]||0)+1}}
-  ULT.c={C,same,sw,bw,epn,epr,DN,DK,dnOf,pmN:F.filter(x=>per(yrOf(x))===per(cur)).length,HN,KN,HTN,car,sea,ep,seri,seriDone,sz,cur,pk:per(cur),F};ULT.k=S.stats;ULT.uk=uk;return ULT.c}
+  ULT.c={C,al,same,sw,bw,epn,epr,DN,DK,dnOf,pmN:F.filter(x=>per(yrOf(x))===per(cur)).length,HN,KN,HTN,car,sea,ep,seri,seriDone,sz,cur,pk:per(cur),F};ULT.k=S.stats;ULT.uk=uk;return ULT.c}
 // efsane puanında mevki çarpanı: her mevkinin maç başı ortalaması takım ortalamasına eşitlenir
 function ultEfF(ep,epn,epr,pk){const rs={};let t=0,n=0;for(const[k,v]of Object.entries(ep)){if(!k.startsWith(pk+"|"))continue;const id=k.slice(String(pk).length+1),r=ultRole(id),c=epn[k]||0;if(!c)continue;(rs[r]=rs[r]||[0,0]);rs[r][0]+=v;rs[r][1]+=c;t+=v;n+=c}
   const a=n?t/n:1,W=3,o={};for(const r of["KL","DF","OS","FV"]){const x=rs[r]||[0,0];o[r]=clamp(a/Math.max(.5,(x[0]+W*a)/(x[1]+W)),.6,2.5)}return o}
@@ -5064,7 +5068,7 @@ function ultCards(){const B=ultBuild(),st=ultSt(),me=myPid();const X=B.C.slice()
   const ev=st.evo;if(ev&&ev.lv>0){const c=B.C.find(x=>x.id===ev.cid);if(c){const r=Math.min(80,c.base+ev.lv);X.push({id:"evo-run",type:"evo",pid:c.pid,base:c.base,r,up:r-c.base,season:B.cur,bn:"gelişim başında",extra:ev.lv+"/4",mine:1})}}
   st.kira.forEach((k,i)=>{const c=B.C.find(x=>x.id===k.cid);if(c&&k.left>0)X.push({...c,id:"kira-"+i,type:"kira",ot:c.type,extra:k.left+" maç",mine:1})});
   return X}
-const ultCard=id=>ultCards().find(c=>c.id===id);
+const ultCard=id=>{const L=ultCards();let c=L.find(c=>c.id===id);if(!c&&id){const a=ultBuild().al[id];if(a)c=L.find(c=>c.id===a)}return c};
 function ultBest(pid){let b=null;for(const c of ultBuild().C)if(c.pid===pid&&(!b||c.r>b.r))b=c;return b}
 function ultCls(c){return c.type==="temel"?tierOf(c.base):"ul-"+c.type}
 function ultCardH(c,o){o=o||{};const p=P(c.pid);if(!p)return"";const ph=photoOf(c.pid);// kart yüzünde türün tam adı; kısa ek bilgi sadece seri, gelişim ve kiralıkta (ayrıntı kart sayfasında)
