@@ -5336,6 +5336,9 @@ function ultPose(r,o){const us=o.att,A=us?r.P0.a:r.P0.b,D=us?r.P0.b:r.P0.a,sa=us
   for(const k in out)out[k]=[Math.round(out[k][0]*10)/10,Math.round(out[k][1]*10)/10];return out}
 function ultAk(us,js){document.querySelectorAll(".ulm-p.ak").forEach(x=>x.classList.remove("ak"));for(const j of js){const t=document.querySelector(`.ulm-p[data-s="${us?"a":"b"}${j}"]`);if(t)t.classList.add("ak")}}
 function ultPlace(r,pos){r.pos=pos;for(const[k,p]of Object.entries(pos)){const t=document.querySelector(`.ulm-p[data-s="${k}"]`);if(t){t.style.left=p[0]+"%";t.style.top=p[1]+"%"}}}
+// golden sonra santra: herkes kendi yarı sahasındaki yerine döner, gol yiyen takım ortadan başlar
+function ultSantra(r,kus){const pos={};for(const us of[true,false]){const X=us?r.P0.a:r.P0.b;X.cs.forEach((c,j)=>{if(!c)return;const[x,y]=ultXY(us,j,X);pos[(us?"a":"b")+j]=[x,us?55+(y-15)/71*37:8+(y-9)/66*37]})}
+  const X=kus?r.P0.a:r.P0.b,j=X.cs.length-1;if(X.cs[j])pos[(kus?"a":"b")+j]=[50,kus?53:47];ultTrail(null);ultPlace(r,pos);ultBall([50,50])}
 const ultP=(r,us,j)=>r.pos&&r.pos[(us?"a":"b")+j]||ultXY(us,j,us?r.P0.a:r.P0.b);
 const ULT_KN={kor:"Korner",sv:"Serbest vuruş",uz:"Uzaktan şut",pen:"Penaltı",kon:"Kontra atak"};
 function ultTick(){const r=ULT.run;if(!r||r.done)return;const e=r.P0.ev[r.i];if(!e){ultFinish();return}
@@ -5358,7 +5361,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;const e=r.P0.ev[r.i];if(
     const b=ultP(r,e.us,P[q]);ultTrail([a,b,e.kp[q-1],e.us]);ultOn2(e.us,P[q]);ultBall(b);if(e.us&&e.kp[q-1])r.stl.ka++});
   steps.push(()=>{if(e.us)r.stl.sa++;else r.stl.sb++;const nas=as&&e.kind!=="pen";
     const how={kor:" kafayla",sv:" serbest vuruştan",uz:" uzaktan",pen:" penaltıdan",kon:" kontradan"}[e.kind]||"";
-    if(e.goal){if(e.us)r.sk.a++;else r.sk.b++;ultBall(e.us?[50,2]:[50,98]);setTimeout(()=>{if(ULT.run===r)ultPlace(r,ultPose(r,{att:e.us,mode:"gol",ball:[50,e.us?8:92],sh:shj}))},350/r.hiz);ultFeed(`${e.dk}'`,`⚽ ${e.us?"GOL!":"Gol yedik ·"} ${sh}${how}${nas?(e.kind==="kor"?" · orta ":" · asist ")+as:""}`,e.us?"g":"x");ultGoal(e.us,X.cs[P[last]].pid)}
+    if(e.goal){if(e.us)r.sk.a++;else r.sk.b++;ultBall(e.us?[50,2]:[50,98]);setTimeout(()=>{if(ULT.run===r)ultPlace(r,ultPose(r,{att:e.us,mode:"gol",ball:[50,e.us?8:92],sh:shj}))},350/r.hiz);setTimeout(()=>{if(ULT.run===r&&!r.skip)ultSantra(r,!e.us)},1000/r.hiz);ultFeed(`${e.dk}'`,`⚽ ${e.us?"GOL!":"Gol yedik ·"} ${sh}${how}${nas?(e.kind==="kor"?" · orta ":" · asist ")+as:""}`,e.us?"g":"x");ultGoal(e.us,X.cs[P[last]].pid)}
     else if(e.miss){ultBall(e.us?[30+Math.random()*40,1]:[30+Math.random()*40,99]);ultFeed(`${e.dk}'`,e.kind==="pen"?`${sh} penaltıyı kaçırdı`:`${sh}${e.kind==="kor"?" kafa vuruşu":" şut"} · ${R2()<.3?"direkten döndü":"auta gitti"}`,"")}
     else{const kl=e.us?r.P0.b.cs[0]:r.P0.a.cs[0];ultBall(e.us?[50,9]:[50,91]);const nx=r.P0.ev[r.i+1];ultFeed(`${e.dk}'`,`${sh}${e.kind==="pen"?" penaltı":" şut"} · ${kl?shortName(nameOf(kl.pid)):"kaleci"} ${nx&&nx.ard&&nx.us===e.us?"kornere çeldi":"kurtardı"}`,"")}});
   let k=0;const go=()=>{if(ULT.run!==r)return;if(r.skip){ultFinish();return}if(k<steps.length){steps[k++]();ultDraw();setTimeout(go,(RM2?250:560)/r.hiz)}else{r.i++;setTimeout(ultTick,(e.goal?1300:380)/r.hiz)}};go()}
