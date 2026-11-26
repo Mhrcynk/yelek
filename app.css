@@ -5787,3 +5787,12 @@ button.ulr{cursor:pointer}button.ulr:disabled{opacity:.5}
 .ultac-r{flex-direction:column;align-items:stretch;gap:6px}.ultac-r>small{width:auto}.ultac .ulso{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;max-width:none;overflow:visible}.ultac .ulso-w{grid-template-columns:repeat(5,minmax(0,1fr))}.ultac .ulso button{padding:0 4px}
 .ultac .ult-n{margin:0 2px 6px}
 .ultst span{flex:none}.ultst>span:first-child{flex:1}.ultst .sw{width:50px;height:30px}
+/* Ultimate kadro: düğmeler ve oyun planı */
+.ulkb{display:flex;gap:8px}.ulkb button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;border-radius:14px;font:800 .875rem/1 Inter,sans-serif;cursor:pointer;white-space:nowrap;border:0}
+.ulkb-a{flex:1;background:var(--ug);color:#2A1F00}.ulkb-a svg{width:16px;height:16px;fill:currentColor}
+.ulkb-c{flex:none;padding:0 18px;background:var(--card);color:var(--c-ink2);box-shadow:inset 0 0 0 1px var(--c-line)}
+.ulplan{gap:10px}.ulplan-s{font:800 .875rem var(--display);color:var(--ug);text-transform:uppercase}
+.ulseg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px;border-radius:14px;background:rgba(0,0,0,.25)}.ulseg5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.ulseg button{min-height:40px;border:0;border-radius:11px;background:none;color:var(--c-ink3);font:700 .8125rem Inter,sans-serif;cursor:pointer;padding:0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ulseg5 button{font-size:.75rem}.ulseg button.on{background:var(--ug);color:#2A1F00;font-weight:800}
+.ulfx{display:flex;flex-wrap:wrap;gap:6px}.ulfx span{font:700 .75rem Inter,sans-serif;padding:5px 9px;border-radius:9px}.ulfx .p{background:rgba(0,229,138,.12);color:#5FF0B0}.ulfx .m{background:rgba(255,92,122,.12);color:#FF9DB0}
