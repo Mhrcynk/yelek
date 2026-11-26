@@ -5952,7 +5952,6 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 @media (prefers-reduced-motion:reduce){#ulTr line{animation:none;opacity:.6}}
 button.ulch{border:0;background:rgba(0,0,0,.25);border-radius:8px;padding:5px 7px;min-height:24px;cursor:pointer;color:inherit}button.ulch.on{outline:2px solid #00E58A}
 .ulch.ulmd{font:800 .6875rem Inter,sans-serif;color:#fff;background:#C2185B;padding:4px 7px}
-.ulp-s.ulkd{opacity:.45}.ulp-s.ulks .mzc{box-shadow:0 0 0 2px #00E58A}
 .ulkdk ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.ulkdk li{display:flex;justify-content:space-between;gap:10px;font-size:.8125rem}.ulkdk li b{color:#3ee08f}.ulkdk li:last-child{color:var(--c-ink3);font-size:.75rem}
 button.ulch{min-height:40px;min-width:44px;margin:-8px 0;background:none;align-items:center;justify-content:center}button.ulch.on{outline:none}button.ulch.on i:not(.on){border-bottom-color:rgba(0,229,138,.35)}.ulch.ulmd{min-height:40px;background:none;color:#ff8bb5}
 .ulkgl{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}.ulkgl i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.18)}.ulkgl i.on{background:#00E58A}
@@ -5978,3 +5977,5 @@ button.ulch{min-height:40px;min-width:44px;margin:-8px 0;background:none;align-i
 /* önemli anlar */
 .ultl-onem .ultl-r{height:26px}.ultl-onem .tlm{font:700 .6875rem/1 Inter,sans-serif;padding:5px 7px;border-radius:8px;background:rgba(245,197,66,.16);color:#FFE08A}.ultl-onem .tlm.o{background:rgba(183,156,255,.18);color:#d4c7ff}.ultl-onem .tlm b{margin-right:4px;opacity:.75}.ultl-onem .tlm.tl-kr{background:rgba(229,57,80,.2);color:#ff9aa8}
 .ultl-onem .ultl-r.l2{height:54px}
+/* kimya seçenekleri (örnek) */
+.ulkom svg{z-index:0}.ulkc-g{color:#00E58A}.ulkc-a{color:#F5C542}.ulkc-r{color:#E53950}
