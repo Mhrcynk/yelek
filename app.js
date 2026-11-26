@@ -5453,7 +5453,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.skip){ultFinish();r
   const mv=document.querySelector(".ulm2");if(mv)mv.style.setProperty("--mv",(RM2?0:Math.round(480*ULT_TM*.85/r.hiz))+"ms");
   if(e.fx){ultAk(e.us,[e.j]);r.dk=e.dk;const p0=ultP(r,e.us,e.j);ultPlace(r,ultPose(r,{att:e.us,mode:"ak",ball:e.fx==="tac"?[e.side,p0[1]]:p0,car:e.j}));const p=ultP(r,e.us,e.j),who=nm(e.j),tk=e.us?"":" (rakip)";ultTrail(null);ultOn2(e.us,e.j);
     if(e.fx==="tac"){ultBall([e.side,p[1]]);ultOkCiz([e.side,p[1]],[e.side<50?e.side+13:e.side-13,p[1]+(e.us?-6:6)],"tac",.15);ultFeed(`${D}'`,`Taç · ${who}${tk}`,"")}
-    else if(e.fx==="faul"){ultBall(p);ultBub([p[0],p[1]-6],"Faul","fl");ultFeed(`${D}'`,`Faul · ${who}${tk}`,"")}
+    else if(e.fx==="faul"){ultBall(p);ultBub([p[0],p[1]-6],"Faul","bf");ultFeed(`${D}'`,`Faul · ${who}${tk}`,"")}
     else if(e.fx==="kirmizi"){ultBall(p);ultBub([p[0],p[1]-7],"<i></i>","kr",1700);ultFeed(`${D}'`,`🟥 Kırmızı kart · ${who}${tk} oyundan atıldı`,"r");const t=document.querySelector(`.ulm-p[data-s="${e.us?"a":"b"}${e.j}"]`);if(t)t.classList.add("out");r.red=r.red||[];r.red.push((e.us?"a":"b")+e.j)}
     else{ultBall(p);ultBub([p[0],p[1]-7],"<i></i>","sr");ultFeed(`${D}'`,`🟨 Sarı kart · ${who}${tk}`,"y")}
     if(e.fx!=="tac"){if(e.us)r.stl.fa++;else r.stl.fb++}ultDraw();r.i++;setTimeout(ultTick,T(e.fx==="tac"?650:900));return}
@@ -5466,7 +5466,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.skip){ultFinish();r
     {const hp=ultP(r,e.us,P[0]);ultPlace(r,ultPose(r,{att:e.us,mode:md,ball:e.from||[hp[0],e.us?Math.max(hp[1],55):Math.min(hp[1],45)],car:e.from?null:P[0],tk:tkj,sh:shj,step:0,zone:P.length===1&&!e.from?(e.kind==="uz"?"uz":"ak"):null}))}
     if(e.from){ultBall(e.from);
       if(e.kind==="kor"){if(e.us)r.stl.ka2++;else r.stl.kb2++;ultKoseIsaret(e.from);const hd=r.pos[(e.us?"a":"b")+shj];if(hd)ultOkCiz(e.from,hd,"kor",e.from[0]<50?.28:-.28)}
-      else if(e.kind==="sv"){const g=[50,e.us?2:98];ultOkCiz(e.from,g,"sv",e.from[0]<50?-.18:.18);ultBub([e.from[0],e.from[1]+dir*-5],"Serbest vuruş","fl")}
+      else if(e.kind==="sv"){const g=[50,e.us?2:98];ultOkCiz(e.from,g,"sv",e.from[0]<50?-.18:.18);ultBub([e.from[0],e.from[1]+dir*-5],"Serbest vuruş","bf")}
       else if(e.kind==="pen"){ultBub([50,e.us?20:80],"Penaltı!","pn",1500)}
       if(kn)ultFeed(`${D}'`,e.kind==="pen"?`Penaltı! ${sh} topun başında`:`${kn}${e.kind==="kor"&&as?" · "+as+" ortaya kesecek":e.kind==="sv"?" · "+sh+" topun başında":""}`,"")}
     else{ultBall(ultP(r,e.us,P[0]));if(e.kind==="kon"){ultBub(ultP(r,e.us,P[0]),"Kontra!","kn");ultFeed(`${D}'`,`Kontra atak · ${e.us?"":"rakip · "}${nm(P[0])}`,"")}else if(e.kind==="uz")ultFeed(`${D}'`,`${nm(P[0])} şut için alan arıyor`,"");else ultFeed(`${D}'`,`${nm(P[0])} topla ilerliyor`,"")}}];
