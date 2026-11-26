@@ -5255,8 +5255,18 @@ function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="
   if(v==="pack")return ultPackSheet();
   if(v==="canta")return ultCantaSheet();
   if(v==="rakip")return ultRakipSheet();
-  if(v==="pick"){const i=+S.sheet.i,role=ultSL(st.dz||"2-2-2")[i][0];const used=new Set(st.kadro.map((id,j)=>j!==i&&id?(ultCard(id)||{}).pid:null).filter(Boolean));const L=ultCards().filter(c=>!used.has(c.pid)).sort((a,b)=>(ultRole(b.pid)===role)-(ultRole(a.pid)===role)||b.r-a.r);
-    return `<div class="ch"><div><div class="eyebrow">Takım</div><h2>${role} seç</h2></div>${cl}</div><p class="ult-n">Önce bu mevkideki oyuncular. Özel kart sınırı 3.</p><div class="mzk">${L.slice(0,60).map(c=>ultCardH(c,{act:"ultPick",i})).join("")}</div>${st.kadro[i]?`<button class="btn ult-w" data-act="ultUnset" data-i="${i}">Bu yeri boşalt</button>`:""}`}
+  if(v==="pick"){const i=+S.sheet.i,role=ultSL(st.dz||"2-2-2")[i][0];const used=new Set(st.kadro.map((id,j)=>j!==i&&id?(ultCard(id)||{}).pid:null).filter(Boolean));
+    const spL=3-st.kadro.filter((id,j)=>j!==i&&id&&ULT_SP.includes((ultCard(id)||{}).type)).length;const ok=c=>!ULT_SP.includes(c.type)||spL>0;
+    const by={};for(const c of ultCards())if(!used.has(c.pid))(by[c.pid]=by[c.pid]||[]).push(c);for(const k in by)by[k].sort((a,b)=>b.r-a.r);
+    const pp=S.sheet.pp&&by[S.sheet.pp]?S.sheet.pp:null;
+    if(pp){return `<div class="ch"><div><div class="eyebrow">${role} seç · ${esc(shortName(nameOf(pp)))}</div><h2>Hangi kartı?</h2></div>${cl}</div><div class="ulap-h"><button class="lnk" data-act="ultPP" data-v="">‹ Bütün oyuncular</button></div>${spL<=0?`<p class="ult-n">Özel kart sınırı dolu (3). Sadece temel kart koyabilirsin.</p>`:""}<div class="mzk">${by[pp].map(c=>ok(c)?ultCardH(c,{act:"ultPick",i}):"").join("")}</div>`}
+    const item=pid=>{const L=by[pid],c=L.find(ok)||null;if(!c)return"";const n=L.filter(ok).length;return `<div class="ulpi">${ultCardH(c,{act:"ultPick",i})}${n>1?`<button class="ulpi-b" data-act="ultPP" data-v="${esc(pid)}">${n} kartı var ›</button>`:`<span class="ulpi-b off">1 kartı var</span>`}</div>`};
+    const ps=Object.keys(by).filter(pid=>by[pid].some(ok)).sort((a,b)=>by[b].find(ok).r-by[a].find(ok).r);
+    const ayni=ps.filter(pid=>ultRole(pid)===role),diger=ps.filter(pid=>ultRole(pid)!==role);
+    return `<div class="ch"><div><div class="eyebrow">Takım</div><h2>${role} seç</h2></div>${cl}</div><p class="ult-n">Her oyuncunun en iyi kartı görünür. Başka kartını seçmek için altındaki düğmeye dokun.${spL<=0?" Özel kart sınırı dolu: sadece temel kartlar.":` Kalan özel kart hakkın: ${spL}.`}</p>
+      ${ayni.length?`<h4 class="ulgh"><span>${role} oynayanlar</span><small class="num">${ayni.length}</small></h4><div class="mzk">${ayni.map(item).join("")}</div>`:""}
+      ${diger.length?`<h4 class="ulgh"><span>Başka mevkiler</span><small class="num">${diger.length}</small></h4><p class="ulgh-s">Kendi mevkisinde oynamadığı için kimyası 0 olur.</p><div class="mzk">${diger.map(item).join("")}</div>`:""}
+      ${st.kadro[i]?`<button class="btn ult-w" data-act="ultUnset" data-i="${i}">Bu yeri boşalt</button>`:""}`}
   if(v==="mac")return ultMacSheet();
   return ""}
 async function ultAct(a,el){const st=ultSt();const go=(tab,kf)=>{st.tab=tab;if(kf)st.kf=kf;ultSave();S.sheet=null;if(S.tab!=="oyun"||!S.pg||S.pg.type!=="ult")pgOpen({type:"ult",mid:(lastFinM()||{}).id});render(true);window.scrollTo(0,0)};
@@ -5271,6 +5281,7 @@ async function ultAct(a,el){const st=ultSt();const go=(tab,kf)=>{st.tab=tab;if(k
     case"ultAp":st.ap=el.dataset.v||null;ultSave();S.sheet=null;st.tab="kart";st.kf="album";render(true);window.scrollTo(0,0);break;
     case"ultLeg":S.sheet={type:"ult",v:"leg"};render(true);break;
     case"ultTur":S.sheet={type:"ult",v:"tur",t:el.dataset.v,p:el.dataset.p};render(true);break;
+    case"ultPP":S.sheet.pp=el.dataset.v||null;render(true);break;
     case"ultAk":st.ak=el.dataset.v;ultSave();render(true);break;
     case"ultDz":st.dz=el.dataset.v;ultSave();render(true);break;
     case"ultTk":st.tk=el.dataset.v;ultSave();render(true);break;
