@@ -6038,19 +6038,26 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulsk-l{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}.ulsk{font:800 .8125rem/1 Inter,sans-serif;padding:5px 8px;border-radius:7px;font-variant-numeric:tabular-nums}.ulsk.w{background:rgba(0,229,138,.16);color:#3ee08f}.ulsk.l{background:rgba(229,57,80,.18);color:#ff9aa8}.ulsk.d{background:rgba(245,197,66,.16);color:#F5C542}.ulsk.s{background:rgba(255,255,255,.08);color:#fff}.ulsk.p{background:rgba(95,227,245,.14);color:#8EEFFB}
 .ulser-l .w b{color:#3ee08f}.ulser-l .l b{color:#ff9aa8}.ulser-l .d{border-color:#F5C542}.ulser-l .d b,.ulser-l .d small{color:#F5C542}.ulser-l b.num{font-size:1.5rem}
 .ulhi{animation:ulhi 1.6s ease 2}.ulfin.ulhi{border-radius:12px}@keyframes ulhi{0%,100%{box-shadow:inset 0 0 0 1px var(--c-line)}40%{box-shadow:0 0 0 3px #F5C542,0 0 24px rgba(245,197,66,.45)}}
-/* Ultimate maç ekranı yatay */
+/* Ultimate maç ekranı: dikeyde tek sütun (sıra order ile), yatayda saha solda + kaydırılan sağ sütun */
 .ulyat-b{display:flex;gap:6px}
+.ulmac{display:flex;flex-direction:column}.ulmac:not(.ulyat) .ulyat-s{display:contents}
+.ulmac:not(.ulyat)>.ulm2{order:6}.ulmac:not(.ulyat) .ulyat-s>.ch{order:1}.ulmac:not(.ulyat) .ulyat-s>.ulsb2{order:2}.ulmac:not(.ulyat) .ulyat-s>#ulSc{order:3}.ulmac:not(.ulyat) .ulyat-s>.ulmom{order:4}.ulmac:not(.ulyat) .ulyat-s>.ultl{order:5}.ulmac:not(.ulyat) .ulyat-s>*{order:7}
+/* dikey: başlık hep görünür ve dokunulur (çentik altında kalmaz) */
+.ulmac:not(.ulyat) .ch{position:sticky;top:0;z-index:7;margin:-10px -16px 6px;padding:max(10px,env(safe-area-inset-top,0px)) 16px 8px;background:linear-gradient(#1a1236 75%,rgba(26,18,54,0))}
 #modal .sheet:has(.ulyat){position:fixed;inset:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none!important;border-radius:0!important;padding:0!important;border:0!important;animation:none;overflow:hidden!important;background:#0e0a22}
 #modal .sheet:has(.ulyat)>.grab{display:none}
-.ulyat{--W:100vw;--H:100vh;--H:100dvh;position:relative;width:var(--W);height:var(--H);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:10px max(12px,env(safe-area-inset-right,0px)) 12px calc(var(--fw) + 24px + env(safe-area-inset-left,0px));--fh:calc(var(--H) - 20px);--fw:min(calc(var(--W) - 360px),calc(var(--fh) * 1.55))}
-.ulyat-z{--W:100vh;--W:100dvh;--H:100vw;position:fixed;top:0;left:0;transform-origin:top left;transform:rotate(90deg) translateY(-100%);padding-left:calc(var(--fw) + 24px);padding-right:12px}
-.ulyat .ulm2{position:absolute;left:calc(12px + env(safe-area-inset-left,0px));top:10px;width:var(--fw);height:var(--fh);margin:0;background:radial-gradient(50% 80% at 100% 50%,rgba(245,197,66,.1),transparent 60%),repeating-linear-gradient(90deg,#1F1340 0 44px,#1A1036 44px 88px)}
-.ulyat-z .ulm2{left:12px}
+.ulyat{--W:100vw;--H:100vh;--H:100dvh;--pl:max(12px,env(safe-area-inset-left,0px));--pr:max(12px,env(safe-area-inset-right,0px));--pt:10px;--pb:10px;
+  width:var(--W);height:var(--H);box-sizing:border-box;padding:var(--pt) var(--pr) var(--pb) var(--pl);display:grid;grid-template-columns:var(--fw) minmax(0,1fr);gap:12px;overflow:hidden;
+  --fh:calc(var(--H) - var(--pt) - var(--pb));--fw:min(calc(var(--W) - var(--pl) - var(--pr) - 340px),calc(var(--fh) * 1.55))}
+/* döndürülmüş yatay: telefonun üstü (saat çubuğu) ekranın solu, altı (ana çizgi) sağı olur */
+.ulyat-z{--W:100vh;--W:100dvh;--H:100vw;--pl:max(12px,env(safe-area-inset-top,0px));--pr:max(12px,env(safe-area-inset-bottom,0px));position:fixed;top:0;left:0;transform-origin:top left;transform:rotate(90deg) translateY(-100%)}
+.ulyat>.ulm2{grid-column:1;grid-row:1;align-self:center;width:var(--fw);height:var(--fh);margin:0;background:radial-gradient(50% 80% at 100% 50%,rgba(245,197,66,.1),transparent 60%),repeating-linear-gradient(90deg,#1F1340 0 44px,#1A1036 44px 88px)}
+.ulyat .ulyat-s{grid-column:2;grid-row:1;min-width:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-right:2px}
 .ulyat .ulm-cam{inset:auto;left:50%;top:50%;width:var(--fh);height:var(--fw);transform:translate(-50%,-50%) rotate(90deg)}
 .ulyat .ulm2 .ulm-p{transform:translate(-50%,-50%) rotate(-90deg)}
 .ulyat .ulm2 .ulm-p.on{transform:translate(-50%,-50%) rotate(-90deg) scale(1.35)}
 .ulyat .mg-c .ulm-p:not(.ak):not(.on){transform:translate(-50%,-50%) rotate(-90deg) scale(.5)}
-.ulyat .ch{margin-bottom:6px}.ulyat .ch h2{font-size:1.125rem}.ulyat .ulsb2{margin-top:0}.ulyat .ulfeed{max-height:96px;overflow:hidden}
+.ulyat .ch{margin-bottom:6px}.ulyat .ch h2{font-size:1.125rem}.ulyat .ulsb2{margin-top:0}.ulyat .ulfeed{max-height:none}
 .ulyat .ulgl{z-index:5}
 /* maç ekranı: 90 dk, tabela golcüleri, baskı, animasyonlar */
 .ulsb2{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.ulsb2-gs{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;min-width:0}.ulsb2-gs:has(.ulsb2-g:empty+.ulsb2-g:empty){display:none}.ulsb2-g{display:flex;flex-wrap:wrap;gap:0 6px;font:600 .75rem/1.35 Inter,sans-serif;color:#E8DDFF;min-width:0;max-height:2.7em;overflow:hidden}.ulsb2-g{flex:1 1 0}.ulsb2-g.o{justify-content:flex-end;text-align:right}
@@ -6076,3 +6083,4 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulsb2>span:nth-child(3){justify-content:flex-end}
 .ulm2 .ulm-b{transition:left var(--mv,500ms) ease-out,top var(--mv,500ms) ease-out}
 .ultkr .ulfin{gap:8px}.ultkr .ulsk{flex:none}.ultkr .btn.sm{flex:none}
+.ulyat .ch{position:sticky;top:0;z-index:7;background:#0e0a22;padding:4px 0 6px;margin:0 0 6px}
