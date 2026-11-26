@@ -539,7 +539,10 @@ const pairKey=(a,b)=>a<b?a+"|"+b:b+"|"+a;
 const togOf=(a,b)=>(S.tog||{})[pairKey(a,b)]||{n:0,W:0,D:0,L:0,ga:0};
 const vsOf=(a,b)=>{const o=(S.vs||{})[pairKey(a,b)]||{n:0,d:0,w:{}};return{n:o.n,d:o.d,a:o.w[a]||0,b:o.w[b]||0}};
 const stkIcon=s=>s&&s.streak?`<span class="stk ${s.streak.hot?"hot":"cold"}" title="${esc(s.streak.t)}" aria-label="${esc(s.streak.t)}">${s.streak.hot?"🔥":"❄️"}</span>`:"";
-const tierOf=o=>o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4";
+// kart rengi takım içi sıraya göre: en iyi %25 altın, sonraki %25 pembe, sonraki %25 mor, son %25 koyu (reytingler birbirine yakın); ekranda görünen tam sayıya bakılır, eşit görünen kartlar aynı renkte olur
+let TQ=null;function tierCuts(){if(TQ&&TQ.s===S.stats&&TQ.n===S.players.length)return TQ.c;const v=S.players.filter(p=>!p.guest&&!p.archived).map(p=>Math.floor(+ovrOf(p.id)||0)).sort((a,b)=>b-a);const n=v.length;
+  const c=n<4?[80,75,70]:[v[Math.ceil(n/4)-1],v[Math.ceil(n/2)-1],v[Math.ceil(3*n/4)-1]];TQ={s:S.stats,n:S.players.length,c};return c}
+const tierOf=o=>{const c=tierCuts();o=Math.floor(+o||0);return o>=c[0]?"t1":o>=c[1]?"t2":o>=c[2]?"t3":"t4"};
 
 /* ================= Veri ================= */
 async function load(force){
@@ -3124,10 +3127,10 @@ function viewKartlar(){
 function mzRow(p,rk){const s=S.stats[p.id]||{ovr:baseOf(p),lastD:0};const st=stOf(p);const o=s.ovr;const ph=photoOf(p.id);const x=STATUS[st];
   const tr=s.lastD>0?`<span class="mzpl-tr up">▲${fA(s.lastD)}</span>`:s.lastD<0?`<span class="mzpl-tr dn">▼${fA(s.lastD)}</span>`:"";
   const srt=S.f.sort;const sub=srt==="mv"?`<span class="mzpl-mv">${fM(mvOf(p.id))}</span>${ageOf(p)!=null?`<span class="mzpl-t">${ageOf(p)} yaş</span>`:""}`:srt==="form"?formNotes(s):`${kondChip(p.id)}<span class="mzpl-t">${eposOf(p)}</span>${altOf(p)?`<span class="mzpl-t alt">${altOf(p)}</span>`:""}${p.guest?"":p.yedek?'<span class="mzpl-t yd">Yedek</span>':""}`;
-  return `<button class="mzpl-r${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzpl-k num">${rk}</span><span class="mzpl-p ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>
-    <span class="mzpl-x"><b>${esc(p.name)}</b><span class="mzpl-s">${sub}${st!=="hazir"&&x?`<span class="mzpl-t st">${x.flag} ${esc(x.label)}</span>`:""}</span></span><span class="mzpl-o"><b class="num ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}">${o}</b>${tr}</span></button>`}
+  return `<button class="mzpl-r${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzpl-k num">${rk}</span><span class="mzpl-p ${tierOf(o)}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>
+    <span class="mzpl-x"><b>${esc(p.name)}</b><span class="mzpl-s">${sub}${st!=="hazir"&&x?`<span class="mzpl-t st">${x.flag} ${esc(x.label)}</span>`:""}</span></span><span class="mzpl-o"><b class="num ${tierOf(o)}">${o}</b>${tr}</span></button>`}
 function mzCard(p){const s=S.stats[p.id]||{};const o=s.ovr??baseOf(p);const ph=photoOf(p.id);const st=stOf(p);
-  return `<button class="mzc ${o>=80?"t1":o>=75?"t2":o>=70?"t3":"t4"}${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzc-o"><b class="num">${o}</b><small>${eposOf(p)}</small></span>${ph?`<img src="${esc(ph)}" alt="">`:`<span class="mzc-sil">${SIL}</span>`}<span class="mzc-n">${esc(shortName(p.name))}</span>${p.yedek?'<i class="mzc-y" title="Yedek kadro">Y</i>':""}${st!=="hazir"&&STATUS[st]?`<i class="mzc-st">${STATUS[st].flag}</i>`:""}</button>`}
+  return `<button class="mzc ${tierOf(o)}${UNAVAIL.includes(st)?" out":""}${S.me===p.id?" me":""}" data-act="open" data-id="${esc(p.id)}" aria-label="${esc(p.name)}, reyting ${o}, ${eposOf(p)}"><span class="mzc-o"><b class="num">${o}</b><small>${eposOf(p)}</small></span>${ph?`<img src="${esc(ph)}" alt="">`:`<span class="mzc-sil">${SIL}</span>`}<span class="mzc-n">${esc(shortName(p.name))}</span>${p.yedek?'<i class="mzc-y" title="Yedek kadro">Y</i>':""}${st!=="hazir"&&STATUS[st]?`<i class="mzc-st">${STATUS[st].flag}</i>`:""}</button>`}
 const vcls=v=>v>=80?"v8":v>=70?"v7":v>=60?"v6":"v5";
 function formNotes(s){const L=(s.hist||[]).filter(x=>x.kind==="oynadi"&&x.r&&x.r.pts!=null).slice(-5);
   return L.length?`<span class="fnts" aria-label="Son ${L.length} maç notu">${L.map(x=>`<i class="f${noteCls(x.r.pts)}">${fN(x.r.pts)}</i>`).join("")}</span>`:'<span class="muted small">Henüz maç yok</span>'}
