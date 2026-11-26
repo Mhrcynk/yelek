@@ -5979,3 +5979,4 @@ button.ulch{min-height:40px;min-width:44px;margin:-8px 0;background:none;align-i
 .ultl-onem .ultl-r.l2{height:54px}
 /* kimya seçenekleri (örnek) */
 .ulkom svg{z-index:0}.ulkc-g{color:#00E58A}.ulkc-a{color:#F5C542}
+.ulsr{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.ulsr-i{display:flex;flex-direction:column;align-items:center;min-width:56px;min-height:40px;justify-content:center;padding:2px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:inherit;font:inherit}.ulsr-i small{font-size:.6875rem;opacity:.8}.ulsr-i b{font-size:.875rem}.ulsr-i.w{border-color:#00E58A}.ulsr-i.l{border-color:#E53950}
