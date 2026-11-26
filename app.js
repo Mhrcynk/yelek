@@ -5308,9 +5308,11 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;const e=r.P0.ev[r.i];if(
 const R2=()=>Math.random();
 function ultFinish(){const r=ULT.run;if(!r)return;r.done=true;r.sk={a:r.R0.ga,b:r.R0.gb};r.dk=40;r.stl={sa:r.R0.st.sa,sb:r.R0.st.sb,ka:r.R0.st.ka,ka2:r.R0.st.ka2,kb2:r.R0.st.kb2,fa:r.R0.st.fa,fb:r.R0.st.fb};ultFeed("40'","Maç bitti","e");ultTrail(null);ultDraw();
   const f=document.getElementById("ulFin");if(f){f.hidden=false;setTimeout(()=>f.scrollIntoView({behavior:"smooth",block:"start"}),60)}const c=document.getElementById("ulCtl");if(c)c.hidden=true}
-function ultBall(p){const b=document.getElementById("ulBall");if(b){b.style.left=p[0]+"%";b.style.top=p[1]+"%"}}
+function ultBall(p){if(ULT.run)ULT.run.bp=p;const b=document.getElementById("ulBall");if(b){b.style.left=p[0]+"%";b.style.top=p[1]+"%"}}
 function ultOn2(us,j){document.querySelectorAll(".ulm-p.on").forEach(x=>x.classList.remove("on"));const t=document.querySelector(`.ulm-p[data-s="${us?"a":"b"}${j}"]`);if(t)t.classList.add("on")}
-function ultTrail(l){const g=document.getElementById("ulTr");if(!g)return;if(!l){g.innerHTML="";return}const[a,b,k,us]=l;g.insertAdjacentHTML("beforeend",`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${k?"k":""} ${us?"":"o"}"/>`)}
+// pas çizgisi: topun gerçekten bulunduğu yerden alıcıya, tek çizgi; oyuncular yer değiştirirken eski çizgiler ekranda kalmaz, kısa sürede söner
+function ultTrail(l){const g=document.getElementById("ulTr");if(!g)return;g.innerHTML="";if(!l)return;const[a0,b,k,us]=l;const a=(ULT.run&&ULT.run.bp)||a0;if(Math.hypot(a[0]-b[0],a[1]-b[1])<3)return;
+  g.insertAdjacentHTML("beforeend",`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${k?"k":""} ${us?"":"o"}"/>`)}
 function ultFeed(t,x,c){const r=ULT.run;r.feed.unshift([t,x,c]);r.feed=r.feed.slice(0,4)}
 function ultGoal(us,pid){const o=document.getElementById("ulGoal");if(!o)return;o.className="ulgl "+(us?"us":"op");o.innerHTML=`<b>${us?"GOL!":"Gol yedik"}</b>${avatar(P(pid)||{id:pid,name:"?"},"")}<span>${esc(shortName(nameOf(pid)))}</span>`;o.hidden=false;clearTimeout(ultGoal.t);ultGoal.t=setTimeout(()=>{o.hidden=true},1150/(ULT.run?ULT.run.hiz:1))}
 function ultDraw(){const r=ULT.run;if(!r)return;const s=document.getElementById("ulSk");if(!s)return;s.textContent=r.sk.a+" – "+r.sk.b;
