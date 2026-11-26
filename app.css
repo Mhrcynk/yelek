@@ -5935,3 +5935,5 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .ulfeed li.y span{color:#F2C94C}
 .ulpd{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 8px;font:700 .75rem Inter,sans-serif;color:var(--c-ink2,#cfc6ef);background:rgba(255,255,255,.05);border-radius:10px;padding:5px 4px}.ulpd span{white-space:nowrap}.ulpd .up{color:#3ee08f}.ulpd .dn{color:#ff8b9b}
 .ulm-p.out{opacity:.25;filter:grayscale(1)}.ulfeed li.r span{color:#ff8b9b}
+/* kart türü adı: tam ad, en fazla 2 satır; çoklu kart rozeti varsa sağda yer bırakır */
+.ulc-t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:clip;line-height:1.15;letter-spacing:.02em}/* çoklu kart rozeti sağ üstte, alttaki yazıyla çakışmaz */.mzc.ulc .ulc-x{bottom:auto;top:30px;padding:3px 5px;font-size:.6875rem;border-radius:5px}.mzc.ulc .ulc-x.lo{top:52px}
