@@ -6031,3 +6031,7 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulghost{transition:none;will-change:transform}
 .ulres-s{display:block;font:800 .8125rem Inter,sans-serif;font-style:normal;color:#F5C542;margin-top:6px}
 .ulc img,.ulghost img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;pointer-events:none}.ulghost .mzc{transform:none!important}
+.ulsc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 4px 2px}.ulsc>div{display:flex;flex-direction:column;gap:3px;min-width:0}.ulsc .o{align-items:flex-end;text-align:right}
+.ulsc-i{font:600 .75rem/1.35 Inter,sans-serif;color:var(--c-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:none}.ulsc-i.on{display:block;animation:ulscIn .35s ease}.ulsc-i b{color:#F5C542;font-weight:800}.ulsc .o .ulsc-i b{color:#C9B6FF}
+@keyframes ulscIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.ultb-t span:last-child{white-space:nowrap;font-weight:700;color:var(--c-ink2)}
