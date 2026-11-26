@@ -4954,7 +4954,7 @@ function ultRakipSiz(L,opp){const me=myPid();const i=Array.from(L).findIndex(id=
   const c=ultCards().filter(c=>c.type==="temel"&&ultIzin(c,me)&&!used.has(c.pid)&&c.pid!==opp).sort((a,b)=>(ultRoles(b.pid).includes(role))-(ultRoles(a.pid).includes(role))||b.r-a.r)[0];const o=Array.from(L);o[i]=c?c.id:null;o.f=L.f;o.t=L.t;o.usta=L.usta;return o}
 function ultMy(){const st=ultSt();if(st.kadro.some(id=>id&&!ultIzin(ultCard(id),myPid()))){st.kadro=st.kadro.map(id=>id&&ultIzin(ultCard(id),myPid())?id:null);ultSave()}const L=st.kadro.slice();L.f=st.dz||"2-2-2";L.t=st.tk||"dengeli";L.usta=1;return L}
 const ultOn=()=>!!myPid();
-function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult2_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{})}return ULT.s}
+function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult2_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{});ULT.s.v=2;delete ULT.s.test}return ULT.s}
 // sunucu: kulüp ve ilerleme hesapta saklanır (telefon sadece önbellek); başka cihazdan girince aynı kulüp gelir
 const ULT_SRV={at:0,busy:0,upd:null,pubs:{},lig:null,ev:[],wk:null,t:null,ok:false};
 function ultPub(){const st=ultSt(),B=ultBuild();const ok=id=>id&&B.C.some(c=>c.id===id);return{kadro:(st.kadro||[]).map(id=>ok(id)?id:null),f:st.dz||"2-2-2",t:st.tk||"dengeli"}}
