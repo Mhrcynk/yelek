@@ -2480,7 +2480,7 @@ html.dk .gm{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transfo
 .mzk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .mzc{position:relative;height:150px;border:0;border-radius:20px;padding:10px;display:flex;flex-direction:column;color:#fff;text-align:left;overflow:hidden;cursor:pointer}
 .mzc.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A);color:#2A1300}
-.mzc.t2{background:linear-gradient(160deg,var(--c-pink),#7B3FF2 70%)}
+.mzc.t2{background:linear-gradient(160deg,#FF3EA5,#B0127A 70%)}
 .mzc.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}
 .mzc.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
 .mzc.out{filter:grayscale(.7);opacity:.7}
@@ -2672,7 +2672,7 @@ html.dk .sfin{color:var(--c-gold)}
 .mzpl-k{width:20px;text-align:center;font:800 1rem/1 var(--display);color:#8C7FC0;flex:none}
 .mzpl-p{flex:none;width:52px;height:52px;border-radius:20px;overflow:hidden;display:grid;place-items:center;font:800 1.3125rem var(--display);color:#fff}
 .mzpl-p img{width:100%;height:100%;object-fit:cover;object-position:center 18%}
-.mzpl-p.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C)}.mzpl-p.t2{background:linear-gradient(160deg,var(--c-pink),#7B3FF2)}.mzpl-p.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E)}.mzpl-p.t4{background:linear-gradient(160deg,#4A3A8E,#22164A)}
+.mzpl-p.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C)}.mzpl-p.t2{background:linear-gradient(160deg,#FF3EA5,#B0127A)}.mzpl-p.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E)}.mzpl-p.t4{background:linear-gradient(160deg,#4A3A8E,#22164A)}
 .mzpl-x{flex:1;min-width:0;display:grid;gap:5px}
 .mzpl-x>b{font-weight:700;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mzpl-s{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
@@ -2681,7 +2681,7 @@ html.dk .sfin{color:var(--c-gold)}
 .mzpl-mv{font:800 .875rem var(--display);color:var(--c-green)}
 .mzpl-s .kchip{font-size:.6875rem;padding:3px 6px;border-radius:6px}
 .mzpl-o{display:grid;justify-items:end;gap:2px;flex:none}
-.mzpl-o b{font:800 2rem/1 var(--display)}.mzpl-o b.t1{color:var(--c-gold)}.mzpl-o b.t2{color:var(--c-pink)}.mzpl-o b.t3{color:#B9A8FF}.mzpl-o b.t4{color:#fff}
+.mzpl-o b{font:800 2rem/1 var(--display)}.mzpl-o b.t1{color:var(--c-gold)}.mzpl-o b.t2{color:#FF5CB0}.mzpl-o b.t3{color:#B9A8FF}.mzpl-o b.t4{color:#fff}
 .mzpl-tr{font:700 .6875rem/1 Inter,sans-serif}.mzpl-tr.up{color:var(--c-green)}.mzpl-tr.dn{color:#FF7AA8}
 html.dk .rth,html.dk .kcard,html.dk .phrow{background:var(--c-card)!important;border:0!important;border-radius:20px!important;box-shadow:none!important}
 html.dk .rthh{font:800 1rem/1 var(--display)!important;letter-spacing:.04em!important}
@@ -2782,7 +2782,7 @@ html.dk .rthh .eyebrow{color:#fff!important;opacity:1!important;font-size:.7812r
 html.dk .rth text,html.dk .rth .rtl{fill:var(--c-ink2)!important}
 /* Mor kart zeminleri: eski holo/lila zeminler her yerde kalktı */
 :is(.av,.lth,.tsp,.igav,.igfc,.fut .face).t1,.fut.t1 .face{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A)!important;color:#2A1300!important;animation:none!important}
-:is(.av,.lth,.tsp,.igav,.igfc).t2,.fut.t2 .face{background:linear-gradient(160deg,var(--c-pink),#7B3FF2 70%)!important;color:#fff!important;animation:none!important}
+:is(.av,.lth,.tsp,.igav,.igfc).t2,.fut.t2 .face{background:linear-gradient(160deg,#FF3EA5,#B0127A 70%)!important;color:#fff!important;animation:none!important}
 :is(.av,.lth,.tsp,.igav,.igfc).t3,.fut.t3 .face{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)!important;color:#fff!important;animation:none!important}
 :is(.av,.lth,.tsp,.igav,.igfc).t4,.fut.t4 .face{background:linear-gradient(160deg,var(--c-line),#22164A)!important;color:#fff!important;animation:none!important}
 :is(.av,.lth).t1,:is(.av,.lth).t2,:is(.av,.lth).t3,:is(.av,.lth).t4{border:0!important}
@@ -2829,7 +2829,7 @@ html.dk .ptr{background:transparent!important}
 .pv-ph img{width:100%;height:100%;object-fit:cover;object-position:top}
 .pv-ph .sil{width:70px;height:78px;color:rgba(255,255,255,.4)}
 .pv-c.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A);color:#2A1300}
-.pv-c.t2{background:linear-gradient(160deg,var(--c-pink),#7B3FF2 70%)}.pv-c.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}.pv-c.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
+.pv-c.t2{background:linear-gradient(160deg,#FF3EA5,#B0127A 70%)}.pv-c.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}.pv-c.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
 .pv-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .pv-n{font:800 1.7rem/1 var(--display);text-transform:uppercase;color:#fff;overflow-wrap:anywhere}
 .pv-s{font-size:.7812rem;color:var(--c-ink3)}
@@ -2879,7 +2879,7 @@ html.dk .rth circle{stroke:var(--c-pink)!important}html.dk .rth circle:last-of-t
 .pe-pv{display:flex;gap:12px;align-items:center;border-radius:20px;background:var(--c-card);padding:12px;margin-bottom:12px}
 .pe-c{position:relative;flex:none;width:64px;height:78px;border-radius:12px;color:#fff}
 .pe-c b{position:absolute;left:7px;top:5px;font:800 1.6rem/1 var(--display)}.pe-c small{position:absolute;left:8px;top:32px;font:700 .6875rem var(--display)}
-.pe-c.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A);color:#2A1300}.pe-c.t2{background:linear-gradient(160deg,var(--c-pink),#7B3FF2 70%)}.pe-c.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}.pe-c.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
+.pe-c.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A);color:#2A1300}.pe-c.t2{background:linear-gradient(160deg,#FF3EA5,#B0127A 70%)}.pe-c.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}.pe-c.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
 .pe-x{display:flex;flex-direction:column;gap:3px;min-width:0}.pe-x>b{font:800 1.3125rem/1 var(--display);text-transform:uppercase;color:#fff}.pe-x small{font-size:.7812rem;color:var(--c-ink3)}.pe-x small b{color:#fff}
 .pe-l{border-radius:20px;background:var(--c-card);overflow:hidden;margin-bottom:12px}
 .pe-r{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 14px;border-bottom:1px solid var(--c-card2)}
@@ -2940,7 +2940,7 @@ html.dk .pe-r select{background-image:none!important;padding-right:0!important}
 html.dk .mecur{background:var(--c-card)!important;border:1.5px solid var(--c-pink);border-radius:20px;padding:10px 12px;margin-bottom:12px;color:#fff}
 .mecp{flex:none;width:40px;height:40px;border-radius:12px;overflow:hidden;display:grid;place-items:center;font:800 1rem var(--display);color:#fff}
 .mecp img{width:100%;height:100%;object-fit:cover;object-position:top}
-.mecp.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A)}.mecp.t2{background:linear-gradient(160deg,var(--c-pink),#7B3FF2 70%)}.mecp.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}.mecp.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
+.mecp.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A)}.mecp.t2{background:linear-gradient(160deg,#FF3EA5,#B0127A 70%)}.mecp.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)}.mecp.t4{background:linear-gradient(160deg,var(--c-line),#22164A)}
 .mecur>span:nth-child(2){flex:1;display:flex;flex-direction:column}.mecur small{font-size:.6875rem;color:var(--c-ink3)}.mecur b{font-size:1rem}
 html.dk .mesr{background:var(--c-card)!important;border:0!important;margin-bottom:10px}
 .mepos{margin-bottom:6px}
@@ -2953,7 +2953,7 @@ html.dk .mer.met{position:relative;display:flex;flex-direction:column;align-item
 .metp .sil{width:64px;height:72px;color:rgba(255,255,255,.32)}
 .metn{margin-top:auto;width:100%;font:800 .875rem/1.1 var(--display);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;z-index:1}
 html.dk .mer.met.t1{background:linear-gradient(160deg,var(--c-gold),#FF9F1C 60%,#B4570A)!important;color:#2A1300}
-html.dk .mer.met.t2{background:linear-gradient(160deg,var(--c-pink),#7B3FF2 70%)!important}
+html.dk .mer.met.t2{background:linear-gradient(160deg,#FF3EA5,#B0127A 70%)!important}
 html.dk .mer.met.t3{background:linear-gradient(160deg,#7B3FF2,#3A1A9E 70%)!important}
 html.dk .mer.met.t4{background:linear-gradient(160deg,var(--c-line),#22164A)!important}
 html.dk .mer.met.on{box-shadow:0 0 0 3px #fff inset}

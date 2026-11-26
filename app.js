@@ -4837,7 +4837,7 @@ async function shareImg(m){await fontsOk();
   storyFoot(x,W,H);shareCanvas(c,"kadrolar.png","Kadrolar");
 }
 function drawPhoto(x,im,X,Y,w,h,r){x.save();rr(x,X,Y,w,h,r);x.clip();if(im){const sc=Math.max(w/im.width,h/im.height);x.drawImage(im,X+(w-im.width*sc)/2,Y+(h-im.height*sc)*.2,im.width*sc,im.height*sc)}x.restore()}
-const TIER_COL={t1:["#FFD400","#B4570A","#2A1300"],t5:["#22B573","#0B5E3A","#FFFFFF"],t2:["#FF3EA5","#7B3FF2","#FFFFFF"],t3:["#7B3FF2","#3A1A9E","#FFFFFF"],t4:["#3A2C78","#22164A","#FFFFFF"]};
+const TIER_COL={t1:["#FFD400","#B4570A","#2A1300"],t5:["#22B573","#0B5E3A","#FFFFFF"],t2:["#FF3EA5","#B0127A","#FFFFFF"],t3:["#7B3FF2","#3A1A9E","#FFFFFF"],t4:["#3A2C78","#22164A","#FFFFFF"]};
 
 // büyük FUT kartı (700×1000 taban ölçü, cw'ye göre ölçeklenir)
 async function drawFut(x,p,cx,cy,cw,opt){opt=opt||{};const f=cw/700,cw0=700,ch=1000;const s=S.stats[p.id]||{ovr:baseOf(p),attrs:p.attrs||{}};const o=s.ovr;const[c1,c2,tx]=TIER_COL[p.guest?"t4":tierOf(o)];const tw=opt.tw;
