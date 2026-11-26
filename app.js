@@ -869,6 +869,7 @@ function qkRender(){const old=$("#qk");if(old)old.innerHTML="";const el=$("#view
   addEventListener("touchend",async()=>{if(y0==null)return;y0=null;const el=ptr();
     if(d>=MAX&&el){busy=true;B.classList.add("ptrb");set(MAX);el.classList.add("loading");const t0=Date.now();
       try{await load(true)}catch(_){}
+      try{if(typeof ULT_SRV!=="undefined"&&ULT_SRV.ok){ULT_SRV.at=0;await ultLoad(true)}}catch(_){}
       if(await newVer())return;
       await new Promise(r=>setTimeout(r,Math.max(0,900-(Date.now()-t0))));
       el.classList.remove("loading");el.classList.add("done");const tt=$("#ptt");if(tt){tt.classList.add("on");setTimeout(()=>tt.classList.remove("on"),1800)}await new Promise(r=>setTimeout(r,350));back(420);busy=false}
@@ -5009,6 +5010,8 @@ async function ultLoad(force){if(!ultOn()||!myPid()||!S.session)return;if(ULT_SR
     if(yeni.length&&!UDRAG){const e=yeni[yeni.length-1];if(S.pg&&S.pg.type==="ult"&&!S.sheet){ultDvIzle(e.kind,e.k);return}toast(`${shortName(nameOf(e.a))} maçı başlattı · Ultimate › Maçlar`)}
     if(first||(ULT_SRV.sig!==eskiSig&&!UDRAG&&(S.tab==="oyun"&&S.pg&&S.pg.type==="ult"||S.sheet&&S.sheet.type==="ult"&&S.sheet.v!=="mac")))render(true)}catch(_){ULT_SRV.at=Date.now()-50000}}
 // Ultimate açıkken davetler ve maçlar 12 saniyede bir yenilenir; bildirim gelince hemen yenilenir
+// uygulamaya geri dönünce de hemen yenile
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&typeof ULT_SRV!=="undefined"&&ULT_SRV.ok){ULT_SRV.at=0;ultLoad(true)}});
 setInterval(()=>{if(document.visibilityState==="visible"&&typeof ULT_SRV!=="undefined"&&ULT_SRV.ok&&S.pg&&S.pg.type==="ult"&&!UDRAG)ultLoad(true)},12000);
 // rakibin kaydettiği kadro (yoksa otomatik); senin kadronla çakışan oyuncu olursa otomatik kadro
 function ultRakipKadro(opp,ex){const pub=ULT_SRV.pubs[opp],B=ultBuild();if(pub&&pub.kadro&&pub.kadro.length===7&&pub.kadro.every(id=>id&&B.C.some(c=>c.id===id))){const L=pub.kadro.slice();if(!L.some(id=>ex&&ex.has((ultCard(id)||{}).pid))&&L.some(id=>(ultCard(id)||{}).pid===opp)){L.f=pub.f||"2-2-2";L.t=pub.t||"dengeli";L.gercek=1;return L}}return ultAuto(opp,null,ex)}
@@ -5708,7 +5711,7 @@ function ultChTab(err,my,kim){const st=ultSt(),me=myPid(),B=ultBuild(),day=ultDa
   // gönderdiklerin ve bitenler
   if(giden.length)h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Gönderdiklerin</h3><span class="ulplan-s">Onay bekliyor</span></div>${giden.map(d=>`<div class="ulfin">${avatar(P(d.b)||{id:d.b,name:"?"},"sm")}<span class="ulfin-t"><b>${nm(d.b)}</b><small>Cevap bekleniyor · <span class="num">${ultSaat(ultDvSon(d)-ultNow())}</span></small></span></div>`).join("")}</section>`;
   if(biten.length)h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Biten seriler</h3><span class="ulplan-s">Son günler</span></div>${biten.slice(0,8).map(({d,s})=>{const o=d.a===me?d.b:d.a;let t,tg,cl;
-      if(s){t=`${s.w}–${s.l} · ${s.R.filter(Boolean).map(x=>x.g+"-"+x.y).join(", ")}${s.pen?` · pen. ${s.pen.g}-${s.pen.y}`:""}`;tg=s.son>0?"Kazandın":s.son<0?"Kaybettin":"Berabere";cl=s.son>0?"w":s.son<0?"l":"d"}
+      if(s){t=`<span class="ulsk-l"><b class="ulsk s">Seri ${s.w}-${s.l}</b>${s.R.filter(Boolean).map(x=>`<b class="ulsk ${x.g>x.y?"w":x.g<x.y?"l":"d"}">${x.g}-${x.y}</b>`).join("")}${s.pen?`<b class="ulsk p">Pen ${s.pen.g}-${s.pen.y}</b>`:""}</span>`;tg=s.son>0?"Kazandın":s.son<0?"Kaybettin":"Berabere";cl=s.son>0?"w":s.son<0?"l":"d"}
       else{t=d.red_at?(d.a===me?"Kabul etmedi · hakkın geri geldi":"Kabul etmedin"):"Süre doldu · maç olmadı";tg="Düştü";cl="d"}
       const son=s&&s.R.filter(Boolean).pop();return `<div class="ulfin">${avatar(P(o)||{id:o,name:"?"},"sm")}<span class="ulfin-t"><b>${nm(o)}</b><small>${t}</small></span>${son?`<button class="ultag ${cl}" data-act="ultChIz" data-v="${esc(son.e.k)}">${tg}</button>`:`<em class="ultag ${cl}">${tg}</em>`}</div>`}).join("")}</section>`;
   return h}
