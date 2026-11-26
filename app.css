@@ -5884,7 +5884,7 @@ html.dk .th2.thU .th2-r .thk-c{background:#F5C542;color:#2A1F00}
 .ulzp{display:grid;justify-items:center;gap:4px;border:0;background:none;color:inherit;font:inherit;cursor:pointer;padding:6px 2px;border-radius:16px;min-width:0}.ulzp.on{background:rgba(245,197,66,.12)}
 .ulzp .mzc{width:76px;height:100px;padding:6px;border-radius:14px;pointer-events:none}.ulzp .mzc .mzc-o b{font-size:1.25rem}.ulzp .mzc .mzc-o small{font-size:.6875rem}
 .ulzp>b{font:700 .75rem/1.2 Inter,sans-serif;text-align:center}.ulzp>small{font:700 .6875rem Inter,sans-serif;color:var(--ug)}
-.ulpk-m.sm{width:40px;height:52px}.ulpk-m.sm i{font-size:.625rem}
+.ulpk-m.sm{width:40px;height:52px}.ulpk-m.sm i{font-size:.6875rem}
 .ulodul{margin-top:10px;box-shadow:inset 0 0 0 1.5px rgba(127,231,255,.45)}.ulodul-r{display:flex;gap:12px;align-items:center}.ulodul-r .mzc{flex:none}.ulodul-r .ult-n{margin:0}
 .ulh-x .ulrz{margin-right:4px}
 /* oyun barı: oyuna girince alt bar oyunun bölümleri olur, ilk düğme Çık */
@@ -5904,3 +5904,13 @@ body.gpd .dvx em{color:#9CC9D1;background:#081B21;padding:7px 10px;border-radius
 body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .gstrip.dvst{background:linear-gradient(90deg,rgba(95,227,245,.2),rgba(95,227,245,.05));box-shadow:inset 3px 0 0 #5FE3F5;color:#E8FBFF}.gstrip.dvst em{color:#5FE3F5}
 .ulc-x{position:absolute;z-index:3;bottom:10px;right:10px;font:800 .75rem/1 Inter,sans-serif;font-style:normal;background:rgba(0,0,0,.55);color:#fff;padding:4px 6px;border-radius:7px}.mzc.ulc.sm .ulc-x{display:none}
+/* kulüp: görevler, kadro görevleri, paket açılışında kartlar */
+.ulgv{display:grid;gap:6px}.ulgv-i{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:14px;background:rgba(255,255,255,.04)}.ulgv-i>span{flex:1;min-width:0}.ulgv-i b{display:block;font:700 .875rem/1.25 Inter,sans-serif}.ulgv-i small{color:var(--ug);font:700 .75rem Inter,sans-serif}.ulgv-i .ulbar{height:4px;margin-top:5px}
+.ulgv-i em{flex:none;font:800 .9375rem var(--display);font-style:normal;color:var(--c-ink3)}.ulgv-i em.ok,.ulsbc em.ok{color:#00E58A;font-size:1.25rem}.ulgv-i.al{opacity:.6}
+.ulgv-b{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:12px;background:var(--ug);color:#2A1F00;font:800 .8125rem Inter,sans-serif;cursor:pointer}.ulgv-b.off{background:rgba(255,255,255,.08);color:var(--c-ink2)}
+.ulsbc{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04)}.ulsbc>span{flex:1;min-width:0}.ulsbc b{display:block;font:800 1rem/1.2 var(--display);text-transform:uppercase}.ulsbc small{display:block;color:var(--c-ink3);font:600 .75rem/1.35 Inter,sans-serif}.ulsbc .ulsbc-p{color:var(--ug);font-weight:700;margin-top:2px}.ulsbc.hz{box-shadow:inset 0 0 0 1.5px rgba(245,197,66,.6)}.ulsbc.al{opacity:.6}
+.ulodd{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.ulrev-k{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:100%}.ulrev-kc{display:grid;gap:4px;justify-items:center;min-width:0}.ulrev-kc .mzc{width:100%}.ulrev-kc small{font:700 .6875rem Inter,sans-serif}.ulrev-kc small.nw{color:#00E58A}.ulrev-kc small.dp{color:var(--c-ink3)}
+.ulrev.anim .ulrev-kc{animation:ulup .45s ease-out both;animation-delay:calc(.2s + var(--d)*.18s)}.ulrev.anim .ulrev-kc .mzc{animation:ulfp .7s ease-out both;animation-delay:calc(.2s + var(--d)*.18s)}
+@media (prefers-reduced-motion:reduce){.ulrev.anim .ulrev-kc,.ulrev.anim .ulrev-kc .mzc{animation:none}}
+.gstrip.ulgs{background:linear-gradient(90deg,rgba(245,197,66,.2),rgba(245,197,66,.05));box-shadow:inset 3px 0 0 var(--ug)}.gstrip.ulgs em{color:var(--ug)}
