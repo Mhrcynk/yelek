@@ -5956,3 +5956,14 @@ button.ulch{border:0;background:rgba(0,0,0,.25);border-radius:8px;padding:5px 7p
 .ulkdk ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.ulkdk li{display:flex;justify-content:space-between;gap:10px;font-size:.8125rem}.ulkdk li b{color:#3ee08f}.ulkdk li:last-child{color:var(--c-ink3);font-size:.75rem}
 button.ulch{min-height:40px;min-width:44px;margin:-8px 0;background:none;align-items:center;justify-content:center}button.ulch.on{outline:none}button.ulch.on i:not(.on){border-bottom-color:rgba(0,229,138,.35)}.ulch.ulmd{min-height:40px;background:none;color:#ff8bb5}
 .ulkgl{display:inline-flex;gap:3px;margin-left:6px;vertical-align:middle}.ulkgl i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.18)}.ulkgl i.on{background:#00E58A}
+/* maç görünümü: grafit fotoğraf zemini, takım rengi halka (altın biz, mor rakip), altında kısa isim */
+.ulm2 .ulm-p{opacity:1;padding:2.5px}.ulm2 .ulm-p.us{background:#F5C542}.ulm2 .ulm-p.op{background:#9C83F5}
+.ulm2 .ulm-p .av{background:#2B2B33!important;--c1:#34343D!important;--c2:#23232A!important;--rim:transparent!important;color:#E8E8EE!important;border-color:transparent!important}
+.ulm2 .ulm-p::after{content:attr(data-n);position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:1px;font:700 .6875rem/1.1 Inter,sans-serif;white-space:nowrap;text-shadow:0 1px 2px #000,0 0 3px #000;pointer-events:none}
+.ulm2 .ulm-p.us::after{color:#FFE08A}.ulm2 .ulm-p.op::after{color:#d4c7ff}
+/* ===== maç görünümü seçenekleri ===== */
+.ulm-cam{position:absolute;inset:0}
+/* C · Odak: olaydaki oyuncular büyük ve isimli, diğerleri küçük nokta */
+.ulm2.mg-c .ulm-p:not(.ak):not(.on){transform:translate(-50%,-50%) scale(.5);opacity:.55}.ulm2.mg-c .ulm-p:not(.ak):not(.on)::after{opacity:0}
+.ulm2.mg-c .ulm-p.us .av{background:#F5C542!important;color:#2A1F00!important}.ulm2.mg-c .ulm-p.op .av{background:#F2F0FA!important;color:#4B2FA8!important}
+
