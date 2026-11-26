@@ -5950,3 +5950,8 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .ulchb{display:flex;gap:6px;flex:none}
 #ulTr line{animation:ultrf 1.1s ease-out forwards}@keyframes ultrf{0%{opacity:.95}60%{opacity:.75}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#ulTr line{animation:none;opacity:.6}}
+button.ulch{border:0;background:rgba(0,0,0,.25);border-radius:8px;padding:5px 7px;min-height:24px;cursor:pointer;color:inherit}button.ulch.on{outline:2px solid #00E58A}
+.ulch.ulmd{font:800 .6875rem Inter,sans-serif;color:#fff;background:#C2185B;padding:4px 7px}
+.ulp-s.ulkd{opacity:.45}.ulp-s.ulks .mzc{box-shadow:0 0 0 2px #00E58A}
+.ulkdk ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.ulkdk li{display:flex;justify-content:space-between;gap:10px;font-size:.8125rem}.ulkdk li b{color:#3ee08f}.ulkdk li:last-child{color:var(--c-ink3);font-size:.75rem}
+button.ulch{min-height:40px;min-width:44px;margin:-8px 0;background:none;align-items:center;justify-content:center}button.ulch.on{outline:none}button.ulch.on i:not(.on){border-bottom-color:rgba(0,229,138,.35)}.ulch.ulmd{min-height:40px;background:none;color:#ff8bb5}
