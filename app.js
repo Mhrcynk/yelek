@@ -4975,6 +4975,8 @@ function ultFlip(P0){return{ev:P0.ev.map(e=>({...e,us:!e.us,from:e.from?[e.from[
 const ultNow=()=>Date.now()+(ULT_SRV.dt||0);
 function ultDvSon(d){const wend=((ULT_SRV.lig?ULT_SRV.lig.start:0)+(+String(d.k).split("|")[1])+1)*7-3;return Math.min(Date.parse(d.created_at)+864e5,wend*864e5)}
 const ultSure=ms=>{const m=Math.max(0,Math.round(ms/6e4));return m>=60?Math.floor(m/60)+" sa "+(m%60?m%60+" dk":""):m+" dk"};
+// aktif kitle: sanal lig, meydan okuma ve efsane yarışı yalnızca uygulama üyelerinden (kartlar ise herkesten)
+const ultUye=id=>typeof ULT_SRV==="undefined"||!ULT_SRV.uye||ULT_SRV.uye.has(id);
 function ultRakipSiz(L,opp){const me=myPid();const i=Array.from(L).findIndex(id=>id&&(ultCard(id)||{}).pid===opp);if(i<0)return L;const role=ultSL(L.f||"2-2-2")[i][0];const used=new Set(Array.from(L).map(id=>id&&(ultCard(id)||{}).pid).filter(Boolean));
   const c=ultCards().filter(c=>c.type==="temel"&&ultIzin(c,me)&&!used.has(c.pid)&&c.pid!==opp).sort((a,b)=>(ultRoles(b.pid).includes(role))-(ultRoles(a.pid).includes(role))||b.r-a.r)[0];const o=Array.from(L);o[i]=c?c.id:null;o.f=L.f;o.t=L.t;o.usta=L.usta;return o}
 // oyuncu değişikliğinin etkisi: bu kart o yere girerse kadro gücü ve kimya nasıl değişir
@@ -4992,7 +4994,7 @@ async function ultPush(){if(!ULT_SRV.ok||!S.session)return;ULT_SRV.busy=1;try{co
 const ultSave=()=>{try{LS.set("y_ult4_"+TID,JSON.stringify(ULT.s))}catch(_){}clearTimeout(ULT_SRV.t);ULT_SRV.t=setTimeout(ultPush,700)};
 async function ultLoad(force){if(!ultOn()||!myPid()||!S.session)return;if(ULT_SRV.at===-1||(!force&&Date.now()-ULT_SRV.at<60000))return;const first=!ULT_SRV.ok;ULT_SRV.at=-1;
   try{const r=await rpc("ult_get",{});ULT_SRV.at=Date.now();if(!r||!r.ok)return;
-    const srvBos=!r.me||!Object.keys(r.me).length;ULT_SRV.ok=true;ULT_SRV.wk=r.wk;ULT_SRV.lig=r.lig;ULT_SRV.ev=r.ev||[];ULT_SRV.dv={};for(const d of r.dv||[])ULT_SRV.dv[d.k]=d;if(r.now)ULT_SRV.dt=Date.parse(r.now)-Date.now();ULT_SRV.pubs={};for(const x of r.pubs||[])ULT_SRV.pubs[x.p]=x.pub||{};
+    const srvBos=!r.me||!Object.keys(r.me).length;ULT_SRV.ok=true;ULT_SRV.wk=r.wk;ULT_SRV.lig=r.lig;ULT_SRV.ev=r.ev||[];ULT_SRV.dv={};for(const d of r.dv||[])ULT_SRV.dv[d.k]=d;if(Array.isArray(r.uye)){ULT_SRV.uye=new Set(r.uye);ULT_SRV.uyeK=[...ULT_SRV.uye].sort().join(",")}if(r.now)ULT_SRV.dt=Date.parse(r.now)-Date.now();ULT_SRV.pubs={};for(const x of r.pubs||[])ULT_SRV.pubs[x.p]=x.pub||{};
     // sıfırlama dönemi: sunucu hangi dönemdeyse telefon da o dönemde olmalı; eski dönemin verisi okunmaz, gönderilmez
     const ep=+r.ep||1;ULT_SRV.ep=ep;if(+ultSt().ep!==ep){ULT.s=null;LS.del("y_ult4_"+TID);ULT.au={};ultSt().ep=ep}
     if(srvBos){ULT_SRV.upd=null;ultSt().ep=ep;await ultPush()}
@@ -5012,7 +5014,7 @@ function ultKatki(m,id,x){const r=ultRoles(id),w=ULT_KW[r.includes("FV")?"FV":r[
     const st=(m.stats||{})[id]||{};v+=(+st.cl||0)*2+(+st.ps||0)*3;const t=trkOf(m,id);if(t)v+=Math.min(3,((+t.tk||0)+(+t.pa||0))*.25)}
   return Math.round(v*10)/10}
 const ultRoles=id=>{const p=P(id);const r=[ultRole(id)];const a=p&&altOf(p);if(a&&EPOS[a]&&!r.includes(EPOS[a][0]))r.push(EPOS[a][0]);return r};
-function ultBuild(){if(ULT.c&&ULT.k===S.stats)return ULT.c;
+function ultBuild(){const uk=typeof ULT_SRV!=="undefined"&&ULT_SRV.uyeK||"";if(ULT.c&&ULT.k===S.stats&&ULT.uk===uk)return ULT.c;
   const F=fin().filter(m=>S.mInfo[m.id]),L=sLen(),C=[],RT={},pre={},now={},same={},car={},sea={},ep={},ht={},seri=[],seriDone=[],pw=[];let month=[];
   const sz=[...new Set(F.map(yrOf))],per=s=>Math.floor(sz.indexOf(s)/3);
   // sezon uzunluğuna göre oranlı eşikler (8 maçlık sezonda: holo 6, kusursuz holo 7, haftanın takımı en fazla 3)
@@ -5047,12 +5049,12 @@ function ultBuild(){if(ULT.c&&ULT.k===S.stats)return ULT.c;
       const an=P2.filter(x=>x[1].an).sort((a,b)=>b[1].an.sc-a[1].an.sc)[0];if(an){add("an",an[0],ultBonG("an"),an[1].an.m,`${fmtShort(an[1].an.m.date)} · ${an[1].an.g?an[1].an.g+" gol":"not "+fN(an[1].an.n)}`);ep[E(an[0])]=(ep[E(an[0])]||0)+15}
       if(sz.indexOf(s)%3===2){const PM=F.filter(x=>per(yrOf(x))===pk);const hp=Math.ceil(PM.length/2);
         ids().map(id=>[id,avgOf(PM,id)]).filter(x=>x[1].n>=hp).sort((a,b)=>b[1].a-a[1].a).slice(0,7).forEach(([id])=>add("donem",id,ultBonG("donem"),m));
-        const EF=ultEfF(ep,epn,epr,pk);const o=ids().filter(id=>(epn[E(id)]||0)>=hp).map(id=>[id,(ep[E(id)]||0)/(epn[E(id)]||1)*(EF[ultRole(id)]||1)]).sort((a,b)=>b[1]-a[1]);if(o[0]&&o[0][1]>0){const prev=pw[pw.length-1];
+        const EF=ultEfF(ep,epn,epr,pk);const o=ids().filter(id=>ultUye(id)&&(epn[E(id)]||0)>=hp).map(id=>[id,(ep[E(id)]||0)/(epn[E(id)]||1)*(EF[ultRole(id)]||1)]).sort((a,b)=>b[1]-a[1]);if(o[0]&&o[0][1]>0){const prev=pw[pw.length-1];
           if(prev&&prev.first===o[0][0]&&o[1]){add("efsane",o[0][0],ultBonG("efsane")+1,m,"2. kez");add("efsane",o[1][0],ultBonG("efsane"),m,"Yeni efsane")}else add("efsane",o[0][0],ultBonG("efsane"),m);pw.push({first:o[0][0],pk})}}}});
   const cur=sz[sz.length-1]||yrOf({});
   // kimya: son 20 maçta, ikisinin de oynadığı maçların en az yarısında aynı tarafta (en az 2 maç)
   const sw={},bw={};for(const m of F.slice(-20)){const A=plOf(m,"A"),Bb=plOf(m,"B"),all=A.concat(Bb);for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const k=pairKey(all[i],all[j]);bw[k]=(bw[k]||0)+1;if(A.includes(all[i])===A.includes(all[j]))sw[k]=(sw[k]||0)+1}}
-  ULT.c={C,same,sw,bw,epn,epr,DN,DK,dnOf,pmN:F.filter(x=>per(yrOf(x))===per(cur)).length,HN,KN,HTN,car,sea,ep,seri,seriDone,sz,cur,pk:per(cur),F};ULT.k=S.stats;return ULT.c}
+  ULT.c={C,same,sw,bw,epn,epr,DN,DK,dnOf,pmN:F.filter(x=>per(yrOf(x))===per(cur)).length,HN,KN,HTN,car,sea,ep,seri,seriDone,sz,cur,pk:per(cur),F};ULT.k=S.stats;ULT.uk=uk;return ULT.c}
 // efsane puanında mevki çarpanı: her mevkinin maç başı ortalaması takım ortalamasına eşitlenir
 function ultEfF(ep,epn,epr,pk){const rs={};let t=0,n=0;for(const[k,v]of Object.entries(ep)){if(!k.startsWith(pk+"|"))continue;const id=k.slice(String(pk).length+1),r=ultRole(id),c=epn[k]||0;if(!c)continue;(rs[r]=rs[r]||[0,0]);rs[r][0]+=v;rs[r][1]+=c;t+=v;n+=c}
   const a=n?t/n:1,W=3,o={};for(const r of["KL","DF","OS","FV"]){const x=rs[r]||[0,0];o[r]=clamp(a/Math.max(.5,(x[0]+W*a)/(x[1]+W)),.6,2.5)}return o}
@@ -5359,7 +5361,7 @@ function ultRows(rows,me,cols){// hizalı sıralama satırları: herkes aynı i�
   return `<div class="ulr-l">${rows.map((r,i)=>`<div class="ulr${r.id===me?" me":""}${r.ok===false?" ulr-x":""}"><b class="num">${r.k??i+1}</b>${avatar(P(r.id)||{id:r.id,name:"?"},"sm")}<span>${esc(shortName(nameOf(r.id)))}${r.id===me?" <i>Sen</i>":""}</span>${(cols||[]).map(c=>`<small class="num">${c(r)}</small>`).join("")}<em class="num">${typeof r.v==="number"&&r.v%1?fN(r.v):r.v}</em></div>`).join("")}</div>`}
 function ultCut(all,me,n){const i=all.findIndex(r=>r.id===me);if(i<n)return all.slice(0,n).map((r,j)=>({...r,k:j+1}));return all.slice(0,n-1).map((r,j)=>({...r,k:j+1})).concat([{...all[i],k:i+1}])}
 // efsane yarışı: maç başına puan; dönemin maçlarının en az yarısına çıkan sıralamaya girer
-function ultEfsRows(){const B=ultBuild(),hp=Math.ceil(B.pmN/2),EF=ultEfF(B.ep,B.epn,B.epr,B.pk);return S.players.filter(p=>!p.guest).map(p=>{const k=B.pk+"|"+p.id,n=B.epn[k]||0;return{id:p.id,n,ok:n>=hp,v:n?Math.round((B.ep[k]||0)/n*(EF[ultRole(p.id)]||1)*10)/10:0}}).filter(r=>r.n).sort((a,b)=>(b.ok-a.ok)||b.v-a.v)}
+function ultEfsRows(){const B=ultBuild(),hp=Math.ceil(B.pmN/2),EF=ultEfF(B.ep,B.epn,B.epr,B.pk);return S.players.filter(p=>!p.guest&&ultUye(p.id)).map(p=>{const k=B.pk+"|"+p.id,n=B.epn[k]||0;return{id:p.id,n,ok:n>=hp,v:n?Math.round((B.ep[k]||0)/n*(EF[ultRole(p.id)]||1)*10)/10:0}}).filter(r=>r.n).sort((a,b)=>(b.ok-a.ok)||b.v-a.v)}
 // yıllık set: her sezon kendi Holo kartını al (6 maç); 6 sezon = 1 yıl
 function ultSet(){const B=ultBuild(),me=myPid(),ok=s=>((B.sea[s+"|"+me]||{}).n||0)>=6;const yi=Math.floor(Math.max(0,B.sz.indexOf(B.cur))/6);
   const yr=B.sz.slice(yi*6,yi*6+6);let rz=0;for(let y=0;y<yi;y++)if(B.sz.slice(y*6,y*6+6).every(ok))rz++;return{n:yr.filter(ok).length,rz,yil:yi+1}}
@@ -5485,7 +5487,7 @@ function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();
   else if(lg.real)h+=`<section class="ulvs"><small>Sanal Lig · ${lg.sezon}. Sezon</small><b class="ulvs-f">Sezon bitti · ${lg.rows.findIndex(r=>r.id===me)+1}. oldun</b><p class="ult-n">Yeni sezon pazartesi oyuna katılan herkesle başlar.</p></section>`;
   else h+=`<section class="ulvs"><small>Antrenman ligi</small><b class="ulvs-f">Sezon bitti · ${lg.rows.findIndex(r=>r.id===me)+1}. oldun</b>${lg.yeni?`<button class="btn ult-w" data-act="ultLigReset">Yeni lig sezonu başlat</button>`:`<p class="ult-n">Yeni lig sezonu 7 hafta dolunca başlar.</p>`}</section>`;
   h+=kim;
-  const opp=S.players.filter(p=>!p.guest&&p.id!==me&&(B.car[p.id]||0)>0).map(p=>({p,s:ultLine(ULT_SRV.ok?ultRakipKadro(p.id):ultAuto(p.id)).str}));
+  const opp=S.players.filter(p=>!p.guest&&p.id!==me&&ultUye(p.id)&&(ULT_SRV.uye||(B.car[p.id]||0)>0)).map(p=>({p,s:ultLine(ULT_SRV.ok?ultRakipKadro(p.id):ultAuto(p.id)).str}));
   const ms=my.n?my.str:70;const sug=[];for(const[t,l]of[[ms+2,"Zorlu"],[ms,"Denk"],[ms-2,"Kolay"]]){const o=opp.filter(o=>!td.some(x=>x.opp===o.p.id)&&!sug.some(x=>x.o.p.id===o.p.id)).sort((a,b)=>Math.abs(a.s-t)-Math.abs(b.s-t))[0];if(o)sug.push({o,l})}
   h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Meydan oku</h3><span class="ulhk">${[0,1,2].map(i=>`<i class="${i<3-td.length?"on":""}"></i>`).join("")}<small>${3-td.length}/3 hak</small></span></div>
     <div class="ulch3">${sug.map(({o,l})=>`<button class="ulch3-i" data-act="ultPlay" data-k="ch" data-v="${esc(o.p.id)}"${td.length>=3||err?" disabled":""}><small>${l}</small>${avatar(o.p,"")}<b>${esc(shortName(o.p.name))}</b><span class="num">Güç ${fN(o.s)}</span></button>`).join("")}</div>
@@ -5526,7 +5528,7 @@ function ultCantaSheet(){const st=ultSt(),pk=ultPacks(),test=ultTest(),pw=ultPkW
   h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Paketler</h3><small class="ulplan-s">${test?"Test · sınırsız":`Parça paketi bu hafta ${Math.min(pw,2)}/2`}</small></div>${pk.yeni.length||op.length?`<div class="uldo">${pk.yeni.map(p=>row(p.k,(p.big?"Büyük paket":"Paket")+" · kapalı",p.why,"Aç",1)).join("")}${op.map(([k,o])=>{const p=pk.L.find(x=>x.k===k);return p?row(k,p.why,ultPkOzet(o.res),"Tekrar izle"):""}).join("")}</div>`:`<p class="ult-n">Henüz paketin yok.</p>`}</section>`;
   return h}
 function ultRakipSheet(){const st=ultSt(),me=myPid(),B=ultBuild();const td=st.ch.filter(x=>x.d===ultDay());const err=ultOk(ultMy());
-  const opp=S.players.filter(p=>!p.guest&&p.id!==me&&(B.car[p.id]||0)>0).map(p=>({id:p.id,s:ultLine(ultAuto(p.id)).str})).sort((a,b)=>b.s-a.s);
+  const opp=S.players.filter(p=>!p.guest&&p.id!==me&&ultUye(p.id)&&(ULT_SRV.uye||(B.car[p.id]||0)>0)).map(p=>({id:p.id,s:ultLine(ULT_SRV.ok?ultRakipKadro(p.id):ultAuto(p.id)).str})).sort((a,b)=>b.s-a.s);
   return `<div class="ch"><div><div class="eyebrow">Meydan oku · ${3-td.length}/3 hak</div><h2>Rakip seç</h2></div><button class="btn sm" data-act="close">Kapat</button></div><div class="ulr-l">${opp.map(r=>{const d=td.some(x=>x.opp===r.id);return `<button class="ulr" data-act="ultPlay" data-k="ch" data-v="${esc(r.id)}"${d||td.length>=3||err?" disabled":""}>${avatar(P(r.id),"sm")}<span>${esc(shortName(nameOf(r.id)))}</span><small class="num">${d?"Bugün oynadın":"Güç "+fN(r.s)}</small><em>›</em></button>`}).join("")}</div>`}
 // sonuç duyurusu: sana yeni özel kart geldiyse ya da sanal ligi kazandıysan bir kez gösterilir
 function ultPop(){if(!ultOn()||!myPid())return false;const st=ultSt(),me=myPid();const mine=ultBuild().C.filter(c=>c.pid===me&&c.type!=="temel");
