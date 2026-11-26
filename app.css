@@ -6052,3 +6052,25 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulyat .mg-c .ulm-p:not(.ak):not(.on){transform:translate(-50%,-50%) rotate(-90deg) scale(.5)}
 .ulyat .ch{margin-bottom:6px}.ulyat .ch h2{font-size:1.125rem}.ulyat .ulsb2{margin-top:0}.ulyat .ulfeed{max-height:96px;overflow:hidden}
 .ulyat .ulgl{z-index:5}
+/* maç ekranı: 90 dk, tabela golcüleri, baskı, animasyonlar */
+.ulsb2{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}.ulsb2-gs{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px;min-width:0}.ulsb2-gs:has(.ulsb2-g:empty+.ulsb2-g:empty){display:none}.ulsb2-g{display:flex;flex-wrap:wrap;gap:0 6px;font:600 .75rem/1.35 Inter,sans-serif;color:#E8DDFF;min-width:0;max-height:2.7em;overflow:hidden}.ulsb2-g{flex:1 1 0}.ulsb2-g.o{justify-content:flex-end;text-align:right}
+.ulsbi{display:none;white-space:nowrap}.ulsbi.on{display:inline}.ulsbi.on~.ulsbi.on::before{content:"· ";opacity:.5}.ulsbi .krt{display:inline-block;width:7px;height:10px;border-radius:1.5px;background:#E53950;margin-right:3px;vertical-align:-1px}
+.ulmac:not(.ulyat) #ulSc{display:none}.ulyat .ulsb2-gs{display:none}
+.ulmom{position:relative;height:6px;border-radius:3px;margin:10px 4px 2px;background:#9C83F5;overflow:hidden}.ulmom i{position:absolute;left:0;top:0;bottom:0;width:var(--m);background:#F5C542;transition:width .8s ease}.ulmom small{position:absolute;left:-9999px}
+.ulmac:not(.ulyat) .ulfeed li:not(:first-child){display:none}.ulmac:not(.ulyat) .ulfeed{min-height:0;max-height:none}.ulmac:not(.ulyat) .ulfeed li{font-size:.875rem;padding:10px 12px}
+.ulht{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:rgba(14,7,24,.78);text-align:center}.ulht small{font:800 .75rem Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#F5C542}.ulht b{font:800 2.6rem/1 var(--display);color:#fff}.ulht span{font:600 .8125rem Inter,sans-serif;color:var(--c-ink2)}
+#ulTr path.ok{fill:none;stroke:#F5C542;stroke-width:.9;stroke-dasharray:2 1.6;stroke-linecap:round;animation:ulok .7s ease-out both}#ulTr path.ok.tac{stroke:#fff;opacity:.8}#ulTr path.ok.sv{stroke:#8EEFFB}
+@keyframes ulok{from{stroke-dashoffset:40;opacity:0}to{stroke-dashoffset:0;opacity:1}}
+#ulTr circle.kark{fill:rgba(245,197,66,.18);stroke:#F5C542;stroke-width:.7;animation:ulkark .9s ease-in-out 2}@keyframes ulkark{50%{fill:rgba(245,197,66,.45)}}
+#ulTr line.sut{stroke:#fff;stroke-width:1;stroke-linecap:round;stroke-dasharray:none;opacity:.95;animation:ulok .35s ease-out both}#ulTr line.sut.gol{stroke:#F5C542;stroke-width:1.4}#ulTr line.sut.kac{stroke:#ff9aa8;stroke-dasharray:1.5 1.5}
+.ulm2 rect.net{fill:rgba(255,255,255,.25);stroke:rgba(255,255,255,.4);stroke-width:.3}.ulm2 rect.net.sal{fill:#F5C542;animation:ulnet .18s linear 5}@keyframes ulnet{50%{transform:translateY(-.6px)}}
+.ulm2 circle.spot{fill:rgba(255,255,255,.4)}
+.ulm-p.dvL{transform:translate(-50%,-50%) rotate(-55deg)!important;transition:left .25s ease!important}.ulm-p.dvR{transform:translate(-50%,-50%) rotate(55deg)!important;transition:left .25s ease!important}
+.ulbub{position:absolute;transform:translate(-50%,-100%);z-index:4;pointer-events:none;font:800 .6875rem/1 Inter,sans-serif;color:#120A2A;background:#fff;padding:4px 7px;border-radius:8px;white-space:nowrap;animation:ulbub .25s ease-out}
+.ulbub.sr,.ulbub.kr{padding:0;background:none}.ulbub.sr i,.ulbub.kr i{display:block;width:12px;height:16px;border-radius:2px;background:#F2C94C;box-shadow:0 2px 8px rgba(0,0,0,.5);transform:rotate(-8deg)}.ulbub.kr i{background:#E53950}
+.ulbub.pn,.ulbub.kn{background:#F5C542}.ulbub.dr{background:#8EEFFB}
+@keyframes ulbub{from{opacity:0;transform:translate(-50%,-60%)}to{opacity:1;transform:translate(-50%,-100%)}}
+.ulyat .ulbub{transform:translate(-50%,-100%) rotate(-90deg)}.ulyat .ulm2 .ulm-p.dvL{transform:translate(-50%,-50%) rotate(-145deg)!important}.ulyat .ulm2 .ulm-p.dvR{transform:translate(-50%,-50%) rotate(-35deg)!important}
+.ulsp button{padding:0 4px;font-size:.8125rem}
+@media (prefers-reduced-motion:reduce){#ulTr path.ok,#ulTr line.sut,.ulbub,.ulm2 rect.net.sal,#ulTr circle.kark{animation:none}}
+.ulsb2>span:nth-child(3){justify-content:flex-end}
