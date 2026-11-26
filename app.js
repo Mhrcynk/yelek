@@ -1907,7 +1907,7 @@ function sheetFz(){const sh=S.pg,m=S.matches.find(x=>x.id===sh.mid);const me=myP
     if(!L.length)return hd+seg+`<div class="fz-bos"><b>Henüz puan yok</b><span>İlk maçtan sonra sezon sıralaması burada</span></div>`+ft;
     return hd+seg+`<div class="fz-lb">${L.map((r,i)=>{const p=P(r.p);return `<div class="fz-r${r.p===me?" me":""}"><span class="fz-k num">${i+1}</span>${p?avatar(p,"sm"):""}<span class="fz-t"><b>${r.p===me?"Sen":esc(shortName(nameOf(r.p)))}</b><small>${sz?r.n+" maç · en iyi "+r.best:"Kaptan: "+esc(shortName(nameOf(r.cap)))+(fzSc(m,r.cap)!=null?" · "+fzSc(m,r.cap)+" ×2":"")}</small></span><b class="fz-p num">${r.pts}</b></div>`}).join("")}</div>`+(sz?"":`<button class="dv-all" data-act="fzShare" data-v="fmen">${mnI("fw")}<span>Haftanın menajerini paylaş</span></button>`)+ft}
   if(open&&!S.f.fzEdit&&fzMine(m)&&!(S.f.fz&&S.f.fz.mid===m.id&&S.f.fz.dirty)){const mn=fzMine(m);
-    return hd+`<div class="fz-saha">${fzField(m,fzFit(m,mn.picks),mn.cap,null)}</div><div class="fz-ok"><b>Kadron kayıtlı ✓</b><span>Maç saatine kadar değiştirebilirsin. ${FZ.n[m.id]||1} kişi kadro kurdu; kadrolar maç başlayınca görünür.</span></div>
+    return hd+`<div class="fz-saha">${fzField(m,fzFit(m,mn.picks),mn.cap,null)}</div>
       <div class="fz-go ust" style="margin-top:12px"><button class="btn primary block" data-act="fzDuz">Kadroyu değiştir</button></div>${ft}`}
   if(open){const sel=fzSel(m);const B=fzBudget(m);const P5=fzSlots(sel);const sum=Math.round(P5.reduce((a,id)=>a+fzPr(id),0)*10)/10;const left=Math.round((B-sum)*10)/10;
     const act=Math.min(4,Math.max(0,sel.act|0));const ay=FZ_Y[act];const cur=sel.slots[act];const srt=S.f.fzS||"fiyat";
