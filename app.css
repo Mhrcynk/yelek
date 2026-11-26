@@ -5933,3 +5933,5 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .ulsec-h .lnk{display:inline-flex;align-items:center;gap:6px}.ulsec-h .lnk svg,.ult-w svg{width:16px;height:16px;flex:none}
 .ulr.ulr-x{opacity:.5}
 .ulfeed li.y span{color:#F2C94C}
+.ulpd{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 8px;font:700 .75rem Inter,sans-serif;color:var(--c-ink2,#cfc6ef);background:rgba(255,255,255,.05);border-radius:10px;padding:5px 4px}.ulpd span{white-space:nowrap}.ulpd .up{color:#3ee08f}.ulpd .dn{color:#ff8b9b}
+.ulm-p.out{opacity:.25;filter:grayscale(1)}.ulfeed li.r span{color:#ff8b9b}
