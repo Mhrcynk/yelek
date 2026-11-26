@@ -5514,7 +5514,10 @@ function ultKimDokum(x,i){const c=x.cs[i],r=x.sl[i][0],L=[];const bj=[];if(!c)re
 function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ultMy());
   // kimya: kadrodaki bütün bağlar eğri çizgilerle (yeşil bağ, kalın altın güçlü bağ); noktalara dokununca döküm
   const ks=ULT.ks!=null&&x.cs[ULT.ks]?ULT.ks:null,kd=ks!=null?ultKimDokum(x,ks):null;const lines=[];
-  for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){if(!x.cs[i]||!x.cs[j])continue;const v=ultBag(x.cs[i].pid,x.cs[j].pid);if(!v)continue;const[,x1,y1]=x.sl[i],[,x2,y2]=x.sl[j],mx=(x1+x2)/2+(y2-y1)*.18,my=(y1+y2)/2-(x2-x1)*.18;lines.push(`<path d="M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}" fill="none" stroke="${v>1?"#F5C542":"#00E58A"}" stroke-width="${v>1?1.6:.9}" opacity=".9" stroke-linecap="round"/>`)}
+  for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){if(!x.cs[i]||!x.cs[j])continue;const v=ultBag(x.cs[i].pid,x.cs[j].pid);if(!v)continue;const[,x1,y1]=x.sl[i],[,x2,y2]=x.sl[j],mx=(x1+x2)/2+(y2-y1)*.18,my=(y1+y2)/2-(x2-x1)*.18;
+    // çizgi başka bir kartın üstünden geçiyorsa soluk çizilir; o kartla bağ varmış gibi görünmesin
+    let ust=0;for(let t=.08;t<.93&&!ust;t+=.04){const px=(1-t)*(1-t)*x1+2*(1-t)*t*mx+t*t*x2,py=(1-t)*(1-t)*y1+2*(1-t)*t*my+t*t*y2;ust=x.sl.some(([,cx,cy],q)=>q!==i&&q!==j&&x.cs[q]&&Math.abs(px-cx)<11&&Math.abs(py-cy)<12)}
+    lines.push(`<path d="M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}" fill="none" stroke="${v>1?"#F5C542":"#00E58A"}" stroke-width="${v>1?1.6:.9}" opacity="${ust?.3:.9}"${ust?' stroke-dasharray="2 1.5"':""} stroke-linecap="round"/>`)}
   const slots=x.sl.map(([r,lx,ly],i)=>{const c=x.cs[i];const md=c&&!ultRoles(c.pid).includes(r)&&!c.u;
     return `<div class="ulp-s${c?" ulk-c"+(md?0:x.ch[i]):""}" style="left:${lx}%;top:${ly}%">${c?ultCardH(c,{sm:1,act:"ultSlot",i}):`<button class="ulp-e" data-act="ultSlot" data-i="${i}" aria-label="${r} seç">+<small>${r}</small></button>`}${c?`<button class="ulch${md?" ulmd":""}${i===ks?" on":""}" data-act="ultKimS" data-i="${i}" aria-label="Kimya ${x.ch[i]}, dökümü göster">${md?"Mevki dışı":[0,1,2].map(k=>`<i class="${k<x.ch[i]?"on":""}"></i>`).join("")}</button>`:""}</div>`}).join("");
   const dz=st.dz||"2-2-2",tk=st.tk||"dengeli";
