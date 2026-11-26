@@ -4954,7 +4954,7 @@ function ultRakipSiz(L,opp){const me=myPid();const i=Array.from(L).findIndex(id=
   const c=ultCards().filter(c=>c.type==="temel"&&ultIzin(c,me)&&!used.has(c.pid)&&c.pid!==opp).sort((a,b)=>(ultRoles(b.pid).includes(role))-(ultRoles(a.pid).includes(role))||b.r-a.r)[0];const o=Array.from(L);o[i]=c?c.id:null;o.f=L.f;o.t=L.t;o.usta=L.usta;return o}
 function ultMy(){const st=ultSt();if(st.kadro.some(id=>id&&!ultIzin(ultCard(id),myPid()))){st.kadro=st.kadro.map(id=>id&&ultIzin(ultCard(id),myPid())?id:null);ultSave()}const L=st.kadro.slice();L.f=st.dz||"2-2-2";L.t=st.tk||"dengeli";L.usta=1;return L}
 const ultOn=()=>!!myPid();
-function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult3_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{});ULT.s.v=3;delete ULT.s.test}return ULT.s}
+function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult3_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{});ULT.s.v=3;delete ULT.s.test;{const sn=new Set();ULT.s.lig=(ULT.s.lig||[]).filter(x=>{const k=x.k||(x.wk+"|"+x.opp);if(x.opp&&sn.has(k))return false;sn.add(k);return true})}}return ULT.s}
 // sunucu: kulüp ve ilerleme hesapta saklanır (telefon sadece önbellek); başka cihazdan girince aynı kulüp gelir
 const ULT_SRV={at:0,busy:0,upd:null,pubs:{},lig:null,ev:[],wk:null,t:null,ok:false};
 function ultPub(){const st=ultSt(),B=ultBuild();const ok=id=>id&&B.C.some(c=>c.id===id);return{kadro:(st.kadro||[]).map(id=>ok(id)?id:null),f:st.dz||"2-2-2",t:st.tk||"dengeli"}}
@@ -5142,7 +5142,7 @@ function ultStart(kind,opp){const st=ultSt();const me=myPid();const err=ultOk(ul
   if(kind==="ch"){const td=st.ch.filter(x=>x.d===day);if(td.length>=3){toast("Bugünkü 3 meydan okuma hakkın doldu");return}if(td.some(x=>x.opp===opp)){toast("Bu oyuncuya bugün meydan okudun");return}}
   const myL=ultRakipSiz(ultMy(),opp);const ex=new Set(myL.map(id=>id&&(ultCard(id)||{}).pid).filter(Boolean));const lgS=kind==="lig"?ultLigS():null;if(lgS&&!lgS.can){toast("Bu haftanın lig maçı oynandı");return}const opL=ULT_SRV.ok?ultRakipKadro(opp,ex):ultAuto(opp,null,ex);let boost=0;if(st.kimyaOn&&st.kimya>0){myL.pen=-1.5;st.kimya--;boost=1}st.kimyaOn=false;
   const seed=TID+kind+opp+(kind==="lig"?st.lig.length:st.ch.length)+day;const P0=ultPlan(myL,opL,seed);const R0=ultResult(P0);
-  const rec={d:day,wk,opp,ga:R0.ga,gb:R0.gb,chem:P0.a.chem};rec.p=kind==="ch"?st.ch.filter(x=>x.wk===wk&&x.p).length<5:true;
+  const rec={d:day,wk,opp,ga:R0.ga,gb:R0.gb,chem:P0.a.chem};if(lgS)rec.k=lgS.key;rec.p=kind==="ch"?st.ch.filter(x=>x.wk===wk&&x.p).length<5:true;
   const e=st.evo;if(e&&rec.p&&P0.a.cs.some(c=>c&&c.id===e.cid)){if(e.lv===0){e.prog++;if(e.prog>=2){e.lv=1;e.prog=0}}else if(e.lv===2){e.prog+=ultHuc(e.pid)?R0.gl.filter(g=>!g.op&&g.s===e.pid).length:(R0.ga>R0.gb?1:0);if(e.prog>=2){e.lv=3;e.prog=0}}}
   if(st.ustaOn&&P0.a.cs.some(c=>c&&c.id===st.ustaOn.cid)){st.ustaOn.left--;if(st.ustaOn.left<=0)st.ustaOn=null}
   for(const c of P0.a.cs)if(c&&c.type==="kira"){const k=st.kira[+c.id.split("-")[1]];if(k)k.left--}
@@ -5150,8 +5150,8 @@ function ultStart(kind,opp){const st=ultSt();const me=myPid();const err=ultOk(ul
   // meydan okuma ödülü: kazanırsan rakibin özel kartlarından biri 1 maçlık kiralık (günde 1)
   let odul=null;if(kind==="ch"&&R0.ga>R0.gb&&st.kiraDay!==day){const L=ultBuild().C.filter(c=>c.pid===opp&&ULT_SP.includes(c.type));if(L.length){const c=L[Math.floor(ultRng(TID+day+opp+"od")()*L.length)];st.kira.push({cid:c.id,left:1,ch:1});st.kiraDay=day;odul=c}}
   if(kind==="lig")st.lig.push(rec);else st.ch.push(rec);ultSave();if(e)ultEvoTick();
-  if(ULT_SRV.ok){if(lgS)rpc("ult_event",{p_kind:"lig",p_b:opp,p_k:lgS.key,p_payload:{h:me,ga:R0.ga,gb:R0.gb}}).then(r=>{if(r&&r.ok){if(r.dup){toast("Bu maç rakibin tarafından daha önce oynanmış; o sonuç geçerli")}ULT_SRV.ev.push(r.ev?{kind:"lig",k:lgS.key,a:r.ev.a,b:r.ev.b,p:r.ev.p}:{kind:"lig",k:lgS.key,a:me,b:opp,p:{h:me,ga:R0.ga,gb:R0.gb}})}}).catch(()=>{});
-    else rpc("ult_event",{p_kind:"ch",p_b:opp,p_k:null,p_payload:{ga:R0.ga,gb:R0.gb,gercek:opL.gercek?1:0}}).catch(()=>{})}
+  if(ULT_SRV.ok){clearTimeout(ULT_SRV.t);const evP=(n,b)=>ultPush().then(()=>rpc("ult_event",n)).then(r=>r&&!r.ok&&r.error==="surum"&&b<2?new Promise(z=>setTimeout(z,1500)).then(()=>evP(n,b+1)):r);if(lgS)evP({p_kind:"lig",p_b:opp,p_k:lgS.key,p_payload:{h:me,ga:R0.ga,gb:R0.gb}},0).then(r=>{if(r&&r.ok){if(r.dup){toast("Bu maç rakibin tarafından daha önce oynanmış; o sonuç geçerli")}ULT_SRV.ev.push(r.ev?{kind:"lig",k:lgS.key,a:r.ev.a,b:r.ev.b,p:r.ev.p}:{kind:"lig",k:lgS.key,a:me,b:opp,p:{h:me,ga:R0.ga,gb:R0.gb}})}}).catch(()=>{});
+    else evP({p_kind:"ch",p_b:opp,p_k:null,p_payload:{ga:R0.ga,gb:R0.gb,gercek:opL.gercek?1:0}},0).catch(()=>{})}
   ULT.run={kind,opp,odul,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:boost?[["0'","Kimya artışı devrede","g"]]:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
 function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-"+Math.ceil(((t-y)/864e5+1)/7)}
 const ULT_OP=[[50,9],[36,27],[64,27],[15,55],[85,55],[42,72],[58,72]];// rakip dizilişi: bizimkilerle üst üste binmez
@@ -5213,7 +5213,7 @@ function ultLigS(){const F=ultLigFix();if(!F)return null;const{L,R,key}=F,me=myP
   const res=(a,b,ga,gb)=>{const A=rows[a],Bb=rows[b];if(!A||!Bb)return;A.o++;Bb.o++;A.ag+=ga;A.yg+=gb;Bb.ag+=gb;Bb.yg+=ga;if(ga>gb){A.g++;A.p+=3;Bb.m++}else if(ga<gb){Bb.g++;Bb.p+=3;A.m++}else{A.b++;Bb.b++;A.p++;Bb.p++}};
   for(let w=0;w<7;w++)for(const[a,b]of R[w]){if(!a||!b)continue;const e=E[key(w,a,b)];if(!e)continue;const h=e.p.h;if(h===a)res(a,b,+e.p.ga,+e.p.gb);else res(b,a,+e.p.ga,+e.p.gb)}
   const srt=Object.values(rows).sort((a,b)=>b.p-a.p||(b.ag-b.yg)-(a.ag-a.yg));const icinde=L.players.includes(me);
-  let nx=null,played=false;if(icinde&&cw<7){const o=R[cw].find(x=>x.includes(me));nx=o?(o[0]===me?o[1]:o[0]):null;played=!!(nx&&E[key(cw,me,nx)])}
+  let nx=null,played=false;if(icinde&&cw<7){const o=R[cw].find(x=>x.includes(me));nx=o?(o[0]===me?o[1]:o[0]):null;played=!!(nx&&(E[key(cw,me,nx)]||st.lig.some(x=>x.k===key(cw,me,nx))))}
   const sk="s"+L.season;if(cw>=7&&icinde&&srt[0]&&st.ligOd!==sk){st.ligOd=sk;if(srt[0].id===me){st.samp=(st.samp||0)+1;if(!st.nadir.includes(ULT_SAMP))st.nadir.push(ULT_SAMP)}ultSave()}
   return{T:L.players,R,rows:srt,nx,W:cw,test:false,cw,can:!!nx&&!played&&cw<7,yeni:false,real:1,icinde,played,sezon:L.season,key:nx?key(cw,me,nx):null}}
 // geçmiş haftalarda oynanmamış maçlar: iki kadro da otomatik ve 1,5 eksik, ilk gören kaydeder (sonuç herkes için aynı)
