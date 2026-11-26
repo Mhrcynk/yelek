@@ -1450,7 +1450,7 @@ function sheetShare(){const m=S.matches.find(x=>x.id===S.sheet.mid);if(!m)return
     ${done&&inf.totw&&inf.totw.length?it("storyTotw","XI","Haftanın Takımı","En iyi 7 oyuncu ve notları"):""}
     ${(m.team_a||[]).length?it("shareImg","▦","Kadro ve diziliş","İki takım sahada"):""}</div>`})}
 function sheetHtml(){const em=S.sheet&&S.sheet.type==="eval"&&S.matches.find(x=>x.id===S.sheet.mid);return em?inM(em,_sheetHtml):_sheetHtml()}
-function _sheetHtml(){const t=S.sheet.type;if(t==="haber")return sheetHaber();if(t==="rztyeni")return sheetRztYeni();if(t==="dukral")return sheetDuKral();if(t==="fz")return sheetFz();if(t==="gmInfo")return sheetGmInfo();if(t==="gmNotes")return sheetGmNotes();if(t==="oda")return sheetOda();if(t==="bulten")return sheetBulten();if(t==="betInfo")return sheetBetInfo();if(t==="kral")return sheetKral();if(t==="betNotes")return sheetBetNotes();if(t==="betCom")return sheetBetCom();if(t==="betSlip"){const m=betNext();const bd=m&&BET.board[m.id];if(!m||!bd||!bd.open||!BET.slip.length)return"";return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>`+betSlip(m,bd.sum)}if(t==="trk")return sheetTrk();if(t==="vote")return sheetVote();if(t==="oysonuc")return sheetOySonuc();if(t==="duello")return sheetDuello();if(t==="duafis")return sheetDuAfis();if(t==="oyafis")return sheetOyAfis();if(t==="vdet")return sheetVdet();if(t==="eval"){const m=S.matches.find(x=>x.id===S.sheet.mid);const ev=m&&S.f["ev_"+m.id];if(!m||!S.admin||!ev)return"";
+function _sheetHtml(){const t=S.sheet.type;if(t==="ult")return sheetUlt();if(t==="haber")return sheetHaber();if(t==="rztyeni")return sheetRztYeni();if(t==="dukral")return sheetDuKral();if(t==="fz")return sheetFz();if(t==="gmInfo")return sheetGmInfo();if(t==="gmNotes")return sheetGmNotes();if(t==="oda")return sheetOda();if(t==="bulten")return sheetBulten();if(t==="betInfo")return sheetBetInfo();if(t==="kral")return sheetKral();if(t==="betNotes")return sheetBetNotes();if(t==="betCom")return sheetBetCom();if(t==="betSlip"){const m=betNext();const bd=m&&BET.board[m.id];if(!m||!bd||!bd.open||!BET.slip.length)return"";return `<div class="ch"><div><div class="eyebrow">Tahmin</div><h2>${esc(nmOf(m,"A"))} – ${esc(nmOf(m,"B"))}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>`+betSlip(m,bd.sum)}if(t==="trk")return sheetTrk();if(t==="vote")return sheetVote();if(t==="oysonuc")return sheetOySonuc();if(t==="duello")return sheetDuello();if(t==="duafis")return sheetDuAfis();if(t==="oyafis")return sheetOyAfis();if(t==="vdet")return sheetVdet();if(t==="eval"){const m=S.matches.find(x=>x.id===S.sheet.mid);const ev=m&&S.f["ev_"+m.id];if(!m||!S.admin||!ev)return"";
     return `<div class="ch"><div><div class="eyebrow">Maç değerlendirmesi · ${fmtShort(m.date)}</div><h2>${TEAM.A} ${m.score_a} – ${m.score_b} ${TEAM.B}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
       <p class="muted small">Gol, asist ve skor değişmez; sadece değerlendirme, penaltı ve çizgiden çıkarma kaydedilir.</p>${perfBlock(m,ev,"ev_"+m.id)}
       <button class="btn primary block" data-act="saveEval" data-id="${esc(m.id)}">${ICON.check} Kaydet, kartları güncelle</button>`}
@@ -1585,7 +1585,7 @@ function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];
 const openMatch=()=>S.matches.filter(m=>!mDone(m)&&!isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b))[0];
 /* Bu hafta sekmeleri: Maç / Oyunlar / Haberler */
 let BH=null;const bh=(k,x)=>{if(BH&&x){BH[k].push(x);return""}return x||""};
-function bhWrap(top,mac){const B=BH;BH=null;const T=[["mac","Maç",mac+B.mac.join("")],["oyun","Oyunlar",B.oyun.join("")],["haber","Haberler",B.haber.join("")]].filter(t=>t[2].trim());
+function bhWrap(top,mac){const B=BH;BH=null;if(isOwner()){const u=ultKart();if(u)B.oyun.unshift(u)}const T=[["mac","Maç",mac+B.mac.join("")],["oyun","Oyunlar",B.oyun.join("")],["haber","Haberler",B.haber.join("")]].filter(t=>t[2].trim());
   if(T.length<2)return top+(T[0]?T[0][2]:"");let k=S.f.bht;if(!T.some(t=>t[0]===k))k=T[0][0];
   const sig=((lastFinM()||{}).id||""),sk="y_hbs_"+TID;// yalnız yeni maçta yanar; geç gelen veriyle yanıp sönmesin
   if(k==="haber")LS.set(sk,sig);const nh=String(LS.get(sk)||"").split(":")[0]===sig?0:B.haber.length;
@@ -1877,7 +1877,7 @@ function sheetGmInfo(){const g=S.sheet.v==="du"?"du":"fz";
       ["Kaleci ya da defans: takımı ortalamadan ("+fN1(R.yen)+") az gol yedi","KL +3 · DF +2"],["Kaleci: "+fN1(Math.max(0,R.yen-3))+" ya da daha az gol yedi","+2 daha"],["Kaleci: "+fN1(R.yen+3)+" ya da daha çok gol yedi","her 3 golde −1"],["Penaltı kurtardı","+5"],["Çizgiden çıkardı","+3"],["Penaltı kaçırdı","−2"],["Penaltı yaptırdı","−1"],["Kendi kalesine gol","−2"],["Saha verisi varsa: mevki ortalamasından çok koşu / top kapma","+1'er"],["Saha verisi varsa, defans ve orta saha: mevki ortalamasından çok pas arası","+1"],["Kaptan","2 kat"]].map(([a,b])=>`<p><span>${a}</span><b>${b}</b></p>`).join("")}
       <small class="fz-tbn">${R.n?`Değerler bu maçtan önceki ${R.n} maçın verisinden hesaplanır ve her hafta yenilenir. Bir mevkide gol ya da asist ne kadar seyrekse o kadar çok puan getirir.<br>Maç başına gol: ${oq(R.ortG)}<br>Maç başına asist: ${oq(R.ortA)}`:"Henüz oynanmış maç yok; başlangıç değerleri kullanılıyor."}</small></div></details>
     <p class="fz-not">Puanlar skordan ve maç kaydındaki istatistiklerden gelir; oylar ve maç notu sayılmaz. Kadrolar maç başlayınca herkese açılır.</p>`})}
-function viewOyun(){const t=S.pg&&S.pg.type;const h=t==="fz"?sheetFz():t==="duello"?sheetDuello():"";if(!h){S.pg=null;S.tab="mac";return viewMac()}return `<div class="gpg gpg-${t}">${h}</div>`}
+function viewOyun(){const t=S.pg&&S.pg.type;const h=t==="fz"?sheetFz():t==="duello"?sheetDuello():t==="ult"?sheetUltPg():"";if(!h){S.pg=null;S.tab="mac";return viewMac()}return `<div class="gpg gpg-${t}">${h}</div>`}
 function sheetFz(){const sh=S.pg,m=S.matches.find(x=>x.id===sh.mid);const me=myPid();if(!m||!me)return"";if(S.f.fz&&S.f.fz.mid===m.id&&fzOpen(m))try{LS.set("y_fzsel_"+m.id,JSON.stringify(S.f.fz));LS.set("y_fzed",S.f.fzEdit?m.id:"")}catch(_){}fzLoad();return inM(m,()=>{
   const X=`<button class="mzic" data-act="pgBack" aria-label="Geri">${PG_BK}</button>`;const open=fzOpen(m);const tab=["sira","cup"].includes(sh.tab)?sh.tab:"kadro";
   const myR=fzReady(m)?fzWeek(m).find(r=>r.p===me):null;
@@ -4097,6 +4097,7 @@ document.addEventListener("click",async e=>{
   if(e.target.closest(".top .brand")&&S.session){S.hub=null;S.f.hq="";S.sheet={type:"hub"};render(true);return}
   if(S.f&&S.f.setp==="pay"&&e.target.closest(".lnkc .btn"))LS.set("y_shr_"+TID,"1");
   const el=e.target.closest("[data-act]");if(!el)return;try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const a=el.dataset.act;if(a==="closeBg"&&e.target!==el)return;if(!/^(close|closeBg|tog|tab|setp)$/.test(a))useHit("act:"+(a==="tog1"?el.dataset.k+"_"+el.dataset.v:a).replace(/[^a-zA-Z0-9_]/g,"").slice(0,24));if(S.fol&&FBLOCK.includes(a))return;const id=el.dataset.id;const t=S.teams;
+  if(/^ult/.test(a)&&ultAct(a,el))return;
   switch(a){
     case"rosterSet":{const m=S.matches.find(x=>x.id===id);if(!m)break;const v=el.dataset.v;const ok=p=>!UNAVAIL.includes(stOf(p));let ids=[];
       if(v==="prev"){const pm=lastFinM();ids=pm?plAll(pm).filter(x=>P(x)&&!P(x).guest&&ok(P(x))):[]}
@@ -4885,6 +4886,224 @@ async function storyTotw(m){await fontsOk();
     if(r.pts!=null)noteBadge(x,r.pts,W-140,Y+rowH/2,48,false)});
   storyFoot(x,W,H);shareCanvas(c,"haftanin-takimi.png","Haftanın Takımı");
 }
+
+/* ===== YELEK ULTIMATE · test sürümü: yalnız uygulama sahibine görünür; kişisel durum telefonda saklanır ===== */
+const ULT={c:null,k:null,s:null,run:null};
+const ULT_T={temel:"",holo:"Holo",kholo:"Kusursuz holo",kahraman:"Kahraman",kahraman2:"Altın Kahraman",ht:"Haftanın takımı",ayin:"Ayın oyuncusu",sezon:"Sezonun takımı",donem:"Dönemin takımı",an:"An efsanesi",efsane:"Dönemin efsanesi",seri:"Seri",evo:"Gelişim",kira:"Kiralık"};
+const ULT_SP=["holo","kholo","kahraman","kahraman2","ht","ayin","sezon","donem","an","efsane","seri","evo","kira"];
+const ULT_KOZ=["Gece çerçevesi","Neon kenar","Altın köşe","Yıldız tozu","Çim deseni","Tribün ışığı","Mor duman","Fileli zemin","Yelek deseni","Düdük rozeti","Gol çizgisi","Kayalar silueti"],ULT_NAD=["Gece Altını","Efsane Halesi","Kupa Parıltısı","Holo Yelek"];
+const ULT_SL=[["KL",50,90],["DF",27,70],["DF",73,70],["OS",30,47],["OS",70,47],["FV",33,20],["FV",67,20]];
+const ultOn=()=>isOwner();
+function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult_"+TID)||"null")}catch(_){}ULT.s=Object.assign({open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{})}return ULT.s}
+const ultSave=()=>{try{LS.set("y_ult_"+TID,JSON.stringify(ULT.s))}catch(_){}};
+const ultRole=id=>{const p=P(id);return p?(EPOS[eposOf(p)]||["OS"])[0]:"OS"};
+function ultRng(seed){let a=7;for(const c of String(seed))a=(a*31+c.charCodeAt(0))|0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+// gerçek maçlardan bütün kartlar: herkesin albümü aynı
+function ultBuild(){if(ULT.c&&ULT.k===S.stats)return ULT.c;
+  const F=fin().filter(m=>S.mInfo[m.id]),L=sLen(),C=[],same={},car={},sea={},ep={},ht={},seri=[],seriDone=[],pw=[];let month=[];
+  const sz=[...new Set(F.map(yrOf))],per=s=>Math.floor(sz.indexOf(s)/3);const bySz={};F.forEach(m=>(bySz[yrOf(m)]=bySz[yrOf(m)]||[]).push(m));
+  const add=(type,pid,up,m,extra)=>{const p=P(pid);if(!p||p.guest)return;const base=Math.floor(+ovrOf(pid)||0);C.push({id:type+"-"+pid+"-"+(m?m.id:"")+"-"+C.length,type,pid,base,r:Math.min(99,base+(up||0)),up:up||0,mid:m?m.id:null,season:m?yrOf(m):null,date:m?m.date:"",extra:extra||""})};
+  const avgOf=(ms,id)=>{let n=0,t=0;for(const m of ms){const x=(S.mInfo[m.id].pts||{})[id];if(x){n++;t+=+x.pts||0}}return n?{n,a:t/n}:{n:0,a:0}};
+  const ids=()=>S.players.filter(p=>!p.guest).map(p=>p.id);
+  F.forEach((m,mi)=>{const inf=S.mInfo[m.id],pts=inf.pts||{},s=yrOf(m),A=plOf(m,"A"),B=plOf(m,"B"),sa=+m.score_a||0,sb=+m.score_b||0;
+    for(const T of[A,B])for(let i=0;i<T.length;i++)for(let j=i+1;j<T.length;j++){const k=pairKey(T[i],T[j]);same[k]=(same[k]||0)+1}
+    const pl=A.concat(B).filter(id=>pts[id]&&P(id)&&!P(id).guest),pk=per(s),E=id=>pk+"|"+id;
+    for(const id of pl){const x=pts[id],n=+x.pts||0;car[id]=(car[id]||0)+1;const k=s+"|"+id,ss=sea[k]=sea[k]||{n:0,t:0};ss.n++;ss.t+=n;
+      if(ss.n===1)add("temel",id,0,m);if(ss.n===6)add("holo",id,0,m);if(car[id]===20)add("kahraman",id,0,m);if(car[id]===50)add("kahraman2",id,3,m);
+      const sc=n+(x.g||0)*.4;if(((x.g||0)>=4||n>=9)&&(!ss.an||sc>ss.an.sc))ss.an={sc,m,g:x.g||0,n};
+      ep[E(id)]=(ep[E(id)]||0)+(x.g||0)+(x.a||0)+(n>=8?2:0)}
+    for(const id of(inf.totw||[]).filter(id=>pl.includes(id))){const k=s+"|"+id;ht[k]=(ht[k]||0)+1;if(ht[k]<=3)add("ht",id,1,m);ep[E(id)]=(ep[E(id)]||0)+3}
+    if(inf.motm&&pl.includes(inf.motm))ep[E(inf.motm)]=(ep[E(inf.motm)]||0)+10;
+    for(const r of seri){if(!pts[r.pid])continue;const x=pts[r.pid],won=A.includes(r.pid)?sa>sb:sb>sa;r.seen++;r.w+=won?1:0;r.ga+=(x.g||0)+(x.a||0);r.mo=r.mo||inf.motm===r.pid;r.tw=r.tw||(inf.totw||[]).includes(r.pid);
+      if(r.seen>=3){r.up=Math.min(3,(r.w>=2?1:0)+(r.ga>=4?1:0)+(r.mo?1:0)+(r.tw?1:0));r.done=1;seriDone.push(r);add("seri",r.pid,r.up,m,"+"+r.up)}}
+    for(let i=seri.length-1;i>=0;i--)if(seri[i].done)seri.splice(i,1);
+    month.push(m);if(month.length===4){const el=ids().map(id=>[id,avgOf(month,id)]).filter(x=>x[1].n>=3).sort((a,b)=>b[1].a-a[1].a);if(el[0])add("ayin",el[0][0],2,m);
+      ids().map(id=>[id,avgOf(month,id)]).filter(x=>x[1].n>=2&&!seri.some(r=>r.pid===x[0])).sort((a,b)=>b[1].a-a[1].a).slice(0,3).forEach(([pid])=>seri.push({pid,seen:0,w:0,ga:0,mo:false,tw:false,from:m.date}));month=[]}
+    const last=mi===F.length-1?(bySz[s].length>=L):yrOf(F[mi+1])!==s;
+    if(last){const half=Math.ceil(L/2);const P2=ids().map(id=>[id,sea[s+"|"+id]]).filter(x=>x[1]);
+      P2.filter(x=>x[1].n>=half).sort((a,b)=>b[1].t/b[1].n-a[1].t/a[1].n).slice(0,7).forEach(([id])=>add("sezon",id,3,m));
+      P2.filter(x=>x[1].n>=7).sort((a,b)=>b[1].t/b[1].n-a[1].t/a[1].n).slice(0,2).forEach(([id])=>add("kholo",id,0,m));
+      const an=P2.filter(x=>x[1].an).sort((a,b)=>b[1].an.sc-a[1].an.sc)[0];if(an){add("an",an[0],3,an[1].an.m,`${fmtShort(an[1].an.m.date)} · ${an[1].an.g} gol`);ep[E(an[0])]=(ep[E(an[0])]||0)+15}
+      if(sz.indexOf(s)%3===2){const PM=F.filter(x=>per(yrOf(x))===pk);const hp=Math.ceil(PM.length/2);
+        ids().map(id=>[id,avgOf(PM,id)]).filter(x=>x[1].n>=hp).sort((a,b)=>b[1].a-a[1].a).slice(0,7).forEach(([id])=>add("donem",id,4,m));
+        const o=ids().map(id=>[id,ep[E(id)]||0]).sort((a,b)=>b[1]-a[1]);if(o[0]&&o[0][1]>0){const prev=pw[pw.length-1];
+          if(prev&&prev.first===o[0][0]&&o[1]){add("efsane",o[0][0],6,m,"2. kez");add("efsane",o[1][0],5,m,"Yeni efsane")}else add("efsane",o[0][0],5,m);pw.push({first:o[0][0],pk})}}}});
+  const cur=sz[sz.length-1]||yrOf({});
+  ULT.c={C,same,car,sea,ep,seri,seriDone,sz,cur,pk:per(cur),F};ULT.k=S.stats;return ULT.c}
+function ultCards(){const B=ultBuild(),st=ultSt(),me=myPid();const X=B.C.slice();
+  for(const e of st.evoDone){X.push({id:"evo-"+e.pid+"-"+e.at,type:"evo",pid:e.pid,base:e.base,r:e.r,up:e.r-e.base,season:B.cur,extra:"Kanat ustası",mine:1})}
+  st.kira.forEach((k,i)=>{const c=B.C.find(x=>x.id===k.cid);if(c&&k.left>0)X.push({...c,id:"kira-"+i,type:"kira",extra:k.left+" maç",mine:1})});
+  return X}
+const ultCard=id=>ultCards().find(c=>c.id===id);
+function ultBest(pid){let b=null;for(const c of ultBuild().C)if(c.pid===pid&&(!b||c.r>b.r))b=c;return b}
+function ultCls(c){return c.type==="temel"?tierOf(c.base):"ul-"+c.type}
+function ultCardH(c,o){o=o||{};const p=P(c.pid);if(!p)return"";const ph=photoOf(c.pid);const tag=ULT_T[c.type]+(c.extra?(ULT_T[c.type]?" · ":"")+c.extra:"");
+  return `<button class="mzc ulc ${ultCls(c)}${o.sm?" sm":""}" data-act="${o.act||"ultCard"}" data-v="${esc(c.id)}"${o.i!=null?` data-i="${o.i}"`:""} aria-label="${esc(p.name)}, ${c.r}${tag?", "+esc(tag):""}"><span class="mzc-o"><b class="num">${c.r}</b><small>${eposOf(p)}</small></span>${ph?`<img src="${esc(ph)}" alt="">`:`<span class="mzc-sil">${SIL}</span>`}<i class="ulc-m" aria-hidden="true">ULT</i>${c.up?`<i class="ulc-u">+${c.up}</i>`:""}<span class="mzc-n">${esc(shortName(p.name))}</span>${tag?`<span class="ulc-t">${esc(tag)}</span>`:""}</button>`}
+// kimya: gerçek maçlarda aynı tarafta en az 3 kez oynamak = bağ
+function ultLine(L){const B=ultBuild();const cs=L.map(id=>id?ultCard(id):null);const pids=cs.map(c=>c&&c.pid);
+  const ch=cs.map((c,i)=>{if(!c)return 0;if(ultRole(c.pid)!==ULT_SL[i][0])return 0;if(c.type==="efsane")return 3;let nb=pids.filter((q,j)=>q&&j!==i&&(B.same[pairKey(c.pid,q)]||0)>=3).length;if(/^kahraman/.test(c.type))nb++;return nb>=5?3:nb>=3?2:nb>=1?1:0});
+  const n=cs.filter(Boolean).length;const avg=n?cs.reduce((t,c,i)=>t+(c?c.r*(ultRole(c.pid)===ULT_SL[i][0]?1:.88):0),0)/n:0;const chem=ch.reduce((a,b)=>a+b,0);
+  return{cs,ch,chem,str:avg+chem*.3,n,sp:cs.filter(c=>c&&ULT_SP.includes(c.type)).length}}
+function ultAuto(pid){const B=ultBuild();const pool=B.C.slice().sort((a,b)=>b.r-a.r);const L=[null,null,null,null,null,null,null],used=new Set();let sp=0;
+  const own=ultBest(pid);if(own){let i=ULT_SL.findIndex(s=>s[0]===ultRole(pid));if(i<0)i=3;L[i]=own.id;used.add(pid);if(ULT_SP.includes(own.type))sp++}
+  ULT_SL.forEach(([r],i)=>{if(L[i])return;const c=pool.find(c=>!used.has(c.pid)&&ultRole(c.pid)===r&&(!ULT_SP.includes(c.type)||sp<3))||pool.find(c=>!used.has(c.pid)&&!ULT_SP.includes(c.type));if(c){L[i]=c.id;used.add(c.pid);if(ULT_SP.includes(c.type))sp++}});return L}
+function ultOk(L){const me=myPid();const x=ultLine(L);if(x.n<7)return"Kadroda 7 oyuncu olmalı";if(!x.cs.some(c=>c&&c.pid===me))return"Kendi kartın kadroda olmalı";if(x.sp>3)return"En fazla 3 özel kart koyabilirsin";return""}
+// paketler: maçın adamı büyük paket, haftanın takımının ilk 3'ü normal paket, kalan 4'ü 2 parça, maça çıkan diğerleri 1 parça
+function ultPacks(){const B=ultBuild(),me=myPid(),st=ultSt();const L=[];let parca=0;
+  for(const m of B.F){const inf=S.mInfo[m.id],x=(inf.pts||{})[me];if(!x)continue;const tw=(inf.totw||[]).slice().sort((a,b)=>(inf.pts[b]||{}).pts-(inf.pts[a]||{}).pts);
+    const g=B.C.find(c=>c.mid===m.id&&c.pid===me&&c.type==="ht")||B.C.filter(c=>c.pid===me).pop();
+    if(inf.motm===me)L.push({k:m.id,big:1,slots:2,why:"Maçın adamı · "+fmtShort(m.date),g:g&&g.id});else if(tw.indexOf(me)>-1&&tw.indexOf(me)<3)L.push({k:m.id,slots:1,why:"Haftanın takımı · "+fmtShort(m.date),g:g&&g.id});else parca+=tw.includes(me)?2:1}
+  parca+=st.pBonus;const pp=Math.floor(parca/5);for(let i=0;i<pp;i++){const b=B.C.filter(c=>c.pid===me).pop();L.push({k:"p"+i,slots:1,why:"5 parçadan paket",g:b&&b.id})}
+  return{L,parca:parca%5,yeni:L.filter(p=>!st.open[p.k])}}
+function ultOpen(pk){const st=ultSt();if(st.open[pk.k])return st.open[pk.k];const R=ultRng(TID+pk.k),B=ultBuild(),me=myPid(),res=[];
+  for(let i=0;i<pk.slots;i++){const x=R()*100;
+    if(x<70){const it=ULT_KOZ[Math.floor(R()*ULT_KOZ.length)];if(st.koz.includes(it)){st.pBonus++;res.push({k:"dup",t:it})}else{st.koz.push(it);res.push({k:"koz",t:it})}}
+    else if(x<95){const f=["kimya","hiz","kira"][Math.floor(R()*3)];if(f==="kira"){const top=B.C.filter(c=>c.pid!==me&&ULT_SP.includes(c.type)).sort((a,b)=>b.r-a.r).slice(0,10);const c=top[Math.floor(R()*top.length)];if(c){st.kira.push({cid:c.id,left:3});res.push({k:"kira",t:shortName(nameOf(c.pid))+" · "+ULT_T[c.type],cid:c.id})}else{st.kimya++;res.push({k:"kimya"})}}else{st[f]++;res.push({k:f})}}
+    else{const it=ULT_NAD[Math.floor(R()*ULT_NAD.length)];if(st.nadir.includes(it)){st.pBonus++;res.push({k:"dup",t:it})}else{st.nadir.push(it);res.push({k:"nadir",t:it})}}}
+  st.open[pk.k]={res,g:pk.g,at:Date.now()};ultSave();return st.open[pk.k]}
+// gelişim: yarısı sanal maç, yarısı gerçek maç
+const ULT_EV=[["Sanal · bu kartla 2 maç oyna","+2 HIZ, +1 reyting"],["Gerçek · gol ya da asist (defans/kaleci: takımı kazansın)","+3 PAS"],["Sanal · bu kartla 2 gol","+2 DRİ, +1 reyting"],["Gerçek · takım kazansın ve not 6,5+ (ya da not 7+)","+1 reyting, gelişim rengi"]];
+function ultEvoTick(){const st=ultSt(),e=st.evo;if(!e)return;const F=ultBuild().F;for(let i=e.mi;i<F.length;i++){const m=F[i],x=(S.mInfo[m.id].pts||{})[e.pid];e.mi=i+1;if(!x)continue;const won=plOf(m,"A").includes(e.pid)?+m.score_a>+m.score_b:+m.score_b>+m.score_a;const r=ultRole(e.pid);
+    if(e.lv===1&&((x.g||0)+(x.a||0)>0||((r==="DF"||r==="KL")&&won))){e.lv=2;e.prog=0}
+    else if(e.lv===3&&((+x.pts||0)>=7||(won&&(+x.pts||0)>=6.5)))ultEvoDone()}ultSave()}
+function ultEvoDone(){const st=ultSt(),e=st.evo;if(!e)return;const c=ultCard(e.cid);const base=c?c.base:Math.floor(+ovrOf(e.pid)||0);st.evoDone.push({pid:e.pid,base,r:Math.min(80,base+4),at:Date.now(),season:ultBuild().cur});st.evo=null;ultSave();toast("Gelişim tamamlandı!")}
+// sanal maç
+function ultPlan(myL,opL,seed){const R=ultRng(seed),a=ultLine(myL),b=ultLine(opL),d=a.str-b.str;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
+  const nU=cl(Math.round(8+d/2.5),5,12),nO=cl(Math.round(8-d/2.5),4,11);const ev=[];
+  for(let i=0;i<nU+nO;i++)ev.push({us:i<nU,dk:1+Math.floor(R()*40)});ev.sort((x,y)=>x.dk-y.dk);
+  const idx=[0,1,2,3,4,5,6];
+  for(const e of ev){if(e.us){let cur=[1,2,3,4][Math.floor(R()*4)];const path=[cur];while(ULT_SL[cur][0]!=="FV"&&path.length<4){const nx=idx.filter(j=>ULT_SL[j][2]<ULT_SL[cur][2]);if(!nx.length)break;const w=nx.map(j=>1+((ultBuild().same[pairKey(a.cs[cur].pid,a.cs[j].pid)]||0)>=3?2:0));let t=R()*w.reduce((p,q)=>p+q,0),pick=nx[0];for(let q=0;q<nx.length;q++){t-=w[q];if(t<=0){pick=nx[q];break}}path.push(pick);cur=pick}
+      e.path=path;e.goal=R()<cl(.24+d/45+(a.chem-10)/120,.08,.5)}else e.goal=R()<cl(.24-d/45,.06,.45)}
+  return{ev,a,b}}
+function ultResult(P0){let ga=0,gb=0;const inv={},gl=[];for(const e of P0.ev){if(e.us){const sh=P0.a.cs[e.path[e.path.length-1]].pid,as=e.path.length>1?P0.a.cs[e.path[e.path.length-2]].pid:null;inv[sh]=(inv[sh]||0)+1;if(e.goal){ga++;inv[sh]+=3;if(as)inv[as]=(inv[as]||0)+2;gl.push({dk:e.dk,s:sh,a:as})}}else if(e.goal){gb++;gl.push({dk:e.dk,op:1})}}
+  return{ga,gb,gl,mvp:Object.entries(inv).sort((x,y)=>y[1]-x[1])[0]?.[0]}}
+function ultStart(kind,opp){const st=ultSt();const me=myPid();const err=ultOk(st.kadro);if(err){toast(err);return}
+  const day=new Date().toISOString().slice(0,10),wk=isoWeek(new Date());
+  if(kind==="ch"){const td=st.ch.filter(x=>x.d===day);if(td.length>=3){toast("Bugünkü 3 meydan okuma hakkın doldu");return}if(td.some(x=>x.opp===opp)){toast("Bu oyuncuya bugün meydan okudun");return}}
+  const opL=ultAuto(opp);const seed=TID+kind+opp+(kind==="lig"?st.lig.length:st.ch.length)+day;const P0=ultPlan(st.kadro,opL,seed);const R0=ultResult(P0);
+  const rec={d:day,wk,opp,ga:R0.ga,gb:R0.gb,pts:kind==="ch"?st.ch.filter(x=>x.wk===wk&&x.p).length<5:true};rec.p=rec.pts;
+  // gelişim ve kiralık sayaçları
+  const e=st.evo;if(e&&rec.p){const inL=P0.a.cs.some(c=>c&&c.id===e.cid);if(inL){if(e.lv===0){e.prog++;if(e.prog>=2){e.lv=1;e.prog=0;ultEvoTick()}}else if(e.lv===2){e.prog+=R0.gl.filter(g=>g.s===e.pid).length;if(e.prog>=2){e.lv=3;e.prog=0;ultEvoTick()}}}}
+  for(const c of P0.a.cs)if(c&&c.type==="kira"){const k=st.kira[+c.id.split("-")[1]];if(k){k.left--}}
+  st.kira=st.kira.filter(k=>k.left>0);st.kadro=st.kadro.map(id=>id&&id.startsWith("kira-")?null:id);
+  if(kind==="lig")st.lig.push(rec);else st.ch.push(rec);ultSave();
+  ULT.run={kind,opp,P0,R0,i:0,sk:{a:0,b:0},hiz:1,txt:"Düdük çaldı!",done:false};S.sheet={type:"ult",v:"mac"};render(true);ultTick()}
+function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-"+Math.ceil(((t-y)/864e5+1)/7)}
+function ultTick(){const r=ULT.run;if(!r||r.done)return;const e=r.P0.ev[r.i];if(!e){r.done=true;r.txt="Maç bitti";ultDraw();return}
+  const nm=id=>shortName(nameOf(id));const ball=document.getElementById("ulBall");const pos=i=>ULT_SL[i];
+  let steps=[];if(e.us){e.path.forEach((j,q)=>steps.push(()=>{r.txt=q?`${e.dk}' ${nm(r.P0.a.cs[e.path[q-1]].pid)} → ${nm(r.P0.a.cs[j].pid)}`:`${e.dk}' ${nm(r.P0.a.cs[j].pid)} topla`;r.bx=[pos(j)[1],pos(j)[2]]}));
+    steps.push(()=>{const s=r.P0.a.cs[e.path[e.path.length-1]].pid;if(e.goal){r.sk.a++;r.txt=`⚽ ${e.dk}' GOL! ${nm(s)}`;r.bx=[50,3]}else{r.txt=`${e.dk}' ${nm(s)} şut… kaleci aldı`;r.bx=[40+Math.random()*20,8]}})}
+  else{steps.push(()=>{r.txt=`${e.dk}' ${shortName(nameOf(r.opp))} takımı atakta`;r.bx=[30+Math.random()*40,62]});steps.push(()=>{if(e.goal){r.sk.b++;r.txt=`${e.dk}' Gol yedik`;r.bx=[50,97]}else{r.txt=`${e.dk}' ${nm(r.P0.a.cs[0].pid)} kurtardı`;r.bx=[50,88]}})}
+  let k=0;const go=()=>{if(!ULT.run||ULT.run!==r)return;if(r.skip){r.i=r.P0.ev.length;r.sk={a:r.R0.ga,b:r.R0.gb};r.done=true;r.txt="Maç bitti";ultDraw();return}
+    if(k<steps.length){steps[k++]();ultDraw();setTimeout(go,520/r.hiz)}else{r.i++;setTimeout(ultTick,320/r.hiz)}};go()}
+function ultDraw(){const r=ULT.run;if(!r)return;const b=document.getElementById("ulBall"),t=document.getElementById("ulTxt"),s=document.getElementById("ulSk");if(!b){return}
+  if(r.bx){b.style.left=r.bx[0]+"%";b.style.top=r.bx[1]+"%"}t.textContent=r.txt;s.textContent=r.sk.a+" – "+r.sk.b;if(r.done){const f=document.getElementById("ulFin");if(f)f.hidden=false;const k=document.getElementById("ulCtl");if(k)k.hidden=true}}
+// lig: sen + en çok maça çıkan 7 oyuncunun otomatik kadrosu, 7 haftalık fikstür
+function ultLig(){const B=ultBuild(),me=myPid();const opp=S.players.filter(p=>!p.guest&&p.id!==me&&(B.car[p.id]||0)>0).sort((a,b)=>(B.car[b.id]||0)-(B.car[a.id]||0)).slice(0,7).map(p=>p.id);const T=[me].concat(opp);
+  const R=[];const t=T.slice();for(let w=0;w<7;w++){const ms=[];for(let i=0;i<4;i++)ms.push([t[i],t[7-i]]);R.push(ms);t.splice(1,0,t.pop())}
+  const st=ultSt(),rows={};T.forEach(id=>rows[id]={id,o:0,g:0,b:0,m:0,ag:0,yg:0,p:0});const W=st.lig.length;
+  const res=(a,b,ga,gb)=>{const A=rows[a],Bb=rows[b];if(!A||!Bb)return;A.o++;Bb.o++;A.ag+=ga;A.yg+=gb;Bb.ag+=gb;Bb.yg+=ga;if(ga>gb){A.g++;A.p+=3;Bb.m++}else if(ga<gb){Bb.g++;Bb.p+=3;A.m++}else{A.b++;Bb.b++;A.p++;Bb.p++}};
+  for(let w=0;w<Math.min(W,7);w++)for(const[a,b]of R[w]){if(a===me||b===me){const x=st.lig[w];if(a===me)res(a,b,x.ga,x.gb);else res(a,b,x.gb,x.ga)}else{const sa=ultLine(ultAuto(a)).str,sb=ultLine(ultAuto(b)).str,Rr=ultRng(TID+"lig"+w+a+b);const pois=l=>{let L=Math.exp(-l),k=0,p=1;do{k++;p*=Rr()}while(p>L);return k-1};res(a,b,pois(Math.max(.3,1.6+(sa-sb)/8)),pois(Math.max(.3,1.6+(sb-sa)/8)))}}
+  const nx=W<7?R[W].find(x=>x.includes(me)):null;return{T,R,rows:Object.values(rows).sort((a,b)=>b.p-a.p||(b.ag-b.yg)-(a.ag-a.yg)),nx:nx?(nx[0]===me?nx[1]:nx[0]):null,W}}
+// ---------- görünüm ----------
+function ultKart(){if(!ultOn()||!myPid())return"";const B=ultBuild(),pk=ultPacks();return th2Kart("thU",`<span class="ulk-i">ULT</span>`,`Yelek <span lang="en">Ultimate</span>`,"Test · sadece sen",[["Kart",B.C.length],["Yeni paket",pk.yeni.length]],`<button class="btn sm primary" data-act="ultGo">Aç</button>`)}
+function sheetUltPg(){if(!ultOn()||!myPid())return"";const st=ultSt(),B=ultBuild(),me=myPid();ultEvoTick();const tab=st.tab||"ana";
+  const X=`<button class="oda-bk" data-act="pgBack" aria-label="Geri">${PG_BK}</button>`;
+  const hd=`<header class="bjh gph gph-ult">${X}<h1>Yelek <span lang="en">Ultimate</span></h1><button class="bj-i" data-act="ultInfo" aria-label="Kurallar">${GM_INFO}</button><button class="bjh-v" data-act="ultInfo"><b class="num">${B.C.length}</b><small>Kart</small></button></header><p class="gph-s">Test sürümü · yalnız sana açık · gerçek reytinge dokunmaz</p>
+    <div class="mzseg" role="tablist">${[["ana","Ana"],["album","Albüm"],["kadro","Kadro"],["mac","Maç"]].map(([v,l])=>`<button role="tab" data-act="ultTab" data-v="${v}" class="${tab===v?"on":""}" aria-selected="${tab===v}">${l}</button>`).join("")}</div>`;
+  return hd+(tab==="album"?ultAlbum():tab==="kadro"?ultKadro():tab==="mac"?ultMacTab():ultAna())}
+function ultAna(){const st=ultSt(),B=ultBuild(),me=myPid(),pk=ultPacks();const tile=(t,s,v,act,extra)=>`<button class="ult-t" ${act?`data-act="${act}"`:""} ${extra||""}><span><b>${t}</b><small>${s}</small></span>${v!=null?`<em>${v}</em>`:""}</button>`;
+  let h=`<div class="ult-g">`;
+  if(pk.yeni.length)h+=tile("Paketin hazır",esc(pk.yeni[0].why)+(pk.yeni.length>1?` · +${pk.yeni.length-1} paket daha`:""),"Aç","ultPack",`data-v="${esc(pk.yeni[0].k)}" style="border-color:var(--c-gold)"`);
+  const cs=B.C.filter(c=>c.season===B.cur);h+=tile(`Sezon ${B.cur} albümü`,`${cs.length} kart · toplam ${B.C.length}`,null,"ultTab",`data-v="album"`);
+  h+=tile("Parça",`5 parça = 1 paket · Koleksiyon: ${st.koz.length} kozmetik, ${st.nadir.length} nadir`,pk.parca+"/5");
+  for(const r of B.seri)h+=tile(`Seri · ${esc(shortName(nameOf(r.pid)))}`,`${r.seen}/3 maç · galibiyet ${r.w} · gol+asist ${r.ga}${r.mo?" · maçın adamı":""}`,"+"+Math.min(3,(r.w>=2?1:0)+(r.ga>=4?1:0)+(r.mo?1:0)+(r.tw?1:0)));
+  const e=st.evo;h+=e?tile(`Gelişim · ${esc(shortName(nameOf(e.pid)))}`,`Seviye ${e.lv+1}/4 · ${ULT_EV[e.lv][0]}${e.lv%2===0?` (${e.prog}/2)`:""}`,`${e.lv+1}/4`,"ultEvo"):tile("Gelişim","Bir kartını seç, görevlerle geliştir"+(st.evoDone.length?` · ${st.evoDone.length} tamamlandı`:""),"Başla","ultEvo");
+  const lg=ultLig();const my=lg.rows.findIndex(r=>r.id===me)+1;h+=tile("Sanal lig",lg.nx?`${my}. sıradasın · sıradaki rakip ${esc(shortName(nameOf(lg.nx)))}`:`Sezon bitti · ${my}. oldun`,my?my+".":null,"ultTab",`data-v="mac"`);
+  const o=S.players.filter(p=>!p.guest).map(p=>[p.id,B.ep[B.pk+"|"+p.id]||0]).sort((a,b)=>b[1]-a[1]);const mi=o.findIndex(x=>x[0]===me);
+  h+=`</div><section class="card ult-ef"><h3>Efsane yarışı · dönem ${B.pk+1}</h3>${o.slice(0,5).map(([id,v],i)=>`<div class="ult-r${id===me?" me":""}"><b class="num">${i+1}</b><span>${esc(shortName(nameOf(id)))}</span><em class="num">${v}</em></div>`).join("")}${mi>4?`<div class="ult-r me"><b class="num">${mi+1}</b><span>${esc(shortName(nameOf(me)))}</span><em class="num">${o[mi][1]}</em></div>`:""}<p class="ult-n">Oylama yok: dönem sonunda birinci olan Dönemin Efsanesi olur.</p></section>`;
+  const hk=[["kimya","Kimya artışı"],["hiz","Gelişim hızlandırma"]].filter(([k])=>st[k]>0);if(hk.length||st.kira.length)h+=`<section class="card ult-ef"><h3>Haklarım</h3>${hk.map(([k,l])=>`<div class="ult-r"><span>${l}</span><em class="num">${st[k]}</em></div>`).join("")}${st.kira.map(k=>{const c=ultBuild().C.find(x=>x.id===k.cid);return c?`<div class="ult-r"><span>Kiralık · ${esc(shortName(nameOf(c.pid)))} ${c.r}</span><em class="num">${k.left} maç</em></div>`:""}).join("")}</section>`;
+  return h}
+function ultAlbum(){const st=ultSt(),B=ultBuild();const f=st.af||"sezon";const L=ultCards().filter(c=>f==="ozel"?ULT_SP.includes(c.type):f==="hepsi"?true:c.season===B.cur||c.mine).slice().reverse();
+  const lock=S.players.filter(p=>!p.guest&&!(B.car[p.id]>0));
+  return `<div class="mzch">${[["sezon",`Sezon ${B.cur}`],["ozel","Özel"],["hepsi","Hepsi"]].map(([v,l])=>`<button class="${f===v?"on":""}" data-act="ultAf" data-v="${v}">${l}</button>`).join("")}</div>
+    <div class="mzk">${L.map(c=>ultCardH(c)).join("")}${f!=="ozel"?lock.map(p=>`<div class="ulc-lk"><b>🔒</b><span>${esc(shortName(p.name))}</span><small>İlk maçında açılır</small></div>`).join(""):""}</div>${L.length?"":`<p class="ult-n">Bu filtrede kart yok.</p>`}`}
+function ultKadro(){const st=ultSt(),me=myPid();const x=ultLine(st.kadro);const err=ultOk(st.kadro);
+  const lines=[];for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){const a=x.cs[i],b=x.cs[j];if(!a||!b)continue;const n=ultBuild().same[pairKey(a.pid,b.pid)]||0;if(n<3)continue;const[,x1,y1]=ULT_SL[i],[,x2,y2]=ULT_SL[j];if(Math.hypot(x1-x2,y1-y2)>48)continue;lines.push(`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${n>=8?"#00E58A":"#FFD400"}" stroke-width="${n>=8?1.1:.7}" stroke-linecap="round"/>`)}
+  const slots=ULT_SL.map(([r,lx,ly],i)=>{const c=x.cs[i];return `<div class="ulp-s" style="left:${lx}%;top:${ly}%">${c?ultCardH(c,{sm:1,act:"ultSlot",i}):`<button class="ulp-e" data-act="ultSlot" data-i="${i}" aria-label="${r} seç">+<small>${r}</small></button>`}<span class="ulch" aria-label="Kimya ${x.ch[i]}">${[0,1,2].map(k=>`<i class="${k<x.ch[i]?"on":""}"></i>`).join("")}</span></div>`}).join("");
+  return `<div class="sum ult-sum"><div><b class="num">${x.chem}<small>/21</small></b><small>Kimya</small></div><div><b class="num">${x.n?fN(x.str):"–"}</b><small>Güç</small></div><div><b class="num">${x.sp}/3</b><small>Özel kart</small></div></div>
+    <div class="ulp"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.16)" stroke-width=".5" fill="none"><rect x="2" y="2" width="96" height="96" rx="2"/><line x1="2" y1="50" x2="98" y2="50"/><circle cx="50" cy="50" r="10"/></g>${lines.join("")}</svg>${slots}</div>
+    <p class="ult-n">${err?`⚠ ${err}`:"Kadron hazır. Çizgiler gerçek maçlarda aynı tarafta en az 3 kez oynayan ikilileri gösterir."}</p>
+    <div class="ult-b"><button class="btn" data-act="ultAuto">En iyi kimyaya göre diz</button><button class="btn" data-act="ultClear">Temizle</button></div>`}
+function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();const err=ultOk(st.kadro);const day=new Date().toISOString().slice(0,10),wk=isoWeek(new Date());
+  const td=st.ch.filter(x=>x.d===day),pw=st.ch.filter(x=>x.wk===wk&&x.p).length;
+  let h=`<section class="card ult-ef"><h3>Sanal lig · hafta ${Math.min(lg.W+1,7)}/7</h3>${lg.rows.map((r,i)=>`<div class="ult-r${r.id===me?" me":""}"><b class="num">${i+1}</b><span>${esc(shortName(nameOf(r.id)))}</span><small class="num">${r.g}-${r.b}-${r.m}</small><em class="num">${r.p}</em></div>`).join("")}
+    ${lg.nx?`<button class="btn primary ult-w" data-act="ultPlay" data-k="lig" data-v="${esc(lg.nx)}"${err?" disabled":""}>Lig maçı: ${esc(shortName(nameOf(lg.nx)))}</button>`:`<button class="btn ult-w" data-act="ultLigReset">Yeni sezon başlat</button>`}${err?`<p class="ult-n">⚠ ${err}</p>`:""}</section>
+    <section class="card ult-ef"><h3>Meydan oku</h3><p class="ult-n">Bugün ${3-td.length}/3 hak · bu hafta puanlı ${Math.min(pw,5)}/5 · aynı kişiye günde 1</p>`;
+  const opp=S.players.filter(p=>!p.guest&&p.id!==me&&(B.car[p.id]||0)>0).map(p=>({p,s:ultLine(ultAuto(p.id)).str})).sort((a,b)=>b.s-a.s);
+  h+=opp.map(({p,s})=>{const done=td.some(x=>x.opp===p.id);return `<div class="ult-r"><span>${esc(shortName(p.name))}<small>Güç ${fN(s)}</small></span><button class="btn sm${done?"":" primary"}" data-act="ultPlay" data-k="ch" data-v="${esc(p.id)}"${done||td.length>=3||err?" disabled":""}>${done?"Bugün oynadın":"Meydan oku"}</button></div>`}).join("");
+  const last=st.ch.slice(-5).reverse();if(last.length)h+=`<h3 style="margin-top:12px">Son maçların</h3>`+last.map(x=>`<div class="ult-r"><span>${esc(shortName(nameOf(x.opp)))}<small>${x.p?"puanlı":"eğlencesine"}</small></span><em class="num">${x.ga} – ${x.gb}</em></div>`).join("");
+  return h+`</section>`}
+function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="btn sm" data-act="close">Kapat</button>`;
+  if(v==="info")return `<div class="ch"><div><div class="eyebrow">Yelek <span lang="en">Ultimate</span></div><h2>Nasıl işler?</h2></div>${cl}</div><div class="ult-inf">
+    <p><b>Kartlar gerçek maçlardan doğar.</b> Herkesin albümü aynıdır; kart kazanıldığı an albüme düşer. Kartlardaki yükselme sadece bu oyunda geçerlidir, gerçek reytinge dokunmaz.</p>
+    <p><b>Temel kart</b> rengi takım içi sıraya göre: altın, turuncu, pembe, mor. <b>Holo</b>: sezonda 6 maç. <b>Kusursuz holo</b>: en az 7 maça çıkanlar arasında sezonun en iyi 2'si. <b>Kahraman</b> 20 maç, <b>Altın Kahraman</b> 50 maç.</p>
+    <p><b>Bonuslar:</b> Haftanın takımı +1 (sezonda en fazla 3 kart), Ayın oyuncusu +2, Sezonun takımı +3, An efsanesi +3 (sezonda 1), Dönemin takımı +4, Dönemin efsanesi +5, Seri en fazla +3.</p>
+    <p><b>Kimya:</b> gerçek maçlarda aynı tarafta en az 3 kez oynadığın her kadro arkadaşı bir bağ. 1 bağ = 1, 3 bağ = 2, 5 bağ = 3 kimya. Kendi mevkisinde olmayan kartın kimyası 0.</p>
+    <p><b>Kadro kuralı:</b> kendi kartın zorunlu, en fazla 3 özel kart.</p>
+    <p><b>Paket:</b> maçın adamı büyük paket, haftanın takımında sonraki 2 kişi normal paket, kalan 4'ü 2 parça, maça çıkan diğerleri 1 parça. Sürpriz: %70 kozmetik, %25 fayda (kimya, hızlandırma, kiralık kart), %5 nadir çerçeve.</p>
+    <p class="ult-n">Test sürümü: paketlerin, gelişimin ve sanal maçların sadece bu telefonda saklanır.</p>
+    <button class="btn" data-act="ultReset">Test verimi sıfırla</button></div>`;
+  if(v==="card"){const c=ultCard(S.sheet.id);if(!c)return"";const B=ultBuild();const p=P(c.pid);const ma=c.mid?S.matches.find(m=>m.id===c.mid):null;
+    const bag=S.players.filter(q=>q.id!==c.pid&&(B.same[pairKey(c.pid,q.id)]||0)>=3).map(q=>[q,B.same[pairKey(c.pid,q.id)]]).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const own=ultCards().filter(x=>x.pid===c.pid);
+    return `<div class="ch"><div><div class="eyebrow">${esc(ULT_T[c.type]||"Temel kart")}</div><h2>${esc(p.name)}</h2></div>${cl}</div><div class="ult-big">${ultCardH(c,{act:"none"})}</div>
+      <section class="card ult-ef"><div class="ult-r"><span>Gerçek reyting</span><em class="num">${c.base}</em></div>${c.up?`<div class="ult-r"><span>Kart bonusu</span><em class="num" style="color:var(--c-green)">+${c.up}</em></div>`:""}${ma?`<div class="ult-r"><span>Kazanıldığı maç</span><em>${esc(fmtShort(ma.date))}</em></div>`:""}<div class="ult-r"><span>Albümdeki kartları</span><em class="num">${own.length}</em></div></section>
+      <section class="card ult-ef"><h3>Kimya bağları</h3>${bag.length?bag.map(([q,n])=>`<div class="ult-r"><span>${esc(shortName(q.name))}</span><em class="num">${n} maç</em></div>`).join(""):`<p class="ult-n">Henüz bağı yok.</p>`}</section>`}
+  if(v==="pack"){const pk=ultPacks().L.find(x=>x.k===S.sheet.k);if(!pk)return"";const o=st.open[pk.k];const g=pk.g?ultCard(pk.g):null;
+    if(!o)return `<div class="ch"><div><div class="eyebrow">Ödül paketi</div><h2>${esc(pk.why)}</h2></div>${cl}</div><div class="ult-pk"><b>${pk.big?"Büyük":"Normal"}<br>paket</b><small>1 garanti kart · ${pk.slots} sürpriz</small></div>
+      <div class="sum ult-sum"><div><b class="num">%70</b><small>Kozmetik</small></div><div><b class="num">%25</b><small>Fayda</small></div><div><b class="num">%5</b><small>Nadir</small></div></div><button class="btn primary ult-w" data-act="ultOpenPk" data-v="${esc(pk.k)}">Paketi aç</button>`;
+    const L={koz:"Kozmetik",kimya:"Kimya artışı (1 maç)",hiz:"Gelişim hızlandırma",kira:"Kiralık kart (3 maç)",nadir:"Nadir çerçeve",dup:"Tekrar çıktı → +1 parça"};
+    return `<div class="ch"><div><div class="eyebrow">Paket açıldı</div><h2>${esc(pk.why)}</h2></div>${cl}</div><div class="ult-big">${g?ultCardH(g,{act:"none"}):""}</div><section class="card ult-ef"><div class="ult-r"><span>Garanti kart</span><em>albümde</em></div>${o.res.map(r=>`<div class="ult-r${r.k==="nadir"?" me":""}"><span>${L[r.k]}${r.t?`<small>${esc(r.t)}</small>`:""}</span></div>`).join("")}</section>`}
+  if(v==="pick"){const i=+S.sheet.i,role=ULT_SL[i][0];const used=new Set(st.kadro.map((id,j)=>j!==i&&id?(ultCard(id)||{}).pid:null).filter(Boolean));const L=ultCards().filter(c=>!used.has(c.pid)).sort((a,b)=>(ultRole(b.pid)===role)-(ultRole(a.pid)===role)||b.r-a.r);
+    return `<div class="ch"><div><div class="eyebrow">Kadro</div><h2>${role} seç</h2></div>${cl}</div><p class="ult-n">Önce bu mevkideki oyuncular. Özel kart sınırı 3.</p><div class="mzk">${L.slice(0,60).map(c=>ultCardH(c,{act:"ultPick",i})).join("")}</div>${st.kadro[i]?`<button class="btn ult-w" data-act="ultUnset" data-i="${i}">Bu yeri boşalt</button>`:""}`}
+  if(v==="evo"){const e=st.evo;if(e){const c=ultCard(e.cid);return `<div class="ch"><div><div class="eyebrow">Gelişim</div><h2>Kanat Ustası</h2></div>${cl}</div><div class="ult-big">${c?ultCardH(c,{act:"none"}):""}</div>
+      <div class="ult-path">${ULT_EV.map(([t,k],j)=>`<div class="ult-lv${j<e.lv?" ok":j===e.lv?" now":""}"><i>${j<e.lv?"✓":j+1}</i><span><b>${t}</b><small>${j===e.lv&&j%2===0?`${e.prog}/2 · `:""}Kazanç: ${k}</small></span></div>`).join("")}</div>
+      ${st.hiz>0?`<button class="btn primary ult-w" data-act="ultHiz">Hızlandırma kullan (${st.hiz})</button>`:""}<button class="btn ult-w" data-act="ultEvoStop">Gelişimi bırak</button>`}
+    const B=ultBuild();const done=st.evoDone.filter(x=>x.season===B.cur).length;const L=B.C.filter(c=>c.type==="temel"&&c.season===B.cur&&c.base<=72);
+    return `<div class="ch"><div><div class="eyebrow">Gelişim</div><h2>Kart seç</h2></div>${cl}</div><p class="ult-n">Reytingi 72 ve altı bir temel kart seç. Bu sezon ${done}/2 gelişim kullandın. Kart en fazla +4 gelişir, 80'i geçmez.</p>${done>=2?`<p class="ult-n">Bu sezonki hakların doldu.</p>`:`<div class="mzk">${L.map(c=>ultCardH(c,{act:"ultEvoPick"})).join("")}</div>`}`}
+  if(v==="mac"){const r=ULT.run;if(!r)return"";const a=r.P0.a;
+    return `<div class="ch"><div><div class="eyebrow">${r.kind==="lig"?"Sanal lig":"Meydan okuma"}</div><h2>Sen – ${esc(shortName(nameOf(r.opp)))}</h2></div>${cl}</div>
+      <div class="ult-sb"><b>Sen</b><strong class="num" id="ulSk">${r.sk.a} – ${r.sk.b}</strong><b>${esc(shortName(nameOf(r.opp)))}</b></div>
+      <div class="ulm">${a.cs.map((c,i)=>c?`<span class="ulm-d" style="left:${ULT_SL[i][1]}%;top:${ULT_SL[i][2]}%">${esc(eposOf(P(c.pid)))}</span>`:"").join("")}${ULT_SL.map(([, x,y])=>`<span class="ulm-o" style="left:${100-x}%;top:${100-y}%"></span>`).join("")}<span class="ulm-b" id="ulBall" style="left:50%;top:50%"></span><div class="ulm-t" id="ulTxt">${esc(r.txt)}</div></div>
+      <div class="ult-b" id="ulCtl"${r.done?" hidden":""}><button class="btn" data-act="ultHizM">${r.hiz>1?"1x":"2x"}</button><button class="btn" data-act="ultSkip">Sona atla</button></div>
+      <div id="ulFin"${r.done?"":" hidden"}><section class="card ult-ef"><div class="ult-r me"><span>${r.R0.ga>r.R0.gb?"Kazandın":r.R0.ga<r.R0.gb?"Kaybettin":"Berabere"}</span><em class="num">${r.R0.ga} – ${r.R0.gb}</em></div>${r.R0.mvp?`<div class="ult-r"><span>Maçın adamı</span><em>${esc(shortName(nameOf(r.R0.mvp)))}</em></div>`:""}${r.R0.gl.map(g=>`<div class="ult-r"><span>⚽ ${g.op?esc(shortName(nameOf(r.opp)))+" takımı":esc(shortName(nameOf(g.s)))}${g.a?`<small>asist ${esc(shortName(nameOf(g.a)))}</small>`:""}</span><em class="num">${g.dk}'</em></div>`).join("")}</section><button class="btn primary ult-w" data-act="close">Tamam</button></div>`}
+  return ""}
+function ultAct(a,el){const st=ultSt();
+  switch(a){
+    case"ultGo":pgOpen({type:"ult",mid:(lastFinM()||{}).id||(S.matches[0]||{}).id});render(true);break;
+    case"ultTab":st.tab=el.dataset.v;ultSave();if(S.tab!=="oyun")pgOpen({type:"ult",mid:(lastFinM()||{}).id});render(true);window.scrollTo(0,0);break;
+    case"ultAf":st.af=el.dataset.v;ultSave();render(true);break;
+    case"ultInfo":S.sheet={type:"ult",v:"info"};render(true);break;
+    case"ultCard":S.sheet={type:"ult",v:"card",id:el.dataset.v};render(true);break;
+    case"ultPack":S.sheet={type:"ult",v:"pack",k:el.dataset.v};render(true);break;
+    case"ultOpenPk":{const pk=ultPacks().L.find(x=>x.k===el.dataset.v);if(pk)ultOpen(pk);render(true);break}
+    case"ultSlot":S.sheet={type:"ult",v:"pick",i:el.dataset.i};render(true);break;
+    case"ultPick":{const i=+el.dataset.i;st.kadro[i]=el.dataset.v;const x=ultLine(st.kadro);if(x.sp>3){st.kadro[i]=null;toast("En fazla 3 özel kart koyabilirsin");break}ultSave();S.sheet=null;render(true);break}
+    case"ultUnset":st.kadro[+el.dataset.i]=null;ultSave();S.sheet=null;render(true);break;
+    case"ultAuto":st.kadro=ultAuto(myPid());ultSave();render(true);toast("En iyi kimyaya göre dizildi");break;
+    case"ultClear":st.kadro=[null,null,null,null,null,null,null];ultSave();render(true);break;
+    case"ultPlay":ultStart(el.dataset.k,el.dataset.v);break;
+    case"ultSkip":if(ULT.run)ULT.run.skip=true;break;
+    case"ultHizM":if(ULT.run){ULT.run.hiz=ULT.run.hiz>1?1:2.5;el.textContent=ULT.run.hiz>1?"1x":"2x"}break;
+    case"ultLigReset":st.lig=[];ultSave();render(true);break;
+    case"ultEvo":S.sheet={type:"ult",v:"evo"};render(true);break;
+    case"ultEvoPick":{const c=ultCard(el.dataset.v);if(c){st.evo={cid:c.id,pid:c.pid,lv:0,prog:0,mi:ultBuild().F.length};ultSave()}render(true);break}
+    case"ultEvoStop":st.evo=null;ultSave();S.sheet=null;render(true);break;
+    case"ultHiz":{const e=st.evo;if(e&&st.hiz>0){st.hiz--;if(e.lv%2===0){e.prog++;if(e.prog>=2){e.lv++;e.prog=0}}else if(e.lv===1){e.lv=2;e.prog=0}else ultEvoDone();ultSave()}render(true);break}
+    case"ultReset":ULT.s={};LS.set("y_ult_"+TID,"");ULT.s=null;ultSt();ultSave();S.sheet=null;render(true);toast("Test verin sıfırlandı");break;
+    default:return false}
+  return true}
 
 /* Draft zamanlayıcı */
 function startTimer(){stopTimer();S.tick=setInterval(()=>{const d=S.draft;if(!d||!d.deadline)return stopTimer();const left=Math.ceil((d.deadline-Date.now())/1000);const el=$("#dtimer");if(el)el.textContent=Math.max(0,left);
