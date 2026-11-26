@@ -5127,7 +5127,8 @@ function ultPlan(myL,opL,seed){const R=ultRng(seed),BN=ultBagN(),a=ultLine(myL),
   const red=R()<.06?{us:R()<.5,dk:6+Math.floor(R()*30)}:null;if(red){red.j=pick(red.us?a:b,{KL:.05,DF:1,OS:.8,FV:.5},[],one);if(red.j==null)red.us=null;else fx.push({fx:"kirmizi",us:red.us,dk:red.dk,j:red.j})}
   const exOf=(us,dk)=>red&&red.us===!!us&&dk>red.dk?[red.j]:[];
   sides.forEach((us,i)=>{const X=us?a:b,dd=us?d:-d,M=us?A:Bm,O=us?Bm:A,dk=mins[i];const ro=R();curEx=exOf(us,dk);
-    let kind=ro<.03?"pen":ro<.17?"kor":ro<.27?"sv":ro<.37?"uz":(X.t==="kontra"&&R()<.5)||R()<.15?"kon":"ak",path,from=null,pg;
+    const T=X.t,kP=T==="hucum"?.17:.14,uP=T==="savunma"?.14:.1,kn0=T==="kontra"?.5:T==="pres"?.3:T==="savunma"?.25:.12;
+    let kind=ro<.03?"pen":ro<.03+kP?"kor":ro<.13+kP?"sv":ro<.13+kP+uP?"uz":R()<kn0?"kon":"ak",path,from=null,pg;
     if(kind==="pen"){const pt=pen[us?"a":"b"];path=[curEx.includes(pt)?pick(X,ULT_SW.sut,[],gF):pt];from=us?[50,13]:[50,87];pg=.76}
     else if(kind==="kor"){const sh=pick(X,ULT_SW.kafa,[],gF),tk=pick(X,ULT_SW.orta,[sh],aF);path=tk!=null?[tk,sh]:[sh];from=[R()<.5?3:97,us?2:98];pg=cl(.1+dd/120,.04,.2)}
     else if(kind==="sv"){const sh=pick(X,ULT_SW.sv,[],gF);path=[sh];from=[30+R()*40,us?24:76];pg=cl(.09+dd/150,.04,.16)}
@@ -5167,23 +5168,64 @@ function ultStart(kind,opp){const st=ultSt();const me=myPid();const err=ultOk(ul
 function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-"+Math.ceil(((t-y)/864e5+1)/7)}
 const ULT_OP=[[50,9],[36,27],[64,27],[15,55],[85,55],[42,72],[58,72]];// rakip dizilişi: bizimkilerle üst üste binmez
 const ultXY=(us,j,X)=>us?[X.sl[j][1],X.sl[j][2]]:ultOpXY(X.f,j);
+// ===== maç görüntüsü: oyuncular taktiğe ve olaya göre yer değiştirir =====
+// "hücum çerçevesi": atak yapan takım y=0'a doğru oynar; rakip takımın topu ise çerçeve aynalanır
+const ULT_TP={hucum:{p:10,d:3,w:1.12},dengeli:{p:6,d:6,w:1},savunma:{p:3,d:11,w:.9},kontra:{p:4,d:10,w:.95},pres:{p:8,d:-5,w:1}};
+function ultPose(r,o){const us=o.att,A=us?r.P0.a:r.P0.b,D=us?r.P0.b:r.P0.a,sa=us?"a":"b",sd=us?"b":"a";
+  const fr=p=>us?[p[0],p[1]]:[p[0],100-p[1]],cl=(v,x,y)=>Math.max(x,Math.min(y,v)),jt=()=>(Math.random()-.5)*2.4;
+  const hm=(isA,j)=>fr(ultXY(isA?us:!us,j,isA?A:D)),rl=(X,j)=>X.sl[j][0];
+  const tA=ULT_TP[A.t]||ULT_TP.dengeli,tD=ULT_TP[D.t]||ULT_TP.dengeli;const b=o.ball?fr(o.ball):[50,50];const F={},G={};
+  const RF={DF:.6,OS:1,FV:.7};
+  for(let j=0;j<7;j++){if(A.cs[j]){const h=hm(true,j);if(j===0)F[j]=[cl(50+(b[0]-50)*.1,40,60),h[1]];else{const k=rl(A,j);F[j]=[50+(h[0]-50)*tA.w+(b[0]-50)*.15,h[1]-tA.p*(RF[k]||1)-(o.step||0)*(k==="DF"?1:3.5)]}}
+    if(D.cs[j]){const h=hm(false,j);if(j===0)G[j]=[cl(50+(b[0]-50)*.3,38,62),h[1]];else{const k=rl(D,j);G[j]=[50+(h[0]-50)*.85+(b[0]-50)*.25,h[1]-tD.d*(k==="DF"?.5:1)]}}}
+  const m=o.mode;
+  if(m==="kon"){for(const j in G)if(+j)G[j][1]+=14;for(const j in F)if(+j)F[j][1]+=8-(o.step||0)*9}
+  if(m==="kor"||m==="sv"){const tk=o.tk,sh=o.sh;const stayN=["savunma","kontra"].includes(A.t)?2:1;let st=0;const box=[];
+    for(let j=1;j<7;j++){if(!A.cs[j]||j===tk)continue;if(j!==sh&&rl(A,j)==="DF"&&st<stayN){st++;F[j]=[F[j][0],48+jt()];continue}if(m==="sv"&&j!==sh&&rl(A,j)!=="FV"&&box.length>=2){continue}box.push(j)}
+    box.forEach((j,i)=>{F[j]=[24+(i+.5)*52/box.length+jt(),(i%2?17:9)+Math.random()*4]});if(tk!=null)F[tk]=[b[0]+(b[0]<50?1.5:-1.5),b[1]+(m==="kor"?1:0)];
+    G[0]=[50,4.5];const dj=[1,2,3,4,5,6].filter(j=>D.cs[j]);let w=0;
+    dj.forEach((j,i)=>{if(D.t==="kontra"&&rl(D,j)==="FV"&&w>=0){G[j]=[50+jt(),42];w=-1;return}
+      if(m==="sv"&&i<2){const vx=50-b[0],vy=0-b[1],L=Math.hypot(vx,vy)||1;G[j]=[b[0]+vx/L*7+(i?2.5:-2.5),b[1]+vy/L*7];return}
+      const t=box[i%Math.max(1,box.length)];G[j]=t!=null&&F[t]?[F[t][0]+(i%2?4:-4),F[t][1]-4]:[50+jt()*6,12]})}
+  if(m==="pen"){let k=0;for(let j=1;j<7;j++){if(A.cs[j]&&j!==o.sh)F[j]=[k%2?72+k*2:28-k*2,29+jt()],k++}F[o.sh]=[50,14.5];G[0]=[50,4];let q=0;for(let j=1;j<7;j++)if(D.cs[j]){G[j]=[q%2?20+q*3:80-q*3,30+jt()];q++}}
+  if(o.car!=null&&!["kor","sv","pen"].includes(m)){F[o.car]=b.slice()}
+  if(o.zone&&o.sh!=null){F[o.sh]=o.zone==="uz"?[32+Math.random()*36,27+Math.random()*5]:[34+Math.random()*32,12+Math.random()*9]}
+  if(m==="gol"&&o.sh!=null){const cx=F[o.sh][0]<50?8:92;F[o.sh]=[cx,6];for(const j in F)if(+j&&+j!==o.sh)F[j]=[F[j][0]+(cx-F[j][0])*.35,F[j][1]+(6-F[j][1])*.35]}
+  // en yakın savunmacı(lar) topa basar
+  const pr=o.rec??o.car;if(!["kor","sv","pen","gol"].includes(m)&&pr!=null&&F[pr]){const bp=F[pr];const nd=[1,2,3,4,5,6].filter(j=>G[j]).sort((x,y)=>Math.hypot(G[x][0]-bp[0],G[x][1]-bp[1])-Math.hypot(G[y][0]-bp[0],G[y][1]-bp[1])).slice(0,D.t==="pres"?2:1);
+    nd.forEach((j,i)=>{G[j]=[bp[0]+(i?5:-2.5),bp[1]-3.5]})}
+  const out={};const put=(k,p,jit)=>{const y=us?p[1]:100-p[1];out[k]=[Math.round(cl(p[0]+(jit?jt():0),4,96)*10)/10,Math.round(cl(y+(jit?jt():0),3,97)*10)/10]};
+  for(const j in F)put(sa+j,F[j],!(["kor","sv","pen"].includes(m)&&(+j===o.tk||+j===o.sh))&&+j!==o.car);for(const j in G)put(sd+j,G[j],+j!==0);
+  (r.red||[]).forEach(k=>{if(out[k])out[k]=[97,k[0]==="a"?60:40]});
+  const fix=new Set([o.car,o.tk,o.sh].filter(x=>x!=null).map(j=>sa+j));const K=Object.keys(out).filter(k=>!(r.red||[]).includes(k));
+  for(let it=0;it<4;it++)for(let x=0;x<K.length;x++)for(let y=x+1;y<K.length;y++){const p=out[K[x]],q=out[K[y]],dx=q[0]-p[0],dy=q[1]-p[1],d=Math.hypot(dx,dy);if(d>=7.5)continue;
+    const u=d?dx/d:1,v=d?dy/d:0,mvA=fix.has(K[x])?0:fix.has(K[y])?1:.5,mvB=1-mvA,s2=(7.5-d);
+    out[K[x]]=[cl(p[0]-u*s2*mvA,4,96),cl(p[1]-v*s2*mvA,3,97)];out[K[y]]=[cl(q[0]+u*s2*mvB,4,96),cl(q[1]+v*s2*mvB,3,97)]}
+  for(const k in out)out[k]=[Math.round(out[k][0]*10)/10,Math.round(out[k][1]*10)/10];return out}
+function ultPlace(r,pos){r.pos=pos;for(const[k,p]of Object.entries(pos)){const t=document.querySelector(`.ulm-p[data-s="${k}"]`);if(t){t.style.left=p[0]+"%";t.style.top=p[1]+"%"}}}
+const ultP=(r,us,j)=>r.pos&&r.pos[(us?"a":"b")+j]||ultXY(us,j,us?r.P0.a:r.P0.b);
 const ULT_KN={kor:"Korner",sv:"Serbest vuruş",uz:"Uzaktan şut",pen:"Penaltı",kon:"Kontra atak"};
 function ultTick(){const r=ULT.run;if(!r||r.done)return;const e=r.P0.ev[r.i];if(!e){ultFinish();return}
   const X=e.us?r.P0.a:r.P0.b,nm=j=>shortName(nameOf(X.cs[j].pid)),RM2=matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(e.fx){r.dk=e.dk;const p=ultXY(e.us,e.j,X),who=nm(e.j),tk=e.us?"":" (rakip)";ultTrail(null);ultOn2(e.us,e.j);
+  const mv=document.querySelector(".ulm2");if(mv)mv.style.setProperty("--mv",(RM2?0:Math.round(500/r.hiz))+"ms");
+  if(e.fx){r.dk=e.dk;const p0=ultP(r,e.us,e.j);ultPlace(r,ultPose(r,{att:e.us,mode:"ak",ball:e.fx==="tac"?[e.side,p0[1]]:p0,car:e.j}));const p=ultP(r,e.us,e.j),who=nm(e.j),tk=e.us?"":" (rakip)";ultTrail(null);ultOn2(e.us,e.j);
     if(e.fx==="tac"){ultBall([e.side,p[1]]);ultFeed(`${e.dk}'`,`Taç · ${who}${tk}`,"")}
     else if(e.fx==="faul"){ultBall(p);ultFeed(`${e.dk}'`,`Faul · ${who}${tk}`,"")}
     else if(e.fx==="kirmizi"){ultBall(p);ultFeed(`${e.dk}'`,`🟥 Kırmızı kart · ${who}${tk} oyundan atıldı`,"r");const t=document.querySelector(`.ulm-p[data-s="${e.us?"a":"b"}${e.j}"]`);if(t)t.classList.add("out");r.red=r.red||[];r.red.push((e.us?"a":"b")+e.j)}
     else{ultBall(p);ultFeed(`${e.dk}'`,`🟨 Sarı kart · ${who}${tk}`,"y")}
     if(e.fx!=="tac"){if(e.us)r.stl.fa++;else r.stl.fb++}ultDraw();r.i++;setTimeout(ultTick,(RM2?250:520)/r.hiz);return}
   const P=e.path,last=P.length-1,sh=nm(P[last]),as=last>0?nm(P[0+last-1]):null,kn=ULT_KN[e.kind];
+  const md=e.kind==="kor"||e.kind==="sv"||e.kind==="pen"||e.kind==="kon"?e.kind:"ak",tkj=e.kind==="kor"||e.kind==="sv"?P[0]:null,shj=P[last];
   const steps=[()=>{r.dk=e.dk;ultTrail(null);ultOn2(e.us,P[0]);
+    {const hp=ultP(r,e.us,P[0]);ultPlace(r,ultPose(r,{att:e.us,mode:md,ball:e.from||[hp[0],e.us?Math.max(hp[1],55):Math.min(hp[1],45)],car:e.from?null:P[0],tk:tkj,sh:shj,step:0,zone:P.length===1&&!e.from?(e.kind==="uz"?"uz":"ak"):null}))}
     if(e.from){ultBall(e.from);if(e.kind==="kor"){if(e.us)r.stl.ka2++;else r.stl.kb2++}if(kn)ultFeed(`${e.dk}'`,e.kind==="pen"?`Penaltı! ${sh} topun başında`:`${kn}${e.kind==="kor"&&as?" · "+as+" ortaladı":e.kind==="sv"?" · "+sh+" topun başında":""}`,"")}
-    else{ultBall(ultXY(e.us,P[0],X));if(e.kind==="kon"||e.kind==="uz")ultFeed(`${e.dk}'`,`${kn} · ${e.us?"":"rakip · "}${nm(P[0])}`,"")}}];
-  for(let q=1;q<P.length;q++)steps.push(()=>{const a=q===1&&e.from?e.from:ultXY(e.us,P[q-1],X),b=ultXY(e.us,P[q],X);ultTrail([a,b,e.kp[q-1],e.us]);ultOn2(e.us,P[q]);ultBall(b);if(e.us&&e.kp[q-1])r.stl.ka++});
+    else{ultBall(ultP(r,e.us,P[0]));if(e.kind==="kon"||e.kind==="uz")ultFeed(`${e.dk}'`,`${kn} · ${e.us?"":"rakip · "}${nm(P[0])}`,"")}}];
+  for(let q=1;q<P.length;q++)steps.push(()=>{const a=q===1&&e.from?e.from:ultP(r,e.us,P[q-1]);
+    if(!e.from||q>1)ultPlace(r,ultPose(r,{att:e.us,mode:md==="kor"||md==="sv"?"ak":md,ball:a,rec:P[q],step:q,sh:q===last?shj:null,zone:q===last&&!["kor","sv"].includes(e.kind)?(e.kind==="uz"?"uz":"ak"):null}));
+    const b=ultP(r,e.us,P[q]);ultTrail([a,b,e.kp[q-1],e.us]);ultOn2(e.us,P[q]);ultBall(b);if(e.us&&e.kp[q-1])r.stl.ka++});
   steps.push(()=>{if(e.us)r.stl.sa++;else r.stl.sb++;const nas=as&&e.kind!=="pen";
     const how={kor:" kafayla",sv:" serbest vuruştan",uz:" uzaktan",pen:" penaltıdan",kon:" kontradan"}[e.kind]||"";
-    if(e.goal){if(e.us)r.sk.a++;else r.sk.b++;ultBall(e.us?[50,2]:[50,98]);ultFeed(`${e.dk}'`,`⚽ ${e.us?"GOL!":"Gol yedik ·"} ${sh}${how}${nas?(e.kind==="kor"?" · orta ":" · asist ")+as:""}`,e.us?"g":"x");ultGoal(e.us,X.cs[P[last]].pid)}
+    if(e.goal){if(e.us)r.sk.a++;else r.sk.b++;ultBall(e.us?[50,2]:[50,98]);setTimeout(()=>{if(ULT.run===r)ultPlace(r,ultPose(r,{att:e.us,mode:"gol",ball:[50,e.us?8:92],sh:shj}))},350/r.hiz);ultFeed(`${e.dk}'`,`⚽ ${e.us?"GOL!":"Gol yedik ·"} ${sh}${how}${nas?(e.kind==="kor"?" · orta ":" · asist ")+as:""}`,e.us?"g":"x");ultGoal(e.us,X.cs[P[last]].pid)}
     else if(e.miss){ultBall(e.us?[30+Math.random()*40,1]:[30+Math.random()*40,99]);ultFeed(`${e.dk}'`,e.kind==="pen"?`${sh} penaltıyı kaçırdı`:`${sh}${e.kind==="kor"?" kafa vuruşu":" şut"} · ${R2()<.3?"direkten döndü":"auta gitti"}`,"")}
     else{const kl=e.us?r.P0.b.cs[0]:r.P0.a.cs[0];ultBall(e.us?[50,9]:[50,91]);const nx=r.P0.ev[r.i+1];ultFeed(`${e.dk}'`,`${sh}${e.kind==="pen"?" penaltı":" şut"} · ${kl?shortName(nameOf(kl.pid)):"kaleci"} ${nx&&nx.ard&&nx.us===e.us?"kornere çeldi":"kurtardı"}`,"")}});
   let k=0;const go=()=>{if(ULT.run!==r)return;if(r.skip){ultFinish();return}if(k<steps.length){steps[k++]();ultDraw();setTimeout(go,(RM2?250:560)/r.hiz)}else{r.i++;setTimeout(ultTick,(e.goal?1300:380)/r.hiz)}};go()}
@@ -5200,7 +5242,7 @@ function ultDraw(){const r=ULT.run;if(!r)return;const s=document.getElementById(
   const f=document.getElementById("ulFeed");if(f)f.innerHTML=r.feed.map(([t,x,c],i)=>`<li class="${c} ${i?"":"nw"}"><b>${t}</b><span>${esc(x)}</span></li>`).join("");
   const st=document.getElementById("ulSt");if(st)st.innerHTML=`<span><b class="num">${r.stl.sa} – ${r.stl.sb}</b><small>Şut</small></span><span><b class="num">${r.stl.ka2} – ${r.stl.kb2}</b><small>Korner</small></span><span><b class="num">${r.stl.ka}</b><small>Kimya pası</small></span>`}
 function ultMacSheet(){const r=ULT.run;if(!r)return"";const a=r.P0.a,b=r.P0.b,R0=r.R0,on=shortName(nameOf(r.opp));
-  const tok=(X,us)=>X.cs.map((c,j)=>{if(!c)return"";const[x,y]=ultXY(us,j,X);return `<span class="ulm-p ${us?"us":"op"}${(r.red||[]).includes((us?"a":"b")+j)?" out":""}" data-s="${us?"a":"b"}${j}" style="left:${x}%;top:${y}%">${avatar(P(c.pid)||{id:c.pid,name:"?"},"sm")}</span>`}).join("");
+  const tok=(X,us)=>X.cs.map((c,j)=>{if(!c)return"";const[x,y]=ultP(r,us,j);return `<span class="ulm-p ${us?"us":"op"}${(r.red||[]).includes((us?"a":"b")+j)?" out":""}" data-s="${us?"a":"b"}${j}" style="left:${x}%;top:${y}%">${avatar(P(c.pid)||{id:c.pid,name:"?"},"sm")}</span>`}).join("");
   const res=R0.ga>R0.gb?"Kazandın":R0.ga<R0.gb?"Kaybettin":"Berabere",mv=R0.mvp&&P(R0.mvp);
   return `<div class="ch"><div><div class="eyebrow">${r.kind==="lig"?"Sanal Lig":"Meydan Okuma"}</div><h2>Sen – ${esc(on)}</h2></div><button class="btn sm" data-act="close">Kapat</button></div>
     <div class="ulsb2"><span>${avatar(P(myPid()),"sm")}<b>Sen</b></span><span class="ulsb2-m"><strong class="num" id="ulSk">${r.sk.a} – ${r.sk.b}</strong><small class="num" id="ulDk">${r.dk}'</small></span><span><b>${esc(on)}</b>${avatar(P(r.opp)||{id:r.opp,name:"?"},"sm")}</span></div>

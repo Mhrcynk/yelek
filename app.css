@@ -5760,7 +5760,7 @@ button.ulr{cursor:pointer}button.ulr:disabled{opacity:.5}
 .ulm2{position:relative;height:400px;border-radius:18px;overflow:hidden;background:radial-gradient(80% 50% at 50% 0%,rgba(245,197,66,.1),transparent 60%),repeating-linear-gradient(180deg,#1F1340 0 40px,#1A1036 40px 80px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .ulm2 svg{position:absolute;inset:0;width:100%;height:100%}.ulm2 .ln{stroke:rgba(255,255,255,.22);stroke-width:.45;fill:none}
 #ulTr line{stroke:#fff;stroke-width:.7;stroke-dasharray:1.5 1.6;stroke-linecap:round;opacity:.9}#ulTr line.k{stroke:#F5C542;stroke-width:1.2;stroke-dasharray:none}#ulTr line.o{stroke:#B79CFF}
-.ulm-p{position:absolute;transform:translate(-50%,-50%);border-radius:50%;padding:3px;transition:transform .25s}.ulm-p .av{width:30px!important;height:30px!important;border-radius:50%!important;display:block}
+.ulm-p{position:absolute;transform:translate(-50%,-50%);border-radius:50%;padding:3px;transition:transform .25s}.ulm-p .av{width:26px!important;height:26px!important;border-radius:50%!important;display:block}
 .ulm-p.us{background:var(--ug)}.ulm-p.op{background:#B79CFF;opacity:.9}.ulm-p.on{transform:translate(-50%,-50%) scale(1.35);z-index:2;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 .ulm-b{z-index:3}
 .ulgl{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:radial-gradient(circle,rgba(245,197,66,.45),rgba(14,7,24,.7) 70%);animation:ulgl .35s ease-out}
@@ -5937,3 +5937,6 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .ulm-p.out{opacity:.25;filter:grayscale(1)}.ulfeed li.r span{color:#ff8b9b}
 /* kart türü adı: tam ad, en fazla 2 satır; çoklu kart rozeti varsa sağda yer bırakır */
 .ulc-t{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:clip;line-height:1.15;letter-spacing:.02em}/* çoklu kart rozeti sağ üstte, alttaki yazıyla çakışmaz */.mzc.ulc .ulc-x{bottom:auto;top:30px;padding:3px 5px;font-size:.6875rem;border-radius:5px}.mzc.ulc .ulc-x.lo{top:52px}
+/* maç görüntüsü: oyuncular yer değiştirir */
+.ulm2 .ulm-p{transition:left var(--mv,500ms) ease-in-out,top var(--mv,500ms) ease-in-out,transform .25s,opacity .3s}
+@media (prefers-reduced-motion:reduce){.ulm2 .ulm-p{transition:none}}
