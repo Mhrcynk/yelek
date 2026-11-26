@@ -5714,7 +5714,7 @@ function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();
   else if(lg.real&&lg.played)h+=`<section class="ulvs"><small>Sanal Lig · ${lg.sezon}. Sezon · ${lg.W+1}. Hafta / 7</small><b class="ulvs-f">Bu haftanın maçı oynandı</b><p class="ult-n">Sıradaki maç pazartesi açılır.</p></section>`;
   else if(lg.real)h+=`<section class="ulvs"><small>Sanal Lig · ${lg.sezon}. Sezon</small><b class="ulvs-f">Sezon bitti · ${lg.rows.findIndex(r=>r.id===me)+1}. oldun</b><p class="ult-n">Yeni sezon pazartesi oyuna katılan herkesle başlar.</p></section>`;
   else h+=`<section class="ulvs"><small>Antrenman ligi</small><b class="ulvs-f">Sezon bitti · ${lg.rows.findIndex(r=>r.id===me)+1}. oldun</b>${lg.yeni?`<button class="btn ult-w" data-act="ultLigReset">Yeni lig sezonu başlat</button>`:`<p class="ult-n">Yeni lig sezonu 7 hafta dolunca başlar.</p>`}</section>`;
-  h+=kim+ultSonLig(lg)+ultFikstur(lg);setTimeout(ultHiGit,120);
+  h+=kim+ultSonLig(lg)+ultFikstur(lg)+ultTekrar();setTimeout(ultHiGit,120);
   return sub+sub2+h}
 // sanal ligde son oynanan maçın detayı: bu hafta ya da geçen hafta oynandıysa görünür (1 hafta)
 function ultSonLig(lg){if(!lg.real||!lg.fx)return"";const me=myPid();const f=[lg.fx[lg.W],lg.fx[lg.W-1]].find(x=>x&&x.e);if(!f)return"";const p=f.e.p||{};
@@ -5736,6 +5736,12 @@ function ultSonLig(lg){if(!lg.real||!lg.fx)return"";const me=myPid();const f=[lg
 function ultFikstur(lg){if(!lg.real||!lg.fx)return"";const me=myPid(),T=lg.rows.find(r=>r.id===me);
   return `<section class="card ulsec"><div class="ulsec-h"><h3>Fikstürün</h3>${T?`<span class="ulplan-s">${T.g}G ${T.b}B ${T.m}M · ${T.p} puan</span>`:""}</div><div class="ulfks">${lg.fx.map(f=>{const cur=f.w===lg.W;const nm=f.op?shortName(nameOf(f.op)):"Bay";
     return f.e?`<button class="${f.r}${cur?" now":""}" data-act="ultLigIz" data-v="${esc(f.k)}" aria-label="${f.w+1}. hafta ${esc(nm)} ${f.g}-${f.y}, izle"><small>H${f.w+1}</small><b>${f.r}</b><em class="num">${f.g}-${f.y}</em></button>`:`<div class="${cur?"now":"s"}"><small>H${f.w+1}</small>${f.op?avatar(P(f.op)||{id:f.op,name:"?"},"xs"):"<b>–</b>"}<em>${esc(nm.split(" ")[0])}</em></div>`}).join("")}</div></section>`}
+// son 24 saatte oynadığın bütün maçlar (lig ve meydan okuma): tekrar izle
+function ultTekrar(){const me=myPid(),now=ultNow();const L=(ULT_SRV.ev||[]).filter(e=>e.p&&e.p.ka&&e.p.kb&&(e.a===me||e.b===me||String(e.k).includes(me))&&now-Date.parse(e.at||0)<864e5).sort((a,b)=>Date.parse(b.at)-Date.parse(a.at));
+  if(!L.length)return"";const ad=e=>e.kind==="lig"?"Sanal lig":ultChAyak(e.k)===1?"Seri · 1. maç":"Seri · "+ultAyakAd(ultChAyak(e.k));
+  const row=e=>{const p=e.p,h=p.h===me,g=h?+p.ga:+p.gb,y=h?+p.gb:+p.ga,o=h?(e.a===me?e.b:e.a):p.h,kal=864e5-(now-Date.parse(e.at)),sa=Math.max(1,Math.floor(kal/36e5));
+    return `<div class="ulfin">${avatar(P(o)||{id:o,name:"?"},"sm")}<span class="ulfin-t"><b>${esc(shortName(nameOf(o)))}</b><small>${ad(e)} · ${sa} saat daha</small></span><b class="ulsk ${g>y?"w":g<y?"l":"d"}">${g}-${y}</b><button class="btn sm" data-act="${e.kind==="lig"?"ultLigIz":"ultChIz"}" data-v="${esc(e.k)}">▶ İzle</button></div>`};
+  return `<section class="card ulsec ultkr"><div class="ulsec-h"><h3>Maç tekrarları</h3><span class="ulplan-s">Son 24 saat</span></div>${L.slice(0,12).map(row).join("")}</section>`}
 // meydan okuma sekmesi: hak ve rakip önerisi, gelen davetler, süren seriler, gönderdiklerin, bitenler
 // bildirimden gelince ilgili kart kısa süre parlar ve ekrana kaydırılır
 const ultHi=k=>ULT.hi&&ULT.hi===k&&Date.now()-(ULT.hiT||0)<8000?" ulhi":"";
@@ -5774,6 +5780,7 @@ function ultChTab(err,my,kim){setTimeout(ultHiGit,120);const st=ultSt(),me=myPid
       <div class="ulser-l">${[0,1,2].map(i=>leg(s.R[i],i)).join("")}</div>
       ${pr>0?`<div class="ultb g"><i style="width:${Math.max(3,Math.min(100,pr/864e5*100))}%"></i></div><p class="ultb-t"><span>${nt}</span><span class="num">${ultSaat(pr)}</span></p>`:`<p class="ult-n">${nt}</p>`}
       ${bt?`<div class="ulinv-b"><button class="btn" data-act="ultTab" data-v="takim">Kadro</button>${bt}</div>`:""}</section>`}
+  h+=ultTekrar();
   // gönderdiklerin ve bitenler
   if(giden.length)h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Gönderdiklerin</h3><span class="ulplan-s">Onay bekliyor</span></div>${giden.map(d=>`<div class="ulfin">${avatar(P(d.b)||{id:d.b,name:"?"},"sm")}<span class="ulfin-t"><b>${nm(d.b)}</b><small>Cevap bekleniyor · <span class="num">${ultSaat(ultDvSon(d)-ultNow())}</span></small></span></div>`).join("")}</section>`;
   if(biten.length)h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Biten seriler</h3><span class="ulplan-s">Son günler</span></div>${biten.slice(0,8).map(({d,s})=>{const o=d.a===me?d.b:d.a;let t,tg,cl;
