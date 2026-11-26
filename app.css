@@ -5967,3 +5967,14 @@ button.ulch{min-height:40px;min-width:44px;margin:-8px 0;background:none;align-i
 .ulm2.mg-c .ulm-p:not(.ak):not(.on){transform:translate(-50%,-50%) scale(.5);opacity:.55}.ulm2.mg-c .ulm-p:not(.ak):not(.on)::after{opacity:0}
 .ulm2.mg-c .ulm-p.us .av{background:#F5C542!important;color:#2A1F00!important}.ulm2.mg-c .ulm-p.op .av{background:#F2F0FA!important;color:#4B2FA8!important}
 
+/* süre barında olaylar */
+.ultl{margin:6px 4px 10px;position:relative}.ultl .ulpb{margin:2px 0;position:relative;overflow:visible;height:6px}.ultl .ulpb i#ulPb{border-radius:3px}
+.ulpb-h{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:rgba(255,255,255,.25);transform:translateX(-50%)}
+.ultl-r{position:relative;height:22px}.tlm{position:absolute;transform:translateX(-50%) scale(.6);opacity:0;transition:opacity .3s,transform .3s;font-size:.875rem;line-height:22px;white-space:nowrap}.tlm.on{opacity:1;transform:translateX(-50%) scale(1)}
+.ultl-r.u .tlm{bottom:0}.ultl-r.o .tlm{top:0}
+/* nokta */
+.ultl-nokta .ultl-r{height:14px}.ultl-nokta .tlm{width:10px;height:10px;border-radius:50%;top:auto}.ultl-nokta .ultl-r.u .tlm{bottom:2px}.ultl-nokta .ultl-r.o .tlm{top:2px}
+.ultl-nokta .tlm.tl-gol.u{background:#F5C542;width:12px;height:12px}.ultl-nokta .tlm.tl-gol.o{background:#B79CFF;width:12px;height:12px}.ultl-nokta .tlm.tl-sr{background:#F2C94C;border-radius:2px;width:7px;height:9px}.ultl-nokta .tlm.tl-kr{background:#E53950;border-radius:2px;width:7px;height:9px}.ultl-nokta .tlm.tl-kor{width:6px;height:6px;background:rgba(255,255,255,.45)}
+/* önemli anlar */
+.ultl-onem .ultl-r{height:26px}.ultl-onem .tlm{font:700 .6875rem/1 Inter,sans-serif;padding:5px 7px;border-radius:8px;background:rgba(245,197,66,.16);color:#FFE08A}.ultl-onem .tlm.o{background:rgba(183,156,255,.18);color:#d4c7ff}.ultl-onem .tlm b{margin-right:4px;opacity:.75}.ultl-onem .tlm.tl-kr{background:rgba(229,57,80,.2);color:#ff9aa8}
+.ultl-onem .ultl-r.l2{height:54px}
