@@ -6084,3 +6084,14 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulm2 .ulm-b{transition:left var(--mv,500ms) ease-out,top var(--mv,500ms) ease-out}
 .ultkr .ulfin{gap:8px}.ultkr .ulsk{flex:none}.ultkr .btn.sm{flex:none}
 .ulyat .ch{position:sticky;top:0;z-index:7;background:#0e0a22;padding:4px 0 6px;margin:0 0 6px}
+/* süreklilik: yıldız kartlar, tavan, kural, sezon yolu */
+.ul-yildiz{background:linear-gradient(160deg,#1B2B6B,#3A6BFF 55%,#9FD4FF);color:#fff;box-shadow:inset 0 0 0 2px #9FD4FF,0 0 14px rgba(95,170,255,.45)}
+.ul-ikon{background:linear-gradient(160deg,#2A0F3D,#C42DFF 40%,#FFD34D 75%,#FFF6C8);color:#fff;box-shadow:inset 0 0 0 2px #FFE07A,0 0 18px rgba(255,200,80,.6)}
+.mzc.ulc.ul-ikon:not(.sm),.mzc.ulc.ul-yildiz:not(.sm){animation:ulgw 2.2s ease-in-out infinite}
+.ulrev-kc small.yz{color:#FFE07A;font-weight:800;letter-spacing:.04em}
+.ulpuan{position:relative;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:var(--c-card);margin-bottom:10px;overflow:hidden;font:600 .8125rem Inter,sans-serif;color:var(--c-ink2)}.ulpuan b{color:#fff;position:relative;z-index:1}.ulpuan span{position:relative;z-index:1}.ulpuan i{position:absolute;left:0;bottom:0;height:3px;background:#00E58A}.ulpuan.asti i{background:#E53950}.ulpuan.asti b{color:#ff9aa8}
+.ulkural{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border-radius:14px;margin-bottom:12px;background:linear-gradient(135deg,rgba(95,227,245,.16),rgba(95,227,245,.04));box-shadow:inset 0 0 0 1px rgba(95,227,245,.35)}.ulkural b{font:800 .875rem Inter,sans-serif;color:#8EEFFB}.ulkural span{font-size:.8125rem;color:var(--c-ink2)}
+.ulkural.k-serbest{background:linear-gradient(135deg,rgba(245,197,66,.18),rgba(245,197,66,.04));box-shadow:inset 0 0 0 1px rgba(245,197,66,.4)}.ulkural.k-serbest b{color:#F5C542}
+.ulsy-b{height:8px;border-radius:4px;background:var(--c-line);overflow:hidden;margin:4px 0 6px}.ulsy-b i{display:block;height:100%;background:linear-gradient(90deg,#5FE3F5,#F5C542)}
+.ulsy-s{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.ulsy-s span{background:rgba(255,255,255,.04);border-radius:12px;padding:8px;text-align:center}.ulsy-s b{display:block;color:#fff;font-size:1rem}.ulsy-s small{font-size:.6875rem;color:var(--c-ink3)}
+.ulsy-y{display:flex;gap:10px;overflow-x:auto;margin-top:12px;padding-top:4px}.ulsy-y>div{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px}.ulsy-y small{font:700 .6875rem Inter,sans-serif;color:#8EEFFB}
