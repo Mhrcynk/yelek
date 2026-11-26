@@ -5829,3 +5829,4 @@ button.uldo-i{cursor:pointer}button.uldo-i:disabled{cursor:default}
 .ulzl-i span{flex:1;min-width:0}.ulzl-i em{font:700 .6875rem Inter,sans-serif;font-style:normal;color:var(--ug)}.ulzl-i.on{box-shadow:inset 0 0 0 2px var(--ug)}
 .ulpack:disabled{opacity:.55;animation:none}
 .ult-n .lnk{min-height:44px;padding:0 4px;background:none;border:0;color:var(--ug);font:700 .8125rem Inter,sans-serif;cursor:pointer;vertical-align:middle}
+.ulc-orn{pointer-events:none}.ulc-orn .mzc-sil{opacity:.55}
