@@ -5887,3 +5887,10 @@ html.dk .th2.thU .th2-r .thk-c{background:#F5C542;color:#2A1F00}
 .ulpk-m.sm{width:40px;height:52px}.ulpk-m.sm i{font-size:.625rem}
 .ulodul{margin-top:10px;box-shadow:inset 0 0 0 1.5px rgba(127,231,255,.45)}.ulodul-r{display:flex;gap:12px;align-items:center}.ulodul-r .mzc{flex:none}.ulodul-r .ult-n{margin:0}
 .ulh-x .ulrz{margin-right:4px}
+/* oyun barı: oyuna girince alt bar oyunun bölümleri olur, ilk düğme Çık */
+body.gnav .gpg .gtabs,body.gnav .gpg .gph [data-act="pgBack"],body.gnav .gpg .bjh>[data-act="pgBack"]{display:none!important}
+.nav button.gx{flex:0 0 auto;min-width:56px;color:var(--c-ink2,#F4EEFF)!important;opacity:.85}
+.nav button.gx::before{content:"";position:absolute;right:-1px;top:14px;bottom:14px;width:1px;background:rgba(255,255,255,.14)}
+body.gnav .gph h1,body.gnav .bjh h1{margin-left:0}
+body.gnav .gpg .bjh>h1{margin-left:10px!important}
+body.gnav .iddia .mtabs.bt,body.gnav .iddia .bjh>.oda-bk{display:none!important}body.gnav .iddia .bjh>h1{margin-left:10px!important}
