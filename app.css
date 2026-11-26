@@ -6146,3 +6146,22 @@ body.gpu .toast,body.gpd .toast,body.gpf .toast,body.gpu .btn.primary,body.gpd .
 .ulyz-o{position:relative}.ulyz-o .mzc{filter:saturate(.75);opacity:.85}.ulyz-o>i{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font:800 .6875rem Inter,sans-serif;font-style:normal;padding:2px 8px;border-radius:99px;background:#0E0718;color:var(--c-ink2);box-shadow:inset 0 0 0 1px var(--c-line2)}
 .ulyz-s{display:flex;flex-direction:column;gap:5px;margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04)}.ulyz-s>span:first-child{font:600 .8125rem Inter,sans-serif;color:var(--c-ink2)}.ulyz-s>span:first-child b{color:#fff;font-size:1rem}.ulyz-s small{font:500 .75rem Inter,sans-serif;color:var(--c-ink3)}
 .ulyz-l{display:flex;gap:10px;overflow-x:auto;margin-top:12px;scrollbar-width:none}.ulyz-l>div{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px}.ulyz-l small{font:700 .6875rem Inter,sans-serif;color:#8EEFFB}
+/* 5 parça ödül seçimi */
+.ulps{display:flex;flex-direction:column;gap:8px;margin:6px 0 12px}
+.ulps-i{--a:#F5C542;display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;border:1px solid var(--c-line);background:var(--c-card);color:#fff;text-align:left;cursor:pointer;min-height:64px}
+.ulps-i.mevki{--a:#5FE3F5}.ulps-i.destek{--a:#00E58A}.ulps-i.sans{--a:#B98CFF}
+.ulps-i.on{border:2px solid var(--a);background:color-mix(in srgb,var(--a) 12%,var(--c-card))}
+.ulps-i:disabled{opacity:.45;cursor:default}
+.ulps-ic{flex:none;width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--a) 20%,transparent);color:var(--a);font:800 1.125rem var(--display)}.ulps-ic svg{width:20px;height:20px}
+.ulps-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ulps-t b{font:700 .9375rem Inter,sans-serif}.ulps-t small{font:500 .75rem/1.4 Inter,sans-serif;color:var(--c-ink3)}
+.ulps-m{margin:0 0 12px}
+/* hazırlık maçı */
+.ulso.ulmt.ulso-4{grid-template-columns:repeat(4,minmax(0,1fr))}.ulso.ulmt.ulso-4 button{font-size:.75rem;padding:0 4px}
+.ulhz-b{--a:#5FE3F5;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;margin-bottom:12px;background:rgba(95,227,245,.09);box-shadow:inset 0 0 0 1px rgba(95,227,245,.35);font:500 .8125rem/1.45 Inter,sans-serif;color:var(--c-ink2)}.ulhz-b b{color:#fff}.ulhz-b svg{flex:none;width:20px;height:20px;margin-top:1px}
+.ulhz-r{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid rgba(255,255,255,.06)}.ulhz-r:last-child{border-bottom:0}
+.ulhz-r.gel{padding:10px;border-radius:14px;background:var(--c-card2);box-shadow:inset 0 0 0 1px rgba(95,227,245,.4);border-bottom:0;margin-top:8px}
+.ulhz-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}.ulhz-t b{font:700 .875rem Inter,sans-serif;color:#fff}.ulhz-t small{font:500 .75rem Inter,sans-serif;color:var(--c-ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ulhz-l{margin-top:6px}.ulhz-w{font-style:normal;font:700 .75rem Inter,sans-serif;color:#8EEFFB;padding:4px 10px;border-radius:99px;background:rgba(95,227,245,.12)}
+.btn.sm.ulhz-ok{background:#5FE3F5;border-color:#5FE3F5;color:#06191C}
+.ulbn-f button{min-height:44px}
+.ulhz-r .btn.sm.ulhz-ok{background:#5FE3F5;border-color:#5FE3F5;color:#06191C}
