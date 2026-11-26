@@ -5940,3 +5940,4 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 /* maç görüntüsü: oyuncular yer değiştirir */
 .ulm2 .ulm-p{transition:left var(--mv,500ms) ease-in-out,top var(--mv,500ms) ease-in-out,transform .25s,opacity .3s}
 @media (prefers-reduced-motion:reduce){.ulm2 .ulm-p{transition:none}}
+.ulc-g{position:relative;z-index:2;align-self:flex-start;width:max-content;max-width:100%;margin-bottom:4px;font:800 .6875rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.02em;background:#00E58A;color:#03240F;padding:3px 6px;border-radius:5px}.mzc.ulc.sm .ulc-g{display:none}.ulgun-n b{color:#3ee08f}
