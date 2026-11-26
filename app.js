@@ -4908,7 +4908,9 @@ function ultSL(f){const roles=ULT_F[f]||ULT_F["2-2-2"];const Y={DF:64,OS:40,FV:1
 function ultOpXY(f,j){const roles=["KL"].concat(ULT_F[f]||ULT_F["2-2-2"]);const r=roles[j];if(r==="KL")return[50,9];const n=roles.filter(x=>x===r).length,k=roles.slice(0,j).filter(x=>x===r).length;
   const X={DF:{2:[36,64],3:[24,50,76]},OS:{1:[50],2:[15,85],3:[15,50,85]},FV:{1:[50],2:[42,58]}}[r][n]||[50];return[X[k],{DF:27,OS:54,FV:75}[r]]}
 const ULT_SL=ultSL("2-2-2");
-function ultMy(){const st=ultSt();const L=st.kadro.slice();L.f=st.dz||"2-2-2";L.t=st.tk||"dengeli";return L}
+// kadro kuralı: kendi kartların + herkesin temel kartı; başkasının özel kartı sadece kiralıkla
+const ultIzin=(c,pid)=>!!c&&(c.type==="temel"||c.pid===pid||(pid===myPid()&&(c.mine||c.type==="kira")));
+function ultMy(){const st=ultSt();if(st.kadro.some(id=>id&&!ultIzin(ultCard(id),myPid()))){st.kadro=st.kadro.map(id=>id&&ultIzin(ultCard(id),myPid())?id:null);ultSave()}const L=st.kadro.slice();L.f=st.dz||"2-2-2";L.t=st.tk||"dengeli";return L}
 const ultOn=()=>isOwner();
 function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult_"+TID)||"null")}catch(_){}ULT.s=Object.assign({open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{})}return ULT.s}
 const ultSave=()=>{try{LS.set("y_ult_"+TID,JSON.stringify(ULT.s))}catch(_){}};
@@ -4964,7 +4966,7 @@ function ultLine(L){const B=ultBuild();const f=L.f||"2-2-2",SL=ultSL(f);const cs
   const ch=cs.map((c,i)=>{if(!c)return 0;if(ultRole(c.pid)!==SL[i][0])return 0;if(c.type==="efsane")return 3;let nb=pids.filter((q,j)=>q&&j!==i&&(B.same[pairKey(c.pid,q)]||0)>=3).length;if(/^kahraman/.test(c.type))nb++;return nb>=5?3:nb>=3?2:nb>=1?1:0});
   const n=cs.filter(Boolean).length;const avg=n?cs.reduce((t,c,i)=>t+(c?c.r*(ultRole(c.pid)===SL[i][0]?1:.88):0),0)/n:0;const chem=ch.reduce((a,b)=>a+b,0);
   return{cs,ch,chem,str:avg+chem*.3,n,sp:cs.filter(c=>c&&ULT_SP.includes(c.type)).length,sl:SL,f,t:L.t||"dengeli"}}
-function ultAuto1(pid,f,ex){const SL=ultSL(f);const B=ultBuild();const pool=B.C.slice().sort((a,b)=>b.r-a.r);const L=[null,null,null,null,null,null,null],used=new Set(ex||[]);let sp=0;
+function ultAuto1(pid,f,ex){const SL=ultSL(f);const B=ultBuild();const pool=(pid===myPid()?ultCards():B.C).filter(c=>ultIzin(c,pid)).sort((a,b)=>b.r-a.r);const L=[null,null,null,null,null,null,null],used=new Set(ex||[]);let sp=0;
   const own=ultBest(pid);if(own&&!used.has(pid)){let i=SL.findIndex(s=>s[0]===ultRole(pid));if(i<0)i=3;L[i]=own.id;used.add(pid);if(ULT_SP.includes(own.type))sp++}
   SL.forEach(([r],i)=>{if(L[i])return;const c=pool.find(c=>!used.has(c.pid)&&ultRole(c.pid)===r&&(!ULT_SP.includes(c.type)||sp<3))||pool.find(c=>!used.has(c.pid)&&!ULT_SP.includes(c.type));if(c){L[i]=c.id;used.add(c.pid);if(ULT_SP.includes(c.type))sp++}});L.f=f;return L}
 // otomatik kadro: en güçlü dizilişi seçer; rakibin taktiği haftaya göre değişir (maçtan önce görünür)
@@ -5235,6 +5237,7 @@ function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="
     <p><b>Temel kart</b> rengi takım içi sıraya göre: altın, turuncu, pembe, mor. <b>Holo</b>: sezonda 6 maç. <b>Kusursuz Holo</b>: en az 7 maça çıkanlar arasında sezonun en iyi 2'si. <b>Kahraman</b> 20 maç, <b>Altın Kahraman</b> 50 maç (+3), <b>Kariyer Efsanesi</b> 100 maç (+5).</p>
     <p><b>Bonuslar:</b> Haftanın Takımı +1 (sezonda en fazla 3 kart), Ayın Oyuncusu +2, Sezonun Takımı +3, An Efsanesi +3, Dönemin Takımı +4, Dönemin Efsanesi +5, Seri en fazla +3.</p>
     <p><b>Yıllık set:</b> 6 sezon 1 yıl. Her sezon kendi Holo kartını alırsan seti tamamlar, rozet kazanırsın.</p>
+    <p><b>Kadroya kimler girer:</b> kendi bütün kartların ve herkesin temel kartı. Başka birinin özel kartını (Holo, Haftanın Takımı vb.) sadece paketten çıkan kiralık kartla 3 maç kullanabilirsin.</p>
     <p><b>Kimya:</b> gerçek maçlarda aynı tarafta en az 3 kez oynadığın her kadro arkadaşı bir bağ. 1 bağ = 1, 3 bağ = 2, 5 bağ = 3 kimya. Kendi mevkisinde olmayan kartın kimyası 0. Kadroda kendi kartın zorunlu, en fazla 3 özel kart.</p>
     <p><b>Diziliş ve taktik:</b> kontra hücumu, pres kontrayı, hücum savunmayı yener; savunma presi etkisiz bırakır. Rakibin planı maçtan önce görünür. Aynı gerçek oyuncu iki takımda birden oynamaz.</p>
     <p><b>Sanal Lig:</b> haftada 1 maç. Oynamazsan kadron otomatik dizilir ve 1,5 güç eksik başlar. <b>Meydan okuma:</b> günde 3, aynı kişiye günde 1; haftanın ilk 5'i puanlı.</p>
@@ -5258,13 +5261,13 @@ function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="
   if(v==="rakip")return ultRakipSheet();
   if(v==="pick"){const i=+S.sheet.i,role=ultSL(st.dz||"2-2-2")[i][0];const used=new Set(st.kadro.map((id,j)=>j!==i&&id?(ultCard(id)||{}).pid:null).filter(Boolean));
     const spL=3-st.kadro.filter((id,j)=>j!==i&&id&&ULT_SP.includes((ultCard(id)||{}).type)).length;const ok=c=>!ULT_SP.includes(c.type)||spL>0;
-    const by={};for(const c of ultCards())if(!used.has(c.pid))(by[c.pid]=by[c.pid]||[]).push(c);for(const k in by)by[k].sort((a,b)=>b.r-a.r);
+    const by={};for(const c of ultCards())if(!used.has(c.pid)&&ultIzin(c,myPid()))(by[c.pid]=by[c.pid]||[]).push(c);for(const k in by)by[k].sort((a,b)=>b.r-a.r);
     const pp=S.sheet.pp&&by[S.sheet.pp]?S.sheet.pp:null;
     if(pp){return `<div class="ch"><div><div class="eyebrow">${role} seç · ${esc(shortName(nameOf(pp)))}</div><h2>Hangi kartı?</h2></div>${cl}</div><div class="ulap-h"><button class="lnk" data-act="ultPP" data-v="">‹ Bütün oyuncular</button></div>${spL<=0?`<p class="ult-n">Özel kart sınırı dolu (3). Sadece temel kart koyabilirsin.</p>`:""}<div class="mzk">${by[pp].map(c=>ok(c)?ultCardH(c,{act:"ultPick",i}):"").join("")}</div>`}
     const item=pid=>{const L=by[pid],c=L.find(ok)||null;if(!c)return"";const n=L.filter(ok).length;return `<div class="ulpi">${ultCardH(c,{act:"ultPick",i})}${n>1?`<button class="ulpi-b" data-act="ultPP" data-v="${esc(pid)}">${n} kartı var ›</button>`:`<span class="ulpi-b off">1 kartı var</span>`}</div>`};
     const ps=Object.keys(by).filter(pid=>by[pid].some(ok)).sort((a,b)=>by[b].find(ok).r-by[a].find(ok).r);
     const ayni=ps.filter(pid=>ultRole(pid)===role),diger=ps.filter(pid=>ultRole(pid)!==role);
-    return `<div class="ch"><div><div class="eyebrow">Takım</div><h2>${role} seç</h2></div>${cl}</div><p class="ult-n">Her oyuncunun en iyi kartı görünür. Başka kartını seçmek için altındaki düğmeye dokun.${spL<=0?" Özel kart sınırı dolu: sadece temel kartlar.":` Kalan özel kart hakkın: ${spL}.`}</p>
+    return `<div class="ch"><div><div class="eyebrow">Takım</div><h2>${role} seç</h2></div>${cl}</div><p class="ult-n">Kendi kartların ve herkesin temel kartı. Başkasının özel kartı sadece kiralıkla gelir. Başka kartını seçmek için altındaki düğmeye dokun.${spL<=0?" Özel kart sınırı dolu: sadece temel kartlar.":` Kalan özel kart hakkın: ${spL}.`}</p>
       ${ayni.length?`<h4 class="ulgh"><span>${role} oynayanlar</span><small class="num">${ayni.length}</small></h4><div class="mzk">${ayni.map(item).join("")}</div>`:""}
       ${diger.length?`<h4 class="ulgh"><span>Başka mevkiler</span><small class="num">${diger.length}</small></h4><p class="ulgh-s">Kendi mevkisinde oynamadığı için kimyası 0 olur.</p><div class="mzk">${diger.map(item).join("")}</div>`:""}
       ${st.kadro[i]?`<button class="btn ult-w" data-act="ultUnset" data-i="${i}">Bu yeri boşalt</button>`:""}`}
