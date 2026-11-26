@@ -5945,3 +5945,4 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .ulmt{margin:0 0 12px}
 .ullig .ulr>small,.ullig .ulr-hd small{min-width:24px;width:24px;flex:none;text-align:center}.ullig .ulr,.ullig .ulr-hd{gap:6px}.ullig .ulr>small:nth-last-of-type(1),.ullig .ulr-hd small:last-of-type{width:30px;min-width:30px}
 .ullig .ulr-l{grid-template-columns:minmax(0,1fr)}
+.ulbit{margin:12px 2px 10px;font:600 .8125rem Inter,sans-serif;color:var(--c-ink3)}.ulbit b{color:var(--ug)}

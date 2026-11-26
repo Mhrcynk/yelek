@@ -5417,6 +5417,12 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
       <div class="ulseg ulseg5" role="group" aria-label="Taktik">${Object.entries(ULT_TK).map(([k,[l]])=>`<button class="${tk===k?"on":""}" data-act="ultTk" data-v="${k}" aria-pressed="${tk===k}">${l}</button>`).join("")}</div>
       <div class="ulfx">${[...(ULT_FX[dz]||[[],[]])[0],...(ULT_TKX[tk]||[[],[]])[0]].map(t=>`<span class="p">+ ${esc(t)}</span>`).join("")}${[...(ULT_FX[dz]||[[],[]])[1],...(ULT_TKX[tk]||[[],[]])[1]].map(t=>`<span class="m">− ${esc(t)}</span>`).join("")}</div></section>`}
 // ----- Maçlar: sıradaki maç, meydan okuma, tek sıralama
+// bitiş bilgisi: sanal lig 7 hafta (pazartesi başlar, 7. haftanın pazarı biter); efsane yarışı 3 sezonluk dönemin son maçında biter
+function ultLigBitis(lg){const st0=lg.real&&ULT_SRV.lig?ULT_SRV.lig.start:ultSt().ligW0;if(st0==null)return"";const end=new Date(((st0+7)*7-3)*864e5-864e5);
+  const t=end.toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long",timeZone:"UTC"});const kal=Math.max(0,7-(lg.W||0));
+  return lg.W>=7?`<b>Sezon bitti</b>`:`<b>Bitiş: ${t}</b> · ${lg.W+1}. hafta / 7`}
+function ultEfsBitis(){const B=ultBuild(),L=sLen(),bas=+(B.sz[B.pk*3]??B.pk*3+1),son=bas+2,kal=Math.max(0,3*L-B.pmN);
+  return `<b>${B.pk+1}. Dönem · ${bas}.–${son}. sezon</b> · ${kal?`bitişe ${kal} gerçek maç`:"dönem bitti"}`}
 function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();const err=ultOk(ultMy());const day=ultDay(),wk=isoWeek(new Date());
   const td=st.ch.filter(x=>x.d===day),pw=st.ch.filter(x=>x.wk===wk&&x.p).length;const my=ultLine(ultMy());
   const TKN=t=>(ULT_TK[t]||ULT_TK.dengeli)[0];
@@ -5439,8 +5445,8 @@ function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();
     ${err?`<p class="ult-n">⚠ ${err} · <button class="lnk" data-act="ultTab" data-v="${/paket/.test(err)?"kulup":"takim"}">${/paket/.test(err)?"Kulübe git":"Takıma git"}</button></p>`:""}<button class="btn ult-w" data-act="ultRakip">Başka rakip seç (${opp.length})</button><p class="ult-n">Bu hafta puanlı ${Math.min(pw,5)}/5 · aynı kişiye günde 1 kez</p></section>`;
   const rk=st.rk==="efs"?"efs":"lig";
   let rkH=`<section class="card ulsec"><div class="ulso ulso-2" role="tablist">${[["lig","Sanal Lig"],["efs","Efsane Yarışı"]].map(([v,l])=>`<button role="tab" class="${rk===v?"on":""}" aria-selected="${rk===v}" data-act="ultRk" data-v="${v}">${l}</button>`).join("")}</div>`;
-  if(rk==="lig")rkH+=`<p class="ulgh-s">${lg.W}/7 hafta oynandı · galibiyet 3, beraberlik 1 puan · O oynanan, A atılan, Y yenilen, AV averaj</p><div class="ullig"><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>O</small><small>A</small><small>Y</small><small>AV</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,o:r.o,a:r.ag,y:r.yg,av:r.ag-r.yg})),me,[r=>r.o,r=>r.a,r=>r.y,r=>(r.av>0?"+":"")+r.av])}</div>`;
-  else rkH+=`<p class="ulgh-s">Dönem sonunda maç başı puanı en yüksek olan Dönemin Efsanesi olur. Her mevki kendi içinde kıyaslanır.</p><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}`;
+  if(rk==="lig")rkH+=`<p class="ulbit">${ultLigBitis(lg)}</p><div class="ullig"><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>O</small><small>A</small><small>Y</small><small>AV</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,o:r.o,a:r.ag,y:r.yg,av:r.ag-r.yg})),me,[r=>r.o,r=>r.a,r=>r.y,r=>(r.av>0?"+":"")+r.av])}</div>`;
+  else rkH+=`<p class="ulbit">${ultEfsBitis()}</p><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}`;
   rkH+=`</section>`;
   const last=st.ch.slice(-4).reverse();if(last.length)h+=`<section class="card ulsec"><h3>Son meydan okumaların</h3>${ultRows(last.map(x=>({id:x.opp,v:x.ga+" – "+x.gb,res:x.ga>x.gb?"G":x.ga<x.gb?"M":"B"})),null,[r=>r.res])}</section>`;
   return sub+(mt==="sira"?rkH:h)}
