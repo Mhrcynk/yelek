@@ -5343,6 +5343,7 @@ const ultP=(r,us,j)=>r.pos&&r.pos[(us?"a":"b")+j]||ultXY(us,j,us?r.P0.a:r.P0.b);
 const ULT_KN={kor:"Korner",sv:"Serbest vuruş",uz:"Uzaktan şut",pen:"Penaltı",kon:"Kontra atak"};
 // ===== maç akışı: 90 dakika, iki devre, uzatma; top sürme, şut çizgisi, file, kaleci, duran top animasyonları =====
 // motorun dakikası 0-40; ekranda 0-90'a yayılır (gol sayısı ve sonuç aynı kalır)
+const ULT_TM=3.2;// süre çarpanı: 1x hızda maç yaklaşık 3 dakika
 const ultD=dk=>Math.max(1,Math.min(90,Math.round(dk*90/40)));
 function ultBub(p,txt,cls,ms){const c=document.getElementById("ulCam");if(!c||!p)return;const el=document.createElement("span");el.className="ulbub "+(cls||"");el.style.left=p[0]+"%";el.style.top=p[1]+"%";el.innerHTML=txt;c.appendChild(el);setTimeout(()=>el.remove(),(ms||1300)/((ULT.run&&ULT.run.hiz)||1))}
 // eğri ok: köşeden ceza sahasına, barajın üstünden kaleye, taçtan içeri
@@ -5353,7 +5354,7 @@ function ultHt(r,on){const o=document.getElementById("ulHt");if(!o)return;if(!on
   o.innerHTML=`<small>Devre arası</small><b class="num">${r.sk.a} – ${r.sk.b}</b><span>Şut ${r.stl.sa}-${r.stl.sb} · Korner ${r.stl.ka2}-${r.stl.kb2}</span>`;o.hidden=false}
 function ultSessiz(r,e){r.dk=e.dk;if(e.fx){if(e.fx!=="tac"){if(e.us)r.stl.fa++;else r.stl.fb++}return}if(e.kind==="kor"&&e.from){if(e.us)r.stl.ka2++;else r.stl.kb2++}if(e.us){r.stl.sa++;r.stl.ka+=e.kp.filter(Boolean).length}else r.stl.sb++}
 function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.skip){ultFinish();return}
-  const RM2=matchMedia("(prefers-reduced-motion: reduce)").matches,T=ms=>(RM2?Math.min(ms,250):ms)/r.hiz;
+  const RM2=matchMedia("(prefers-reduced-motion: reduce)").matches,T=ms=>(RM2?Math.min(ms,250):ms*ULT_TM)/r.hiz;
   if(!r.uz){const n=r.P0.ev.length;r.uz=[1+n%3,2+Math.floor(n/3)%3]}
   // başlama düdüğü: santra
   if(!r.bas){r.bas=1;ultSantra(r,true);ultFeed("1'","Hakem düdüğü çaldı, maç başladı","");ultDraw();setTimeout(ultTick,T(900));return}
@@ -5365,7 +5366,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.skip){ultFinish();r
   // önemli anlar: yalnız gol, penaltı ve kırmızı kart gösterilir
   if(r.onem&&!(e.goal||e.fx==="kirmizi"||e.kind==="pen")){ultSessiz(r,e);r.i++;ultDraw();setTimeout(ultTick,T(90));return}
   const X=e.us?r.P0.a:r.P0.b,nm=j=>shortName(nameOf(X.cs[j].pid)),D=ultD(e.dk);
-  const mv=document.querySelector(".ulm2");if(mv)mv.style.setProperty("--mv",(RM2?0:Math.round(480/r.hiz))+"ms");
+  const mv=document.querySelector(".ulm2");if(mv)mv.style.setProperty("--mv",(RM2?0:Math.round(480*ULT_TM*.85/r.hiz))+"ms");
   if(e.fx){ultAk(e.us,[e.j]);r.dk=e.dk;const p0=ultP(r,e.us,e.j);ultPlace(r,ultPose(r,{att:e.us,mode:"ak",ball:e.fx==="tac"?[e.side,p0[1]]:p0,car:e.j}));const p=ultP(r,e.us,e.j),who=nm(e.j),tk=e.us?"":" (rakip)";ultTrail(null);ultOn2(e.us,e.j);
     if(e.fx==="tac"){ultBall([e.side,p[1]]);ultOk([e.side,p[1]],[e.side<50?e.side+13:e.side-13,p[1]+(e.us?-6:6)],"tac",.15);ultFeed(`${D}'`,`Taç · ${who}${tk}`,"")}
     else if(e.fx==="faul"){ultBall(p);ultBub([p[0],p[1]-6],"Faul","fl");ultFeed(`${D}'`,`Faul · ${who}${tk}`,"")}
@@ -5408,7 +5409,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.skip){ultFinish();r
 // şut çizgisi: topun bulunduğu yerden kaleye
 function ultSut(a,b,cls){const g=document.getElementById("ulTr");if(!g)return;g.innerHTML="";g.insertAdjacentHTML("beforeend",`<line class="sut ${cls}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`)}
 // saat: olaylar arasında da dakika ilerler
-setInterval(()=>{const r=ULT.run,d=document.getElementById("ulDk");if(!r||!d)return;if(r.done){d.textContent="MS";return}if(r.lbl){d.textContent=r.lbl;return}const t=ultD(r.dk||0);r.ds=r.ds||0;if(r.ds<t)r.ds++;else if(r.ds>t)r.ds=t;d.textContent=(r.ds||1)+"'"},70);
+setInterval(()=>{const r=ULT.run,d=document.getElementById("ulDk");if(!r||!d)return;if(r.done){d.textContent="MS";return}if(r.lbl){d.textContent=r.lbl;return}const t=ultD(r.dk||0);r.ds=r.ds||0;if(r.ds<t-4)r.ds=t-4;else if(r.ds<t)r.ds=Math.min(t,r.ds+.05*(r.onem?6:r.hiz));else if(r.ds>t)r.ds=t;d.textContent=(Math.floor(r.ds)||1)+"'"},100);
 const R2=()=>Math.random();
 function ultFinish(){const r=ULT.run;if(!r)return;r.done=true;r.sk={a:r.R0.ga,b:r.R0.gb};r.dk=40;r.lbl=null;r.stl={sa:r.R0.st.sa,sb:r.R0.st.sb,ka:r.R0.st.ka,ka2:r.R0.st.ka2,kb2:r.R0.st.kb2,fa:r.R0.st.fa,fb:r.R0.st.fb};if(!r.son)ultFeed("90+"+((r.uz||[0,2])[1])+"'","Maç bitti","e");ultHt(r,false);ultTrail(null);ultDraw();
   const f=document.getElementById("ulFin");if(f){f.hidden=false;setTimeout(()=>f.scrollIntoView({behavior:"smooth",block:"start"}),60)}const c=document.getElementById("ulCtl");if(c)c.hidden=true}
