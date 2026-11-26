@@ -6121,3 +6121,28 @@ body.gpu .toast,body.gpd .toast,body.gpf .toast,body.gpu .btn.primary,body.gpd .
 .ulbn-f{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:10px}.ulbn-f button{flex:none;min-height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--c-line2);background:transparent;color:var(--c-ink2);font:700 .75rem Inter,sans-serif;cursor:pointer}.ulbn-f button.on{background:#F5C542;border-color:#F5C542;color:#1A1030}
 .ulbn-i{position:relative}.ulbn-bg{position:absolute;top:-6px;right:-4px;z-index:2;min-width:22px;height:22px;padding:0 5px;border-radius:99px;background:#00E58A;color:#06231A;font:800 .6875rem Inter,sans-serif;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.4);pointer-events:none}
 .ulbn-lg{display:inline-block;width:8px;height:8px;border-radius:50%;background:#00E58A;margin-right:5px;vertical-align:1px}
+/* ortak bilgi kutuları (kart sayfası, tür sayfası) */
+.ulik{fill:none;stroke:var(--a);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.ulik .f{fill:var(--a);stroke:none}
+.ulst.iy{--a:#00E58A}.ulst.cy{--a:#5FE3F5}.ulst.pu{--a:#B98CFF}.ulst.gr{--a:#8E80BE}.ulst.gr b{color:var(--c-ink2)}
+.ulst .ulst-i svg{width:16px;height:16px}
+.ulgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.ulmath2{display:flex;align-items:stretch;justify-content:center;gap:6px;margin:4px 0 0}.ulmath2>i{align-self:center;font:800 1.125rem var(--display);font-style:normal;color:var(--c-ink3)}
+.ulmath2 span{flex:1;max-width:104px;text-align:center;border-radius:14px;padding:8px 6px;background:var(--c-card)}.ulmath2 b{display:block;font:800 1.75rem/1 var(--display);color:#fff}.ulmath2 small{display:block;margin-top:3px;font:700 .6875rem Inter,sans-serif;color:var(--c-ink3)}
+.ulmath2 .up{background:rgba(0,229,138,.12)}.ulmath2 .up b{color:#00E58A}.ulmath2 .t{background:rgba(245,197,66,.16)}.ulmath2 .t b{color:#F5C542}
+.ulcap{margin:8px 4px 0;text-align:center;font:500 .75rem/1.45 Inter,sans-serif;color:var(--c-ink3)}.ulcap-b{font-size:.8125rem;color:var(--c-ink2);margin-bottom:4px}
+.ulchip{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-top:10px}.ulchip button{flex:none;min-width:72px;min-height:52px;padding:6px 10px;border-radius:12px;border:1px solid var(--c-line2);background:transparent;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ulchip b{font:800 1.25rem/1 var(--display);color:#F5C542}.ulchip small{font:600 .6875rem Inter,sans-serif;color:var(--c-ink3);margin-top:2px}.ulchip button.on{border-color:#F5C542;background:rgba(245,197,66,.12)}
+.ulbag{display:flex;flex-direction:column;gap:6px;margin-top:10px}.ulbag-i{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.04)}
+.ulbag-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ulbag-t b{font:700 .875rem Inter,sans-serif;color:#fff}.ulbag-t small{font:500 .75rem Inter,sans-serif;color:var(--c-ink3)}.ulbag-t .ulbar{margin-top:3px}
+.ulbag-i em{flex:none;font-style:normal;font:800 .6875rem Inter,sans-serif;padding:4px 8px;border-radius:99px;color:#00E58A;background:rgba(0,229,138,.12)}.ulbag-i em.g{color:#1A1030;background:#F5C542}
+.ulpay{margin-top:4px}
+/* yıldız ve ikon vitrini */
+.ulyz-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.ulyz-k{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 8px;border-radius:14px;text-align:center}
+.ulyz-k.yildiz{background:linear-gradient(170deg,rgba(95,227,245,.16),rgba(95,227,245,.03));box-shadow:inset 0 0 0 1px rgba(95,227,245,.3)}
+.ulyz-k.ikon{background:linear-gradient(170deg,rgba(245,197,66,.2),rgba(245,197,66,.03));box-shadow:inset 0 0 0 1px rgba(245,197,66,.4)}
+.ulyz-k>b{font:800 1rem var(--display);color:#fff;margin-top:6px}.ulyz-k small{font:600 .6875rem Inter,sans-serif;color:var(--c-ink3)}
+.ulyz-p{font:800 .8125rem Inter,sans-serif;padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.1);color:#fff}.ulyz-k.yildiz .ulyz-p{color:#8EEFFB}.ulyz-k.ikon .ulyz-p{color:#F5C542}
+.ulyz-o{position:relative}.ulyz-o .mzc{filter:saturate(.75);opacity:.85}.ulyz-o>i{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font:800 .6875rem Inter,sans-serif;font-style:normal;padding:2px 8px;border-radius:99px;background:#0E0718;color:var(--c-ink2);box-shadow:inset 0 0 0 1px var(--c-line2)}
+.ulyz-s{display:flex;flex-direction:column;gap:5px;margin-top:12px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04)}.ulyz-s>span:first-child{font:600 .8125rem Inter,sans-serif;color:var(--c-ink2)}.ulyz-s>span:first-child b{color:#fff;font-size:1rem}.ulyz-s small{font:500 .75rem Inter,sans-serif;color:var(--c-ink3)}
+.ulyz-l{display:flex;gap:10px;overflow-x:auto;margin-top:12px;scrollbar-width:none}.ulyz-l>div{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px}.ulyz-l small{font:700 .6875rem Inter,sans-serif;color:#8EEFFB}
