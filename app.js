@@ -1,5 +1,6 @@
 (function(){
 "use strict";
+try{sessionStorage.removeItem("y_rt")}catch(_){}
 /* ================= Bağlantı ================= */
 const SB_URL="https://tnjpxwxfqbhfxsphbqhq.supabase.co";
 const SB_KEY="sb_publishable_ATJ8lPaPBzZEj-4k7Z5Ztw_YGevQCS3";

@@ -9,7 +9,7 @@ const root=require("path").join(__dirname,"..");
 // test kopyası: app.js'e window.__E kancası eklenir
 const html=()=>{let s=fs.readFileSync(path.join(root,"index.html"),"utf8");const css=fs.readFileSync(path.join(root,"app.css"),"utf8");
   let js=fs.readFileSync(path.join(root,"app.js"),"utf8").replace("function compute(){","window.__E=s=>eval(s);function compute(){");
-  s=s.replace(/<link rel="stylesheet" href="app\.css\?v=\w+">/,()=>"<style>"+css+"</style>").replace(/<script src="app\.js\?v=\w+"><\/script>/,()=>"<script>"+js+"</script>");return s};
+  s=s.replace(/<link rel="stylesheet" href="app\.css\?v=\w+">/,()=>"<style>"+css+"</style>").replace(/<script src="app\.js\?v=\w+"[^>]*><\/script>/,()=>"<script>"+js+"</script>");return s};
 const srv=http.createServer((q,r)=>{const f=decodeURIComponent(q.url.split("?")[0]);
   if(f==="/"||f==="/index.html"){r.writeHead(200,{"Content-Type":"text/html"});return r.end(html())}
   const p=path.join(root,f);if(!p.startsWith(root)||!fs.existsSync(p)||fs.statSync(p).isDirectory()){r.writeHead(404);return r.end()}
