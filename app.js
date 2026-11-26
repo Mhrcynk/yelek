@@ -1509,11 +1509,16 @@ function photoNorm(src){return new Promise(ok=>{const img=new Image();img.onload
   let u=c.toDataURL("image/webp",.9);if(!/^data:image\/webp/.test(u))u=c.toDataURL("image/png");ok({u,m,s})}catch(e){ok(null)}};img.onerror=()=>ok(null);img.src=src})}
 const PHN={};const phKey=d=>d?d.length+":"+d.slice(-32):"";
 // bütün fotoğrafları aynı ölçeğe getir; sonuç telefonda saklanır, foto değişince yeniden yapılır
-async function photoNormAll(){if(photoNormAll.b)return;photoNormAll.b=1;try{if(!photoNormAll.c){photoNormAll.c=1;const c=await idbGet("phn");if(c&&c.v===1&&c.m)Object.assign(PHN,c.m)}
-  let ch=0,nc=0;const sw=new Map();for(const[id,d]of Object.entries(S.photos||{})){if(!/^data:image\//.test(d||""))continue;const k=phKey(d);if(PHN[id]&&PHN[id].k===k)continue;const r=await photoNorm(d);PHN[id]={k,u:r?r.u:""};if(r){ch++;sw.set(d,r.u)}else nc=1}
+async function photoNormAll(){if(photoNormAll.b)return;photoNormAll.b=1;const swap=()=>{const sw=new Map();for(const[id,d]of Object.entries(S.photos||{})){const n=PHN[id];if(n&&n.u&&n.k===phKey(d)&&BU.has(d))sw.set(BU.get(d),blobU(n.u))}if(sw.size)document.querySelectorAll("img").forEach(im=>{const u=sw.get(im.getAttribute("src"));if(u)im.setAttribute("src",u)})};
+  try{if(!photoNormAll.c){photoNormAll.c=1;const c=await idbGet("phn");if(c&&c.v===1&&c.m)Object.assign(PHN,c.m);swap()}
+  // eksik olanları açılışı yormadan, birer birer ve arada nefes alarak hazırla
+  let ch=0,nc=0;for(const[id,d]of Object.entries(S.photos||{})){if(!/^data:image\//.test(d||""))continue;const k=phKey(d);if(PHN[id]&&PHN[id].k===k)continue;
+    await new Promise(r=>setTimeout(r,ch||nc?120:1500));if((S.photos||{})[id]!==d)continue;const r=await photoNorm(d);PHN[id]={k,u:r?r.u:""};if(r)ch++;else nc=1}
   for(const id of Object.keys(PHN))if(!(S.photos||{})[id])delete PHN[id];
-  if(ch||nc)idbSet("phn",{v:1,m:PHN});if(ch)document.querySelectorAll("img").forEach(im=>{const u=sw.get(im.getAttribute("src"));if(u)im.setAttribute("src",u)})}catch(_){}finally{photoNormAll.b=0}}
-const photoOf=id=>{const d=S.photos[id];if(!d||!/^data:image\//.test(d))return"";const n=PHN[id];if(n&&n.k===phKey(d))return n.u||d;if(!photoNormAll.q){photoNormAll.q=1;setTimeout(()=>{photoNormAll.q=0;photoNormAll()},300)}return d};
+  if(ch||nc)idbSet("phn",{v:1,m:PHN});if(ch)swap()}catch(_){}finally{photoNormAll.b=0}}
+// fotoğraflar sayfaya kısa blob adresiyle girer: her çizimde megabaytlarca base64 metin işlenmez, çözülmüş görsel tekrar kullanılır
+const BU=new Map();function blobU(d){if(!d)return"";let u=BU.get(d);if(u)return u;try{const i=d.indexOf(","),m=d.slice(5,d.indexOf(";")),b=atob(d.slice(i+1)),a=new Uint8Array(b.length);for(let k=0;k<b.length;k++)a[k]=b.charCodeAt(k);u=URL.createObjectURL(new Blob([a],{type:m}))}catch(_){u=d}BU.set(d,u);return u}
+const photoOf=id=>{const d=S.photos[id];if(!d||!/^data:image\//.test(d))return"";const n=PHN[id];if(n&&n.k===phKey(d))return blobU(n.u||d);if(!photoNormAll.q){photoNormAll.q=1;setTimeout(()=>{photoNormAll.q=0;photoNormAll()},300)}return blobU(d)};
 function avatar(p,size){const ph=photoOf(p.id);return `<span class="av ${tierOf(ovrOf(p.id))}${size?" "+size:""}${ph?" hasph":""}">${ph?`<img src="${esc(ph)}" alt="">`:esc(initials(p.name))}</span>`}
 function avatarO(p){return `<span class="avw">${avatar(p)}<b class="ab num">${ovrOf(p.id)}</b></span>`}
 const ANIM=new Set();const anim=k=>ANIM.has(k)?"":(ANIM.add(k)," anim");
@@ -1579,7 +1584,8 @@ const openMatch=()=>S.matches.filter(m=>!mDone(m)&&!isExt(m)).sort((a,b)=>matchT
 let BH=null;const bh=(k,x)=>{if(BH&&x){BH[k].push(x);return""}return x||""};
 function bhWrap(top,mac){const B=BH;BH=null;const T=[["mac","Maç",mac+B.mac.join("")],["oyun","Oyunlar",B.oyun.join("")],["haber","Haberler",B.haber.join("")]].filter(t=>t[2].trim());
   if(T.length<2)return top+(T[0]?T[0][2]:"");let k=S.f.bht;if(!T.some(t=>t[0]===k))k=T[0][0];
-  const sig=((lastFinM()||{}).id||"")+":"+B.haber.length+":"+(B.haber.join("").match(/class="rzs-r"/g)||[]).length,sk="y_hbs_"+TID;if(k==="haber")LS.set(sk,sig);const nh=LS.get(sk)===sig?0:B.haber.length;
+  const sig=((lastFinM()||{}).id||""),sk="y_hbs_"+TID;// yalnız yeni maçta yanar; geç gelen veriyle yanıp sönmesin
+  if(k==="haber")LS.set(sk,sig);const nh=String(LS.get(sk)||"").split(":")[0]===sig?0:B.haber.length;
   return top+`<div class="bht" role="tablist">${T.map(([id,l])=>`<button class="${id===k?"on":""}" role="tab" aria-selected="${id===k}" data-act="bhTab" data-v="${id}">${l}${id==="haber"&&nh&&k!=="haber"?`<u>${nh}</u>`:""}</button>`).join("")}</div><div class="bhp">${T.find(t=>t[0]===k)[2]}</div>`}
 function viewMac(){if(S.tab==="mac"&&pgRestore())return viewOyun();
   if(!S.players.length)return `<section class="card"><div class="empty emp2">${empIc("kisi","pink")}<h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
@@ -2448,8 +2454,8 @@ async function voteClose(m){const r=await A("admin_votes",{p_match:m.id});if(!r)
 // Bu hafta: haftanın dört adımı ve tahmin kartı
 /* Hava durumu: maç saatine göre, Open-Meteo (anahtarsız, ücretsiz). Saatte bir yenilenir, telefonda saklanır. */
 const WX_LL=[41.0082,28.9784];const WX={d:null,at:0,b:0};
-function wxLoad(){if(WX.b||Date.now()-WX.at<36e5&&WX.d)return;if(!WX.d)try{const c=JSON.parse(LS.get("y_wx")||"null");if(c&&c.d){WX.d=c.d;WX.at=c.at;if(Date.now()-c.at<36e5)return}}catch(_){}
-  WX.b=1;fetch(`https://api.open-meteo.com/v1/forecast?latitude=${WX_LL[0]}&longitude=${WX_LL[1]}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m&timezone=Europe%2FIstanbul&forecast_days=16`).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.hourly){WX.d=j.hourly;WX.at=Date.now();try{LS.set("y_wx",JSON.stringify({d:WX.d,at:WX.at}))}catch(_){}if(S.tab==="mac")render(true)}}).catch(()=>{}).finally(()=>{WX.b=0})}
+function wxLoad(){if(WX.b||Date.now()-WX.at<36e5&&WX.d||Date.now()<(WX.r||0))return;if(!WX.d)try{const c=JSON.parse(LS.get("y_wx")||"null");if(c&&c.d){WX.d=c.d;WX.at=c.at;if(Date.now()-c.at<36e5)return}}catch(_){}
+  WX.b=1;fetch(`https://api.open-meteo.com/v1/forecast?latitude=${WX_LL[0]}&longitude=${WX_LL[1]}&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,wind_speed_10m&timezone=Europe%2FIstanbul&forecast_days=16`).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.hourly){WX.d=j.hourly;WX.at=Date.now();try{LS.set("y_wx",JSON.stringify({d:WX.d,at:WX.at}))}catch(_){}if(S.tab==="mac")render(true)}}).catch(()=>{}).finally(()=>{WX.b=0;if(!WX.d||Date.now()-WX.at>=36e5)WX.r=Date.now()+6e5})}
 function wxAt(ts){const H=WX.d;if(!H||!H.time)return null;const d=new Date(ts);const k=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")+"T"+String(d.getHours()).padStart(2,"0")+":00";const i=H.time.indexOf(k);if(i<0)return null;
   const g=j=>j>=0&&j<H.time.length?{h:+H.time[j].slice(11,13),t:Math.round(H.temperature_2m[j]),f:Math.round(H.apparent_temperature[j]),p:H.precipitation_probability[j]??0,c:H.weather_code[j],w:Math.round(H.wind_speed_10m[j])}:null;return{m:g(i),L:[g(i-1),g(i),g(i+1)].filter(Boolean)}}
 function wxIc(c,h,sz){const n=h>=19||h<6;const cl='<path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.1 11 3.5 3.5 0 0 0 7 18z" fill="#C9D3FF"/>';
