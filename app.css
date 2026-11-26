@@ -5591,23 +5591,25 @@ body.gpf .fz-yb span{color:#A9A9B3}body.gpf .fz-yb b{color:#fff}
 .mzh .mzg>span.f{flex:1 1 0;min-width:72px}
 .mzh .mzg>span.f{flex:1 1 auto;min-width:0}
 
-/* kart renkleri: ikinci çeyrek yeşil (t5); sıra altın t1, yeşil t5, pembe t2, mor t3 */
-.fut.t5,.lth.t5,.av.t5{--c1:#22B573;--c2:#0B5E3A;--tx:#fff;--rim:rgba(255,255,255,.35)}
+/* kart renkleri: ikinci çeyrek turuncu (t5); sıra altın t1, turuncu t5, pembe t2, mor t3 */
+.fut.t5,.lth.t5,.av.t5{--c1:#F2702E;--c2:#9A300C;--tx:#fff;--rim:rgba(255,255,255,.35)}
 .lth.t5,.av.t5{background:linear-gradient(160deg,var(--c1),var(--c2))!important;color:var(--tx)!important;border:2px solid var(--rim)!important;box-shadow:none!important}
 .av.t5{border-radius:30%!important;border-width:1.5px!important}
 .lth.t5{border-radius:12px!important}
-.fut.t5,.lth.t5,.av.t5{--c1:#22B573;--c2:#0B5E3A;--tx:#fff;--rim:rgba(255,255,255,.4)}
+.fut.t5,.lth.t5,.av.t5{--c1:#F2702E;--c2:#9A300C;--tx:#fff;--rim:rgba(255,255,255,.4)}
 .tsp.t5{background:linear-gradient(160deg,var(--c1),var(--c2))!important;color:var(--tx)!important}
-.tsp.t5{--c1:#22B573;--c2:#0B5E3A;--tx:#fff}
+.tsp.t5{--c1:#F2702E;--c2:#9A300C;--tx:#fff}
 .vrow.t5 i{background:#E2E0EA;color:#37003C}
 html.dk .vrow.t5 i{background:#282630;color:#F1EAFB}
-.mzc.t5{background:linear-gradient(160deg,#22B573,#0B5E3A 70%)}
-.mzpl-p.t5{background:linear-gradient(160deg,#22B573,#0B5E3A)}
-.mzpl-o b.t5{color:#3DDC84}
-:is(.av,.lth,.tsp,.igav,.igfc).t5,.fut.t5 .face{background:linear-gradient(160deg,#22B573,#0B5E3A 70%)!important;color:#fff!important;animation:none!important}
+.mzc.t5{background:linear-gradient(160deg,#F2702E,#9A300C 70%)}
+.mzpl-p.t5{background:linear-gradient(160deg,#F2702E,#9A300C)}
+.mzpl-o b.t5{color:#FF8A4C}
+:is(.av,.lth,.tsp,.igav,.igfc).t5,.fut.t5 .face{background:linear-gradient(160deg,#F2702E,#9A300C 70%)!important;color:#fff!important;animation:none!important}
 :is(.av,.lth).t5{border:0!important}
 .fut.t5{--rim:rgba(255,255,255,.18)!important;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))!important}
-.pv-c.t5{background:linear-gradient(160deg,#22B573,#0B5E3A 70%)}
-.pe-c.t5{background:linear-gradient(160deg,#22B573,#0B5E3A 70%)}
-.mecp.t5{background:linear-gradient(160deg,#22B573,#0B5E3A 70%)}
-html.dk .mer.met.t5{background:linear-gradient(160deg,#22B573,#0B5E3A 70%)!important}
+.pv-c.t5{background:linear-gradient(160deg,#F2702E,#9A300C 70%)}
+.pe-c.t5{background:linear-gradient(160deg,#F2702E,#9A300C 70%)}
+.mecp.t5{background:linear-gradient(160deg,#F2702E,#9A300C 70%)}
+html.dk .mer.met.t5{background:linear-gradient(160deg,#F2702E,#9A300C 70%)!important}
+.mzc.t5,.pv-c.t5,.pe-c.t5,.mzpl-p.t5,.mecp.t5,html.dk .mer.met.t5{color:#fff}
+
