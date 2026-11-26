@@ -5914,3 +5914,5 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 .ulrev.anim .ulrev-kc{animation:ulup .45s ease-out both;animation-delay:calc(.2s + var(--d)*.18s)}.ulrev.anim .ulrev-kc .mzc{animation:ulfp .7s ease-out both;animation-delay:calc(.2s + var(--d)*.18s)}
 @media (prefers-reduced-motion:reduce){.ulrev.anim .ulrev-kc,.ulrev.anim .ulrev-kc .mzc{animation:none}}
 .gstrip.ulgs{background:linear-gradient(90deg,rgba(245,197,66,.2),rgba(245,197,66,.05));box-shadow:inset 3px 0 0 var(--ug)}.gstrip.ulgs em{color:var(--ug)}
+.ulinf{background:rgba(255,255,255,.04);border-radius:16px;padding:12px 14px;margin:0 0 8px}.ulinf h3{margin:0 0 6px;font:800 1rem/1.2 var(--display);text-transform:uppercase;color:var(--ug)}
+.ulinf ul{margin:0;padding-left:18px;display:grid;gap:5px}.ulinf li{font:500 .8438rem/1.45 Inter,sans-serif;color:var(--c-ink2)}.ulinf li b{color:#fff}
