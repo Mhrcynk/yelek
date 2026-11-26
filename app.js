@@ -1599,7 +1599,7 @@ function stChip(p){const st=stOf(p);if(st==="hazir")return"";const x=STATUS[st];
 const openMatch=()=>S.matches.filter(m=>!mDone(m)&&!isExt(m)).sort((a,b)=>matchTs(a)-matchTs(b))[0];
 /* Bu hafta sekmeleri: Maç / Oyunlar / Haberler */
 let BH=null;const bh=(k,x)=>{if(BH&&x){BH[k].push(x);return""}return x||""};
-function bhWrap(top,mac){const B=BH;BH=null;if(isOwner()){const u=ultKart();if(u)B.oyun.unshift(u)}const T=[["mac","Maç",mac+B.mac.join("")],["oyun","Oyunlar",B.oyun.join("")],["haber","Haberler",B.haber.join("")]].filter(t=>t[2].trim());
+function bhWrap(top,mac){const B=BH;BH=null;if(ultOn()){const u=ultKart();if(u)B.oyun.unshift(u)}const T=[["mac","Maç",mac+B.mac.join("")],["oyun","Oyunlar",B.oyun.join("")],["haber","Haberler",B.haber.join("")]].filter(t=>t[2].trim());
   if(T.length<2)return top+(T[0]?T[0][2]:"");let k=S.f.bht;if(!T.some(t=>t[0]===k))k=T[0][0];
   const sig=((lastFinM()||{}).id||""),sk="y_hbs_"+TID;// yalnız yeni maçta yanar; geç gelen veriyle yanıp sönmesin
   if(k==="haber")LS.set(sk,sig);const nh=String(LS.get(sk)||"").split(":")[0]===sig?0:B.haber.length;
@@ -4953,7 +4953,7 @@ const ultIzin=(c,pid)=>{if(!c)return false;if(c.pid===pid)return true;if(pid===m
 function ultRakipSiz(L,opp){const me=myPid();const i=Array.from(L).findIndex(id=>id&&(ultCard(id)||{}).pid===opp);if(i<0)return L;const role=ultSL(L.f||"2-2-2")[i][0];const used=new Set(Array.from(L).map(id=>id&&(ultCard(id)||{}).pid).filter(Boolean));
   const c=ultCards().filter(c=>c.type==="temel"&&ultIzin(c,me)&&!used.has(c.pid)&&c.pid!==opp).sort((a,b)=>(ultRoles(b.pid).includes(role))-(ultRoles(a.pid).includes(role))||b.r-a.r)[0];const o=Array.from(L);o[i]=c?c.id:null;o.f=L.f;o.t=L.t;o.usta=L.usta;return o}
 function ultMy(){const st=ultSt();if(st.kadro.some(id=>id&&!ultIzin(ultCard(id),myPid()))){st.kadro=st.kadro.map(id=>id&&ultIzin(ultCard(id),myPid())?id:null);ultSave()}const L=st.kadro.slice();L.f=st.dz||"2-2-2";L.t=st.tk||"dengeli";L.usta=1;return L}
-const ultOn=()=>isOwner();
+const ultOn=()=>!!myPid();
 function ultSt(){if(!ULT.s){let o=null;try{o=JSON.parse(LS.get("y_ult_"+TID)||"null")}catch(_){}ULT.s=Object.assign({usta:0,open:{},pUsed:0,pBonus:0,koz:[],nadir:[],kimya:0,hiz:0,kira:[],evo:null,evoDone:[],lig:[],ch:[],kadro:[null,null,null,null,null,null,null],tab:"ana"},o||{})}return ULT.s}
 // sunucu: kulüp ve ilerleme hesapta saklanır (telefon sadece önbellek); başka cihazdan girince aynı kulüp gelir
 const ULT_SRV={at:0,busy:0,upd:null,pubs:{},lig:null,ev:[],wk:null,t:null,ok:false};
