@@ -5020,7 +5020,7 @@ function ultOpen(pk){const st=ultSt();if(st.open[pk.k])return st.open[pk.k];cons
 function ultGorev(){const st=ultSt(),me=myPid(),wk=isoWeek(new Date());const ch=st.ch.filter(x=>x.wk===wk),lg=st.lig.filter(x=>x.wk===wk&&!x.oto&&!x.bye);
   const gun=new Set(ch.map(x=>x.d)).size,lw=lg.filter(x=>x.ga>x.gb).length,kw=ch.concat(lg).filter(x=>x.ga>x.gb&&(x.chem||0)>=15).length;
   const not=ultBuild().F.some(m=>isoWeek(new Date(m.date))===wk&&((S.mInfo[m.id].pts||{})[me]||{}).pts>=7);
-  return[["g1","3 farklı günde meydan oku",Math.min(gun,3),3,2],["g2","Ligde galibiyet al",Math.min(lw,1),1,2],["g3","Kimyası 15+ kadroyla kazan",Math.min(kw,1),1,3],["g4","Gerçek maçta not 7+ al",not?1:0,1,3]].map(([id,t,n,m,r])=>({id,k:wk+"|"+id,t,n,m,r,ok:n>=m,al:!!(st.gorev||{})[wk+"|"+id]}))}
+  return[["g1","3 farklı günde meydan oku",Math.min(gun,3),3,2],["g2","Lig maçını oyna",Math.min(lg.length,1),1,1],["g2b","Lig maçını kazan",Math.min(lw,1),1,1],["g3","Kimyası 15+ kadroyla kazan",Math.min(kw,1),1,3],["g4","Gerçek maçta not 7+ al",not?1:0,1,3]].map(([id,t,n,m,r])=>({id,k:wk+"|"+id,t,n,m,r,ok:n>=m,al:!!(st.gorev||{})[wk+"|"+id]}))}
 // gelişim: yarısı sanal maç, yarısı gerçek maç
 const ultHuc=pid=>["FV","OS"].includes(ultRole(pid));
 const ultEV=pid=>[["Sanal","Bu kartla 2 sanal maç oyna"],["Gerçek",ultHuc(pid)?"Gerçek maçta gol ya da asist yap":"Gerçek maçta takımın kazansın"],["Sanal",ultHuc(pid)?"Bu kartla sanal maçta 2 gol at":"Bu kartla 2 sanal maç kazan"],["Gerçek","Takımın kazansın ve notun 6,5+ olsun (ya da 7+)"]];
