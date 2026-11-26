@@ -6095,3 +6095,29 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulsy-b{height:8px;border-radius:4px;background:var(--c-line);overflow:hidden;margin:4px 0 6px}.ulsy-b i{display:block;height:100%;background:linear-gradient(90deg,#5FE3F5,#F5C542)}
 .ulsy-s{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.ulsy-s span{background:rgba(255,255,255,.04);border-radius:12px;padding:8px;text-align:center}.ulsy-s b{display:block;color:#fff;font-size:1rem}.ulsy-s small{font-size:.6875rem;color:var(--c-ink3)}
 .ulsy-y{display:flex;gap:10px;overflow-x:auto;margin-top:12px;padding-top:4px}.ulsy-y>div{flex:none;display:flex;flex-direction:column;align-items:center;gap:4px}.ulsy-y small{font:700 .6875rem Inter,sans-serif;color:#8EEFFB}
+.ulvs .ult-w+.ult-n{margin-top:10px}
+.ultkr-m{width:100%;margin-top:6px}
+/* açık vurgulu oyun temalarında (Ultimate sarı, Düello turkuaz, Fantezi turuncu) vurgu zeminli kutularda koyu yazı */
+body.gpu,body.gpd,body.gpf{--onplb:#1A1030}
+body.gpu .toast,body.gpd .toast,body.gpf .toast,body.gpu .btn.primary,body.gpd .btn.primary,body.gpf .btn.primary,body.gpu .btn.light,body.gpd .btn.light,body.gpf .btn.light,body.gpu .btn.turf,body.gpd .btn.turf,body.gpf .btn.turf,body.gpu .chips button.on,body.gpd .chips button.on,body.gpf .chips button.on,body.gpu .bh-chips>span.on,body.gpu .stTabs button.on,body.gpd .stTabs button.on,body.gpf .stTabs button.on{color:var(--onplb)!important}
+/* kadro paneli: puan, kimya, güç, özel kart */
+.ulhud{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.ulhud-p{display:grid;grid-template-columns:1fr auto auto;align-items:baseline;gap:8px;padding:10px 14px 14px;border-radius:14px;background:var(--c-card);position:relative;font:600 .8125rem Inter,sans-serif;color:var(--c-ink2)}
+.ulhud-p b{font:800 1.0625rem Inter,sans-serif;color:#fff}.ulhud-p b small{font-size:.8125rem;color:var(--c-ink3);font-weight:700}.ulhud-p em{font-style:normal;font:700 .75rem Inter,sans-serif;color:#00E58A;background:rgba(0,229,138,.12);padding:2px 8px;border-radius:99px}
+.ulhud-p>i{position:absolute;left:14px;right:14px;bottom:7px;height:4px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}.ulhud-p>i>i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#00B86E,#00E58A)}
+.ulhud-p.asti em{color:#ff9aa8;background:rgba(229,57,80,.16)}.ulhud-p.asti>i>i{background:#E53950}.ulhud-p.asti b{color:#ff9aa8}
+.ulhud-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ulst{--a:#F5C542;position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px 12px;border-radius:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--a) 16%,var(--c-card)),var(--c-card) 70%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--a) 30%,transparent);overflow:hidden;min-width:0}
+.ulst-i{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:color-mix(in srgb,var(--a) 22%,transparent);margin-bottom:4px}.ulst-i svg{width:16px;height:16px;fill:none;stroke:var(--a);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ulst.g .ulst-i svg,.ulst.s .ulst-i svg{fill:var(--a);stroke:none}
+.ulst b{font:800 1.375rem 'Barlow Condensed',Inter,sans-serif;color:#fff;line-height:1}.ulst b small{font-size:.875rem;color:var(--c-ink3)}.ulst>small{font:700 .6875rem Inter,sans-serif;color:var(--c-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ulst.k.iy{--a:#00E58A}.ulst.k.or{--a:#F5C542}.ulst.k.zy{--a:#FF6B7F}.ulst.k>small{color:var(--a)}
+.ulst.k>i{position:absolute;left:12px;right:12px;bottom:6px;height:3px;border-radius:3px;background:rgba(255,255,255,.08)}.ulst.k>i>i{display:block;height:100%;border-radius:3px;background:var(--a)}
+.ulst.g{--a:#F5C542}.ulst.s{--a:#B98CFF}
+.ulst-p{position:absolute;top:12px;right:10px;display:flex;gap:3px}.ulst-p i{width:7px;height:11px;border-radius:2px;background:rgba(255,255,255,.14)}.ulst-p i.on{background:#B98CFF;box-shadow:0 0 6px rgba(185,140,255,.7)}
+.ulkt.ulkt3{grid-template-columns:1.5fr 1fr 1fr}.ulkt button svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ulkt button.ana{background:linear-gradient(135deg,#F5C542,#FFB020);border-color:transparent;color:#1A1030}.ulkt button.ana svg{fill:#1A1030;stroke:none}
+.ulkt button.sil{color:#ff9aa8}.ulkt button:disabled{opacity:.4;cursor:default}
+.ulbn-f{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:10px}.ulbn-f button{flex:none;min-height:34px;padding:0 12px;border-radius:99px;border:1px solid var(--c-line2);background:transparent;color:var(--c-ink2);font:700 .75rem Inter,sans-serif;cursor:pointer}.ulbn-f button.on{background:#F5C542;border-color:#F5C542;color:#1A1030}
+.ulbn-i{position:relative}.ulbn-bg{position:absolute;top:-6px;right:-4px;z-index:2;min-width:22px;height:22px;padding:0 5px;border-radius:99px;background:#00E58A;color:#06231A;font:800 .6875rem Inter,sans-serif;display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.4);pointer-events:none}
+.ulbn-lg{display:inline-block;width:8px;height:8px;border-radius:50%;background:#00E58A;margin-right:5px;vertical-align:1px}
