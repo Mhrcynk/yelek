@@ -5092,7 +5092,7 @@ function ultBest(pid){let b=null;for(const c of ultBuild().C)if(c.pid===pid&&(!b
 function ultCls(c){return c.type==="temel"?tierOf(c.base):"ul-"+c.type}
 const ULT_IK={k:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',g:'<path class="f" d="M13 2 4 14h7l-1 8 9-12h-7z"/>',s:'<path class="f" d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',t:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',d:'<rect x="4" y="5.5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',c:'<rect x="6" y="3.5" width="12" height="17" rx="2.5"/><path d="M9.5 8h5"/>',h:'<path d="M12 3.5 5 6v5.5c0 4.2 3 7.6 7 9 4-1.4 7-4.8 7-9V6z"/>',m:'<path d="M5 12.5 10 17l9-10"/>'};
 const ultIk=k=>`<svg class="ulik" viewBox="0 0 24 24" aria-hidden="true">${ULT_IK[k]||""}</svg>`;
-const ultTile=(k,cls,v,l,ek)=>`<div class="ulst ${cls}"><span class="ulst-i">${ultIk(k)}</span><b class="num">${v}</b><small>${l}</small>${ek||""}</div>`;
+const ultTile=(k,cls,v,l,ek)=>`<div class="ulkx ${cls}"><span class="ulkx-i">${ultIk(k)}</span><b class="num">${v}</b><small>${l}</small>${ek||""}</div>`;
 function ultCardH(c,o){o=o||{};const p=P(c.pid);if(!p)return"";const ph=photoOf(c.pid);// kart yüzünde türün tam adı; kısa ek bilgi sadece seri, gelişim ve kiralıkta (ayrıntı kart sayfasında)
 const tn=ULT_T[c.type]||"";const tag=tn+(c.extra&&["seri","evo","kira"].includes(c.type)?(tn?" · ":"")+c.extra:"");
   const z=c.pid===myPid()&&ultSt().giy?ultZ(ultSt().giy):null;
@@ -5419,7 +5419,7 @@ function ultPose(r,o){const us=o.att,A=us?r.P0.a:r.P0.b,D=us?r.P0.b:r.P0.a,sa=us
     out[K[x]]=[cl(p[0]-u*s2*mvA,4,96),cl(p[1]-v*s2*mvA,3,97)];out[K[y]]=[cl(q[0]+u*s2*mvB,4,96),cl(q[1]+v*s2*mvB,3,97)]}
   for(const k in out)out[k]=[Math.round(out[k][0]*10)/10,Math.round(out[k][1]*10)/10];return out}
 function ultAk(us,js){document.querySelectorAll(".ulm-p.ak").forEach(x=>x.classList.remove("ak"));for(const j of js){const t=document.querySelector(`.ulm-p[data-s="${us?"a":"b"}${j}"]`);if(t)t.classList.add("ak")}}
-function ultPlace(r,pos){r.pos=pos;for(const[k,p]of Object.entries(pos)){const t=document.querySelector(`.ulm-p[data-s="${k}"]`);if(t){t.style.left=p[0]+"%";t.style.top=p[1]+"%"}}}
+function ultPlace(r,pos){r.pos=pos;for(const[k,p]of Object.entries(pos)){const t=document.querySelector(`.ulm-p[data-s="${k}"]`);if(t){t.style.left=Math.min(93,Math.max(7,p[0]))+"%";t.style.top=Math.min(96,Math.max(4,p[1]))+"%"}}}
 // golden sonra santra: herkes kendi yarı sahasındaki yerine döner, gol yiyen takım ortadan başlar
 function ultSantra(r,kus){const pos={};for(const us of[true,false]){const X=us?r.P0.a:r.P0.b;X.cs.forEach((c,j)=>{if(!c)return;const[x,y]=ultXY(us,j,X);pos[(us?"a":"b")+j]=[x,us?55+(y-15)/71*37:8+(y-9)/66*37]})}
   const X=kus?r.P0.a:r.P0.b,j=X.cs.length-1;if(X.cs[j])pos[(kus?"a":"b")+j]=[50,kus?53:47];ultTrail(null);ultPlace(r,pos);ultBall([50,50])}
@@ -5775,9 +5775,9 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
   const pu=ultPuan(ultMy()),tv=ultTavan();
   const kl=x.chem>=15?"iy":x.chem>=8?"or":"zy",kk=x.chem/21,IC={k:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',g:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',s:'<path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'},ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg>`;
   const hud=`<div class="ulhud"><div class="ulhud-p${pu>tv?" asti":""}"><span>Kadro puanı</span><b class="num">${pu}${tv<9999?`<small> / ${tv}</small>`:""}</b>${tv<9999?`<em>${pu>tv?`${pu-tv} fazla`:`${tv-pu} boş`}</em>`:""}<i><i style="width:${tv<9999?Math.min(100,pu/tv*100):100}%"></i></i></div>
-    <div class="ulhud-g"><div class="ulst k ${kl}"><span class="ulst-i">${ic("k")}</span><b class="num">${x.chem}<small>/21</small></b><small>Kimya · ${kl==="iy"?"Güçlü":kl==="or"?"Orta":"Zayıf"}</small><i><i style="width:${kk*100}%"></i></i></div>
-    <div class="ulst g"><span class="ulst-i">${ic("g")}</span><b class="num">${x.n?fN(x.str):"–"}</b><small>Güç</small></div>
-    <div class="ulst s"><span class="ulst-i">${ic("s")}</span><b class="num">${x.sp}<small>/3</small></b><small>Özel kart</small><span class="ulst-p">${[0,1,2].map(k=>`<i class="${k<x.sp?"on":""}"></i>`).join("")}</span></div></div></div>`;
+    <div class="ulhud-g"><div class="ulkx k ${kl}"><span class="ulkx-i">${ic("k")}</span><b class="num">${x.chem}<small>/21</small></b><small>Kimya · ${kl==="iy"?"Güçlü":kl==="or"?"Orta":"Zayıf"}</small><i><i style="width:${kk*100}%"></i></i></div>
+    <div class="ulkx g"><span class="ulkx-i">${ic("g")}</span><b class="num">${x.n?fN(x.str):"–"}</b><small>Güç</small></div>
+    <div class="ulkx s"><span class="ulkx-i">${ic("s")}</span><b class="num">${x.sp}<small>/3</small></b><small>Özel kart</small><span class="ulkx-p">${[0,1,2].map(k=>`<i class="${k<x.sp?"on":""}"></i>`).join("")}</span></div></div></div>`;
   return `${ultKuralH()}${hud}
     <div class="ulp ulkom"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.16)" stroke-width=".5" fill="none"><rect x="2" y="2" width="96" height="96" rx="2"/><line x1="2" y1="50" x2="98" y2="50"/><circle cx="50" cy="50" r="10"/></g>${lines.join("")}</svg>${slots}</div>
     ${st.ustaOn&&ultCard(st.ustaOn.cid)?`<p class="ult-n">★ Kimya ustası: ${esc(shortName(nameOf(ultCard(st.ustaOn.cid).pid)))} · ${st.ustaOn.left} maç kaldı</p>`:""}${kd?`<section class="card ulsec ulkdk"><div class="ulsec-h"><h3>${esc(shortName(nameOf(x.cs[ks].pid)))} · kimya ${x.ch[ks]}/3</h3><button class="lnk" data-act="ultKimS" data-i="-1">Kapat</button></div><ul>${kd.L.map(([t,v])=>`<li><span>${t}</span><b class="num">${v}</b></li>`).join("")}</ul></section>`:""}${ULT.yc?`<p class="ulkh">Yedek kart seçildi: sahada koymak istediğin yere dokun.</p>`:""}${err?`<p class="ult-n">⚠ ${err}</p>`:""}
