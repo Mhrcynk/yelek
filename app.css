@@ -6038,3 +6038,17 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulsk-l{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}.ulsk{font:800 .8125rem/1 Inter,sans-serif;padding:5px 8px;border-radius:7px;font-variant-numeric:tabular-nums}.ulsk.w{background:rgba(0,229,138,.16);color:#3ee08f}.ulsk.l{background:rgba(229,57,80,.18);color:#ff9aa8}.ulsk.d{background:rgba(245,197,66,.16);color:#F5C542}.ulsk.s{background:rgba(255,255,255,.08);color:#fff}.ulsk.p{background:rgba(95,227,245,.14);color:#8EEFFB}
 .ulser-l .w b{color:#3ee08f}.ulser-l .l b{color:#ff9aa8}.ulser-l .d{border-color:#F5C542}.ulser-l .d b,.ulser-l .d small{color:#F5C542}.ulser-l b.num{font-size:1.5rem}
 .ulhi{animation:ulhi 1.6s ease 2}.ulfin.ulhi{border-radius:12px}@keyframes ulhi{0%,100%{box-shadow:inset 0 0 0 1px var(--c-line)}40%{box-shadow:0 0 0 3px #F5C542,0 0 24px rgba(245,197,66,.45)}}
+/* Ultimate maç ekranı yatay */
+.ulyat-b{display:flex;gap:6px}
+#modal .sheet:has(.ulyat){position:fixed;inset:0;width:100vw;max-width:none;height:100vh;height:100dvh;max-height:none!important;border-radius:0!important;padding:0!important;border:0!important;animation:none;overflow:hidden!important;background:#0e0a22}
+#modal .sheet:has(.ulyat)>.grab{display:none}
+.ulyat{--W:100vw;--H:100vh;--H:100dvh;position:relative;width:var(--W);height:var(--H);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:10px max(12px,env(safe-area-inset-right,0px)) 12px calc(var(--fw) + 24px + env(safe-area-inset-left,0px));--fh:calc(var(--H) - 20px);--fw:min(calc(var(--W) - 360px),calc(var(--fh) * 1.55))}
+.ulyat-z{--W:100vh;--W:100dvh;--H:100vw;position:fixed;top:0;left:0;transform-origin:top left;transform:rotate(90deg) translateY(-100%);padding-left:calc(var(--fw) + 24px);padding-right:12px}
+.ulyat .ulm2{position:absolute;left:calc(12px + env(safe-area-inset-left,0px));top:10px;width:var(--fw);height:var(--fh);margin:0;background:radial-gradient(50% 80% at 100% 50%,rgba(245,197,66,.1),transparent 60%),repeating-linear-gradient(90deg,#1F1340 0 44px,#1A1036 44px 88px)}
+.ulyat-z .ulm2{left:12px}
+.ulyat .ulm-cam{inset:auto;left:50%;top:50%;width:var(--fh);height:var(--fw);transform:translate(-50%,-50%) rotate(90deg)}
+.ulyat .ulm2 .ulm-p{transform:translate(-50%,-50%) rotate(-90deg)}
+.ulyat .ulm2 .ulm-p.on{transform:translate(-50%,-50%) rotate(-90deg) scale(1.35)}
+.ulyat .mg-c .ulm-p:not(.ak):not(.on){transform:translate(-50%,-50%) rotate(-90deg) scale(.5)}
+.ulyat .ch{margin-bottom:6px}.ulyat .ch h2{font-size:1.125rem}.ulyat .ulsb2{margin-top:0}.ulyat .ulfeed{max-height:96px;overflow:hidden}
+.ulyat .ulgl{z-index:5}
