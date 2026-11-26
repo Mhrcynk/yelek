@@ -5834,3 +5834,27 @@ button.uldo-i{cursor:pointer}button.uldo-i:disabled{cursor:default}
 html.dk .th2.thU .thk-i{background:#F5C542!important}.th2.thU .ulk-i{color:#2A1F00}
 .th2.thU .th2-p{background:#241A08;color:#F5C542}.th2.thU .th2-r .th2-g>div{background:#241A08!important}.th2.thU .th2-r .th2-g small{color:#F5C542!important}
 html.dk .th2.thU .th2-r .thk-c{background:#F5C542;color:#2A1F00}
+/* Ultimate: özel kart animasyonları (kartın türüne göre ışık, parıltı, nabız) */
+.mzc.ulc:not(.sm):not(.ulyok)[class*=" ul-"]::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.28) 48%,transparent 62%);background-size:260% 100%;animation:ulsh var(--ulsp,4.5s) linear infinite}
+.mzc.ul-holo,.mzc.ul-kholo{--ulsp:3s}.mzc.ul-ht,.mzc.ul-temel{--ulsp:6s}
+.mzc.ulc.ul-holo:not(.sm)::after,.mzc.ulc.ul-kholo:not(.sm)::after{background:linear-gradient(115deg,transparent 20%,rgba(255,120,200,.3) 35%,rgba(255,240,120,.3) 45%,rgba(120,230,255,.35) 55%,rgba(170,140,255,.3) 65%,transparent 80%);background-size:300% 100%;animation:ulsh 3.6s linear infinite reverse;mix-blend-mode:screen}
+.mzc.ulc.ul-efsane:not(.sm),.mzc.ulc.ul-kariyer:not(.sm),.mzc.ulc.ul-kahraman2:not(.sm){animation:ulgw 2.6s ease-in-out infinite}
+@keyframes ulgw{50%{box-shadow:inset 0 0 0 2px #FFE9A8,0 0 22px 2px rgba(245,197,66,.55)}}
+.mzc.ulc.ul-donem:not(.sm),.mzc.ulc.ul-an:not(.sm){animation:ulgw2 3.2s ease-in-out infinite}
+@keyframes ulgw2{50%{box-shadow:inset 0 0 0 2px #FFD76A,0 0 16px 0 rgba(255,215,106,.45)}}
+.mzc.ulc.ul-seri:not(.sm){animation:ulfi 1.8s ease-in-out infinite}
+@keyframes ulfi{0%,100%{box-shadow:0 0 0 0 rgba(255,122,47,0)}50%{box-shadow:0 0 18px 1px rgba(255,122,47,.6)}}
+.mzc.ulc.ul-evo:not(.sm){animation:ulev 2.4s ease-in-out infinite}
+@keyframes ulev{50%{box-shadow:0 0 16px 0 rgba(31,191,164,.55)}}
+@media (prefers-reduced-motion:reduce){.mzc.ulc::before,.mzc.ulc::after,.mzc.ulc{animation:none!important}}
+/* kartı açınca dönerek gelir */
+.ult-big.ulopen{animation:ulin .6s cubic-bezier(.2,1.4,.4,1) both}.ult-big.ulopen .mzc{animation:ulfp .75s ease-out both}
+@media (prefers-reduced-motion:reduce){.ult-big.ulopen,.ult-big.ulopen .mzc{animation:none}}
+/* henüz kazanılmamış tür */
+.mzc.ulyok{filter:grayscale(.75) brightness(.7);opacity:.75}.mzc.ulyok .mzc-sil{opacity:.45}.mzc.ulyok .mzc-n{font-size:.75rem;line-height:1.1;white-space:normal}
+.ult-big .mzc.ulyok{filter:grayscale(.35) brightness(.85);opacity:.9}
+/* albüm: oyuncu listesi */
+.ulap{min-height:60px}.ulap>span{flex:1;min-width:0}.ulap>span small{display:block;color:var(--c-ink3);font:600 .75rem Inter,sans-serif}.ulap .ulbar{margin-top:5px;height:4px}.ulap em{flex:none;min-width:44px;text-align:right}
+.ulap-h{margin:-4px 0 0}.ulap-h .lnk{min-height:44px;padding:0 4px;background:none;border:0;color:var(--ug);font:700 .875rem Inter,sans-serif;cursor:pointer}
+.ulap-k{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:20px;background:linear-gradient(135deg,#3A2378,#21123A)}.ulap-k .av{width:48px!important;height:48px!important;flex:none}.ulap-k b{display:block;font:800 1.25rem/1.1 var(--display);text-transform:uppercase}.ulap-k b i{font:700 .6875rem Inter,sans-serif;font-style:normal;color:#2A1F00;background:var(--ug);padding:2px 6px;border-radius:6px;vertical-align:middle}.ulap-k small{color:var(--c-ink3);font:600 .8125rem Inter,sans-serif}
+.ulleg-c .mzc{width:116px;height:154px}
