@@ -5420,6 +5420,8 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
 function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();const err=ultOk(ultMy());const day=ultDay(),wk=isoWeek(new Date());
   const td=st.ch.filter(x=>x.d===day),pw=st.ch.filter(x=>x.wk===wk&&x.p).length;const my=ultLine(ultMy());
   const TKN=t=>(ULT_TK[t]||ULT_TK.dengeli)[0];
+  // iki sekme: maçlar (sanal lig maçı + meydan okuma) ve sıralama (sanal lig tablosu + efsane yarışı)
+  const mt=st.mt==="sira"?"sira":"oyna";const sub=`<div class="ulso ulso-2 ulmt" role="tablist">${[["oyna","Maçlar"],["sira","Sıralama"]].map(([v,l])=>`<button role="tab" class="${mt===v?"on":""}" aria-selected="${mt===v}" data-act="ultMt" data-v="${v}">${l}</button>`).join("")}</div>`;
   const kim=st.kimya>0?`<button class="ultst" data-act="ultKim" role="switch" aria-checked="${!!st.kimyaOn}"><span><b>Kimya artışı · ${st.kimya} hak</b><small>${st.kimyaOn?"Sıradaki maçında kadron güçlü başlar":"Kullanırsan sıradaki maçında kadron güçlü başlar"}</small></span><span class="sw${st.kimyaOn?" on":""}"><i></i></span></button>`:"";
   let h="";if(lg.nx){const sk=(()=>{if(lg.can)return null;const e=(ULT_SRV.ev||[]).find(x=>x.kind==="lig"&&x.k===lg.key);if(e&&e.p){const g1=+e.p.ga,g2=+e.p.gb;return e.p.h===me?[g1,g2]:[g2,g1]}const r=st.lig.find(x=>x.k===lg.key)||null;return r?[r.ga,r.gb]:null})();const ex=new Set(ultRakipSiz(ultMy(),lg.nx).map(id=>id&&(ultCard(id)||{}).pid).filter(Boolean));const oL=ULT_SRV.ok?ultRakipKadro(lg.nx,ex):ultAuto(lg.nx,null,ex),ox=ultLine(oL),mt=st.tk||"dengeli",ot=oL.t||"dengeli";const BEATS={kontra:"hucum",pres:"kontra",hucum:"savunma",savunma:"pres"};
     h+=`<section class="ulvs"><small>${lg.real?`Sanal Lig · ${lg.sezon}. Sezon · ${lg.W+1}. Hafta / 7`:`Antrenman ligi · ${lg.W+1}. Hafta / 7`}</small><div class="ulvs-r"><span>${avatar(P(me),"")}<b>Sen</b><small class="num">Güç ${my.n?fN(my.str):"–"}</small><em>${esc(st.dz||"2-2-2")} · ${TKN(mt)}</em></span>${sk?`<i class="ulvs-s ${sk[0]>sk[1]?"w":sk[0]<sk[1]?"l":"d"}"><b class="num">${sk[0]} – ${sk[1]}</b><small>${sk[0]>sk[1]?"Kazandın":sk[0]<sk[1]?"Kaybettin":"Berabere"}</small></i>`:"<i>VS</i>"}<span>${avatar(P(lg.nx),"")}<b>${esc(shortName(nameOf(lg.nx)))}</b><small class="num">Güç ${fN(ox.str)}</small><em>${sk?esc(oL.f)+" · "+TKN(ot):"Taktik maçta belli olur"}</em></span></div>
@@ -5436,12 +5438,12 @@ function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();
     <div class="ulch3">${sug.map(({o,l})=>`<button class="ulch3-i" data-act="ultPlay" data-k="ch" data-v="${esc(o.p.id)}"${td.length>=3||err?" disabled":""}><small>${l}</small>${avatar(o.p,"")}<b>${esc(shortName(o.p.name))}</b><span class="num">Güç ${fN(o.s)}</span></button>`).join("")}</div>
     ${err?`<p class="ult-n">⚠ ${err} · <button class="lnk" data-act="ultTab" data-v="${/paket/.test(err)?"kulup":"takim"}">${/paket/.test(err)?"Kulübe git":"Takıma git"}</button></p>`:""}<button class="btn ult-w" data-act="ultRakip">Başka rakip seç (${opp.length})</button><p class="ult-n">Bu hafta puanlı ${Math.min(pw,5)}/5 · aynı kişiye günde 1 kez</p></section>`;
   const rk=st.rk==="efs"?"efs":"lig";
-  h+=`<section class="card ulsec"><div class="ulsec-h"><h3>Sıralama</h3><button class="lnk" data-act="ultShareRk" data-v="${rk}">${ICON.share||""} Paylaş</button></div><div class="ulso ulso-2" role="tablist">${[["lig","Sanal Lig"],["efs","Efsane Yarışı"]].map(([v,l])=>`<button role="tab" class="${rk===v?"on":""}" aria-selected="${rk===v}" data-act="ultRk" data-v="${v}">${l}</button>`).join("")}</div>`;
-  if(rk==="lig")h+=`<p class="ulgh-s">${lg.W}/7 hafta oynandı · galibiyet 3, beraberlik 1 puan</p><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>G-B-M</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,gbm:`${r.g}-${r.b}-${r.m}`})),me,[r=>r.gbm])}`;
-  else h+=`<p class="ulgh-s">Dönem sonunda maç başı puanı en yüksek olan Dönemin Efsanesi olur. Her mevki kendi içinde kıyaslanır.</p><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}`;
-  h+=`</section>`;
+  let rkH=`<section class="card ulsec"><div class="ulso ulso-2" role="tablist">${[["lig","Sanal Lig"],["efs","Efsane Yarışı"]].map(([v,l])=>`<button role="tab" class="${rk===v?"on":""}" aria-selected="${rk===v}" data-act="ultRk" data-v="${v}">${l}</button>`).join("")}</div>`;
+  if(rk==="lig")rkH+=`<p class="ulgh-s">${lg.W}/7 hafta oynandı · galibiyet 3, beraberlik 1 puan · O oynanan, A atılan, Y yenilen, AV averaj</p><div class="ullig"><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>O</small><small>A</small><small>Y</small><small>AV</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,o:r.o,a:r.ag,y:r.yg,av:r.ag-r.yg})),me,[r=>r.o,r=>r.a,r=>r.y,r=>(r.av>0?"+":"")+r.av])}</div>`;
+  else rkH+=`<p class="ulgh-s">Dönem sonunda maç başı puanı en yüksek olan Dönemin Efsanesi olur. Her mevki kendi içinde kıyaslanır.</p><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}`;
+  rkH+=`</section>`;
   const last=st.ch.slice(-4).reverse();if(last.length)h+=`<section class="card ulsec"><h3>Son meydan okumaların</h3>${ultRows(last.map(x=>({id:x.opp,v:x.ga+" – "+x.gb,res:x.ga>x.gb?"G":x.ga<x.gb?"M":"B"})),null,[r=>r.res])}</section>`;
-  return h}
+  return sub+(mt==="sira"?rkH:h)}
 // ----- sayfalar
 const ULT_PL={usta:["Kimya ustası · 5 maç","fy"],kart:["Oyuncu kartı","kt"],ozel:["Özel kart","nd"],dupk:["Tekrar · +1 parça","dp"],koz:["Çerçeve","koz"],kimya:["Kimya artışı · 1 maç","fy"],hiz:["Gelişim hızlandırma","fy"],kira:["Kiralık kart · 3 maç","fy"],nadir:["Nadir çerçeve","nd"],dup:["Tekrar çıktı · +1 parça","dp"]};
 function ultPackSheet(){const st=ultSt();const pk=ultPacks().L.find(x=>x.k===S.sheet.k);if(!pk)return"";const o=st.open[pk.k];const cl=`<button class="btn sm" data-act="close">Kapat</button>`;
@@ -5565,6 +5567,7 @@ async function ultAct(a,el){const st=ultSt();const go=(tab,kf)=>{st.tab=tab;if(k
     case"ultAk":st.ak=el.dataset.v;ultSave();render(true);break;
     case"ultDz":st.dz=el.dataset.v;ultSave();render(true);break;
     case"ultTk":st.tk=el.dataset.v;ultSave();render(true);break;
+    case"ultMt":st.mt=el.dataset.v;ultSave();render(true);break;
     case"ultYukle":ULT_SRV.at=0;ultLoad(true);render(true);break;
     case"ultTest":st.test=!ultTest();ultSave();render(true);toast(st.test?"Test modu açık: sınır yok":"Gerçek kural: haftada 1 lig maçı, en fazla 2 paket");break;
     case"ultKim":if(st.kimya>0){st.kimyaOn=!st.kimyaOn;ultSave();toast(st.kimyaOn?"Kimya artışı sıradaki maçında kullanılacak":"Kimya artışı çıkarıldı")}render(true);break;

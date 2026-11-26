@@ -5942,3 +5942,6 @@ body.gpd .gph-du .bjh-v small{color:#9CC9D1}
 @media (prefers-reduced-motion:reduce){.ulm2 .ulm-p{transition:none}}
 .ulc-g{position:relative;z-index:2;align-self:flex-start;width:max-content;max-width:100%;margin-bottom:4px;font:800 .6875rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.02em;background:#00E58A;color:#03240F;padding:3px 6px;border-radius:5px}.mzc.ulc.sm .ulc-g{display:none}.ulgun-n b{color:#3ee08f}
 .ulvs-s{display:grid;justify-items:center;gap:2px;font-style:normal}.ulvs-s b{font:400 2.1rem/1 var(--display);color:#fff}.ulvs-s small{font:800 .75rem Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase}.ulvs-s.w small{color:#3ee08f}.ulvs-s.l small{color:#ff8b9b}.ulvs-s.d small{color:#F5C542}
+.ulmt{margin:0 0 12px}
+.ullig .ulr>small,.ullig .ulr-hd small{min-width:24px;width:24px;flex:none;text-align:center}.ullig .ulr,.ullig .ulr-hd{gap:6px}.ullig .ulr>small:nth-last-of-type(1),.ullig .ulr-hd small:last-of-type{width:30px;min-width:30px}
+.ullig .ulr-l{grid-template-columns:minmax(0,1fr)}
