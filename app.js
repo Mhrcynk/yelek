@@ -5092,7 +5092,10 @@ function ultEfsRows(){const B=ultBuild();return S.players.filter(p=>!p.guest).ma
 // yıllık set: her sezon kendi Holo kartını al (6 maç); 6 sezon = 1 yıl
 function ultSet(){const B=ultBuild(),me=myPid(),ok=s=>((B.sea[s+"|"+me]||{}).n||0)>=6;const yi=Math.floor(Math.max(0,B.sz.indexOf(B.cur))/6);
   const yr=B.sz.slice(yi*6,yi*6+6);let rz=0;for(let y=0;y<yi;y++)if(B.sz.slice(y*6,y*6+6).every(ok))rz++;return{n:yr.filter(ok).length,rz,yil:yi+1}}
-function ultKart(){if(!ultOn()||!myPid())return"";const B=ultBuild(),pk=ultPacks();return th2Kart("thU",`<span class="ulk-i">ULT</span>`,`Yelek <span lang="en">Ultimate</span>`,"Test · sadece sen",[["Kart",B.C.length],["Yeni paket",pk.yeni.length]],`<button class="btn sm primary" data-act="ultGo">Aç</button>`)}
+function ultKart(){if(!ultOn()||!myPid())return"";const B=ultBuild(),pk=ultPacks(),lg=ultLig(),st=ultSt();const td=st.ch.filter(x=>x.d===ultDay()).length;
+  const pill=pk.yeni.length?pk.yeni.length+" paket hazır":lg.nx&&lg.can?"Lig maçı seni bekliyor":td<3?(3-td)+" meydan okuma hakkın var":"Test · sadece sen";
+  const bt=pk.yeni.length?"Paketi aç":lg.nx&&lg.can?"Maça çık":"Kulübe git";
+  return th2Kart("thU",`<span class="ulk-i">ULT</span>`,"Yelek Ultimate",pill,[["Kart",B.C.length],["Lig sıran",(lg.rows.findIndex(r=>r.id===myPid())+1||"–")+"."]],`<button class="thk-c" data-act="ultGo">${bt}</button>`)}
 const ULT_TABS=[["kulup","Kulüp"],["kart","Kartlar"],["takim","Takım"],["mac","Maçlar"]];
 function sheetUltPg(){if(!ultOn()||!myPid())return"";const st=ultSt(),B=ultBuild();ultEvoTick();let tab=st.tab;if(!ULT_TABS.some(t=>t[0]===tab))tab={album:"kart",kadro:"takim"}[tab]||"kulup";
   const X=`<button class="oda-bk" data-act="pgBack" aria-label="Geri">${PG_BK}</button>`;

@@ -5830,3 +5830,7 @@ button.uldo-i{cursor:pointer}button.uldo-i:disabled{cursor:default}
 .ulpack:disabled{opacity:.55;animation:none}
 .ult-n .lnk{min-height:44px;padding:0 4px;background:none;border:0;color:var(--ug);font:700 .8125rem Inter,sans-serif;cursor:pointer;vertical-align:middle}
 .ulc-orn{pointer-events:none}.ulc-orn .mzc-sil{opacity:.55}
+/* Oyunlar: Ultimate kartı diğer oyunlarla aynı düzende, altın renkli */
+html.dk .th2.thU .thk-i{background:#F5C542!important}.th2.thU .ulk-i{color:#2A1F00}
+.th2.thU .th2-p{background:#241A08;color:#F5C542}.th2.thU .th2-r .th2-g>div{background:#241A08!important}.th2.thU .th2-r .th2-g small{color:#F5C542!important}
+html.dk .th2.thU .th2-r .thk-c{background:#F5C542;color:#2A1F00}
