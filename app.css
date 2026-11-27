@@ -6540,3 +6540,4 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ultr-h .ulmk-pod{padding:18px 4px 8px}.ultr-h .ulmk-pod.az{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}.ultr-h .ulmk-pd small{line-height:1.25}
 .ultr-l{display:grid;gap:6px;margin-bottom:10px}.ultr-i{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(0,0,0,.22)}.ultr-i>i{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-style:normal;font-size:1.0625rem;background:rgba(245,197,66,.16)}.ultr-i b{display:block;font:700 .8125rem/1.25 Inter,sans-serif}.ultr-i small{display:block;font:600 .6875rem/1.3 Inter,sans-serif;color:var(--c-ink3)}
 .ultk b.x{color:#FF8AA3}
+.ulap-on{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.ulap-on i{font:700 .6875rem/1 Inter,sans-serif;font-style:normal;padding:4px 7px;border-radius:7px;background:rgba(245,197,66,.14);color:#F5C542}
