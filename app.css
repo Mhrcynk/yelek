@@ -6390,3 +6390,15 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 #modal .sheet:has(.ulmac:not(.ulyat))>.grab{display:none}
 .ulmac:not(.ulyat) .ch{padding-top:max(10px,env(safe-area-inset-top,0px))!important}
 .ulmac:not(.ulyat) .ulyat-s>.ulsb2{top:calc(max(10px,env(safe-area-inset-top,0px)) + 64px)}
+/* kart rozeti: güç ve kimya ayrı, kartın altında ince bant; yüzün üstüne binmez */
+.ulc-u,.ulc-yt{display:none!important}
+.ulc-bn{display:flex;order:9;justify-content:center;gap:12px;margin:7px -10px -10px;padding:6px;background:rgba(8,5,20,.6);position:relative;z-index:3}
+.ulc-bn i{display:flex;align-items:center;gap:3px;font-style:normal;white-space:nowrap}.ulc-bn em{display:none}.ulc-bn svg{width:12px;height:12px;flex:none}
+.ulc-bn .g svg{fill:#FFD24A}.ulc-bn .k svg{fill:none;stroke:#55E6B0;stroke-width:2.6;stroke-linecap:round}
+.ulc-bn b{font:800 .75rem/1 Inter,sans-serif}.ulc-bn .g b{color:#FFE08A}.ulc-bn .k b{color:#7FF0C8}.ulc-bn .y{color:#9BEBFF;font:800 .6875rem/1 Inter,sans-serif;text-transform:uppercase}
+.ult-big .ulc-bn{gap:18px;padding:9px}.ult-big .ulc-bn svg{width:16px;height:16px}.ult-big .ulc-bn b{font-size:1rem}.ult-big .ulc-bn em{display:inline;font:600 .75rem Inter,sans-serif;color:#E9E2F7;margin-left:2px}
+/* alt bant: FUT tarzı, başlıklı (GÜÇ / KİMYA) */
+.ulc-bn{background:rgba(8,5,20,.72);box-shadow:inset 0 1px 0 rgba(245,197,66,.7);padding:5px 6px 6px;gap:0}
+.ulc-bn i{flex:1;flex-direction:column;gap:1px}.ulc-bn i+i{border-left:1px solid rgba(255,255,255,.14)}.ulc-bn svg{display:none}
+.ulc-bn b{font:800 .9375rem/1 var(--display);order:2}.ulc-bn em{display:block;order:1;font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B7A9E8}
+.ult-big .ulc-bn{padding:8px 8px 9px}.ult-big .ulc-bn b{font-size:1.25rem}.ult-big .ulc-bn em{margin:0;font-size:.75rem}
