@@ -6658,3 +6658,24 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulhk2-r>span{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.ulhk2-r small{font:800 .75rem/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--c-ink2)}
 .ulhk2-r b{font:800 .875rem/1.2 Inter,sans-serif;color:#fff;text-align:right}.ulhk2-r p{margin:0;font:600 .8125rem/1.4 Inter,sans-serif;color:var(--c-ink2)}
 .ultg-u{font:800 .75rem/1 Inter,sans-serif;font-style:normal;padding:4px 6px;border-radius:6px;margin-top:3px;background:rgba(255,255,255,.08);color:var(--c-ink2)}.ultg-u.p{background:rgba(0,229,138,.16);color:#3DF0A8}.ultg-u.n{background:rgba(255,107,138,.16);color:#FF9CB0}
+/* maç planı, rakip keşfi, devre arası kararı */
+.ultt{grid-template-columns:repeat(4,1fr)}
+.ulpl-r{padding:8px 0;border-top:1px solid rgba(255,255,255,.07)}.ulpl-r:first-of-type{border-top:0}.ulpl-r>small{display:block;font:800 .75rem/1 Inter,sans-serif;color:var(--c-ink2);margin:0 0 6px}
+.ulpl-s{display:flex;gap:4px;flex-wrap:wrap}.ulpl-s button{flex:1 1 auto;min-height:44px;padding:0 10px;border:0;border-radius:10px;background:rgba(0,0,0,.25);color:var(--c-ink2);font:700 .8125rem/1 Inter,sans-serif;cursor:pointer}.ulpl-s button.on{background:#F5C542;color:#2A1F00}
+.ulks-r{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.07);font:600 .8125rem/1.3 Inter,sans-serif;color:var(--c-ink2)}.ulks-r b{color:#fff;font-weight:800;text-align:right}
+.ulks .ulsec-h+.ulks-r{border-top:0}
+.ulks-b{display:flex;gap:3px;margin:0 0 4px}.ulks-b i{min-width:26px;height:26px;border-radius:7px;font:800 .75rem/26px Inter,sans-serif;font-style:normal;text-align:center;color:#160C33;overflow:hidden;white-space:nowrap}
+.ulks-o{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:rgba(0,229,138,.12);box-shadow:inset 0 0 0 1px rgba(0,229,138,.4);font:600 .8125rem/1.45 Inter,sans-serif;color:var(--c-ink2)}.ulks-o b{color:#3DF0A8}
+.ulks .ulgh-s{margin-top:10px}.ulks-t button{flex:1 1 30%}
+.ulez-k .lnk{flex:none;min-height:44px}
+.ulvs-h{display:flex;gap:16px;justify-content:center}
+.ulkr{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(8,4,24,.72);padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.ulkr-k{width:100%;max-width:440px;max-height:100%;overflow:auto;border-radius:22px;padding:16px;background:#1E1442;box-shadow:inset 0 0 0 1.5px rgba(245,197,66,.5);text-align:center}
+.ulkr-k>small{font:800 .75rem/1 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#F5C542}.ulkr-k>b{display:block;font:800 2.5rem/1 "Barlow Condensed",sans-serif;color:#fff;margin:6px 0}
+.ulkr-k>p{margin:0 0 10px;font:600 .8125rem/1.4 Inter,sans-serif;color:var(--c-ink2)}
+.ulkr-o{display:grid;gap:6px;text-align:left}.ulkr-o button{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 12px;border:0;border-radius:14px;background:#2C2060;box-shadow:inset 0 0 0 1px #3A2C78;color:#fff;cursor:pointer;font:inherit;text-align:left}
+.ulkr-o button>span{flex:1;min-width:0}.ulkr-o b{display:block;font:800 .875rem/1.25 Inter,sans-serif}.ulkr-o small{display:block;font:600 .75rem/1.3 Inter,sans-serif;color:var(--c-ink2)}
+.ulkr-o em{flex:none;font:800 .75rem/1 Inter,sans-serif;font-style:normal;color:#3DF0A8}.ulkr-o button.cur{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);background:rgba(255,255,255,.06)}
+.ulkr-s{margin:10px 0 0!important;color:#F5C542!important;font-weight:800!important}.ulkr.bek{opacity:.6;pointer-events:none}
+@media (orientation:landscape) and (max-height:500px){.ulkr{align-items:center}.ulkr-o{grid-template-columns:1fr 1fr}.ulkr-k>b{font-size:1.75rem;margin:2px 0}}
+.ulkr{z-index:10000}.ulkr-k{max-height:calc(100dvh - 24px)}
