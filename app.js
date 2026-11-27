@@ -5533,12 +5533,14 @@ async function ultCmKayit(r){const c=r.cm;if(c.kay)return;c.kay=1;const e=await 
   if(ULT.run===r&&p.ga!=null){const sa=c.flip?+p.gb:+p.ga,sb=c.flip?+p.ga:+p.gb;if(r.R0.ga!==sa||r.R0.gb!==sb)r.R0={...r.R0,ga:sa,gb:sb}}
   if(ULT.run===r&&r.done&&S.sheet&&S.sheet.v==="mac")render(true)}
 // ---------- Meydan: çevrim içi rakibe canlı çağrı ----------
-async function ultNabizTik(){if(typeof document==="undefined"||document.visibilityState!=="visible"||!S.session||!ULT_SRV.ok||!S.pg||S.pg.type!=="ult"||ULT_CM.nb)return;ULT_CM.nb=1;
-  try{const r=await rpc("ult_nabiz",{});if(!r||!r.ok)return;ULT_CM.on=new Set(r.on||[]);ULT_CM.cg=r.cg||[];
+// uygulama kapanırken ya da Ultimate'ten çıkılırken sunucuya "ayrıldım" denir: rakip beni boşuna canlı maça çağırmasın
+function ultAyril(){if(!ULT_CM.vardi||!S.session)return;ULT_CM.vardi=0;try{fetch(SB_URL+"/rest/v1/rpc/ult_ayril",{method:"POST",keepalive:true,headers:{apikey:SB_KEY,"Content-Type":"application/json",...teamHdr(),...authHdr()},body:"{}"}).catch(()=>{})}catch(_){}}
+async function ultNabizTik(){if(typeof document==="undefined"||ULT_CM.nb)return;if(document.visibilityState!=="visible"||!S.session||!ULT_SRV.ok||!S.pg||S.pg.type!=="ult"){ultAyril();return}ULT_CM.nb=1;
+  try{const r=await rpc("ult_nabiz",{});if(!r||!r.ok)return;ULT_CM.vardi=1;ULT_CM.on=new Set(r.on||[]);ULT_CM.cg=r.cg||[];
     document.querySelectorAll("[data-on]").forEach(el=>el.classList.toggle("cev",ULT_CM.on.has(el.dataset.on)));
     const g=ULT_CM.cg.find(x=>!ULT_CM.red[x.k]);if(g&&!S.sheet){S.sheet={type:"ult",v:"cmgelen",k:g.k,a:g.a,t:g.t?1:0,cg:Date.parse(g.cg)+(Date.now()-Date.parse(r.now))};render(true)}}
   catch(_){}finally{ULT_CM.nb=0}}
-if(typeof window!=="undefined"){setInterval(ultNabizTik,10000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")ultNabizTik()})}
+if(typeof window!=="undefined"){setInterval(ultNabizTik,6000);document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")ultNabizTik();else ultAyril()});window.addEventListener("pagehide",ultAyril)}
 // çağıran: davet gönderilir, rakip 60 saniye içinde kabul ederse iki taraf da canlı oynar; etmezse davet bugünkü gibi kalır
 // Meydan'da ikiniz de çevrim içiyseniz maç canlı başlar: davet eden rakibini davet anında (60 sn), kabul eden de davet edeni kabul anında (30 sn) çağırır.
 // Çağrı cevapsız kalırsa eski düzen sürer: davet 6 saat bekler; kabul edilmiş maç, rakibin planına karşı oynanır.
