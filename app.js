@@ -6142,8 +6142,8 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
   return `${ultKuralH()}${hud}
     <div class="ulp ulkom ulq-saha"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.16)" stroke-width=".5" fill="none"><rect x="2" y="2" width="96" height="96" rx="2"/><line x1="2" y1="50" x2="98" y2="50"/><circle cx="50" cy="50" r="10"/></g>${lines.join("")}</svg>${slots}</div>
     ${st.ustaOn&&ultCard(st.ustaOn.cid)?`<p class="ult-n">★ Kimya ustası: ${esc(shortName(nameOf(ultCard(st.ustaOn.cid).pid)))} · ${st.ustaOn.left} maç kaldı</p>`:""}${ULT.yc?`<p class="ulkh">Yedek kart seçildi: sahada koymak istediğin yere dokun.</p>`:""}${err?`<p class="ult-n uyar">${err}</p>`:""}
-    <div class="ulkt ulkt3"><button class="ana" data-act="ultAuto">${ic("g")}Otomatik diz</button><button data-act="ultGeri"${(ULT.gk||[]).length?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Geri al</button><button class="sil" data-act="ultClear"${x.n?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Temizle</button></div>
     ${ultTepsi(x,ss)}
+    <div class="ulkt ulkt3"><button class="ana" data-act="ultAuto">${ic("g")}Otomatik diz</button><button data-act="ultGeri"${(ULT.gk||[]).length?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Geri al</button><button class="sil" data-act="ultClear"${x.n?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Temizle</button></div>
 `}
 // ----- Maçlar: sıradaki maç, meydan okuma, tek sıralama
 // bitiş bilgisi: sanal lig 7 hafta (pazartesi başlar, 7. haftanın pazarı biter); efsane yarışı 3 sezonluk dönemin son maçında biter
