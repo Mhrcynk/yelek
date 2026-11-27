@@ -6288,3 +6288,22 @@ body.gpu .sheet .ch h2,body.gpu .ulnz-t b,body.gpu .ulbr-h b,body.gpu .ulkp-t b,
 .ulys-y button>i{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:900 .875rem Inter,sans-serif;font-style:normal;color:#06191C;background:#5FE3F5}
 .ulys-y button span{display:flex;flex-direction:column;gap:2px;min-width:0}.ulys-y button b{font:700 .875rem Inter,sans-serif}.ulys-y button small{font:500 .75rem/1.35 Inter,sans-serif;color:var(--c-ink3)}
 .ulys-y button.on{border:2px solid #5FE3F5;background:rgba(95,227,245,.12)}.ulys-y button:disabled{opacity:.45;cursor:default}
+/* Maçlar sekmelerinin kimliği: her sekmenin kendi rengi ve başlığı */
+.ulmt.t-ch~*{--ta:#FF5CA8;--ta2:rgba(255,92,168,.2)}.ulmt.t-lig~*{--ta:#7C9BFF;--ta2:rgba(124,155,255,.2)}.ulmt.t-kupa~*{--ta:#F5C542;--ta2:rgba(245,197,66,.22)}.ulmt.t-hz~*{--ta:#5FE3F5;--ta2:rgba(95,227,245,.18)}.ulmt.t-efs~*{--ta:#B98CFF;--ta2:rgba(185,140,255,.2)}
+.ulso.ulmt button.t-ch.on{background:#FF5CA8;box-shadow:0 4px 14px rgba(255,92,168,.35)}.ulso.ulmt button.t-lig.on{background:#7C9BFF;box-shadow:0 4px 14px rgba(124,155,255,.35)}.ulso.ulmt button.t-hz.on{background:#5FE3F5;box-shadow:0 4px 14px rgba(95,227,245,.3)}.ulso.ulmt button.t-efs.on{background:#B98CFF;box-shadow:0 4px 14px rgba(185,140,255,.35)}
+.ulso.ulmt button.on{color:#1A1030!important}
+.ulhero{display:flex;align-items:center;gap:12px;margin:4px 2px 12px}
+.ulhero-i{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--ta2);box-shadow:inset 0 0 0 1px var(--ta)}
+.ulhero-i svg{width:24px;height:24px;fill:none;stroke:var(--ta);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ulhero-i .ulik .f{fill:var(--ta)}.ulhero-i .ulik{--a:var(--ta)}
+.ulhero>span:last-child{display:flex;flex-direction:column;gap:1px;min-width:0}.ulhero b{font:800 1.5rem/1.1 var(--display);color:#fff;text-transform:capitalize}.ulhero small{font:600 .75rem Inter,sans-serif;color:var(--ta)}
+/* karşılaşma kartı her sekmede aynı, rengi sekmeden */
+.ulvs{position:relative;background:radial-gradient(90% 70% at 50% 0%,var(--ta2,rgba(245,197,66,.22)),transparent 60%),linear-gradient(160deg,#2A1D58,#160C30);box-shadow:inset 0 0 0 1px var(--ta2,rgba(245,197,66,.25))}
+.ulvs>small{color:var(--ta,var(--ug))}.ulvs-r>i:not(.ulvs-s){color:var(--ta,var(--ug))}
+.ulvs .ulkp-i{position:absolute;top:6px;right:6px}
+.ulvs-q{font-style:normal;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;border:2px dashed var(--ta,#8E80BE);color:var(--ta,#8E80BE);font:800 1.5rem var(--display)}
+.ulvs-1>span{flex:none}.ulvs-1 em{background:var(--ta2)!important;color:var(--ta)!important}
+.ulsec h3{color:#fff}
+/* her kelime büyük harfle: başlıklar, düğmeler, etiketler (notlar cümle olarak kalır) */
+body.gpu .btn,body.gpu .ulkt button,body.gpu .lnk,body.gpu .ulso button,body.gpu .ulvs-r em,body.gpu .ulvs-r b,body.gpu .ulvs-s small,body.gpu .ulres>small,body.gpu .ulps-t b,body.gpu .ulys-y b,body.gpu .ulbas-t small,body.gpu .ulbr-h small,body.gpu .ulkx small{text-transform:capitalize}
+p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p.ult-n:not(.yal):not(.uyar)::before{position:absolute;left:12px;top:11px;margin:0}
+.ulvs>.ulkp-i+small{display:block;padding:0 34px}
