@@ -6620,3 +6620,35 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulcn-d>summary::before,.ulcn-d>summary::after{content:none!important;display:none!important}
 .uldr-h .ulbas-i{margin:-8px 0}
 .uldr .ulsec-h.uldr-h .ulbas-i{margin:-8px 0}
+/* kısa kulüp açılışı */
+.ulh.ulh-k{padding:12px;gap:12px;border-radius:20px}.ulh-k .ulh-c .mzc{width:auto;height:auto}
+.ulh-k .ulh-x>b{font-size:1.25rem;margin:1px 0 8px}.ulh-k .ulh-g{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.ulh-k .ulh-g span{padding:5px 4px;text-align:center;border-radius:10px}.ulh-k .ulh-g b{font-size:1.0625rem}.ulh-k .ulh-g small{display:block;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uldo-m{margin-top:6px}
+.ulgv-k .ulgv-i{padding:6px 12px;min-height:48px}.ulgv-k .ulgv-i b{display:flex;align-items:baseline;gap:8px;justify-content:space-between}.ulgv-k .ulgv-i b small{flex:none}.ulgv-k .ulgv-i .ulbar{margin-top:4px}
+.ulgv-k .ulgv-b{min-height:36px}
+/* başlık: bilgi düğmesi her bölümde aynı yerde */
+.ulsec-h{align-items:center}.ulsec-h>.ulbas-i{margin:-8px -8px -8px 0}.uldr .ulsec-h.uldr-h>.ulbas-i{margin:-8px 0}
+/* draft: kadro kurarken tek ekrana sığar */
+.ulp.ulq-saha.kv2.uldr-saha{height:372px}
+.uldr-saha .ulqk-c{width:48px;height:68px}.uldr-saha .ulqk-c>.mzc{transform:scale(.705);transform-origin:top left}
+.uldr-saha .ulq-e{width:42px;height:42px}
+.uldr-sec .uldr-h{margin-bottom:4px}.uldr-sec .uldr-st{margin-bottom:8px}
+.uldr-t{padding:8px 10px 10px!important;margin-top:8px}.uldr-t .ultx-h{margin:0}.uldr-ol{padding:4px 0 2px;gap:6px}.uldr-ol .ultc{padding:8px 4px 6px}
+.uldr-t .btn{margin-top:6px;position:sticky;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:3}
+@media (orientation:landscape) and (min-width:640px){.uldr-t .btn{position:static}}
+.ulp.ulq-saha.kv2.uldr-saha{height:336px}
+.uldr-saha .ulqk-c{width:45px;height:64px}.uldr-saha .ulqk-c>.mzc{transform:scale(.66);transform-origin:top left}
+.uldr-saha .ulqk-a{margin-top:-5px}
+.uldr-t .btn{position:static}
+.uldr-gz{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.uldr-th{display:flex;align-items:center;justify-content:space-between;gap:8px}.uldr-th .ulbas-i{margin:-10px -8px -10px 0;flex:none}
+.ulp.ulq-saha.kv2.uldr-saha{height:322px}
+.uldr-saha .ulqk-c{width:43px;height:61px}.uldr-saha .ulqk-c>.mzc{transform:scale(.63);transform-origin:top left}
+.uldr-sec .uldr-st{margin:2px 0 8px}
+.uldr-sb{align-items:center;gap:5px}.uldr-sb .ulbas-i{flex:none;width:44px;height:44px;margin:-14px -8px -14px 2px}.uldr-sb i{flex:1}
+.ultx.uldr-th{display:flex!important;flex-direction:row;align-items:center;justify-content:space-between;gap:10px;margin:0 0 4px}
+.uldr-th .ultx-h{margin:0;min-width:0}.uldr-th .ultx-h b{display:block;font-size:.875rem}.uldr-th .ultx-h span{display:block}
+.uldr-dv{flex:none;min-height:44px;padding:0 18px;border:0;border-radius:14px;background:#F5C542;color:#2A1F00;font:800 .875rem/1 Inter,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(245,197,66,.3)}
+.ulp.ulq-saha.kv2.uldr-saha{height:312px}
+.uldr-saha .ulqk-c{width:42px;height:59px}.uldr-saha .ulqk-c>.mzc{transform:scale(.615);transform-origin:top left}
+.uldr-sb .ulbas-i{margin-right:0}
