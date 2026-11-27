@@ -14,7 +14,10 @@ async function rpc(fn,args,_re){
   const r=await fetch(SB_URL+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:SB_KEY,"Content-Type":"application/json",Accept:"application/json",...teamHdr(),...authHdr()},body:JSON.stringify(args||{})});
   if(r.status===401&&!_re&&S.session&&await refreshOnce())return rpc(fn,args,true);
   let body=null;try{body=await r.json()}catch(_){}
-  if(!r.ok)throw new Error((body&&body.message)||("HTTP "+r.status));return body;
+  if(!r.ok)throw new Error((body&&body.message)||("HTTP "+r.status));
+  // sunucu eski maç motorunu kabul etmiyor: uygulama güncellenir
+  if(body&&body.error==="guncelle"&&typeof ultGuncelle==="function")ultGuncelle();
+  return body;
 }
 
 /* ikonlar: uygulamada çift ton (çizgi + yumuşak dolgu), paylaşım görsellerinde çıkartma (beyaz kenarlı, hafif eğik).
@@ -4722,6 +4725,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&S.sheet){S.sheet=nu
 // yeni sürüm varsa (ana ekran uygulaması dahil) sayfayı taze yükle
 // adres çubuğundaki ?v=… izi silinir ki sonraki açılış telefondaki kopyadan anında gelsin
 try{const u=new URL(location.href);if(u.searchParams.has("v")){u.searchParams.delete("v");history.replaceState(history.state,"",u.pathname+u.search+u.hash)}}catch(_){}
+// maç başka bir cihazda daha yeni motorla oynanmış: bu sürüm doğru gösteremez, güncelle
+async function ultGuncelle(){toast("Bu maç uygulamanın yeni sürümüyle oynandı · güncelleniyor");if(!(await newVer()))setTimeout(()=>toast("Uygulamayı kapatıp yeniden aç, yeni sürüm yüklensin"),2500)}
 async function newVer(){try{const r=await fetch("./index.html?t="+Date.now(),{cache:"no-store"});if(!r.ok)return false;
   const v=((await r.text()).match(/const APP_V="(\w+)"/)||[])[1];
   if(v&&v!=="dev"&&APP_V!=="dev"&&v!==APP_V){sesSave();location.replace(location.pathname+"?v="+v+(S._r0&&Date.now()-S._r0t<30000?"#"+S._r0:location.hash));return true}}catch(_){}return false}
@@ -5305,8 +5310,13 @@ function ultAt(c){if(!c)return[70,70,70,70,70,70];if(c.a&&c.a.length===6)return 
   if(ultRole(c.pid)==="KL"&&A.ref!=null)return[g("ayk"),g("ayk"),g("ell"),g("poz"),g("hiz"),Math.round((g("ref")+g("dal")+g("poz"))/3)];
   return[g("sut"),g("pas"),g("dri"),g("def"),g("fiz"),Math.round((g("def")+g("fiz"))/2)]}
 // kayıt: özellikler ve kadro gücü/kimyası o anki hâliyle saklanır; tekrar izlerken sonuç değişmez
-function ultSnapA(sn){if(!sn||!sn.c)return sn;const o={...sn,c:sn.c.map(c=>c&&(c.a?c:{...c,a:ultAt(c).map(v=>Math.round(v))}))};if(!o.x){const x=ultLine(ultFromSnap(sn));o.x={s:Math.round(x.str*100)/100,ch:x.ch}}return o}
-function ultLineX(L){const x=ultLine(L);if(L.x&&isFinite(L.x.s)&&Array.isArray(L.x.ch)){x.str=L.x.s;x.ch=L.x.ch;x.chem=L.x.ch.reduce((a,b)=>a+(+b||0),0)}return x}
+function ultSnapA(sn){if(!sn||!sn.c)return sn;const gL=ultEgilim("g"),aL=ultEgilim("a");
+  const o={...sn,c:sn.c.map(c=>{if(!c)return c;let d=c;if(!d.a)d={...d,a:ultAt(d).map(v=>Math.round(v))};if(!d.e)d={...d,e:[Math.round(gL(d.pid)*100)/100,Math.round(aL(d.pid)*100)/100]};return d})};
+  if(!o.x){const x=ultLine(ultFromSnap(sn));o.x={s:Math.round(x.str*100)/100,ch:x.ch}}
+  // bağlar o anki hâliyle: 7×7 rakam (0 yok, 1 bağ, 2 güçlü bağ)
+  if(!o.x.bg){let g="";for(let i=0;i<7;i++)for(let j=0;j<7;j++){const A=o.c[i],B=o.c[j];g+=A&&B&&i!==j?String(ultBag(A.pid,B.pid)||0):"0"}o.x={...o.x,bg:g}}
+  return o}
+function ultLineX(L){const x=ultLine(L);if(L.x&&isFinite(L.x.s)&&Array.isArray(L.x.ch)){x.str=L.x.s;x.ch=L.x.ch;x.chem=L.x.ch.reduce((a,b)=>a+(+b||0),0)}if(L.x&&typeof L.x.bg==="string"&&L.x.bg.length===49)x.bg=L.x.bg;return x}
 // taktik: tek başına hiçbiri üstün değil; döngü: Kontra > Hücum > Savunma > Pres > Kontra
 const ULT_YEN={kontra:"hucum",hucum:"savunma",savunma:"pres",pres:"kontra"};
 function ultTak2(X,Y){const t=X.t,m={vol:0,qm:1,cm:1,kon:.12,pl:0,late:0};
@@ -5327,10 +5337,11 @@ function ultPlan2(myL,opL,seed){const R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ult
   const OZ={a:ozet(a),b:ozet(b)};
   const nOf=(k,o,dd)=>cl(Math.round(9+dd/5+TK[k].vol+FO[k].vol),5,15);
   const nU=nOf("a","b",d),nO=nOf("b","a",-d);
-  const gF=ultEgilim("g"),aF=ultEgilim("a"),one=()=>1;
-  let curEx=[];const pick=(X,W,ex,f)=>{const c=[];for(let j=0;j<7;j++){const cc=X.cs[j];if(!cc||ex.includes(j)||curEx.includes(j))continue;const w=(W[X.sl[j][0]]||0)*f(cc.pid);if(w>0)c.push([j,w])}if(!c.length)return null;let t=R()*c.reduce((q,x)=>q+x[1],0);for(const[j,w]of c){t-=w;if(t<=0)return j}return c[c.length-1][0]};
-  const kpOf=(X,P)=>P.slice(1).map((j,q)=>P[q]!==j&&ultBag(X.cs[P[q]].pid,X.cs[j].pid)>0);
-  const pen={};for(const[k,X]of[["a",a],["b",b]]){let bj=null,bw=-1;for(let j=0;j<7;j++){const c=X.cs[j];if(!c)continue;const w=(ULT_SW.sut[X.sl[j][0]]||0)*gF(c.pid)*(c.r||70)*(c.y==="penalti"?1e3:1);if(w>bw){bw=w;bj=j}}pen[k]=bj}
+  const gL=ultEgilim("g"),aL=ultEgilim("a"),gF=(pid,c)=>c&&c.e?c.e[0]:gL(pid),aF=(pid,c)=>c&&c.e?c.e[1]:aL(pid),one=()=>1;
+  const bag=(X,i,j)=>X.bg?+X.bg[i*7+j]:ultBag(X.cs[i].pid,X.cs[j].pid);
+  let curEx=[];const pick=(X,W,ex,f)=>{const c=[];for(let j=0;j<7;j++){const cc=X.cs[j];if(!cc||ex.includes(j)||curEx.includes(j))continue;const w=(W[X.sl[j][0]]||0)*f(cc.pid,cc);if(w>0)c.push([j,w])}if(!c.length)return null;let t=R()*c.reduce((q,x)=>q+x[1],0);for(const[j,w]of c){t-=w;if(t<=0)return j}return c[c.length-1][0]};
+  const kpOf=(X,P)=>P.slice(1).map((j,q)=>P[q]!==j&&bag(X,P[q],j)>0);
+  const pen={};for(const[k,X]of[["a",a],["b",b]]){let bj=null,bw=-1;for(let j=0;j<7;j++){const c=X.cs[j];if(!c)continue;const w=(ULT_SW.sut[X.sl[j][0]]||0)*gF(c.pid,c)*(c.r||70)*(c.y==="penalti"?1e3:1);if(w>bw){bw=w;bj=j}}pen[k]=bj}
   const yv=(X,y)=>X.cs.some(c=>c&&c.y===y);
   const ev=[],fx=[];
   const red=R()<.06?{us:R()<.5,dk:6+Math.floor(R()*30)}:null;if(red){red.j=pick(red.us?a:b,{KL:.05,DF:1,OS:.8,FV:.5},[],one);if(red.j==null)red.us=null;else fx.push({fx:"kirmizi",us:red.us,dk:red.dk,j:red.j})}
@@ -5358,7 +5369,7 @@ function ultPlan2(myL,opL,seed){const R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ult
       q=cl(.28+dd/ULT_K.dd+(at(p1)[0]-70)/220+(kpOf(X,path).some(Boolean)?.04:0),.12,.5)}
     else{const sh=pick(X,ULT_SW.sut,[],gF),as=R()<.85?pick(X,ULT_SW.ast,[sh],aF):null;path=[sh];if(as!=null){path.unshift(as);if(R()<.55){const y=X.sl[as][2];const bk=pick(X,{KL:.4,DF:1,OS:.7,FV:.1},[sh,as],one);if(bk!=null&&X.sl[bk][2]>=y)path.unshift(bk)}}
       // paslar ve çalım: her adımda top kaybı olabilir
-      for(let s=1;s<path.length&&!lost;s++){const kp=ultBag(X.cs[path[s-1]].pid,X.cs[path[s]].pid)>0;if(R()<kes(path[s-1],kind==="kon"?ULT_K.kes*.7:ULT_K.kes)-(kp?.04:0))lost={q:s,how:R()<.5?"pas":"kes",j:pick(OX,{DF:1,OS:.8,KL:0,FV:.3},[],one)}}
+      for(let s=1;s<path.length&&!lost;s++){const kp=bag(X,path[s-1],path[s])>0;if(R()<kes(path[s-1],kind==="kon"?ULT_K.kes*.7:ULT_K.kes)-(kp?.04:0))lost={q:s,how:R()<.5?"pas":"kes",j:pick(OX,{DF:1,OS:.8,KL:0,FV:.3},[],one)}}
       if(!lost){const cj=path[path.length-1],cv=at(cj)[2];if(R()<cl(ULT_K.cal+(cv-70)/120,.15,.6)){if(R()<cl(.6+(cv-OY.def)/110,.32,.82))cal.push(path.length-1);else lost={q:path.length-1,how:"calim",j:pick(OX,{DF:1,OS:.5,KL:0,FV:0},[],one),cal:1}}}
       const kc=kpOf(X,path).filter(Boolean).length;
       q=cl(ULT_K.q0+dd/ULT_K.dd+kc*.03+cal.length*.06+(at(path[path.length-1])[0]-70)/250-(OY.kl-70)/300+(dk>30?TO.late:0)+(kind==="kon"?.06:0),.05,.5)}
@@ -5585,8 +5596,11 @@ const ultLigKayit=(k,e)=>ultDvKayit("lig",k,e);
 function ultDvIzle(kind,k){const e=(ULT_SRV.ev||[]).find(x=>x.kind===kind&&x.k===k);if(!e)return;const me=myPid(),p=e.p||{};let odul=null;if(kind==="hz"||kind==="kp"){const st=ultSt(),g=kind+"G";st[g]=st[g]||[];if(!st[g].includes(k)){st[g]=st[g].concat([k]).slice(-40);ultSave()}}else odul=ultDvKayit(kind,k,e);
   const aw=e.a===p.h?e.b:e.a,izle=kind==="kp"&&me!==p.h&&me!==aw?p.h:null;const opp=izle?aw:p.h===me?(e.a===me?e.b:e.a):p.h;
   if(!p.ka||!p.kb){toast(p.ar?`Tekrar izleme 24 saat açık · sonuç ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`:`Maç otomatik oynandı: ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`);render(true);return}
-  let P0=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+kind+k,p.v||1);if(p.h!==me&&!izle)P0=ultFlip(P0);const R0=ultResult(P0);
-  ULT.run={kind,k,opp,odul,izle,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
+  if((p.v||1)>ULT_MV){ultGuncelle();return}
+  let P0=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+kind+k,p.v||1);if(p.h!==me&&!izle)P0=ultFlip(P0);let R0=ultResult(P0);
+  // skor her zaman kayıttan: tekrar kayıtla uyuşmazsa animasyon oynatılmaz, kayıtlı skor gösterilir
+  let uy=0;if(p.ga!=null&&p.gb!=null){const sa=izle||p.h===me?+p.ga:+p.gb,sb=izle||p.h===me?+p.gb:+p.ga;if(R0.ga!==sa||R0.gb!==sb){uy=1;R0={...R0,ga:sa,gb:sb,gl:[]}}}
+  ULT.run={kind,k,opp,odul,izle,uy,skip:uy?true:undefined,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
 function ultStart(kind,opp){if(kind==="lig"){ultLigAks(opp);return}if(kind==="ch"){ultDvAks("ch",ultChKey(opp),opp);return}const st=ultSt();const me=myPid();const err=ultOk(ultMy());if(err){toast(err);return}
   const day=new Date().toISOString().slice(0,10),wk=isoWeek(new Date());
   if(kind==="ch"){const td=st.ch.filter(x=>x.d===day);if(td.length>=3){toast("Bugünkü 3 davet hakkın doldu");return}if(td.some(x=>x.opp===opp)){toast("Bu oyuncuya bugün meydan okudun");return}}
@@ -5600,7 +5614,7 @@ function ultStart(kind,opp){if(kind==="lig"){ultLigAks(opp);return}if(kind==="ch
   // meydan okuma ödülü: kazanırsan rakibin özel kartlarından biri 1 maçlık kiralık (günde 1)
   let odul=null;if(kind==="ch"&&R0.ga>R0.gb&&st.kiraDay!==day){const L=ultBuild().C.filter(c=>c.pid===opp&&ULT_SP.includes(c.type));if(L.length){const c=L[Math.floor(ultRng(TID+day+opp+"od")()*L.length)];st.kira.push({cid:c.id,left:1,ch:1});st.kiraDay=day;odul=c}}
   if(kind==="lig")st.lig.push(rec);else st.ch.push(rec);ultSave();if(ultEvos().length)ultEvoTick();
-  if(ULT_SRV.ok){clearTimeout(ULT_SRV.t);const evP=(n,b)=>ultPush().then(()=>rpc("ult_event",n)).then(r=>r&&!r.ok&&r.error==="surum"&&b<2?new Promise(z=>setTimeout(z,1500)).then(()=>evP(n,b+1)):r);if(lgS)evP({p_kind:"lig",p_b:opp,p_k:lgS.key,p_payload:{h:me,ga:R0.ga,gb:R0.gb}},0).then(r=>{if(r&&r.ok){if(r.dup){toast("Bu maç rakibin tarafından daha önce oynanmış; o sonuç geçerli")}ULT_SRV.ev.push(r.ev?{kind:"lig",k:lgS.key,a:r.ev.a,b:r.ev.b,p:r.ev.p}:{kind:"lig",k:lgS.key,a:me,b:opp,p:{h:me,ga:R0.ga,gb:R0.gb}})}}).catch(()=>{});
+  if(ULT_SRV.ok){clearTimeout(ULT_SRV.t);const evP=(n,b)=>ultPush().then(()=>rpc("ult_event",n)).then(r=>r&&!r.ok&&r.error==="surum"&&b<2?new Promise(z=>setTimeout(z,1500)).then(()=>evP(n,b+1)):r);if(lgS)evP({p_kind:"lig",p_b:opp,p_k:lgS.key,p_payload:{h:me,ga:R0.ga,gb:R0.gb,v:ULT_MV}},0).then(r=>{if(r&&r.ok){if(r.dup){toast("Bu maç rakibin tarafından daha önce oynanmış; o sonuç geçerli")}ULT_SRV.ev.push(r.ev?{kind:"lig",k:lgS.key,a:r.ev.a,b:r.ev.b,p:r.ev.p}:{kind:"lig",k:lgS.key,a:me,b:opp,p:{h:me,ga:R0.ga,gb:R0.gb}})}}).catch(()=>{});
     else evP({p_kind:"ch",p_b:opp,p_k:null,p_payload:{ga:R0.ga,gb:R0.gb,gercek:opL.gercek?1:0}},0).catch(()=>{})}
   ULT.run={kind,opp,odul,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:boost?[["0'","Kimya artışı devrede","g"]]:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
 function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-n);const y=new Date(Date.UTC(t.getUTCFullYear(),0,1));return t.getUTCFullYear()+"-"+Math.ceil(((t-y)/864e5+1)/7)}
@@ -5806,7 +5820,7 @@ function ultMacSheet(){const r=ULT.run;if(!r)return"";const a=r.P0.a,b=r.P0.b,R0
     <div class="ulsp" id="ulCtl"${r.done?" hidden":""} role="group" aria-label="Hız"><button class="${r.hiz===1&&!r.onem?"on":""}" data-act="ultHizM" data-v="1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5z"/></svg>1x</button><button class="${r.hiz>1&&!r.onem?"on":""}" data-act="ultHizM" data-v="2.5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6v12l8-6zM12 6v12l8-6z"/></svg>2x</button><button class="${r.onem?"on":""}" data-act="ultHizM" data-v="onem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>Önemli Anlar</button><button data-act="ultSkip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6v12l9-6zM16 6h3v12h-3z"/></svg>Sona Atla</button></div>
     <div id="ulFin"${r.done?"":" hidden"}><section class="ulres ${R0.ga>R0.gb?"w":R0.ga<R0.gb?"l":"d"}"><small>${res}</small><strong class="num">${R0.ga} – ${R0.gb}</strong>${kpPen?`<em class="ulres-s">${kpPen}</em>`:""}${(()=>{if(r.kind!=="ch"||!r.k)return"";const sr=ultSeri(ultChBaz(r.k));if(!sr||sr.son==null||ultChAyak(r.k)!==sr.R.filter(Boolean).length)return"";return `<em class="ulres-s">${sr.son>0?"Seriyi kazandın":"Seriyi kaybettin"} · ${sr.w}–${sr.l}${sr.pen?` · penaltılar ${sr.pen.g}-${sr.pen.y}`:""}</em>`})()}${mv?`<div class="ulres-m">${avatar(mv,"")}<span><small>Maçın adamı</small><b>${esc(shortName(mv.name))}</b></span></div>`:""}</section>${r.odul?`<section class="card ulsec ulodul"><h3>Ödül: kiralık kart</h3><div class="ulodul-r">${ultCardH(r.odul,{act:"none",sm:1})}<p class="ult-n"><b>${esc(shortName(nameOf(r.odul.pid)))}</b> kartı sıradaki 1 sanal maçında senin. Kadroya koymak için Takım bölümünde bir yere dokun.</p></div></section>`:r.kind==="ch"&&R0.ga>R0.gb?`<p class="ult-n">Bugünkü kiralık ödülünü zaten aldın ya da rakibin özel kartı yok.</p>`:""}
       <div class="sum ult-sum"><div><b class="num">%${R0.st.pos}</b><small>Topla oynama</small></div><div><b class="num">${R0.st.sa} – ${R0.st.sb}</b><small>Şut</small></div><div><b class="num">${R0.st.ka2} – ${R0.st.kb2}</b><small>Korner</small></div><div><b class="num">${R0.st.fa} – ${R0.st.fb}</b><small>Faul</small></div><div><b class="num">${R0.st.ka}</b><small>Kimya pası</small></div><div><b class="num">${r.P0.a.chem} – ${r.P0.b.chem}</b><small>Kimya</small></div></div>
-      ${R0.gl.length?`<section class="card ulsec"><h3>Goller</h3><div class="ulr-l">${R0.gl.map(g=>`<div class="ulr${g.op?"":" me"}"><b class="num">${ultD(g.dk)}'</b>${avatar(P(g.s)||{id:g.s,name:"?"},"sm")}<span>${esc(shortName(nameOf(g.s)))}${g.t==="pen"?` <small>· penaltı</small>`:g.a?` <small>· ${esc(shortName(nameOf(g.a)))}</small>`:g.t&&ULT_KN[g.t]?` <small>· ${ULT_KN[g.t].toLowerCase()}</small>`:""}</span><em>${g.op?esc(on):"Sen"}</em></div>`).join("")}</div></section>`:""}
+      ${r.uy?`<p class="ult-n">Bu maçın tekrarı artık birebir oluşturulamıyor; skor kayıttaki gibidir.</p>`:R0.gl.length?`<section class="card ulsec"><h3>Goller</h3><div class="ulr-l">${R0.gl.map(g=>`<div class="ulr${g.op?"":" me"}"><b class="num">${ultD(g.dk)}'</b>${avatar(P(g.s)||{id:g.s,name:"?"},"sm")}<span>${esc(shortName(nameOf(g.s)))}${g.t==="pen"?` <small>· penaltı</small>`:g.a?` <small>· ${esc(shortName(nameOf(g.a)))}</small>`:g.t&&ULT_KN[g.t]?` <small>· ${ULT_KN[g.t].toLowerCase()}</small>`:""}</span><em>${g.op?esc(on):"Sen"}</em></div>`).join("")}</div></section>`:""}
       ${r.kind==="hz"?`<div class="ulkt"><button data-act="close">Tamam</button><button class="ana" data-act="ultHzSec" data-v="${esc(r.opp)}">Rövanş iste</button></div>`:`<button class="btn primary ult-w" data-act="close">Tamam</button>`}</div></div></div>`}
 const ultYatayMi=()=>{try{return matchMedia("(orientation: landscape) and (max-height: 540px)").matches}catch(_){return false}};
 // telefon çevrilince maç ekranı yeni düzene geçer
