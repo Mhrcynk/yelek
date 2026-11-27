@@ -6391,3 +6391,16 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulc-bn b{font:800 .75rem/1 Inter,sans-serif!important}
 .ulag .ulc-bn i{flex-direction:column!important;gap:1px!important}.ulag .ulc-bn em{display:block!important}.ulag .ulc-bn svg{display:none!important}.ulag .ulc-bn b{font:800 .9375rem/1 var(--display)!important}
 .ulso.ulmt button.on{text-shadow:0 1px 2px rgba(26,16,48,.45)}
+/* maç ekranı: dikeyde saha kalan boşluğu doldurur; yatayda başlık tek satır, düğmeler köşede, olay akışı sığdığı kadar */
+#modal .sheet:has(.ulmac:not(.ulyat)){display:flex;flex-direction:column}
+#modal .sheet:has(.ulmac:not(.ulyat))>div:has(>.ulmac){flex:1 0 auto;display:flex;flex-direction:column}
+.ulmac:not(.ulyat){flex:1 0 auto}
+.ulmac:not(.ulyat):not(.bitti)>.ulm2{flex:1 0 400px;max-height:640px}
+.ulyat .ch{flex-wrap:nowrap;align-items:flex-start;gap:8px}
+.ulyat .ch>div:first-child{min-width:0;flex:1}
+.ulyat .ch h2,.ulyat .ch .eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ulyat .ch h2{font-size:1rem}
+.ulyat .ulyat-b{flex:none;gap:4px}
+.ulyat .ulyat-b .ulhb{min-height:40px;padding:0 9px;font-size:.75rem}
+.ulyat .ulyat-s>#ulFeed{flex:1 1 0;min-height:0;overflow:hidden}
+.ulyat .ch .eyebrow{letter-spacing:.06em}
