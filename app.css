@@ -6598,3 +6598,25 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulez-s{display:flex;gap:5px;margin:10px 0 12px}.ulez-s span{flex:1;text-align:center;font:800 .75rem/1 Inter,sans-serif;padding:8px 0;border-radius:8px}.ulez-s .g{background:rgba(0,229,138,.18);color:#3DF0A8}.ulez-s .m{background:rgba(255,107,138,.16);color:#FF9CB0}.ulez-s .d{background:rgba(255,255,255,.08);color:var(--c-ink2)}
 .ulez-d{margin:12px 0 0;padding:10px 12px;border-radius:12px;font:800 .8125rem/1.3 Inter,sans-serif}.ulez-d.g{background:rgba(0,229,138,.16);color:#3DF0A8}.ulez-d.m{background:rgba(255,107,138,.14);color:#FF9CB0}
 .ulez .btn{margin-top:12px}
+/* arayüz düzeni: kulüp üst barı, 4 başlıklı maçlar, canlı özet, draft sahası */
+.ulgeri{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;margin:-4px 0 4px;border:0;background:none;color:#CDB0FF;font:700 .875rem/1 Inter,sans-serif;cursor:pointer}
+.ulhzl{margin-top:10px}
+.ulcn-h p b{color:#fff}
+.ulcn-d{margin-top:10px;border-top:1px solid rgba(255,255,255,.07)}
+.ulcn-d>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:44px;cursor:pointer;font:700 .8125rem/1 Inter,sans-serif;color:var(--c-ink2)}.ulcn-d>summary::-webkit-details-marker{display:none}
+.ulcn-d>summary em{font-style:normal;color:#CDB0FF;font-weight:800}.ulcn-d>summary em:after{content:" ▾"}.ulcn-d[open]>summary em:after{content:" ▴"}
+.ulcn-d .ulcn-g{margin-top:0}
+section.uldr:not(.card){margin:0 0 10px}
+.uldr-h{align-items:center;margin:0 2px 8px}.uldr-h .ulbas-i{margin:-8px -6px -8px 0}
+.ulp.ulq-saha.kv2.uldr-saha{height:430px}
+.uldr-saha .ulq-e{cursor:default}
+.uldr-saha .onz .ulqk-c .mzc{box-shadow:0 0 0 3px #F5C542,0 0 18px rgba(245,197,66,.55)}
+.uldr-saha .onz .ulqk-c{animation:uldrin .34s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes uldrin{from{transform:scale(.55) translateY(18px);opacity:0}}
+.uldr-t{margin-top:10px}.uldr-ol{overflow:visible}.uldr-ol .ultc{flex:1;width:auto;min-width:0}.uldr-ol .ulyd-d{justify-content:center}
+.uldr-t .btn{margin-top:8px}
+@media (prefers-reduced-motion:reduce){.uldr-saha .onz .ulqk-c{animation:none}}
+@media (orientation:landscape) and (min-width:640px){.uldr-t{margin-top:0}}
+.ulcn-d>summary::before,.ulcn-d>summary::after{content:none!important;display:none!important}
+.uldr-h .ulbas-i{margin:-8px 0}
+.uldr .ulsec-h.uldr-h .ulbas-i{margin:-8px 0}
