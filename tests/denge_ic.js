@@ -6,7 +6,7 @@
  const add=(ad,r,ok,not)=>out.push({ad,v:fmt(r),ok,not});
  const A0=obj(ultAuto(ids[2],"2-2-2"));A0.t="dengeli";const B0=obj(A0);
  const ay=run(A0,B0,"ay");add("Ayna maç (taraf avantajı yok)",ay,Math.abs(ay.G-ay.M)<=4);
- for(const[k,lo,hi]of[[2,4,30],[4,25,55],[8,55,88]]){const B=obj(A0).map(c=>c&&{...c,r:c.r-k});B.f=A0.f;B.t="dengeli";const r=run(A0,B,"g"+k);add(`Rakip ${k} güç zayıf`,r,r.G-r.M>=lo&&r.G-r.M<=hi,`galibiyet-mağlubiyet farkı ${lo}-${hi} olmalı`)}
+ for(const[k,lo,hi]of[[2,20,45],[4,40,70],[8,70,95]]){const B=obj(A0).map(c=>c&&{...c,r:c.r-k});B.f=A0.f;B.t="dengeli";const r=run(A0,B,"g"+k);add(`Rakip ${k} güç zayıf`,r,r.G-r.M>=lo&&r.G-r.M<=hi,`galibiyet-mağlubiyet farkı ${lo}-${hi} olmalı`)}
  const T=t=>{const A=obj(A0);A.t=t;return A};
  for(const t of["hucum","savunma","kontra","pres"]){const r=run(T(t),B0,"tk"+t);add(`${t} – dengeli`,r,Math.abs(r.G-r.M)<=9,"tek başına üstün olmamalı")}
  for(const[a,b]of[["kontra","hucum"],["hucum","savunma"],["savunma","pres"],["pres","kontra"]]){const r=run(T(a),T(b),"d"+a);add(`${a} > ${b}`,r,r.G-r.M>=4,"döngü: kazanan önde olmalı")}

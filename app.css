@@ -6652,3 +6652,9 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulp.ulq-saha.kv2.uldr-saha{height:312px}
 .uldr-saha .ulqk-c{width:42px;height:59px}.uldr-saha .ulqk-c>.mzc{transform:scale(.615);transform-origin:top left}
 .uldr-sb .ulbas-i{margin-right:0}
+/* maçın hikâyesi ve taktik uyumu */
+.ulhk2-r{display:grid;grid-template-columns:1fr;gap:4px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.05);border-left:4px solid rgba(255,255,255,.25)}
+.ulhk2-r+.ulhk2-r{margin-top:6px}.ulhk2-r.p{border-left-color:#00E58A}.ulhk2-r.n{border-left-color:#FF6B8A}
+.ulhk2-r>span{display:flex;justify-content:space-between;align-items:baseline;gap:10px}.ulhk2-r small{font:800 .75rem/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--c-ink2)}
+.ulhk2-r b{font:800 .875rem/1.2 Inter,sans-serif;color:#fff;text-align:right}.ulhk2-r p{margin:0;font:600 .8125rem/1.4 Inter,sans-serif;color:var(--c-ink2)}
+.ultg-u{font:800 .75rem/1 Inter,sans-serif;font-style:normal;padding:4px 6px;border-radius:6px;margin-top:3px;background:rgba(255,255,255,.08);color:var(--c-ink2)}.ultg-u.p{background:rgba(0,229,138,.16);color:#3DF0A8}.ultg-u.n{background:rgba(255,107,138,.16);color:#FF9CB0}
