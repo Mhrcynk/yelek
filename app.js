@@ -5321,7 +5321,7 @@ function ultPlan1(myL,opL,seed){const R=ultRng(seed),BN=ultBagN(),a=ultLine(myL)
 // ----- maç motoru 2. sürüm (27 Kasım 2026): yeni maçlar bununla oynanır, eski maç tekrarları kendi sürümüyle (p.v yoksa 1) aynı kalır
 // gerçekçi olaylar: çalım ve top kaybı, ara pası ve birebir, duvar pası, uzaktan şut, tehlikeli atak, direk / blok / çizgiden çıkarma, yorgunluk, golden sonra baskı.
 // kim ne yapar: oyuncunun gerçek kart özellikleri (şut, pas, top sürme, savunma, fizik; kalecide refleks, plonjon, pozisyon). Etkiler küçük, asıl belirleyen kadro gücü.
-const ULT_MV=3;// 3: 2-1-3 dizilişi ve biçimler (motor 2 ile aynı kurallar)
+const ULT_MV=4;// 4: penaltı yarıya indi · // 3: 2-1-3 dizilişi ve biçimler (motor 2 ile aynı kurallar)
 // kartın özellikleri: kayıtlı kadroda o anki değerler (a), yoksa oyuncunun güncel özellikleri
 function ultAt(c){if(!c)return[70,70,70,70,70,70];if(c.a&&c.a.length===6)return c.a;const s=(S.stats||{})[c.pid]||{},p=P(c.pid)||{},A=s.attrs||{},pos=p.pos;
   const g=k=>{const v=A[k]!=null?+A[k]:(p.attrs?mainVal(p.attrs,k,pos):NaN);return isFinite(v)&&v>0?v:(c.r||70)};
@@ -5347,7 +5347,8 @@ function ultTak2(X,Y){const t=X.t,m={vol:0,qm:1,cm:1,kon:.12,pl:0,late:0};
 function ultFor2(X){const n=r=>X.sl.filter(s=>s[0]===r).length,m={vol:0,qm:1,cm:1,pl:0};
   if(n("DF")===3){m.cm*=.9;m.vol-=.6}if(n("OS")===3){m.vol+=.8;m.pl-=.02;m.qm*=.96}if(n("OS")===1){m.vol-=.4;m.qm*=1.03}if(n("FV")===2){m.qm*=1.05;m.cm*=1.03}if(n("FV")===3){m.qm*=1.1;m.cm*=1.08;m.vol+=.2}return m}
 const ULT_K={yen:1.09,yenil:.95,q0:.19,dd:70,kes:.24,cal:.5};
-function ultPlan2(myL,opL,seed){const R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ultLineX(opL),kur=myL.kur||opL.kur;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
+function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penaltı yarıya indi
+  const R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ultLineX(opL),kur=myL.kur||opL.kur;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
   const d=a.str-b.str-(myL.pen||0)+(opL.pen||0)+(kur==="kimya"?(a.chem-b.chem)*.3:0);
   const TK={a:ultTak2(a,b),b:ultTak2(b,a)},FO={a:ultFor2(a),b:ultFor2(b)};
   // takım özellik ortalamaları (kaleci hariç) ve kaleci
@@ -5371,7 +5372,7 @@ function ultPlan2(myL,opL,seed){const R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ult
   const Q=sides.map((us,i)=>({us,dk:mins[i]}));
   const atak=(us,dk,kind0,ek)=>{const k=us?"a":"b",ko=us?"b":"a",X=us?a:b,OX=us?b:a,dd=us?d:-d,T=TK[k],TO=TK[ko],F=FO[k],FY=FO[ko],O=OZ[k],OY=OZ[ko];curEx=exOf(us,dk);
     const ro=R(),kP=X.t==="hucum"?.15:.12,uP=X.t==="savunma"?.12:.09,araP=cl(.1+(O.pas-OY.def)/250,.05,.16),kn0=kind0==="kon"?1:T.kon;
-    let kind=kind0||(ro<.025?"pen":ro<.025+kP?"kor":ro<.115+kP?"sv":ro<.115+kP+uP?"uz":ro<.115+kP+uP+araP?"ara":R()<kn0?"kon":R()<.12?"duv":"ak");
+    const ro2=ro>=pP&&ro<.025?-1:ro;let kind=kind0||(ro2<0?"ak":ro2<pP?"pen":ro2<.025+kP?"kor":ro2<.115+kP?"sv":ro2<.115+kP+uP?"uz":ro2<.115+kP+uP+araP?"ara":R()<kn0?"kon":R()<.12?"duv":"ak");
     let path=[],from=null,q,cal=[],lost=null;const at=j=>OZ[k].A[j]||[70,70,70,70,70,70];
     // savunmanın top kapma gücü
     const kes=(j,base)=>cl(base+(OY.def-at(j)[1])/260+TO.pl+FY.pl-F.pl*.5+(red&&red.us!==!!us&&dk>red.dk?-.03:0),.03,.32);
@@ -5414,7 +5415,7 @@ function ultPlan2(myL,opL,seed){const R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ult
   return{ev,a,b,A:TK.a,B:TK.b,v:2}}
 
 // sürüm seçimi: v verilmezse en yeni motor
-function ultPlan(myL,opL,seed,v){return (v||ULT_MV)===1?ultPlan1(myL,opL,seed):ultPlan2(myL,opL,seed)}
+function ultPlan(myL,opL,seed,v){return (v||ULT_MV)===1?ultPlan1(myL,opL,seed):ultPlan2(myL,opL,seed,v||ULT_MV)}
 function ultResult(P0){let ga=0,gb=0;const inv={},gl=[],st={sa:0,sb:0,pa:0,pb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0};
   for(const e of P0.ev){if(e.fx){if(e.fx!=="tac"&&e.fx!=="yor"){if(e.us)st.fa++;else st.fb++}continue}if(e.lost){if(e.us){st.pa+=e.path.length-1;st.ka+=e.kp.filter(Boolean).length}else st.pb+=e.path.length-1;continue}if(e.kind==="kor"){if(e.us)st.ka2++;else st.kb2++}const X=e.us?P0.a:P0.b;const sh=X.cs[e.path[e.path.length-1]].pid,as=e.path.length>1?X.cs[e.path[e.path.length-2]].pid:null;
     if(e.us){st.sa++;st.pa+=e.path.length-1;st.ka+=e.kp.filter(Boolean).length;inv[sh]=(inv[sh]||0)+1;e.path.forEach(j=>{const p=X.cs[j].pid;inv[p]=(inv[p]||0)+.3})}else{st.sb++;st.pb+=e.path.length-1}
