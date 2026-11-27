@@ -6376,3 +6376,5 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulag-a{margin:22px 0 0;padding-top:14px;border-top:1px solid var(--c-line)}
 .ulap-b{background:linear-gradient(120deg,#7B5CF0,#E0409A 55%,#F5A742)!important;box-shadow:0 4px 14px rgba(224,64,154,.3)!important;color:#fff!important}
 .ulap-b svg{width:22px;height:22px;stroke:#fff}
+.ulmac:not(.ulyat) .ulyat-s>.ulsb2{top:74px}
+.ulmac.bitti:not(.ulyat) .ulyat-s>.ulsb2{position:static}
