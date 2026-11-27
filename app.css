@@ -6402,3 +6402,7 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulc-bn i{flex:1;flex-direction:column;gap:1px}.ulc-bn i+i{border-left:1px solid rgba(255,255,255,.14)}.ulc-bn svg{display:none}
 .ulc-bn b{font:800 .9375rem/1 var(--display);order:2}.ulc-bn em{display:block;order:1;font:700 .6875rem/1 Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B7A9E8}
 .ult-big .ulc-bn{padding:8px 8px 9px}.ult-big .ulc-bn b{font-size:1.25rem}.ult-big .ulc-bn em{margin:0;font-size:.75rem}
+/* rozet: albüm dışında yalnız ikon ve değer (küçük kartlarda sıkışmasın); "Güç / Kimya" yazısı yalnız albümde */
+.ulc-bn i{flex-direction:row!important;justify-content:center;gap:3px!important}.ulc-bn em{display:none!important}.ulc-bn svg{display:block!important;width:11px;height:11px}
+.ulc-bn b{font:800 .75rem/1 Inter,sans-serif!important}
+.ulag .ulc-bn i{flex-direction:column!important;gap:1px!important}.ulag .ulc-bn em{display:block!important}.ulag .ulc-bn svg{display:none!important}.ulag .ulc-bn b{font:800 .9375rem/1 var(--display)!important}
