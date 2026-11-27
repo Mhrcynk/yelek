@@ -6250,13 +6250,13 @@ function ultMkSeriler(){if(ULT_MK.c&&ULT_MK.c.s)return ULT_MK.c.s;const by={};fo
     const res=[0,1,2].map(i=>{const e=E[i];if(!e)return null;return e.h===pa?{a:e.ga,b:e.gb}:{a:e.gb,b:e.ga}});let w=0,l=0;for(const r of res)if(r){if(r.a>r.b)w++;else if(r.b>r.a)l++}
     let son=null;if(E[0]&&E[1]){if(w>=2||l>=2)son=w>l?1:-1;else if(E[2]&&w!==l)son=w>l?1:-1;else if(E[2]){const da=(ULT_MK.dv||{})[bk]||pa,e3=E[2];
       const P2=ultPenSeri(bk,{p:{h:e3.h,ka:{c:[{r:e3.hk||72,y:e3.hp?"penalti":null}]},kb:{c:[{r:e3.ok||72,y:e3.op?"penalti":null}]}}},da);const ga=pa===da?P2.a:P2.b,gb=pa===da?P2.b:P2.a;son=ga>gb?1:-1}}
-    if(son==null)continue;const[y,m,d]=bk.split("|")[1].split("-").map(Number);const st=e1.h===pa?[e1.hs,e1.os]:[e1.os,e1.hs],n=E.filter(Boolean).length;
+    if(son==null)continue;const[y,m,d]=bk.split("|")[1].split("-").map(Number);const eg=E.find(e=>e&&e.hs!=null&&e.os!=null)||e1,st=eg.h===pa?[eg.hs,eg.os]:[eg.os,eg.hs],n=E.filter(Boolean).length;
     out.push({bk,wk:isoWeek(new Date(y,m-1,d)),W:son>0?pa:pb,L:son>0?pb:pa,n,g:{[pa]:res.reduce((t,r)=>t+(r?r.a:0),0),[pb]:res.reduce((t,r)=>t+(r?r.b:0),0)},st:{[pa]:st[0],[pb]:st[1]},at:Date.parse(E.filter(Boolean).pop().at)})}
   ULT_MK.c=ULT_MK.c||{};ULT_MK.c.s=out;return out}
 function ultMkTablo(o){ULT_MK.c=ULT_MK.c||{};const key="t"+o;if(ULT_MK.c[key])return ULT_MK.c[key];const wk=ultMkWk(o),kral=o>-2?ultMkKral(o):null;
   const T={},say={},Pp=id=>T[id]=T[id]||{id,p:0,n:0,w:0,l:0,gf:0,ga:0,av:0,sv:0,t:0};
   for(const s of ultMkSeriler().filter(s=>s.wk===wk).sort((a,b)=>a.at-b.at)){for(const id of[s.W,s.L]){const x=Pp(id),op=id===s.W?s.L:s.W;x.n++;x.gf+=s.g[id];x.ga+=s.g[op]}
-    const w=Pp(s.W),l=Pp(s.L);w.w++;l.l++;const pr=[s.W,s.L].sort().join("|");if(say[pr])continue;say[pr]=1;
+    const w=Pp(s.W),l=Pp(s.L);w.w++;l.l++;const pr=[s.W,s.L].sort().join("|");if(say[pr]){w.tk=(w.tk||0)+1;continue}say[pr]=1;
     let pw=3;if(s.st[s.W]!=null&&s.st[s.L]!=null&&+s.st[s.L]>+s.st[s.W])pw++;if(kral&&s.L===kral){pw+=2;w.av++}if(kral&&s.W===kral){pw+=1;w.sv++}w.p+=pw;w.t=s.at;if(s.n===3){l.p+=1;l.t=s.at}}
   const L=Object.values(T).filter(x=>P(x.id)&&!P(x.id).guest),ok=L.filter(x=>x.n>=3).sort((a,b)=>b.p-a.p||a.n-b.n||(b.gf-b.ga)-(a.gf-a.ga)||a.t-b.t),bek=L.filter(x=>x.n<3).sort((a,b)=>b.p-a.p||b.n-a.n);
   ok.forEach((x,i)=>x.s=i+1);return ULT_MK.c[key]={wk,ok,bek,kral}}
@@ -6277,7 +6277,7 @@ function ultMkH(){ultMkYukle();const me=myPid();if(!ULT_MK.ev)return"";const t=u
   const son=new Date(now);son.setDate(now.getDate()+((7-now.getDay())%7));son.setHours(23,59,59,0);const kal=Math.max(0,son-now),g=Math.floor(kal/864e5),sa=Math.floor(kal%864e5/36e5),dk=Math.floor(kal%36e5/6e4);
   const nm=id=>esc(shortName(nameOf(id))),tac=id=>id===kral?`<span class="ulmk-tac" aria-label="Meydan Kralı">👑</span>`:"";
   const pod=t.ok.slice(0,3),sira=[1,0,2].filter(i=>pod[i]);
-  const row=x=>`<div class="ulmk-r${x.id===me?" me":""}"><span class="ulmk-n num">${x.s||"–"}</span>${avatar(P(x.id)||{id:x.id,name:"?"},"sm")}<span class="ulmk-x"><b>${x.id===me?"Sen":nm(x.id)}${tac(x.id)}</b><small>${x.w}G ${x.l}M${x.av?` · ${x.av} taç avı`:""}${x.sv?` · ${x.sv} savunma`:""}${x.n<3?` · sıralamaya ${3-x.n} seri kaldı`:""}</small></span><b class="ulmk-p num">${x.p}</b></div>`;
+  const row=x=>`<div class="ulmk-r${x.id===me?" me":""}"><span class="ulmk-n num">${x.s||"–"}</span>${avatar(P(x.id)||{id:x.id,name:"?"},"sm")}<span class="ulmk-x"><b>${x.id===me?"Sen":nm(x.id)}${tac(x.id)}</b><small>${x.w}G ${x.l}M${x.av?` · ${x.av} taç avı`:""}${x.sv?` · ${x.sv} savunma`:""}${x.tk?` · ${x.tk} tekrar rakip, puansız`:""}${x.n<3?` · sıralamaya ${3-x.n} seri kaldı`:""}</small></span><b class="ulmk-p num">${x.p}</b></div>`;
   const ben=t.ok.find(x=>x.id===me)||t.bek.find(x=>x.id===me),ac=ULT.mkAc;
   const L=ac?t.ok.slice(3).concat(t.bek):(ben&&(!ben.s||ben.s>3)?[ben]:[]);
   let h=`<section class="card ulmk"><div class="ulmk-b"><span class="ulmk-ey">Haftalık yarış · ${esc(t.wk.split("-")[1])}. hafta</span><h3>Meydan Kralı</h3><small>Seri kazan, puan topla · ilk 3 ödül alır</small><span class="ulmk-cd"><b class="num">${g?g+"g "+sa+"s":sa+"s "+dk+"dk"}</b><small>${g===0&&sa<3?"son saatler!":"bitişe"}</small></span><button class="ulbas-i" data-act="ultBilgi" data-v="meydan" aria-label="Kurallar ve ödüller"><span>i</span></button></div>`;
