@@ -6279,3 +6279,12 @@ body.gpu .sheet .ch h2,body.gpu .ulnz-t b,body.gpu .ulbr-h b,body.gpu .ulkp-t b,
 .ulyt-b>i{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:900 1rem Inter,sans-serif;font-style:normal;color:#06191C;background:#5FE3F5}
 .ulyt-b span{display:flex;flex-direction:column;gap:2px}.ulyt-b b{font:800 1.0625rem var(--display);color:#fff}.ulyt-b small{font:500 .8125rem/1.4 Inter,sans-serif;color:#D2F1F5}
 .ulnz-tb .ulnz-tr:has(span:nth-child(2):last-child) span:last-child{text-align:left;min-width:0;color:var(--c-ink2);font-weight:500}
+/* seçmeli yetenek kartı */
+.ulys-p{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;max-height:300px;overflow-y:auto}
+.ulys-p button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:12px;border:1px solid var(--c-line);background:var(--c-card);color:#fff;cursor:pointer;min-width:0}
+.ulys-p button b{font:700 .8125rem Inter,sans-serif;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ulys-p button small{font:600 .6875rem Inter,sans-serif;color:var(--c-ink3)}
+.ulys-p button.on{border:2px solid #5FE3F5;background:rgba(95,227,245,.12)}
+.ulys-y{display:grid;gap:8px;margin-top:10px}.ulys-y button{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;border:1px solid var(--c-line);background:var(--c-card);color:#fff;text-align:left;cursor:pointer;min-height:56px}
+.ulys-y button>i{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:900 .875rem Inter,sans-serif;font-style:normal;color:#06191C;background:#5FE3F5}
+.ulys-y button span{display:flex;flex-direction:column;gap:2px;min-width:0}.ulys-y button b{font:700 .875rem Inter,sans-serif}.ulys-y button small{font:500 .75rem/1.35 Inter,sans-serif;color:var(--c-ink3)}
+.ulys-y button.on{border:2px solid #5FE3F5;background:rgba(95,227,245,.12)}.ulys-y button:disabled{opacity:.45;cursor:default}
