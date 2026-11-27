@@ -6504,3 +6504,10 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulmk .ulyd-all{width:auto;margin:6px 12px}
 .ulmk-k{display:flex;align-items:center;gap:10px;margin:6px 12px 12px;padding:10px;border-radius:14px;background:rgba(245,197,66,.08);border:1px solid rgba(245,197,66,.3)}
 .mzc.ul-kral{background:linear-gradient(160deg,#F5C542,#B8860B 55%,#5a3a00)!important;color:#2A1F00}
+/* maç ekranı dikey: başlık tek satır, düğmeler sağda; uzun isimde kayma ve skorun üstüne binme olmaz. Ekranın altına kadar kaplar */
+.ulmac:not(.ulyat) .ch{flex-wrap:nowrap;align-items:center;gap:8px}
+.ulmac:not(.ulyat) .ch>div:first-child{min-width:0;flex:1}
+.ulmac:not(.ulyat) .ch h2,.ulmac:not(.ulyat) .ch .eyebrow{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ulmac:not(.ulyat) .ulyat-b{flex:none;gap:4px}
+.ulmac:not(.ulyat) .ulyat-b .ulhb{padding:0 10px}
+#modal .sheet:has(.ulmac){height:auto!important;top:0;bottom:0}

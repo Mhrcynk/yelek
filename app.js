@@ -236,7 +236,8 @@ const stOf=p=>(p&&p.status&&STATUS[p.status.type])?p.status.type:"hazir";
 const initials=n=>String(n||"?").trim().split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toLocaleUpperCase("tr-TR");
 const shortName=n=>{const a=String(n||"").trim().split(/\s+/);return a.length>1?a[0]+" "+a[a.length-1][0]+".":a[0]};
 const firstName=n=>String(n||"").trim().split(/\s+/)[0];
-function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2800)}
+// maç oynarken sonucu ele veren bildirimler (görev, ödül) maç bitene kadar bekler
+function toast(msg){let bek=false;try{bek=!!(ULT.run&&!ULT.run.done&&S.sheet&&S.sheet.v==="mac")}catch(_){}if(bek){(toast.q=toast.q||[]).push(msg);return}const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2800)}
 const isExt=m=>m.kind==="dis";
 // oyuncu oylaması: maç başlangıçtan 1 saat sonra bitmiş sayılır, oylama açılır; yönetici kapatınca notlar kesinleşir
 const vOn=m=>!!m&&!!m.vote_on&&!isExt(m);
@@ -4986,7 +4987,8 @@ const ultIzin=(c,pid)=>{if(!c)return false;if(c.pid===pid)return true;if(pid===m
 // sanal lig daveti: kadro kilitlenir (kart bilgileriyle birlikte), maç iki kilitli kadrodan iki telefonda da aynı hesaplanır
 function ultSnapH(L){const st=ultSt(),us=L.usta&&st.ustaOn&&st.ustaOn.left>0?st.ustaOn.cid:null;return{f:L.f||"2-2-2",t:L.t||"dengeli",pen:L.pen||0,kur:ultKural()[0],c:Array.from(L,id=>{const c=id?(typeof id==="object"?id:ultCard(id)):null;if(!c)return null;const o={id:c.id,pid:c.pid,r:c.r,type:c.type};if(c.ot)o.ot=c.ot;if(c.y)o.y=c.y;if(c.date)o.date=c.date;if(us&&c.id===us)o.u=1;return o})}}
 // yeni kayıtlarda özellikler ve güç/kimya da saklanır (maç motoru 2)
-function ultSnap(L){return ultSnapA(ultSnapH(L))}
+// maç kaydı alınırken kendi kadronda boş yer varsa en uygun kartla doldurulur: hiçbir maç 7'den az kişiyle oynanmaz
+function ultSnap(L){if(L&&L.usta&&Array.from(L).some(id=>!id||!ultCard(id))){const st=ultSt();let deg=0;for(let i=0;i<7;i++)if(!st.kadro[i]||!ultCard(st.kadro[i])){const id=ultDoldur(i);if(id){st.kadro[i]=id;deg=1}}if(deg){ultSave();const M=ultMy();M.pen=L.pen;M.kur=L.kur;if(L.x)M.x=L.x;L=M}}return ultSnapA(ultSnapH(L))}
 function ultFromSnap(sn){const L=(sn&&sn.c||[]).map(c=>c||null);while(L.length<7)L.push(null);L.f=sn&&sn.f||"2-2-2";L.t=sn&&sn.t||"dengeli";if(sn&&sn.pen)L.pen=sn.pen;if(sn&&sn.kur)L.kur=sn.kur;if(sn&&sn.x)L.x=sn.x;return L}
 function ultCakisma(L,ex){let o=L;for(const pid of ex)o=ultRakipSiz(o,pid);return o}
 const ultSnapPids=sn=>new Set((sn&&sn.c||[]).filter(Boolean).map(c=>c.pid));
@@ -5433,7 +5435,7 @@ function ultKilitYan(L){const st=ultSt();const ids=Array.from(L).filter(Boolean)
   if(st.ustaOn&&ids.includes(st.ustaOn.cid)){st.ustaOn.left--;if(st.ustaOn.left<=0)st.ustaOn=null}
   for(const id of ids)if(/^kira-\d+$/.test(id)){const k=st.kira[+id.split("-")[1]];if(k)k.left--}
   for(const id of ids){const y=(st.yz||[]).find(y=>y.id===id);if(y&&y.left>0){y.left--;if(!y.left){const i=st.kadro.indexOf(id);if(i>-1){st.kadro[i]=null;st.kadro[i]=ultDoldur(i)}toast(`${shortName(nameOf(y.pid))} ${ULT_T[y.lv]} kartının süresi doldu · yerine başka kart geçti`)}}}
-  st.kira=st.kira.filter(k=>k.left>0);st.kadro=st.kadro.map(id=>id&&id.startsWith("kira-")&&!ultCard(id)?null:id)}
+  st.kira=st.kira.filter(k=>k.left>0);ultKiraSil(id=>!ultCard(id))}
 function ultKimyaKullan(L){const st=ultSt();if(st.kimyaOn&&st.kimya>0){L.pen=-1.5;st.kimya--}st.kimyaOn=false}
 // ortak davet akışı (sanal lig ve meydan okuma): davet → kabul (ya da 24 saat) → maç; iki taraf aynı maçı izler
 const ultChKey=(opp,day)=>"ch|"+(day||ultDay())+"|"+[myPid(),opp].sort().join("|");
@@ -5610,7 +5612,9 @@ const ultSaatS=at=>{try{return new Date(at).toLocaleTimeString("tr-TR",{hour:"2-
 // sonuç bir kez kaydedilir: görevler, gelişim ve (meydan okumada) kiralık ödül
 // meydan okuma serisi ödülü (her seri galibiyetinde bir kez): rakibin özel kartı 1 maçlık kiralık; özel kartı yoksa temel kartı kulübe, o da varsa +1 parça
 // en fazla 3 kullanılmamış kiralık kart birikir; 4. gelince en eskisi düşer
-function ultKiraEkle(o){const st=ultSt();st.kira.push(o);const A=st.kira.filter(k=>k.left>0);if(A.length>3){st.kira=A.slice(-3);st.kadro=st.kadro.map(id=>id&&id.startsWith("kira-")?null:id)}}
+function ultKiraEkle(o){const st=ultSt();st.kira.push(o);const A=st.kira.filter(k=>k.left>0);if(A.length>3){st.kira=A.slice(-3);ultKiraSil(()=>true)}}
+// kiralık kart kadrodan düşünce yeri boş kalmaz, en uygun kartla dolar
+function ultKiraSil(f){const st=ultSt(),bos=[];st.kadro=st.kadro.map((id,i)=>{if(id&&String(id).startsWith("kira-")&&f(id)){bos.push(i);return null}return id});for(const i of bos){try{const id=ultDoldur(i);if(id)st.kadro[i]=id}catch(_){}}}
 function ultSeriOdul(opp,key){const st=ultSt();st.odS=st.odS||[];if(st.odS.includes(key))return null;const B=ultBuild(),me=myPid();let r=null;
   const L=B.C.filter(c=>c.pid===opp&&ULT_SP.includes(c.type)&&c.type!=="kira");
   if(L.length){const c=L[Math.floor(ultRng(TID+key+"od")()*L.length)];ultKiraEkle({cid:c.id,left:1,ch:1});r={c,t:"kira"}}
@@ -5645,7 +5649,7 @@ function ultStart(kind,opp){if(kind==="lig"){ultLigAks(opp);return}if(kind==="ch
   if(rec.p)ultEvoSanal(P0.a.cs,R0.ga>R0.gb,e=>ultHuc(e.pid)?R0.gl.filter(g=>!g.op&&g.s===e.pid).length:(R0.ga>R0.gb?1:0));
   if(st.ustaOn&&P0.a.cs.some(c=>c&&c.id===st.ustaOn.cid)){st.ustaOn.left--;if(st.ustaOn.left<=0)st.ustaOn=null}
   for(const c of P0.a.cs)if(c&&c.type==="kira"){const k=st.kira[+c.id.split("-")[1]];if(k)k.left--}
-  st.kira=st.kira.filter(k=>k.left>0);st.kadro=st.kadro.map(id=>id&&id.startsWith("kira-")?null:id);
+  st.kira=st.kira.filter(k=>k.left>0);ultKiraSil(()=>true);
   // meydan okuma ödülü: kazanırsan rakibin özel kartlarından biri 1 maçlık kiralık (her seri galibiyetinde bir kez)
   let odul=null;if(kind==="ch"&&R0.ga>R0.gb){const o=ultSeriOdul(opp,"tek|"+day+"|"+opp+"|"+st.ch.length);if(o){odul={...o.c,odT:o.t};rec.od=o.c.id;rec.ot=o.t}}
   if(kind==="lig")st.lig.push(rec);else st.ch.push(rec);ultSave();if(ultEvos().length)ultEvoTick();
@@ -5778,7 +5782,7 @@ function ultSut(a,b,cls){const g=document.getElementById("ulTr");if(!g)return;g.
 // saat: olaylar arasında da dakika ilerler
 setInterval(()=>{const r=ULT.run,d=document.getElementById("ulDk");if(!r||!d)return;if(r.done){d.textContent="MS";return}if(r.lbl){d.textContent=r.lbl;return}const t=ultD(r.dk||0);r.ds=r.ds||0;if(r.ds<t-4)r.ds=t-4;else if(r.ds<t)r.ds=Math.min(t,r.ds+.05*(r.onem?6:r.hiz));else if(r.ds>t)r.ds=t;d.textContent=(Math.floor(r.ds)||1)+"'"},100);
 const R2=()=>Math.random();
-function ultFinish(){const r=ULT.run;if(!r)return;r.done=true;r.sk={a:r.R0.ga,b:r.R0.gb};r.dk=40;r.lbl=null;r.stl={sa:r.R0.st.sa,sb:r.R0.st.sb,ka:r.R0.st.ka,ka2:r.R0.st.ka2,kb2:r.R0.st.kb2,fa:r.R0.st.fa,fb:r.R0.st.fb};if(!r.son)ultFeed("90+"+((r.uz||[0,2])[1])+"'","Maç bitti","e");ultHt(r,false);ultTrail(null);ultDraw();
+function ultFinish(){const r=ULT.run;if(!r)return;r.done=true;if(toast.q&&toast.q.length){const q=toast.q;toast.q=[];q.forEach((m,i)=>setTimeout(()=>toast(m),1500+i*3000))}r.sk={a:r.R0.ga,b:r.R0.gb};r.dk=40;r.lbl=null;r.stl={sa:r.R0.st.sa,sb:r.R0.st.sb,ka:r.R0.st.ka,ka2:r.R0.st.ka2,kb2:r.R0.st.kb2,fa:r.R0.st.fa,fb:r.R0.st.fb};if(!r.son)ultFeed("90+"+((r.uz||[0,2])[1])+"'","Maç bitti","e");ultHt(r,false);ultTrail(null);ultDraw();
   const f=document.getElementById("ulFin"),m=document.querySelector(".ulmac");if(m)m.classList.add("bitti");if(f){f.hidden=false;if(m&&!m.classList.contains("ulyat"))setTimeout(()=>m.scrollIntoView({behavior:"smooth",block:"start"}),60)}const c=document.getElementById("ulCtl");if(c)c.hidden=true}
 function ultBall(p){if(ULT.run)ULT.run.bp=p;const cm=document.getElementById("ulCam");if(cm){cm.style.setProperty("--cx",p[0]);cm.style.setProperty("--cy",p[1])}const b=document.getElementById("ulBall");if(b){b.style.left=p[0]+"%";b.style.top=p[1]+"%"}}
 function ultOn2(us,j){document.querySelectorAll(".ulm-p.on").forEach(x=>x.classList.remove("on"));const t=document.querySelector(`.ulm-p[data-s="${us?"a":"b"}${j}"]`);if(t)t.classList.add("on")}
