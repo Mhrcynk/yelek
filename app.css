@@ -6364,3 +6364,6 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulyat .ulsp{gap:6px}.ulyat .ulsp button{min-height:46px;font-size:.6875rem}
 .ulyat .ulhb{min-height:40px;padding:0 10px}
 .ulst span,.ult-sum>div{border:1px solid var(--c-line2);background:var(--c-card2)!important;border-radius:12px}
+/* maç ekranı: dikeyde üst boşluk yok (sayfa çentiğe kadar çıkmıyor); yatayda kontroller hep görünür */
+.ulmac:not(.ulyat) .ch{padding-top:10px}
+.ulyat .ulyat-s>#ulCtl,.ulyat #ulCtl{position:sticky;bottom:0;z-index:8;margin-top:8px;padding:6px 0 max(4px,env(safe-area-inset-bottom,0px));background:linear-gradient(rgba(14,10,34,0),#0e0a22 30%)}
