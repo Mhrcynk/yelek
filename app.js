@@ -6054,6 +6054,33 @@ function ultKadroTip(src,dst){const r=ultKadroYeni(src,dst);if(!r)return"";if(r.
 // yedek önerisi: her yedek kartın sahadaki en iyi yeri ve kadroya etkisi (güç = kadro gücü, kimya toplamı)
 function ultYedekEtki(c,x){let best=null;for(let i=0;i<7;i++){const r=ultKadroYeni({c:c.id},{i});if(!r||r.hata)continue;const y=ultLine(r.L),d={i,ds:Math.round((y.str-x.str)*10)/10,dc:y.chem-x.chem,tam:ultTam(c.pid,y.sl[i]),md:!c.u&&c.y!=="joker"&&!ultRoles(c.pid).includes(y.sl[i][0])};
     if(!best||d.ds>best.ds||d.ds===best.ds&&d.dc>best.dc)best=d}return best}
+// alt tepsi: Yedekler · Diziliş · Taktik. Sahada bir yer seçiliyse yedekler o yer için etkisiyle sıralanır
+function ultAday(x,i){const me=myPid(),used=new Set(x.cs.filter((c,j)=>c&&j!==i).map(c=>c.pid)),cur=x.cs[i],by={};
+  for(const c of ultCards()){if(!ultIzin(c,me)||used.has(c.pid)||cur&&c.id===cur.id)continue;const r=ultKadroYeni({c:c.id},{i});if(!r||r.hata)continue;const y=ultLine(r.L);const o={c,ds:Math.round((y.str-x.str)*10)/10,dc:y.chem-x.chem,tam:ultTam(c.pid,y.sl[i]),md:!c.u&&c.y!=="joker"&&!ultRoles(c.pid).includes(y.sl[i][0])};if(!by[c.pid]||o.ds>by[c.pid].ds)by[c.pid]=o}
+  return Object.values(by).sort((a,b)=>b.ds-a.ds||b.dc-a.dc||b.c.r-a.c.r)}
+function ultTepsi(x,ss){const st=ultSt(),tt=ULT.tt||"y",dz=st.dz||"2-2-2",tk=st.tk||"dengeli";
+  const dl=(v,t,dec)=>`<i class="${v>0?"p":v<0?"n":"z"}">${t} ${v>0?"+":v<0?"−":"±"}${dec?fN(Math.abs(v)):Math.abs(v)}</i>`;
+  const kart=(o,i,best)=>{const c=o.c,ph=photoOf(c.pid),p=P(c.pid)||{name:"?"},tr=c.type==="temel"||c.type==="yetenek"?tierOf(c.base):"sp";
+    return `<button class="ultc${best?" best":""}" data-act="ultYdKoy" data-v="${esc(c.id)}" data-i="${i}" aria-label="${esc(p.name)} ${c.r}, koy"><span class="ulq-b ${tr}"><span class="ulq-a">${ph?`<img src="${esc(ph)}" alt="" draggable="false">`:esc(initials(p.name))}</span><b class="ulq-r num">${c.r}</b></span><b>${esc(shortName(p.name))}</b>${o.yer?`<small>→ ${esc(o.yer)}</small>`:""}<span class="ulyd-d">${o.tam?`<i class="p">✓ Tam yerinde</i>`:""}${o.md?`<i class="n">Mevki dışı</i>`:""}${dl(o.dc,"Kimya")}${dl(o.ds,"Güç",1)}</span></button>`};
+  const tabs=`<div class="ultt" role="tablist">${[["y","Yedekler"],["d","Diziliş"],["t","Taktik"]].map(([k,l])=>`<button role="tab" class="${tt===k?"on":""}" aria-selected="${tt===k}" data-act="ultTt" data-v="${k}">${l}</button>`).join("")}</div>`;
+  let body="";
+  if(tt==="y"){
+    if(ss!=null){const c=x.cs[ss],sl=x.sl[ss],A=ultAday(x,ss).slice(0,12),kd=c?ultKimDokum(x,ss):null;
+      body=`<div class="ultx"><p class="ultx-h"><b>${esc(sl[3]||sl[0])} yeri</b>${c?` · ${esc(shortName(nameOf(c.pid)))} ${c.r} · kimya ${x.ch[ss]}/3`:" · boş"}</p><div class="ultx-b">${c?`<button data-act="ultCard" data-v="${esc(c.id)}">Kartı aç</button><button data-act="ultSwp" class="${ULT.swp?"on":""}">${ULT.swp?"Değişecek yere dokun":"Yer değiştir"}</button><button data-act="ultCikar" data-i="${ss}">Çıkar</button>`:""}<button data-act="ultSec" data-i="${ss}">Kapat</button></div></div>
+        ${kd&&kd.L.length?`<ul class="ultk">${kd.L.map(([t,v])=>`<li><span>${t}</span><b class="num">${v}</b></li>`).join("")}</ul>`:""}
+        ${A.length?`<div class="ultc-l">${A.map((o,k)=>kart(o,ss,k===0&&o.ds>0)).join("")}</div><button class="ulyd-all" data-act="ultSlot" data-i="${ss}">Bütün kartlar ›</button>`:`<p class="ult-n">Bu yere koyabileceğin başka kart yok.</p>`}`}
+    else{const me=myPid(),used=new Set(x.cs.filter(Boolean).map(c=>c.pid)),by={};
+      for(const c of ultCards()){if(!ultIzin(c,me)||used.has(c.pid))continue;const e=ultYedekEtki(c,x);if(!e)continue;if(!by[c.pid]||e.ds>by[c.pid].e.ds)by[c.pid]={c,e}}
+      const A=Object.values(by).sort((a,b)=>b.e.ds-a.e.ds||b.e.dc-a.e.dc).slice(0,10).map(({c,e})=>({c,ds:e.ds,dc:e.dc,tam:e.tam,md:e.md,i:e.i,yer:(x.sl[e.i][3]||x.sl[e.i][0])+(x.cs[e.i]?" · "+shortName(nameOf(x.cs[e.i].pid))+" yerine":"")}));
+      body=`<p class="ultx-h"><b>En iyi değişiklikler</b> · sahada bir oyuncuya dokun, o yer için seçenekleri gör</p>${A.length?`<div class="ultc-l">${A.map((o,k)=>kart(o,o.i,k===0&&o.ds>0)).join("")}</div>`:`<p class="ult-n">Kulübünde sahaya girmeyen kart yok.</p>`}`}}
+  else if(tt==="d"){const O=ultDzOner(),mx=Math.max(...O.map(o=>o.x.str));
+    body=`<p class="ultx-h">Seçince 7 kişi yeni yerlere kendiliğinden geçer · <span class="ok">yeşil</span> tam yerinde, <span class="md">kırmızı</span> mevki dışı</p><div class="ulft-g">${O.map(o=>{const on=o.k===dz;return `<button class="ulft${on?" on":""}" data-act="ultDz" data-v="${o.k}" aria-pressed="${on}"><span class="ulft-p">${o.x.sl.map(([r,lx,ly],j)=>{const c=o.x.cs[j];const k=!c?"bos":j&&ultTam(c.pid,o.x.sl[j])?"ok":(c.u||c.y==="joker"||ultRoles(c.pid).includes(r))?"gr":"md";return `<i class="${k}" style="left:${lx}%;top:${ly}%"></i>`}).join("")}</span><b>${esc(ultFAd(o.k))}</b><small><em>${o.tam} tam yerinde</em> · kimya ${o.x.chem}</small>${o.x.str===mx?`<span class="ulft-e">En güçlü</span>`:""}</button>`}).join("")}</div>
+      <p class="ulft-a">${esc(ULT_FD[ultFb(dz)]||"")}</p>`}
+  else{const yenil=Object.keys(ULT_YEN).find(k=>ULT_YEN[k]===tk);
+    body=`<div class="ultg">${Object.entries(ULT_TK).map(([k,[l,a]])=>`<button class="${tk===k?"on":""}" data-act="ultTk" data-v="${k}" aria-pressed="${tk===k}"><b>${l}</b><small>${k==="dengeli"?"Ek etkisi yok":"Yener: "+esc(ULT_TK[ULT_YEN[k]][0])}</small></button>`).join("")}</div>
+      <p class="ulft-a">${esc(ULT_TK[tk][1])}</p>${tk!=="dengeli"?`<div class="ulyy"><span class="y">Yener: ${esc(ULT_TK[ULT_YEN[tk]][0])}</span><span class="l">Yenilir: ${esc(ULT_TK[yenil][0])}</span></div>`:""}
+      <div class="ulfx">${[...(ULT_FX[ultFb(dz)]||[[],[]])[0],...(ULT_TKX[tk]||[[],[]])[0]].map(t=>`<span class="p">${/^[+−-]/.test(t)?"":"+ "}${esc(t)}</span>`).join("")}${[...(ULT_FX[ultFb(dz)]||[[],[]])[1],...(ULT_TKX[tk]||[[],[]])[1]].map(t=>`<span class="m">− ${esc(t)}</span>`).join("")}</div>`}
+  return `<section class="card ultep">${tabs}${body}</section>`}
 function ultYedekH(x){const me=myPid(),used=new Set(x.cs.filter(Boolean).map(c=>c.pid)),bf=ULT.bf||"";
   const T=ultCards().filter(c=>ultIzin(c,me)&&!used.has(c.pid));
   const F=[["","Tümü"],["KL","Kaleci"],["DF","Defans"],["OS","Orta"],["FV","Forvet"],["tam","Tam yerinde"]];
@@ -6099,8 +6126,12 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
     // çizgi başka bir kartın üstünden geçiyorsa soluk çizilir; o kartla bağ varmış gibi görünmesin
     let ust=0;for(let t=.08;t<.93&&!ust;t+=.04){const px=(1-t)*(1-t)*x1+2*(1-t)*t*mx+t*t*x2,py=(1-t)*(1-t)*y1+2*(1-t)*t*my+t*t*y2;ust=x.sl.some(([,cx,cy],q)=>q!==i&&q!==j&&x.cs[q]&&Math.abs(px-cx)<11&&Math.abs(py-cy)<12)}
     lines.push(`<path d="M${x1} ${y1} Q${mx} ${my} ${x2} ${y2}" fill="none" stroke="${v>1?"#F5C542":"#00E58A"}" stroke-width="${v>1?1.6:.9}" opacity="${ust?.3:.9}"${ust?' stroke-dasharray="2 1.5"':""} stroke-linecap="round"/>`)}
-  const slots=x.sl.map(([r,lx,ly,fp],i)=>{const c=x.cs[i];const md=c&&!ultRoles(c.pid).includes(r)&&!c.u,tam=c&&!md&&ultTam(c.pid,x.sl[i]);
-    return `<div class="ulp-s${c?" ulk-c"+(md?0:x.ch[i]):""}" data-si="${i}" style="left:${lx}%;top:${ly}%">${c?`<div class="uldw" data-udrag="${i}">${ultCardH(c,{sm:1,act:"ultSlot",i})}<button class="ulx" data-act="ultCikar" data-i="${i}" aria-label="${esc(shortName(nameOf(c.pid)))} kadrodan çıkar"><span>×</span></button></div>`:`<button class="ulp-e" data-act="ultSlot" data-i="${i}" aria-label="${fp||r} seç">+<small>${fp||r}</small></button>`}${c&&fp&&r!=="KL"?`<i class="ulp-l${tam?" ok":""}" aria-hidden="true">${tam?"✓ ":""}${fp}</i>`:""}${c?`<button class="ulch${md?" ulmd":""}${i===ks?" on":""}" data-act="ultKimS" data-i="${i}" aria-label="Kimya ${x.ch[i]}, dökümü göster">${md?"Mevki dışı":[0,1,2].map(k=>`<i class="${k<x.ch[i]?"on":""}"></i>`).join("")}</button>`:""}</div>`}).join("");
+  // saha: kart yerine yüz + reyting; dokununca seçilir ve alttaki tepsi o yeri gösterir
+  const ss=ULT.ss!=null&&ULT.ss<7?ULT.ss:null;
+  const slots=x.sl.map(([r,lx,ly,fp],i)=>{const c=x.cs[i];const md=c&&!ultRoles(c.pid).includes(r)&&!c.u&&c.y!=="joker",tam=c&&!md&&ultTam(c.pid,x.sl[i]);const sel=ss===i?" sel":ss!=null&&ULT.swp?" swp":"";
+    if(!c)return `<div class="ulp-s ulq bos${sel}" data-si="${i}" style="left:${lx}%;top:${ly}%"><button class="ulq-e" data-act="ultSec" data-i="${i}" aria-label="${fp||r} yerini seç">+<small>${fp||r}</small></button></div>`;
+    const ph=photoOf(c.pid),p=P(c.pid)||{name:"?"},tr=c.type==="temel"||c.type==="yetenek"?tierOf(c.base):"sp";
+    return `<div class="ulp-s ulq${sel}" data-si="${i}" style="left:${lx}%;top:${ly}%"><button class="ulq-b uldw ${tr}" data-udrag="${i}" data-act="ultSec" data-i="${i}" aria-label="${esc(p.name)} ${c.r}, ${fp||r}${md?", mevki dışı":tam?", tam yerinde":""}"><span class="ulq-a">${ph?`<img src="${esc(ph)}" alt="" draggable="false">`:esc(initials(p.name))}</span><b class="ulq-r num">${c.r}</b>${c.type!=="temel"?`<i class="ulq-t" aria-hidden="true">${esc((ULT_T[c.type]||"").slice(0,1))}</i>`:""}</button><span class="ulq-n">${esc(shortName(p.name))}</span><span class="ulq-p${md?" md":tam?" ok":""}">${md?"Mevki dışı":(tam?"✓ ":"")+esc(fp||r)}</span><span class="ulq-k" aria-hidden="true">${[0,1,2].map(k=>`<i class="${k<(md?0:x.ch[i])?"on":""}"></i>`).join("")}</span></div>`}).join("");
   const dz=st.dz||"2-2-2",tk=st.tk||"dengeli";
   const pu=ultPuan(ultMy()),tv=ultTavan();
   const kl=x.chem>=15?"iy":x.chem>=8?"or":"zy",kk=x.chem/21,IC={k:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',g:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',s:'<path d="m12 3 2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'},ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg>`;
@@ -6108,13 +6139,11 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
     <div class="ulhud-g"><div class="ulkx k ${kl}"><span class="ulkx-i">${ic("k")}</span><b class="num">${x.chem}<small>/21</small></b><small>Kimya · ${kl==="iy"?"Güçlü":kl==="or"?"Orta":"Zayıf"}</small><i><i style="width:${kk*100}%"></i></i></div>
     <div class="ulkx g"><span class="ulkx-i">${ic("g")}</span><b class="num">${x.n?fN(x.str):"–"}</b><small>Güç</small></div>
     <div class="ulkx s"><span class="ulkx-i">${ic("s")}</span><b class="num">${x.sp}<small>/3</small></b><small>Özel kart</small><span class="ulkx-p">${[0,1,2].map(k=>`<i class="${k<x.sp?"on":""}"></i>`).join("")}</span></div></div></div>`;
-  const tamN=x.sl.filter((s,i)=>x.cs[i]&&ultTam(x.cs[i].pid,s)).length;
-  const pbar=`<button class="ulpn" data-act="ultPlan"><span class="ulpn-f num">${esc(ultFb(dz))}</span><span class="ulpn-x"><b>${esc(ULT_FB[ultFb(dz)][ultFv(dz)][0])} · ${esc(ULT_TK[tk][0])}</b><small>Kimya ${x.chem} · ${tamN} kişi tam yerinde</small></span><span class="ulpn-c">Değiştir<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></span></button>`;
-  return `${ultKuralH()}${hud}${pbar}
-    <div class="ulp ulkom"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.16)" stroke-width=".5" fill="none"><rect x="2" y="2" width="96" height="96" rx="2"/><line x1="2" y1="50" x2="98" y2="50"/><circle cx="50" cy="50" r="10"/></g>${lines.join("")}</svg>${slots}</div>
-    ${st.ustaOn&&ultCard(st.ustaOn.cid)?`<p class="ult-n">★ Kimya ustası: ${esc(shortName(nameOf(ultCard(st.ustaOn.cid).pid)))} · ${st.ustaOn.left} maç kaldı</p>`:""}${kd?`<section class="card ulsec ulkdk"><div class="ulsec-h"><h3>${esc(shortName(nameOf(x.cs[ks].pid)))} · Kimya ${x.ch[ks]}/3</h3><button class="lnk" data-act="ultKimS" data-i="-1">Kapat</button></div><ul>${kd.L.map(([t,v])=>`<li><span>${t}</span><b class="num">${v}</b></li>`).join("")}</ul></section>`:""}${ULT.yc?`<p class="ulkh">Yedek kart seçildi: sahada koymak istediğin yere dokun.</p>`:""}${err?`<p class="ult-n uyar">${err}</p>`:""}
+  return `${ultKuralH()}${hud}
+    <div class="ulp ulkom ulq-saha"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g stroke="rgba(255,255,255,.16)" stroke-width=".5" fill="none"><rect x="2" y="2" width="96" height="96" rx="2"/><line x1="2" y1="50" x2="98" y2="50"/><circle cx="50" cy="50" r="10"/></g>${lines.join("")}</svg>${slots}</div>
+    ${st.ustaOn&&ultCard(st.ustaOn.cid)?`<p class="ult-n">★ Kimya ustası: ${esc(shortName(nameOf(ultCard(st.ustaOn.cid).pid)))} · ${st.ustaOn.left} maç kaldı</p>`:""}${ULT.yc?`<p class="ulkh">Yedek kart seçildi: sahada koymak istediğin yere dokun.</p>`:""}${err?`<p class="ult-n uyar">${err}</p>`:""}
     <div class="ulkt ulkt3"><button class="ana" data-act="ultAuto">${ic("g")}Otomatik diz</button><button data-act="ultGeri"${(ULT.gk||[]).length?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>Geri al</button><button class="sil" data-act="ultClear"${x.n?"":" disabled"}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Temizle</button></div>
-    ${ultYedekH(x)}
+    ${ultTepsi(x,ss)}
 `}
 // ----- Maçlar: sıradaki maç, meydan okuma, tek sıralama
 // bitiş bilgisi: sanal lig 7 hafta (pazartesi başlar, 7. haftanın pazarı biter); efsane yarışı 3 sezonluk dönemin son maçında biter
@@ -6418,8 +6447,11 @@ async function ultAct(a,el){const st=ultSt();const go=(tab,kf)=>{st.tab=tab;if(k
     case"ultAk":st.ak=el.dataset.v;ultSave();render(true);break;
     case"ultDz":{const v=el.dataset.v;if(v!==st.dz){ultGk();st.kadro=ultDizYer(st.kadro,v);st.dz=v;ultSave()}render(true);break}
     case"ultPlan":S.sheet={type:"ult",v:"plan"};render(true);break;
-    case"ultYdKoy":{ULT.yc=null;if(ultKadroOp({c:el.dataset.v},{i:+el.dataset.i}))toast("Kadroya girdi");render(true);break}
+    case"ultYdKoy":{ULT.yc=null;ULT.swp=false;if(ultKadroOp({c:el.dataset.v},{i:+el.dataset.i}))toast("Kadroya girdi");render(true);break}
     case"ultYdAll":ULT.ydAll=!ULT.ydAll;render(true);break;
+    case"ultTt":ULT.tt=el.dataset.v;render(true);break;
+    case"ultSwp":ULT.swp=!ULT.swp;render(true);break;
+    case"ultSec":{const i=+el.dataset.i,a=ULT.ss;if(ULT.swp&&a!=null&&a!==i){ULT.swp=false;ULT.ss=i;ultKadroOp({i:a},{i});render(true);break}ULT.swp=false;ULT.ss=a===i?null:i;ULT.tt="y";render(true);break}
     case"ultTk":st.tk=el.dataset.v;ultSave();render(true);break;
     case"ultMt":st.mt=el.dataset.v;ultSave();render(true);break;
     case"ultYat":ULT.yat=!ULT.yat;render(true);setTimeout(()=>{ultDraw();const sh=document.querySelector("#modal .sheet");if(sh)sh.scrollTop=0;const ys=document.querySelector(".ulyat-s");if(ys)ys.scrollTop=0},0);break;
