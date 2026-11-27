@@ -5037,7 +5037,7 @@ function ultKatki(m,id,x){const r=ultRoles(id),w=ULT_KW[r.includes("FV")?"FV":r[
   return Math.round(v*10)/10}
 const ultRoles=id=>{const p=P(id);const r=[ultRole(id)];const a=p&&altOf(p);if(a&&EPOS[a]&&!r.includes(EPOS[a][0]))r.push(EPOS[a][0]);return r};
 function ultBuild(){const uk=typeof ULT_SRV!=="undefined"&&ULT_SRV.uyeK||"";if(ULT.c&&ULT.k===S.stats&&ULT.uk===uk)return ULT.c;
-  const F=fin().filter(m=>S.mInfo[m.id]),L=sLen(),C=[],RT={},pre={},now={},same={},car={},sea={},ep={},ht={},seri=[],seriDone=[],pw=[];let month=[];
+  const F=fin().filter(m=>S.mInfo[m.id]),L=sLen(),C=[],RT={},pre={},now={},same={},car={},sea={},ep={},ht={},seri=[],seriDone=[],pw=[],kum={},gl={n:0,t:0};let month=[];
   const sz=[...new Set(F.map(yrOf))],per=s=>Math.floor(sz.indexOf(s)/3);
   // sezon uzunluğuna göre oranlı eşikler (8 maçlık sezonda: holo 6, kusursuz holo 7, haftanın takımı en fazla 3)
   const HN=Math.ceil(L*.75),KN=Math.ceil(L*.85),HTN=Math.max(1,Math.round(L*3/8)),epn={},epr={};const bySz={};F.forEach(m=>(bySz[yrOf(m)]=bySz[yrOf(m)]||[]).push(m));
@@ -5059,11 +5059,16 @@ function ultBuild(){const uk=typeof ULT_SRV!=="undefined"&&ULT_SRV.uyeK||"";if(U
       ep[E(id)]=Math.round(((ep[E(id)]||0)+kt+(n>=8?2:0))*10)/10;epn[E(id)]=(epn[E(id)]||0)+1;epr[E(id)]=x.role||"OS"}
     for(const id of(inf.totw||[]).filter(id=>pl.includes(id))){const k=s+"|"+id;ht[k]=(ht[k]||0)+1;if(ht[k]<=HTN)add("ht",id,ultBonG("ht"),m);ep[E(id)]=(ep[E(id)]||0)+3}
     if(inf.motm&&pl.includes(inf.motm))ep[E(inf.motm)]=(ep[E(inf.motm)]||0)+10;
-    for(const r of seri){if(!pts[r.pid])continue;const x=pts[r.pid],won=A.includes(r.pid)?sa>sb:sb>sa;r.seen++;r.w+=won?1:0;r.ga+=dkOf(m,r.pid,x);r.mo=r.mo||inf.motm===r.pid;r.tw=r.tw||(inf.totw||[]).includes(r.pid);
-      if(r.seen>=3){r.up=Math.min(3,(r.w>=3?1:0)+(r.ga>=5?1:0)+(r.mo?1:0)+(r.tw?1:0));r.done=1;seriDone.push(r);add("seri",r.pid,r.up,m,"+"+r.up)}}
+    // Seri kartı: izlenen 3 maçta 5 görev, her biri +1 (en fazla +3). Katkı, gol ve asist hedefi oyuncunun kendi ortalamasına göre
+    for(const r of seri){if(!pts[r.pid])continue;const x=pts[r.pid],a=A.includes(r.pid),won=a?sa>sb:sb>sa;r.seen++;r.w+=won?1:0;r.ga=Math.round((r.ga+dkOf(m,r.pid,x))*10)/10;r.mo=r.mo||inf.motm===r.pid;r.tw+=(inf.totw||[]).includes(r.pid)?1:0;
+      r.mp+=r.R==="FV"?(x.g||0):r.R==="OS"?(x.a||0):((a?sb:sa)<r.yo?1:0);
+      if(r.seen>=3){r.up=ultSeriUp(r);r.done=1;seriDone.push(r);add("seri",r.pid,r.up,m,"+"+r.up)}}
+    for(const id of pl){const x=pts[id],o=kum[id]=kum[id]||{n:0,k:0,g:0,a:0};o.n++;o.k+=dkOf(m,id,x);o.g+=x.g||0;o.a+=x.a||0}
+    gl.n++;gl.t+=sa+sb;
     for(let i=seri.length-1;i>=0;i--)if(seri[i].done)seri.splice(i,1);
     month.push(m);if(month.length===4){const el=ids().map(id=>[id,avgOf(month,id)]).filter(x=>x[1].n>=3).sort((a,b)=>b[1].a-a[1].a);if(el[0])add("ayin",el[0][0],ultBonG("ayin"),m);
-      ids().map(id=>[id,avgOf(month,id)]).filter(x=>x[1].n>=2&&!seri.some(r=>r.pid===x[0])).sort((a,b)=>b[1].a-a[1].a).slice(0,3).forEach(([pid])=>seri.push({pid,seen:0,w:0,ga:0,mo:false,tw:false,from:m.date}));month=[]}
+      ids().map(id=>[id,avgOf(month,id)]).filter(x=>x[1].n>=2&&!seri.some(r=>r.pid===x[0])).sort((a,b)=>b[1].a-a[1].a).slice(0,3).forEach(([pid])=>{const o=kum[pid]||{n:1,k:3,g:0,a:0},R=ultRole(pid),yo=Math.round(gl.t/gl.n/2*10)/10;
+        seri.push({pid,seen:0,w:0,ga:0,mo:false,tw:0,mp:0,from:m.date,R,yo,hk:Math.max(5,Math.round(o.k/o.n*3*1.1)),hm:R==="FV"?Math.max(3,Math.ceil(o.g/o.n*3)):R==="OS"?Math.max(2,Math.ceil(o.a/o.n*3)):2})});month=[]}
     const last=mi===F.length-1?(bySz[s].length>=L):yrOf(F[mi+1])!==s;
     if(last){const half=Math.ceil(L/2);const P2=ids().map(id=>[id,sea[s+"|"+id]]).filter(x=>x[1]);
       P2.filter(x=>x[1].n>=half).sort((a,b)=>b[1].t/b[1].n-a[1].t/a[1].n).slice(0,7).forEach(([id])=>add("sezon",id,ultBonG("sezon"),m));
@@ -5865,7 +5870,7 @@ function ultLig(){const sl=ultLigS();if(sl)return sl;const B=ultBuild(),me=myPid
   const nx=W<7?R[W].find(x=>x.includes(me)):null;return{T,R,rows:srt,nx:nx?(nx[0]===me?nx[1]:nx[0]):null,W,test,cw,can:test||W<=cw,yeni:test||cw>=7}}
 // ---------- görünüm ----------
 const ULT_RAR=["ikon","yildiz","yetenek","efsane","kariyer","kahraman2","donem","an","kholo","sezon","kahraman","ayin","seri","evo","holo","kira","ht","temel"];
-const ULT_NASIL={yetenek:"Paketten nadir çıkar (%3) · sezon yolu 15. seviye · ligde ilk 2 · gücü temel kartla aynı, tek bir yeteneği var · kalıcı",ikon:"Paketten çok nadir çıkar (%0,5) · temel kart +14, en fazla 95 · 5 sanal maç",yildiz:"Paketten nadir çıkar (%3) · temel kart +9 · 10 sanal maç · şans puanı 25 olunca garanti",efsane:"Dönem sonunda maç başı efsane puanında birinci olan · 6 ayda 1",kariyer:"Takımla 100 maç",kahraman2:"Takımla 50 maç",donem:"Dönem sonunda (3 sezon) en yüksek ortalamalı 7 kişi",an:"Sezonun en büyük tek maç performansı · sezonda 1",kholo:"Sezon maçlarının çoğuna (8 maçta 7) çıkanlar arasında en iyi 2",sezon:"Sezon sonunda en yüksek ortalamalı 7 kişi",kahraman:"Takımla 20 maç",ayin:"4 maçta bir, en yüksek ortalama (en az 3 maç)",seri:"Formdaki 3 oyuncuya çıkar, sonraki 3 maça göre yükselir",evo:"72 ve altı bir temel kartı 4 görevle kalıcı +4 güçlendirirsin · aynı anda 2, sezonda 3",holo:"Sezon maçlarının dörtte üçüne çıkmak (8 maçta 6)",kira:"Paketten çıkar · 3 sanal maç senin",ht:"Son maçta Haftanın Takımı\u2019na giren 7 kişide · paketten çıkmaz · yeni haftanın takımı seçilince el değiştirir",temel:"Her oyuncunun sezon kartı · sezonun ilk maçında açılır"};
+const ULT_NASIL={yetenek:"Paketten nadir çıkar (%3) · sezon yolu 15. seviye · ligde ilk 2 · gücü temel kartla aynı, tek bir yeteneği var · kalıcı",ikon:"Paketten çok nadir çıkar (%0,5) · temel kart +14, en fazla 95 · 5 sanal maç",yildiz:"Paketten nadir çıkar (%3) · temel kart +9 · 10 sanal maç · şans puanı 25 olunca garanti",efsane:"Dönem sonunda maç başı efsane puanında birinci olan · 6 ayda 1",kariyer:"Takımla 100 maç",kahraman2:"Takımla 50 maç",donem:"Dönem sonunda (3 sezon) en yüksek ortalamalı 7 kişi",an:"Sezonun en büyük tek maç performansı · sezonda 1",kholo:"Sezon maçlarının çoğuna (8 maçta 7) çıkanlar arasında en iyi 2",sezon:"Sezon sonunda en yüksek ortalamalı 7 kişi",kahraman:"Takımla 20 maç",ayin:"4 maçta bir, en yüksek ortalama (en az 3 maç)",seri:"4 maçta bir formdaki 3 oyuncuya çıkar · sonraki 3 maçında 5 görev, her biri +1 (en fazla +3) · hedefler oyuncunun kendi ortalamasına ve mevkisine göre",evo:"72 ve altı bir temel kartı 4 görevle kalıcı +4 güçlendirirsin · aynı anda 2, sezonda 3",holo:"Sezon maçlarının dörtte üçüne çıkmak (8 maçta 6)",kira:"Paketten çıkar · 3 sanal maç senin",ht:"Son maçta Haftanın Takımı\u2019na giren 7 kişide · paketten çıkmaz · yeni haftanın takımı seçilince el değiştirir",temel:"Her oyuncunun sezon kartı · sezonun ilk maçında açılır"};
 const ultRk=t=>{const i=ULT_RAR.indexOf(t);return i<0?99:i};
 const ultDay=()=>new Date().toISOString().slice(0,10);
 const ultTest=()=>false;// test modu kapatıldı: herkes gerçek kurallarla oynar
@@ -5976,11 +5981,14 @@ function ultOyAlb(pid){const B=ultBuild(),p=P(pid),me=myPid();const cs=ultGrp(ul
     <p class="ulgh-s ulag-a">Henüz kazanılmayanlar · soluk görünür, dokun, nasıl kazanıldığını gör</p>${sec}`}
 // kazanılmamış tür: fotoğrafsız, soluk; mevki oyuncunun kendi mevkisi
 function ultYok(t,pid){const p=P(pid),up=ULT_ORN[t]||0;return `<button class="mzc ulc ulyok ${t==="temel"?"t1":"ul-"+t}" data-act="ultTur" data-v="${t}" data-p="${esc(pid)}" aria-label="${esc(ULT_T[t]||"Temel kart")}, henüz yok"><span class="mzc-o"><b class="num">?</b><small>${p?eposOf(p):""}</small></span><span class="mzc-sil">${SIL}</span><i class="ulc-m" aria-hidden="true">ULT</i>${up?`<i class="ulc-u">+${up}</i>`:""}<span class="mzc-n">${esc(ULT_T[t]||"Temel kart")}</span><span class="ulc-t">${(()=>{const g=t==="seri"?3:up,k=ultBonK(t),L=[];if(g)L.push("+"+g+" güç");if(k)L.push((t==="efsane"?"tam":"+"+k)+" kimya");return L.length?L.join(" · "):"Henüz yok"})()}</span></button>`}
+function ultSeriK(r){const mv=r.R==="FV"?[`${r.hm} gol at`,"Forvet görevi"]:r.R==="OS"?[`${r.hm} asist yap`,"Orta saha görevi"]:[`2 maçta en fazla ${Math.ceil(r.yo)-1} gol ye`,(r.R==="KL"?"Kaleci":"Defans")+" görevi · ligin ortalamasının altı"];
+  return[[r.w>=2,"3 maçın 2'sini kazan","",`${Math.min(r.w,2)}/2`],[r.ga>=r.hk,`${r.hk} katkı puanı topla`,"Kendi ortalamanın üstü",`${fN(Math.min(r.ga,r.hk))}/${r.hk}`],[r.mp>=r.hm,mv[0],mv[1],`${Math.min(r.mp,r.hm)}/${r.hm}`],[r.tw>=2,"2 kez haftanın takımına gir","",`${Math.min(r.tw,2)}/2`],[r.mo,"Maçın adamı ol","",r.mo?"✓":"–"]]}
+function ultSeriUp(r){return Math.min(3,ultSeriK(r).filter(k=>k[0]).length)}
 function ultCanli(){const B=ultBuild();const live=B.seri.map(r=>({r,c:ultBest(r.pid)})).filter(x=>x.c);const done=B.C.filter(c=>c.type==="seri"&&c.season===B.cur).reverse();
   let h=``;
   h+=`<h4 class="ulgh"><span>Şu an izlenenler</span><small class="num">${live.length}</small></h4>`;
-  h+=live.length?`<div class="ulsrl">${live.map(({r,c})=>{const K=[[r.w>=3,"3 maçın 3'ünü kazan",`${r.w}/3`],[r.ga>=5,"5 katkı puanı",`${fN(Math.min(r.ga,5))}/5`],[r.mo,"Maçın adamı",r.mo?"✓":"–"],[r.tw,"Haftanın takımı",r.tw?"✓":"–"]];const up=Math.min(3,K.filter(k=>k[0]).length);
-    return `<section class="card ulsr2">${ultCardH({...c,type:"seri",r:c.base+up,up,extra:r.seen+"/3 maç"})}<div class="ulsr2-x"><b>${esc(shortName(nameOf(c.pid)))}</b><small>${r.seen}/3 maç izlendi · şimdilik <em>+${up}</em></small><span class="ulbar"><i style="width:${r.seen/3*100}%"></i></span><ul>${K.map(([ok,t,v])=>`<li class="${ok?"ok":""}"><i>${ok?"✓":""}</i><span>${t}</span><small>${v}</small></li>`).join("")}</ul></div></section>`}).join("")}</div>`:`<p class="ult-n">Şu an izlenen Seri kartı yok. 4 maçta bir yenileri çıkar.</p>`;
+  h+=live.length?`<div class="ulsrl">${live.map(({r,c})=>{const K=ultSeriK(r);const up=ultSeriUp(r);
+    return `<section class="card ulsr2">${ultCardH({...c,type:"seri",r:c.base+up,up,extra:r.seen+"/3 maç"})}<div class="ulsr2-x"><b>${esc(shortName(nameOf(c.pid)))}</b><small>${r.seen}/3 maç izlendi · şimdilik <em>+${up}</em></small><span class="ulbar"><i style="width:${r.seen/3*100}%"></i></span><ul>${K.map(([ok,t,a,v])=>`<li class="${ok?"ok":""}"><i>${ok?"✓":""}</i><span>${esc(t)}${a?`<em>${esc(a)}</em>`:""}</span><small>${v}</small></li>`).join("")}</ul><p class="ulsr2-n">5 görevden her biri +1 · en fazla +3</p></div></section>`}).join("")}</div>`:`<p class="ult-n">Şu an izlenen Seri kartı yok. 4 maçta bir yenileri çıkar.</p>`;
   if(done.length)h+=`<h4 class="ulgh"><span>Bu sezon tamamlananlar</span><small class="num">${done.length}</small></h4><div class="mzk">${done.map(c=>ultCardH(c)).join("")}</div>`;
   return h}
 function ultGelisim(){const st=ultSt(),B=ultBuild(),E=ultEvos(),hak=ultEvoHak(),me=myPid();

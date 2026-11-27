@@ -6404,3 +6404,5 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulyat .ulyat-b .ulhb{min-height:40px;padding:0 9px;font-size:.75rem}
 .ulyat .ulyat-s>#ulFeed{flex:1 1 0;min-height:0;overflow:hidden}
 .ulyat .ch .eyebrow{letter-spacing:.06em}
+.ulsr2-x li span em{display:block;font-style:normal;font-size:.6875rem;font-weight:600;color:var(--c-ink3);margin-top:1px}
+.ulsr2-n{margin:8px 0 0;font:600 .6875rem/1.3 Inter,sans-serif;color:var(--c-ink3)}
