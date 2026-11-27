@@ -6410,3 +6410,8 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .mzc-o .ulc-p2{display:block;opacity:.7;font-size:.75em;margin-top:1px}
 .ulp-s .ulp-l{position:absolute;left:2px;bottom:100%;margin-bottom:-7px;z-index:3;font:800 .625rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.04em;color:rgba(255,255,255,.65);background:rgba(14,10,34,.7);padding:2px 5px;border-radius:6px;white-space:nowrap;pointer-events:none}
 .ulp-s .ulp-l.ok{color:#03240F;background:#00E58A}
+/* diziliş biçimi seçimi */
+.ulseg.ulbc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.ulseg.ulbc button{white-space:normal;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px;min-height:48px;text-align:left}
+.ulseg.ulbc button b{font:800 .8125rem/1.1 Inter,sans-serif}
+.ulseg.ulbc button small{font:600 .6875rem/1.25 Inter,sans-serif;opacity:.75}

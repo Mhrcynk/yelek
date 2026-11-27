@@ -10,6 +10,8 @@
  const T=t=>{const A=obj(A0);A.t=t;return A};
  for(const t of["hucum","savunma","kontra","pres"]){const r=run(T(t),B0,"tk"+t);add(`${t} – dengeli`,r,Math.abs(r.G-r.M)<=9,"tek başına üstün olmamalı")}
  for(const[a,b]of[["kontra","hucum"],["hucum","savunma"],["savunma","pres"],["pres","kontra"]]){const r=run(T(a),T(b),"d"+a);add(`${a} > ${b}`,r,r.G-r.M>=4,"döngü: kazanan önde olmalı")}
+ // dizilişler: aynı kartlar, aynı güç ve kimya; hiçbiri tek başına üstün olmamalı
+ for(const f of["2-3-1","3-2-1","3-1-2","2-1-3"]){const A=obj(A0);A.f=f;const x=ultLine(A0);A.x={s:x.str,ch:x.ch};const B=obj(A0);B.x={s:x.str,ch:x.ch};const r=run(A,B,"dz"+f);add(`${f} – 2-2-2`,r,Math.abs(r.G-r.M)<=10,"tek başına üstün olmamalı")}
  // kimya bağları: aynı kartlar, aynı güç; bağlar tam ya da hiç
  const bagli=v=>{const X=obj(A0);const x=ultLine(X);X.x={s:x.str,ch:x.ch,bg:v.repeat(49)};return X};
  {const r=run(bagli("2"),bagli("0"),"bg");add("Güçlü bağlar – bağsız (aynı güç)",r,r.G-r.M>=3,"bağ pası ve top kaybı farkı")}
