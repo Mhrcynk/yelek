@@ -17,7 +17,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png?v=3">
 <link rel="preload" href="fonts/barlow-condensed-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="app.css?v=261127060042">
+<link rel="stylesheet" href="app.css?v=261127060547">
 </head>
 <body>
 <header class="top">
@@ -44,7 +44,7 @@
 <div id="story"></div>
 <div id="toast" class="toast" hidden></div>
 
-<script>const APP_V="261127060042";</script>
+<script>const APP_V="261127060547";</script>
 <script>
 // yeni sürüm yayınlanırken dosya birkaç saniye gecikebilir: uygulama dosyası gelmezse kısa süre sonra yeniden dene
 function yelekRetry(){var n=0;try{n=+sessionStorage.getItem("y_rt")||0;sessionStorage.setItem("y_rt",n+1)}catch(_){}
@@ -52,6 +52,6 @@ function yelekRetry(){var n=0;try{n=+sessionStorage.getItem("y_rt")||0;sessionSt
   try{sessionStorage.removeItem("y_rt")}catch(_){}
   document.body.innerHTML='<div style="font:16px system-ui;color:#fff;background:#120A2A;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center"><b>Yelek güncelleniyor</b><span style="opacity:.8">Birkaç saniye sonra tekrar dene.</span><button onclick="location.reload()" style="font:inherit;padding:10px 18px;border-radius:12px;border:0;background:#F2C94C;color:#120A2A;font-weight:700">Tekrar dene</button></div>'}
 </script>
-<script src="app.js?v=261127060042" onerror="yelekRetry()"></script>
+<script src="app.js?v=261127060547" onerror="yelekRetry()"></script>
 </body>
 </html>

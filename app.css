@@ -6367,3 +6367,6 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 /* maç ekranı: dikeyde üst boşluk yok (sayfa çentiğe kadar çıkmıyor); yatayda kontroller hep görünür */
 .ulmac:not(.ulyat) .ch{padding-top:10px}
 .ulyat .ulyat-s>#ulCtl,.ulyat #ulCtl{position:sticky;bottom:0;z-index:8;margin-top:8px;padding:6px 0 max(4px,env(safe-area-inset-bottom,0px));background:linear-gradient(rgba(14,10,34,0),#0e0a22 30%)}
+/* sekmeler: Ultimate geçişi (mor-pembe-altın), her sekmede aynı vurgu */
+.ulso.ulmt button.on{background:linear-gradient(120deg,#7B5CF0,#E0409A 55%,#F5A742)!important;color:#fff!important;box-shadow:0 4px 16px rgba(224,64,154,.35)!important}
+.ulmt~*{--ta:#F5C542!important;--ta2:rgba(224,64,154,.16)!important}
