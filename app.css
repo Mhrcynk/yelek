@@ -6169,3 +6169,28 @@ body.gpu .toast,body.gpd .toast,body.gpf .toast,body.gpu .btn.primary,body.gpd .
 .ulmac:not(.ulyat) .ch{min-height:48px;box-sizing:content-box}
 .ulmac:not(.ulyat) .ulyat-s>.ulsb2{position:sticky;top:calc(max(10px,env(safe-area-inset-top,0px)) + 64px);z-index:6}
 .ulm-p .av{display:grid!important;place-items:center;line-height:1;font-size:.6875rem;text-align:center}.ulm-p .av img{width:100%;height:100%;object-fit:cover}
+/* nasıl oynanır: açılır konu kartları */
+.ulnz-ad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+.ulnz-ad .ulkx b{font:800 .9375rem Inter,sans-serif}.ulnz-ad .ulkx small{white-space:normal;line-height:1.35}
+.ulnz-n{font-style:normal;position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:800 .75rem Inter,sans-serif;background:rgba(255,255,255,.1);color:#fff}
+.ulnz{--a:#F5C542;border-radius:16px;background:var(--c-card);margin:0 0 8px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.ulnz.pu{--a:#B98CFF}.ulnz.iy{--a:#00E58A}.ulnz.cy{--a:#5FE3F5}.ulnz.s{--a:#B98CFF}
+.ulnz summary{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:44px;cursor:pointer}.ulnz summary::-webkit-details-marker{display:none}
+.ulnz summary .ulkx-i{width:34px;height:34px;flex:none;margin:0;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--a) 20%,transparent)}.ulnz summary .ulkx-i svg{width:18px;height:18px}
+.ulnz-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ulnz-t b{font:800 1rem var(--display);color:#fff}.ulnz-t small{font:500 .75rem/1.35 Inter,sans-serif;color:var(--c-ink3)}
+.ulnz-ok{flex:none;width:10px;height:10px;border-right:2px solid var(--c-ink3);border-bottom:2px solid var(--c-ink3);transform:rotate(45deg);transition:transform .2s;margin-right:4px}.ulnz[open] .ulnz-ok{transform:rotate(225deg)}
+.ulnz-b{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.ulnz-b ul{margin:0;padding-left:18px;display:grid;gap:6px}.ulnz-b li{font:500 .8125rem/1.5 Inter,sans-serif;color:var(--c-ink2)}.ulnz-b li b{color:#fff}
+.ulnz-tb{border-radius:12px;overflow:hidden;background:rgba(255,255,255,.03)}
+.ulnz-tr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;padding:7px 12px;font:600 .8125rem Inter,sans-serif;color:#fff;border-top:1px solid rgba(255,255,255,.05)}
+.ulnz-tr span:not(:first-child){text-align:right;min-width:52px;color:var(--a)}.ulnz-tr.h{border-top:0;font:700 .6875rem Inter,sans-serif;color:var(--c-ink3);background:rgba(255,255,255,.04)}.ulnz-tr.h span{color:var(--c-ink3)!important}
+.ulnz-tb .ulnz-tr:has(span:nth-child(2):last-child){grid-template-columns:minmax(0,1fr) auto}
+.ulnz-m{display:grid;gap:8px}.ulnz-m>div{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);display:flex;flex-direction:column;gap:3px}.ulnz-m b{font:700 .875rem Inter,sans-serif;color:var(--a)}.ulnz-m small{font:500 .8125rem/1.5 Inter,sans-serif;color:var(--c-ink2)}
+/* kart nasıl okunur */
+.ulleg2{display:flex;gap:14px;align-items:center;margin-bottom:12px}.ulleg-g{flex:1;min-width:0;display:grid;gap:8px}
+.ulleg-i{position:relative;display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:12px;background:var(--c-card)}.ulleg-i .ulnz-n{position:static;flex:none;background:#F5C542;color:#1A1030}
+.ulleg-i span{display:flex;flex-direction:column;gap:1px;min-width:0}.ulleg-i b{font:700 .8125rem Inter,sans-serif;color:#fff}.ulleg-i small{font:500 .75rem/1.35 Inter,sans-serif;color:var(--c-ink3)}
+.ulleg-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.ulleg-r span{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.04)}
+.ulleg-r i{grid-row:span 2;width:14px;height:22px;border-radius:4px}.ulleg-r b{font:700 .8125rem Inter,sans-serif;color:#fff}.ulleg-r small{font:500 .6875rem Inter,sans-serif;color:var(--c-ink3)}
+@media (max-width:360px){.ulleg2{flex-direction:column}}
+details.ulnz>summary::before{display:none}
