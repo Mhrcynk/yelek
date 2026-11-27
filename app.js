@@ -5112,6 +5112,9 @@ function ultBag(a,b){const B=ultBuild(),k=pairKey(a,b),n=B.sw[k]||0,t=B.bw[k]||0
 function ultCards(){const B=ultBuild(),st=ultSt(),me=myPid();const X=B.C.slice();
   for(const e of st.evoDone){X.push({id:"evo-"+e.pid+"-"+e.at,type:"evo",pid:e.pid,base:e.base,r:e.r,up:e.r-e.base,season:e.season||B.cur,bn:"gelişim başında",extra:ULT_EVN[ultRole(e.pid)]||"Gelişim",mine:1})}
   for(const ev of ultEvos())if(ev.lv>0){const c=B.C.find(x=>x.id===ev.cid);if(c){const r=Math.min(80,c.base+ev.lv);X.push({id:ultEvoId(ev),type:"evo",pid:c.pid,base:c.base,r,up:r-c.base,season:B.cur,bn:"gelişim başında",extra:ev.lv+"/4",mine:1})}}
+  // kiralık kartın asıl kartı sonradan kalktıysa (ör. eski Haftanın Takımı) ödül kaybolmasın: aynı oyuncunun güncel özel kartı, yoksa takımın en iyi özel kartı verilir
+  {let dg=0;for(const k of st.kira){if(k.left<=0||B.C.some(x=>x.id===k.cid))continue;const pid=String(k.cid).split("-").slice(1,6).join("-"),me=myPid();
+    const S2=B.C.filter(x=>ULT_SP.includes(x.type)&&x.type!=="kira"&&x.pid!==me).sort((a,b)=>b.r-a.r),y=S2.find(x=>x.pid===pid)||S2[0];if(y){k.cid=y.id;dg=1}}if(dg)ultSave()}
   st.kira.forEach((k,i)=>{const c=B.C.find(x=>x.id===k.cid);if(c&&k.left>0)X.push({...c,id:"kira-"+i,type:"kira",ot:c.type,extra:k.left+" maç",mine:1})});
   (st.yz||[]).forEach(y=>{if(y.left>0)X.push({id:y.id,type:y.lv,pid:y.pid,base:y.base,r:y.r,up:y.r-y.base,season:B.cur,extra:y.left+" maç",mine:1})});
   (st.yt||[]).forEach(y=>X.push({id:y.id,type:"yetenek",y:y.y,pid:y.pid,base:y.r,r:y.r,up:0,season:B.cur,mine:1}));
