@@ -6580,3 +6580,21 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .uldr-sec .uldr-g{margin:8px 0}
 @media (orientation:landscape) and (min-width:640px){.uldr-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}.uldr-sec .uldr-p{height:170px}.uldr-sec .uldr-s{height:36px}.uldr-sec .uldr-s b{font-size:1rem}.uldr-r .uldr-o{margin-top:4px}}
 .uldr-s small{text-overflow:ellipsis}.uldr-s{width:58px}.uldr-s small{max-width:56px}.uldr-sec .uldr-s{width:58px}.uldr-sec .uldr-s small{max-width:56px}
+/* maçın rövanşı, süper kupa, ezeli rakip */
+.ulrv .ulsec-h,.ulez .ulsec-h{align-items:center}.ulrv .ulsec-h .ulbas-i,.ulez .ulsec-h .ulbas-i{margin:-8px -8px -8px 0}
+.ulrv-vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;text-align:center;border-radius:14px;padding:14px 8px;margin:0 0 12px;background:linear-gradient(135deg,rgba(124,155,255,.22),rgba(255,92,168,.18))}
+.ulrv-vs>div>b{display:block;font:800 1.125rem/1.2 "Barlow Condensed",sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ulrv-vs>div>small{display:block;margin-top:2px;font:600 .75rem/1 Inter,sans-serif;color:var(--c-ink2)}
+.ulrv-av{display:flex;justify-content:center;align-items:center;margin-top:8px}.ulrv-av>*{margin:0 -3px}.ulrv-av i{font:700 .75rem/1 Inter,sans-serif;font-style:normal;color:var(--c-ink2);margin-left:8px}
+.ulrv-sk b{display:block;font:800 1.75rem/1 "Barlow Condensed",sans-serif;color:#fff}.ulrv-sk small{display:block;margin-top:4px;font:700 .75rem/1 Inter,sans-serif;color:var(--c-ink2)}
+.ulrv-g{display:grid;margin:10px 0 0}.ulrv-g button{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px;padding:0;border:0;border-top:1px solid rgba(255,255,255,.08);background:none;cursor:pointer;font:600 .8125rem/1.3 Inter,sans-serif;color:var(--c-ink2);text-align:left}.ulrv-g b{color:#fff;font-weight:800;white-space:nowrap}
+.ulrv .ulgh-s{margin-top:10px}
+.ulsk-k{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;text-align:center;border-radius:14px;padding:16px 8px;margin:0 0 12px;background:linear-gradient(160deg,rgba(245,197,66,.28),rgba(245,197,66,.05));box-shadow:inset 0 0 0 1px rgba(245,197,66,.45)}
+.ulsk-k b{display:block;font:800 1.125rem/1.2 "Barlow Condensed",sans-serif;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ulsk-k small{display:block;margin-top:2px;font:600 .75rem/1 Inter,sans-serif;color:var(--c-ink2)}.ulsk-k em{font:800 1.25rem/1 "Barlow Condensed",sans-serif;font-style:normal;color:#F5C542}
+.ulsk-w{margin:0 0 12px;text-align:center;font:800 .9375rem/1.3 Inter,sans-serif;color:#F5C542}
+.uldv-sk{margin:10px 0 0;font:600 .8125rem/1.4 Inter,sans-serif;color:var(--c-ink2)}.uldv-sk b{color:#fff}
+.ulez-k{display:flex;align-items:center;gap:12px}.ulez-k>span{min-width:0}.ulez-k b{display:block;font:800 1.25rem/1.2 "Barlow Condensed",sans-serif;color:#fff}.ulez-k small{display:block;font:600 .75rem/1.35 Inter,sans-serif;color:var(--c-ink2)}
+.ulez-b{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:12px 0 6px;gap:2px}.ulez-b i{display:block;min-width:0}.ulez-b .g{background:#00E58A}.ulez-b .d{background:rgba(255,255,255,.3)}.ulez-b .m{background:#FF6B8A}
+.ulez-l{display:flex;justify-content:space-between;gap:6px;font:700 .75rem/1.2 Inter,sans-serif;color:var(--c-ink2)}
+.ulez-s{display:flex;gap:5px;margin:10px 0 12px}.ulez-s span{flex:1;text-align:center;font:800 .75rem/1 Inter,sans-serif;padding:8px 0;border-radius:8px}.ulez-s .g{background:rgba(0,229,138,.18);color:#3DF0A8}.ulez-s .m{background:rgba(255,107,138,.16);color:#FF9CB0}.ulez-s .d{background:rgba(255,255,255,.08);color:var(--c-ink2)}
+.ulez-d{margin:12px 0 0;padding:10px 12px;border-radius:12px;font:800 .8125rem/1.3 Inter,sans-serif}.ulez-d.g{background:rgba(0,229,138,.16);color:#3DF0A8}.ulez-d.m{background:rgba(255,107,138,.14);color:#FF9CB0}
+.ulez .btn{margin-top:12px}
