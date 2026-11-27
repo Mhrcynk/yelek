@@ -6406,3 +6406,7 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulyat .ch .eyebrow{letter-spacing:.06em}
 .ulsr2-x li span em{display:block;font-style:normal;font-size:.6875rem;font-weight:600;color:var(--c-ink3);margin-top:1px}
 .ulsr2-n{margin:8px 0 0;font:600 .6875rem/1.3 Inter,sans-serif;color:var(--c-ink3)}
+/* kart yüzünde ikinci mevki ve sahadaki yerin gerçek pozisyonu */
+.mzc-o .ulc-p2{display:block;opacity:.7;font-size:.75em;margin-top:1px}
+.ulp-s .ulp-l{position:absolute;left:2px;bottom:100%;margin-bottom:-7px;z-index:3;font:800 .625rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.04em;color:rgba(255,255,255,.65);background:rgba(14,10,34,.7);padding:2px 5px;border-radius:6px;white-space:nowrap;pointer-events:none}
+.ulp-s .ulp-l.ok{color:#03240F;background:#00E58A}
