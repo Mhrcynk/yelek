@@ -6350,3 +6350,17 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .mzc.ulyok .mzc-n,.mzc.ulyok .ulc-t{color:var(--c-ink2)!important;text-shadow:none!important}
 .ulkp-ag .ulbr-o .av.xs{width:22px!important;height:22px!important;font-size:.6875rem!important;letter-spacing:-.02em}.ulkp-ag .ulbr-q{width:22px;height:22px}.ulkp-ag .ulbr-o.by{padding-left:28px}
 .ultur:not(.yok) .mzc.ul-yetenek{background:linear-gradient(160deg,#8EEFFB,#2BB3C9 55%,#16707F)!important;color:#06191C}.ultur:not(.yok) .mzc.ul-yetenek .mzc-o b,.ultur:not(.yok) .mzc.ul-yetenek .mzc-o small{color:#06191C}
+/* maç kontrolleri: kadro düğmeleriyle aynı tarz */
+.ulsp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:0;background:none;border-radius:0;margin-top:12px}
+.ulsp button{min-height:52px;padding:6px 4px;border-radius:12px;border:1px solid var(--c-line2);background:var(--c-card2);color:#fff;font:700 .75rem/1.15 Inter,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;text-align:center}
+.ulsp button svg{width:18px;height:18px;fill:#F5C542;stroke:none}
+.ulsp button.on{background:linear-gradient(135deg,#F5C542,#FFB020);border-color:transparent;color:#1A1030}
+.ulsp button.on svg{fill:#1A1030}
+.ulsp button:active{transform:scale(.97)}
+.ulhb{min-height:44px;padding:0 12px;border-radius:12px;border:1px solid var(--c-line2);background:var(--c-card2);color:#fff;font:700 .8125rem Inter,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;white-space:nowrap}
+.ulhb svg{width:16px;height:16px;fill:none;stroke:#F5C542;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ulhb[data-act="close"] svg{stroke:#ff9aa8}
+.ulhb[aria-pressed="true"]{border-color:#F5C542;background:rgba(245,197,66,.12);color:#F5C542}
+.ulyat .ulsp{gap:6px}.ulyat .ulsp button{min-height:46px;font-size:.6875rem}
+.ulyat .ulhb{min-height:40px;padding:0 10px}
+.ulst span,.ult-sum>div{border:1px solid var(--c-line2);background:var(--c-card2)!important;border-radius:12px}
