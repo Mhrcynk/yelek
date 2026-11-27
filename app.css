@@ -6679,3 +6679,4 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulkr-s{margin:10px 0 0!important;color:#F5C542!important;font-weight:800!important}.ulkr.bek{opacity:.6;pointer-events:none}
 @media (orientation:landscape) and (max-height:500px){.ulkr{align-items:center}.ulkr-o{grid-template-columns:1fr 1fr}.ulkr-k>b{font-size:1.75rem;margin:2px 0}}
 .ulkr{z-index:10000}.ulkr-k{max-height:calc(100dvh - 24px)}
+.ulm-p.yeni{animation:uldrin .5s ease-out}
