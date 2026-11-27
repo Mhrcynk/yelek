@@ -6471,3 +6471,14 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ultc .ulyd-d{justify-content:center;margin-top:3px}
 .ultg{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ultg button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:52px;padding:8px 10px;border-radius:12px;border:1px solid var(--c-line);background:rgba(0,0,0,.2);color:#fff;text-align:left;cursor:pointer}.ultg button b{font:800 .875rem Inter,sans-serif}.ultg button small{font:600 .6875rem Inter,sans-serif;color:var(--c-ink3)}.ultg button.on{background:#F5C542;border-color:#F5C542}.ultg button.on b,.ultg button.on small{color:#2A1F00}
 .ultg button:first-child{grid-column:1/-1}
+/* sahada kartlar (3 görünüm) */
+.ulqk{gap:3px}
+.ulqk-c{position:relative;touch-action:none}
+.ulqk-a{display:flex;align-items:center;gap:4px;padding:2px 4px;border-radius:7px;background:rgba(14,10,34,.78)}
+.ulq.sel .ulqk-c .mzc{box-shadow:0 0 0 3px #F5C542,0 0 18px rgba(245,197,66,.55)}
+.ulq.swp .ulqk-c .mzc{animation:ulqsw 1s ease-in-out infinite}
+.ulp.ulq-saha.kv1{height:480px}
+.ulp.ulq-saha.kv2{height:440px}.kv2 .ulqk-c{width:56px;height:79px}.kv2 .ulqk-c>.mzc{transform:scale(.82);transform-origin:top left}.kv2 .ulqk-a{margin-top:-6px;z-index:2}
+.ulp.ulq-saha.kv3{height:460px}.kv3 .ulqk{flex-direction:column-reverse}.kv3 .ulqk-c{width:62px;height:87px}.kv3 .ulqk-c>.mzc{transform:scale(.9);transform-origin:top left}.kv3 .ulqk-a{margin-bottom:-5px;z-index:2;background:#120A2A;border:1px solid var(--c-line2)}
+.ultc-k{display:block;width:58px;height:77px;margin-bottom:2px}.ultc-k>.mzc{transform:scale(.85);transform-origin:top left}
+.ulp.ulq-saha.kv1{height:560px}.ulp.ulq-saha.kv2{height:480px}.ulp.ulq-saha.kv3{height:530px}
