@@ -6371,3 +6371,8 @@ p.ult-n:not(.yal):not(.uyar){display:block;position:relative;padding-left:40px}p
 .ulso.ulmt button.on{background:linear-gradient(120deg,#7B5CF0,#E0409A 55%,#F5A742)!important;color:#fff!important;box-shadow:0 4px 16px rgba(224,64,154,.35)!important}
 .ulmt~*{--ta:#F5C542!important;--ta2:rgba(224,64,154,.16)!important}
 .ulag{margin:16px 0 0}.ulag-h{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}.ulag-h .ulgh{margin:0}.ulag-h>small{font:600 .75rem Inter,sans-serif;color:var(--c-ink3)}
+.mzc.ulhay{filter:grayscale(.6) brightness(.62);box-shadow:none!important}.mzc.ulhay::before{display:none}
+.mzc.ulhay:active{filter:grayscale(.3) brightness(.85)}
+.ulag-a{margin:22px 0 0;padding-top:14px;border-top:1px solid var(--c-line)}
+.ulap-b{background:linear-gradient(120deg,#7B5CF0,#E0409A 55%,#F5A742)!important;box-shadow:0 4px 14px rgba(224,64,154,.3)!important;color:#fff!important}
+.ulap-b svg{width:22px;height:22px;stroke:#fff}
