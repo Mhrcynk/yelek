@@ -6194,3 +6194,10 @@ body.gpu .toast,body.gpd .toast,body.gpf .toast,body.gpu .btn.primary,body.gpd .
 .ulleg-r i{grid-row:span 2;width:14px;height:22px;border-radius:4px}.ulleg-r b{font:700 .8125rem Inter,sans-serif;color:#fff}.ulleg-r small{font:500 .6875rem Inter,sans-serif;color:var(--c-ink3)}
 @media (max-width:360px){.ulleg2{flex-direction:column}}
 details.ulnz>summary::before{display:none}
+/* maç bitince: tekrar eden canlı parçalar gizlenir; sıra skor → sonuç → istatistik → goller → saha */
+.ulmac.bitti .ulsb2{position:static}
+.ulmac.bitti .ulsb2-gs,.ulmac.bitti #ulSc,.ulmac.bitti .ulmom,.ulmac.bitti .ulyat-s>.ultl,.ulmac.bitti #ulFeed,.ulmac.bitti #ulSt{display:none}
+.ulmac.bitti:not(.ulyat)>.ulm2{order:9;margin-top:4px}
+.ulmac.bitti .ulres>strong{display:none}
+.ulmac.bitti .ulres{padding-block:14px;gap:10px}.ulmac.bitti .ulres>small{font-size:1rem}
+.ulmac.bitti:not(.ulyat)>.ulm2{display:none}
