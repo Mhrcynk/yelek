@@ -5388,7 +5388,16 @@ function ultKupaTab(err){const K=ULT_SRV.kupa,me=myPid(),st=ultSt(),now=ultNow()
   const yol=Y?`<section class="card ulsec"><div class="ulsec-h"><h3>Senin yolun</h3><button class="lnk" data-act="ultKpAgac">Tur ağacı ›</button></div><div class="ulkp-yol">${[1,2,3,4].map(r=>{const y=Y.find(q=>q.r===r);let cl="",v="–",a="";
       if(y&&y.bay){cl="w";v="Bay";a="Tur atladın"}else if(y&&y.e){const p=y.e.p,h=p.h===me;cl=y.w?"w":"l";v=`${h?p.ga:p.gb}-${h?p.gb:p.ga}${p.pa!=null?" P":""}`;a=nm(y.op)}else if(y&&(y.su||y.bek)){cl="on";v=y.su?"Sırada":"Bekliyor";a=y.op?nm(y.op):"?"}
       return `<div class="${cl}"><small>${ULT_KP_TUR[r-1]}</small><b class="num">${v}</b><em>${a}</em></div>`}).join("")}</div></section>`:`<button class="btn ult-w" data-act="ultKpAgac">Tur ağacını gör</button>`;
-  return `<section class="card ulsec ulkp-h${ultHi("kupa")}">${ana}</section>${yol}${odl}`}
+  return `<section class="card ulsec ulkp-h${ultHi("kupa")}"><button class="ulbas-i ulkp-i" data-act="ultBilgi" data-v="kupa" aria-label="Kurallar ve ödüller"><span>i</span></button>${ana}</section>${yol}`}
+// lig, efsane yarışı ve kupa ödülleri tek biçimde
+function ultOdulH(t){const T={lig:[ultTile("s","g","Taç","Şampiyon Tacı çerçevesi"),ultTile("h","pu","Rozet","Kaç kez şampiyon olduğun")],
+  efs:[ultTile("c","g","Kart","Dönemin Efsanesi kartı"),ultTile("g","iy","+5 · Tam","Güç ve kimya bonusu, kalıcı")]},S2={lig:"Şampiyona",efs:"Dönemin birincisine"};
+  return T[t]?`<section class="card ulsec"><div class="ulsec-h"><h3>Ödüller</h3><span class="ulplan-s">${S2[t]}</span></div><div class="ulgrid ulkp-od">${T[t].join("")}</div></section>`:""}
+function ultBilgiH(v){const L=(x)=>`<ul class="ulbl-l">${x.map(y=>`<li>${y}</li>`).join("")}</ul>`;
+  if(v==="lig")return {t:"Sanal Lig",h:L(["Haftada 1 maç, 7 hafta; aktif oyuncular arasında herkes herkesle.","Biri davet eder, kadrosu kilitlenir; rakip 24 saatte kabul etmezse kayıtlı kadrosuyla oynanır.","Hafta biterken oynanmayan maç iki kadro da biraz eksik başlayarak otomatik oynanır.","Galibiyet 3, beraberlik 1 puan; eşitlikte averaj."])+`<div class="ulbl-f"><span><i class="G"></i>Galibiyet</span><span><i class="B"></i>Beraberlik</span><span><i class="M"></i>Mağlubiyet</span></div><p class="ulbl-a">İsimlerin altındaki noktalar son 5 maçı gösterir.</p>`+ultOdulH("lig")};
+  if(v==="efs")return {t:"Efsane Yarışı",h:L(["Gerçek maçlarla ilerler; 3 sezon bir dönemdir.","Maçın adamı 10, An Efsanesi 15, haftanın takımı 3, not 8+ 2 puan ve maçın katkı puanı.","Sıralama maç başı puana göre; dönemin maçlarının en az yarısına çıkan sıralamaya girer.","Katkı puanında gol ve asist mevkiye göre sayılır; kaleci ve defans forvetle eşit şansa sahip."])+ultOdulH("efs")};
+  if(v==="kupa")return {t:"Yelek Kupası",h:L(["Her ayın ilk pazartesi 10:00'da kura çekilir; 15 aktif oyuncu, 4 tur, yaklaşık 10 gün.","Tek maç; berabere biterse penaltılar.","Biri davet eder, kadrosu kilitlenir; rakip 24 saatte kabul etmezse kayıtlı kadrosuyla oynanır.","Tur biterken oynanmayan maç kayıtlı kadrolarla oynanır.","Kadro tavanı ve haftanın kuralı geçerli."])+`<section class="card ulsec"><div class="ulsec-h"><h3>Ödüller</h3></div><div class="ulgrid ulkp-od">${ultTile("s","g","İkon","Şampiyon · Kupa Tacı ve rozet")}${ultTile("s","cy","Yıldız","Finalist")}${ultTile("s","pu","+10","Yarı final · şans puanı")}${ultTile("c","gr","1","Her maç · parça")}</div></section>`};
+  return {t:"Bilgi",h:""}}
 const ULT_KUPA_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M12 14v3M8 20h8M9 17h6v3H9z"/></svg>';
 // hazırlık maçı: puansız ve sınırsız; lige, görevlere, sezon yoluna, şans puanına, kartlara ve haklara dokunmaz. Aynı anda tek bekleyen davet.
 const ultHzDv=()=>Object.values(ULT_SRV.dv||{}).filter(d=>String(d.k).startsWith("hz|"));
@@ -5706,7 +5715,7 @@ function ultSyH(){const st=ultSt(),sy=ultSy(),sn=ultSans(),yeni=[];for(let n=1;n
 function ultYzH(sn,Y){const me=myPid(),b=ultBest(me),base=b?(b.base||b.r):70,s25=Math.min(25,sn);
   const ornek=(lv,r)=>({id:"ornek-"+lv,pid:me,type:lv,r,base,up:r-base});
   const kol=(lv,ad,r,pc,ek)=>{const v=Y.find(y=>y.lv===lv),c=v&&ultCard(v.id);return `<div class="ulyz-k ${lv}">${c?ultCardH(c,{sm:1}):`<div class="ulyz-o">${ultCardH(ornek(lv,r),{sm:1,act:"none"})}<i>Örnek</i></div>`}<b>${ad}</b><span class="ulyz-p">%${pc}</span><small>${ek}</small></div>`};
-  return `<section class="card ulsec ulyz"><div class="ulsec-h"><h3>Yıldız ve İkon</h3><span class="ulplan-s">${Y.length?Y.length+" kartın var":"Her pakette şans"}</span></div>
+  return `<section class="card ulsec ulyz"><div class="ulsec-h"><h3>Yıldız & İkon</h3><span class="ulplan-s">${Y.length?Y.length+" kartın var":"Her pakette şans"}</span></div>
     <div class="ulyz-g">${kol("yildiz","Yıldız",base+9,(Math.min(.1,.03+sn*.002)*100).toFixed(1).replace(".",","),"+9 güç · 10 maç")}${kol("ikon","İkon",Math.min(95,base+19),(Math.min(.02,.005+sn*.0005)*100).toFixed(2).replace(".",","),"+19 güç · 5 maç")}</div>
     <div class="ulyz-s"><span><b class="num">${s25}</b>/25 şans puanı</span><span class="ulbar"><i style="width:${s25/25*100}%"></i></span><small>${s25>=25?"Sıradaki pakette Yıldız garanti":"25 olunca Yıldız garanti · Sezon yolu 10. seviye de Yıldız verir"}</small></div>
     ${Y.length?`<div class="ulyz-l">${Y.map(y=>{const c=ultCard(y.id);return c?`<div>${ultCardH(c,{sm:1})}<small>${y.left} maç kaldı</small></div>`:""}).join("")}</div>`:""}</section>`}
@@ -5859,11 +5868,13 @@ function ultKadro(){const st=ultSt();const x=ultLine(ultMy());const err=ultOk(ul
       <div class="ulfx">${[...(ULT_FX[dz]||[[],[]])[0],...(ULT_TKX[tk]||[[],[]])[0]].map(t=>`<span class="p">${/^[+−-]/.test(t)?"":"+ "}${esc(t)}</span>`).join("")}${[...(ULT_FX[dz]||[[],[]])[1],...(ULT_TKX[tk]||[[],[]])[1]].map(t=>`<span class="m">− ${esc(t)}</span>`).join("")}</div></section>`}
 // ----- Maçlar: sıradaki maç, meydan okuma, tek sıralama
 // bitiş bilgisi: sanal lig 7 hafta (pazartesi başlar, 7. haftanın pazarı biter); efsane yarışı 3 sezonluk dönemin son maçında biter
+// başlık şeridi: sol başlık + alt bilgi, ortada ilerleme, sağda tarih ve bilgi düğmesi
+const ultBas=(t,a,yuz,sagU,sagA,bilgi)=>`<div class="ulbas"><div class="ulbas-t"><b>${t}</b><small>${a}</small></div><div class="ulbas-s"><small>${sagU}</small><b>${sagA}</b></div><button class="ulbas-i" data-act="ultBilgi" data-v="${bilgi}" aria-label="Kurallar ve ödüller"><span>i</span></button><i class="ulbas-p"><i style="width:${Math.max(0,Math.min(100,yuz))}%"></i></i></div>`;
 function ultLigBitis(lg){const st0=lg.real&&ULT_SRV.lig?ULT_SRV.lig.start:ultSt().ligW0;if(st0==null)return"";const end=new Date(((st0+7)*7-3)*864e5-864e5);
-  const t=end.toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long",timeZone:"UTC"});const kal=Math.max(0,7-(lg.W||0));
-  return lg.W>=7?`<b>Sezon bitti</b>`:`<b>Bitiş: ${t}</b> · ${lg.W+1}. hafta / 7`}
+  const t=end.toLocaleDateString("tr-TR",{day:"numeric",month:"short",weekday:"short",timeZone:"UTC"}),W=Math.min(7,lg.W||0);
+  return W>=7?ultBas(`${lg.sezon||1}. Sezon`,"Sezon bitti",100,"Durum","Bitti","lig"):ultBas(`${lg.sezon||1}. Sezon`,`${W+1}. hafta / 7`,W/7*100,"Bitiş",t,"lig")}
 function ultEfsBitis(){const B=ultBuild(),L=sLen(),bas=+(B.sz[B.pk*3]??B.pk*3+1),son=bas+2,kal=Math.max(0,3*L-B.pmN);
-  return `<b>${B.pk+1}. Dönem · ${bas}.–${son}. sezon</b> · ${kal?`bitişe ${kal} gerçek maç`:"dönem bitti"}`}
+  return ultBas(`${B.pk+1}. Dönem`,`${bas}.–${son}. sezon`,(1-kal/(3*L||1))*100,kal?"Bitişe":"Durum",kal?`${kal} maç`:"Bitti","efs")}
 function ultLigBtn(lg,err){const me=myPid(),d=ULT_SRV.dv&&ULT_SRV.dv[lg.key],on=esc(shortName(nameOf(lg.nx))),b=(t,dis,pr)=>`<button class="btn ${pr?"primary ":""}ult-w" data-act="ultPlay" data-k="lig" data-v="${esc(lg.nx)}"${dis?" disabled":""}>${t}</button>`;
   if(!d)return b("Maça davet et",err,1);
   const kal=ultDvSon(d)-ultNow();
@@ -5883,13 +5894,12 @@ function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();
   if(mt==="ch")return sub+kr+ultChTab(err,my,kim);
   if(mt==="hz")return sub+ultHzTab(err,my);
   if(mt==="kupa")return sub+kr+ultKupaTab(err);
-  if(mt==="efs")return sub+`<section class="card ulsec"><div class="ulsec-h"><h3>Efsane yarışı</h3></div><p class="ulbit">${ultEfsBitis()}</p><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}</section>`;
+  if(mt==="efs")return sub+`<section class="card ulsec"><div class="ulsec-h"><h3>Efsane yarışı</h3></div>${ultEfsBitis()}<div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}</section>${ultOdulH("efs")}`;
   const lt=st.lt==="tablo"?"tablo":"mac";
   const sub2=`<div class="ulso ulso-2 ullt" role="tablist">${[["mac","Maçlarım"],["tablo","Puan durumu"]].map(([v,l])=>`<button role="tab" class="${lt===v?"on":""}" aria-selected="${lt===v}" data-act="ultLt" data-v="${v}">${l}</button>`).join("")}</div>`;
   if(lt==="tablo"){const F=r=>`<span class="ulfm" aria-label="Son maçlar: ${(r.f||[]).slice(-5).join(" ")}">${(r.f||[]).slice(-5).map(x=>`<i class="${x}"></i>`).join("")}</span>`;
-    return sub+sub2+`<section class="card ulsec"><p class="ulbit">${ultLigBitis(lg)}</p><div class="ullig ullig2"><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>O</small><small>G</small><small>B</small><small>M</small><small>AV</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,o:r.o,g:r.g,b:r.b,m:r.m,av:r.ag-r.yg,sub:r.f&&r.f.length?F(r):""})),me,[r=>r.o,r=>r.g,r=>r.b,r=>r.m,r=>(r.av>0?"+":"")+r.av])}</div>
-      <p class="ulfm-k"><span><i class="G"></i>galibiyet</span><span><i class="B"></i>beraberlik</span><span><i class="M"></i>mağlubiyet</span> · son 5 maç</p>
-      </section>`}
+    return sub+sub2+`<section class="card ulsec">${ultLigBitis(lg)}<div class="ullig ullig2"><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>O</small><small>G</small><small>B</small><small>M</small><small>AV</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,o:r.o,g:r.g,b:r.b,m:r.m,av:r.ag-r.yg,sub:r.f&&r.f.length?F(r):""})),me,[r=>r.o,r=>r.g,r=>r.b,r=>r.m,r=>(r.av>0?"+":"")+r.av])}</div>
+      </section>${ultOdulH("lig")}`}
   let h="";if(lg.nx){const sk=(()=>{if(lg.can)return null;const e=(ULT_SRV.ev||[]).find(x=>x.kind==="lig"&&x.k===lg.key);if(e&&e.p){ultLigKayit(lg.key,e);const g1=+e.p.ga,g2=+e.p.gb;return e.p.h===me?[g1,g2]:[g2,g1]}const r=st.lig.find(x=>x.k===lg.key)||null;return r?[r.ga,r.gb]:null})();const ex=new Set(ultRakipSiz(ultMy(),lg.nx).map(id=>id&&(ultCard(id)||{}).pid).filter(Boolean));const oL=ULT_SRV.ok?ultRakipKadro(lg.nx,ex):ultAuto(lg.nx,null,ex),ox=ultLine(oL),mt=st.tk||"dengeli",ot=oL.t||"dengeli";const BEATS={kontra:"hucum",pres:"kontra",hucum:"savunma",savunma:"pres"};
     h+=`<section class="ulvs${ultHi("lig")}"><small>${lg.real?`Sanal Lig · ${lg.sezon}. Sezon · ${lg.W+1}. Hafta / 7`:`Antrenman ligi · ${lg.W+1}. Hafta / 7`}</small><div class="ulvs-r"><span>${avatar(P(me),"")}<b>Sen</b><small class="num">Güç ${my.n?fN(my.str):"–"}</small><em>${esc(st.dz||"2-2-2")} · ${TKN(mt)}</em></span>${sk?`<i class="ulvs-s ${sk[0]>sk[1]?"w":sk[0]<sk[1]?"l":"d"}"><b class="num">${sk[0]} – ${sk[1]}</b><small>${sk[0]>sk[1]?"Kazandın":sk[0]<sk[1]?"Kaybettin":"Berabere"}</small></i>`:"<i>VS</i>"}<span>${avatar(P(lg.nx),"")}<b>${esc(shortName(nameOf(lg.nx)))}</b><small class="num">Güç ${fN(ox.str)}</small><em>${sk?esc(oL.f)+" · "+TKN(ot):"Taktik maçta belli olur"}</em></span></div>
       <p class="ulvs-h"><button class="lnk" data-act="ultTab" data-v="takim">Diziliş ve taktiğini ayarla</button></p>
@@ -6051,10 +6061,10 @@ function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="
     const K=own.filter(x=>x.type===c.type).sort((a,b)=>b.r-a.r);
     return `<div class="ch"><div><div class="eyebrow">${esc(tn)}${c.season?" · "+szL(c.season):""}</div><h2>${esc(p.name)}</h2></div>${cl}</div><div class="ult-big ulopen">${ultCardH(c,{act:"none"})}</div>
       <div class="ulmath2"><span><b class="num">${c.base}</b><small>Gerçek</small></span>${c.up?`<i>+</i><span class="up"><b class="num">${c.up}</b><small>Bonus</small></span>`:""}<i>=</i><span class="t"><b class="num">${c.r}</b><small>Kart</small></span></div>
-      ${c.bn||ULT_NASIL[c.type]?`<p class="ulcap">${esc([c.bn?"Gerçek reyting: "+c.bn:"",ULT_NASIL[c.type]||""].filter(Boolean).join(" · "))}</p>`:""}
+      ${c.type!=="temel"&&(c.bn||ULT_NASIL[c.type])?`<p class="ulcap">${esc([c.bn?"Gerçek reyting: "+c.bn:"",ULT_NASIL[c.type]||""].filter(Boolean).join(" · "))}</p>`:""}
       <div class="ulgrid">${T.join("")}</div>
       ${K.length>1?`<section class="card ulsec"><div class="ulsec-h"><h3>Bu türden kartları</h3><span class="ulplan-s">${K.length}</span></div><div class="ulchip">${K.map(x=>{const mm=x.mid?S.matches.find(q=>q.id===x.mid):null;return `<button class="${x.id===c.id?"on":""}" data-act="ultCard" data-v="${esc(x.id)}"><b class="num">${x.r}</b><small>${mm?esc(fmtShort(mm.date)):x.season?szL(x.season):"–"}</small></button>`}).join("")}</div></section>`:""}
-      <section class="card ulsec"><div class="ulsec-h"><h3>Kimya bağları</h3><span class="ulplan-s">${bag.length?bag.length+" oyuncu":""}</span></div>${bag.length?`<div class="ulbag">${bag.map(b=>`<div class="ulbag-i">${avatar(b.q,"sm")}<span class="ulbag-t"><b>${esc(shortName(b.q.name))}</b><small>${b.sw}/${b.bw} maç aynı tarafta${b.ww?` · ${b.ww} galibiyet`:""}</small><span class="ulbar"><i style="width:${b.sw/b.bw*100}%"></i></span></span><em class="${b.g?"g":""}">${b.g?"★ Güçlü":"Bağ"}</em></div>`).join("")}</div>`:`<p class="ult-n">Henüz bağı yok. Aynı tarafta oynadıkça bağ oluşur.</p>`}</section>
+      <section class="card ulsec"><div class="ulsec-h"><h3>Kimya bağları</h3><span class="ulplan-s">${bag.length?bag.length+" oyuncu":""}</span></div>${bag.length?`<div class="ulbgl">${bag.map(b=>`<div class="ulbag-i">${avatar(b.q,"sm")}<span class="ulbag-t"><b>${esc(shortName(b.q.name))}</b><small>${b.sw}/${b.bw} maç aynı tarafta${b.ww?` · ${b.ww} galibiyet`:""}</small><span class="ulbar"><i style="width:${b.sw/b.bw*100}%"></i></span></span><em class="${b.g?"g":""}">${b.g?"★ Güçlü":"Bağ"}</em></div>`).join("")}</div>`:`<p class="ult-n">Henüz bağı yok. Aynı tarafta oynadıkça bağ oluşur.</p>`}</section>
       ${c.pid===myPid()&&c.type!=="temel"?`<button class="btn ult-w ulpay" data-act="ultShare" data-v="${esc(c.id)}">${ICON.share||""} Kartımı paylaş</button>`:""}`}
   if(v==="leg")return `<div class="ch"><div><div class="eyebrow">Yelek <span lang="en">Ultimate</span></div><h2>Kart nasıl okunur?</h2></div>${cl}</div>${ultLegend()}`;
   if(v==="tur"){const t=S.sheet.t,pid=S.sheet.p,all=ultCards().filter(c=>c.type===t),own=[...new Set(all.map(c=>c.pid))].map(P).filter(Boolean);
@@ -6073,6 +6083,7 @@ function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="
   if(v==="canta")return ultCantaSheet();
   if(v==="rakip")return ultRakipSheet();
   // meydan okuma onayı: yanlış kişiye davet gitmesin
+  if(v==="bilgi"){const B=ultBilgiH(S.sheet.b);return `<div class="ch"><div><div class="eyebrow">Kurallar ve ödüller</div><h2>${B.t}</h2></div>${cl}</div>${B.h}`}
   if(v==="kpAgac"){const K=ULT_SRV.kupa;if(!K)return"";const now=ultNow(),me=myPid(),fin=ultKpKaz(K,4,0);let cur=0;
     const kisi=(id,cls,skor,pen)=>`<span class="ulbr-o ${cls}">${id?avatar(P(id)||{id,name:"?"},"xs"):`<i class="ulbr-q">?</i>`}<i class="ulbr-n">${id?esc(shortName(nameOf(id))):"Belli değil"}</i>${skor!=null?`<b class="num">${skor}${pen!=null?`<sup>${pen}</sup>`:""}</b>`:""}</span>`;
     const mac=m=>{const tag=m.tk?`button data-act="ultKpIz" data-v="${esc(m.k)}" aria-label="Maçı izle"`:"div",cls=`ulbr-m${m.ben?" ben":""}${m.w&&!m.bay?" bit":""}${m.bek?" bek":""}`;
@@ -6187,6 +6198,7 @@ case"ultBf":ULT.bf=el.dataset.v||null;render(true);break;
     case"ultHzGonder":{const o=el.dataset.v;S.sheet=null;render(true);ultHzGonder(o);break}
     case"ultHzKabul":ultHzKabul(el.dataset.v);break;
     case"ultHzIz":ultDvIzle("hz",el.dataset.v);break;
+    case"ultBilgi":S.sheet={type:"ult",v:"bilgi",b:el.dataset.v};render(true);break;
     case"ultKpGonder":ultKpGonder(el.dataset.v);break;
     case"ultKpKabul":ultKpKabul(el.dataset.v);break;
     case"ultKpIz":ultDvIzle("kp",el.dataset.v);break;
