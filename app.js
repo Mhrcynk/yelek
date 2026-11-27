@@ -5397,6 +5397,18 @@ function ultKpPair(K,r,s){const c=ultKpCift(K,r,s),k=ultKpKey(K.id,r,s),e=ultKpE
   if(!c.a||!c.b)return{a:c.a||c.b,b:null,bay:1,w:1,ben:(c.a||c.b)===me};
   const p=e&&e.p,ga=p?(p.h===c.a?p.ga:p.gb):null,gb=p?(p.h===c.a?p.gb:p.ga):null;
   return{a:c.a,b:c.b,ga,gb,pen:p&&p.pa!=null?(p.h===c.a?[p.pa,p.pb]:[p.pb,p.pa]):null,w:p?(p.w===c.a?1:2):0,ben:c.a===me||c.b===me,k,tk:p&&p.ka&&p.kb}}
+// kupa tur ağacı (sekmede ve sayfada aynı)
+function ultKpAgacH(K){const now=ultNow(),me=myPid(),fin=ultKpKaz(K,4,0);let cur=0;
+    const kisi=(id,cls,skor,pen)=>`<span class="ulbr-o ${cls}">${id?avatar(P(id)||{id,name:"?"},"xs"):`<i class="ulbr-q">?</i>`}<i class="ulbr-n">${id?esc(shortName(nameOf(id))):"Belli değil"}</i>${skor!=null?`<b class="num">${skor}${pen!=null?`<sup>${pen}</sup>`:""}</b>`:""}</span>`;
+    const mac=m=>{const tag=m.tk?`button data-act="ultKpIz" data-v="${esc(m.k)}" aria-label="Maçı izle"`:"div",cls=`ulbr-m${m.ben?" ben":""}${m.w&&!m.bay?" bit":""}${m.bek?" bek":""}`;
+      if(m.bay)return `<${tag} class="${cls} bay">${kisi(m.a,"w")}<span class="ulbr-o by"><i class="ulbr-n">Tur atladı</i></span></${tag.split(" ")[0]}>`;
+      return `<${tag} class="${cls}">${kisi(m.a,m.w===1?"w":m.w===2?"l":"",m.ga,m.pen?m.pen[0]:null)}${kisi(m.b,m.w===2?"w":m.w===1?"l":"",m.gb,m.pen?m.pen[1]:null)}</${tag.split(" ")[0]}>`};
+    const sut=[1,2,3,4].map(r=>{const M=[];for(let x=0;x<(16>>r);x++)M.push(ultKpPair(K,r,x));const bitti=M.every(m=>m.w),bit=ultKpBitis(K,r);if(!bitti&&!cur)cur=r;
+      const durum=bitti?"Bitti":now>bit?"Oynanıyor":"Son "+new Date(bit).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+      const ciftler=[];if(r<4)for(let i=0;i<M.length;i+=2)ciftler.push(`<div class="ulbr-p">${mac(M[i])}${mac(M[i+1])}</div>`);else ciftler.push(`<div class="ulbr-p f">${mac(M[0])}</div>`);
+      return `<div class="ulbr-c r${r}${cur===r?" cur":""}"><div class="ulbr-h"><b>${ULT_KP_TUR[r-1]}</b><small class="${bitti?"ok":cur===r?"on":""}">${durum}</small></div><div class="ulbr-l">${ciftler.join("")}</div></div>`}).join("");
+    const sp=`<div class="ulbr-c sp"><div class="ulbr-h"><b>Şampiyon</b><small>${fin.ok?"Kupa bitti":"10. gün"}</small></div><div class="ulbr-l"><div class="ulbr-t${fin.ok?" ok":""}"><span class="ulkp-ic">${ULT_KUPA_SVG}</span>${fin.ok?`${avatar(P(fin.w)||{id:fin.w,name:"?"},"sm")}<b>${esc(shortName(nameOf(fin.w)))}</b>`:`<b>?</b>`}</div></div></div>`;
+    return `<div class="ulbr" id="ulBr">${sut}${sp}</div>`}
 function ultKupaTab(err){const K=ULT_SRV.kupa,me=myPid(),st=ultSt(),now=ultNow(),TKN=t=>(ULT_TK[t]||ULT_TK.dengeli)[0];
   const odl=`<section class="card ulsec"><div class="ulsec-h"><h3>Ödüller</h3>${st.kupaN?`<span class="ulplan-s">Kupaların: ${st.kupaN}</span>`:""}</div><div class="ulgrid ulkp-od">${ultTile("s","g","İkon","Şampiyon · Taç · Rozet")}${ultTile("s","cy","Yıldız","Finalist")}${ultTile("s","pu","+10","Yarı final · şans puanı")}${ultTile("c","gr","1","Her maç · parça")}</div></section>`;
   const ib=`<button class="ulbas-i ulkp-i" data-act="ultBilgi" data-v="kupa" aria-label="Kurallar ve ödüller"><span>i</span></button>`;
@@ -5419,9 +5431,9 @@ function ultKupaTab(err){const K=ULT_SRV.kupa,me=myPid(),st=ultSt(),now=ultNow()
       else alt=`<p class="ult-n">Maç başlıyor…</p>`;
       h=`<section class="ulvs${ultHi("kupa")}">${ib}<small>${ust}</small><div class="ulvs-r">${kisi(me,"Sen",`<small class="num">Güç ${my.n?fN(my.str):"–"}</small><em>${esc(ultSt().dz||"2-2-2")} · ${TKN(ultSt().tk||"dengeli")}</em>`)}<i>VS</i>${kisi(c.op,nm(c.op),`<small class="num">Güç ${fN(ox.str)}</small><em>Taktik Maçta Belli Olur</em>`)}</div><p class="ulvs-h"><button class="lnk" data-act="ultTab" data-v="takim">Dizilişi Ayarla</button></p>${alt}</section>`}
     if(err)h=h.replace(/<\/section>$/,`<p class="ult-n uyar"><span>${err}</span><button class="lnk" data-act="ultTab" data-v="takim">Takıma Git</button></p></section>`)}
-  const yol=Y?`<section class="card ulsec"><div class="ulsec-h"><h3>Senin Yolun</h3><button class="lnk" data-act="ultKpAgac">Tur Ağacı ›</button></div><div class="ulkp-yol">${[1,2,3,4].map(r=>{const y=Y.find(q=>q.r===r);let cl="",v="–",a="";
+  const yol=Y?`<section class="card ulsec"><div class="ulsec-h"><h3>Senin Yolun</h3></div><div class="ulkp-yol">${[1,2,3,4].map(r=>{const y=Y.find(q=>q.r===r);let cl="",v="–",a="";
       if(y&&y.bay){cl="w";v="Bay";a="Tur atladın"}else if(y&&y.e){const p=y.e.p,hm=p.h===me;cl=y.w?"w":"l";v=`${hm?p.ga:p.gb}-${hm?p.gb:p.ga}${p.pa!=null?" P":""}`;a=nm(y.op)}else if(y&&(y.su||y.bek)){cl="on";v=y.su?"Sırada":"Bekliyor";a=y.op?nm(y.op):"?"}
-      return `<div class="${cl}"><small>${ULT_KP_TUR[r-1]}</small><b class="num">${v}</b><em>${a}</em></div>`}).join("")}</div></section>`:`<button class="btn ult-w" data-act="ultKpAgac">Tur Ağacını Gör</button>`;
+      return `<div class="${cl}"><small>${ULT_KP_TUR[r-1]}</small><b class="num">${v}</b><em>${a}</em></div>`}).join("")}</div></section>`:"";
   return h+yol+odl}
 // sanal lig sonu: 1. Şampiyon Tacı + rozet + yetenek kartı, 2. Yıldız kart, 3. +10 şans puanı (ödül kartları şans puanını sıfırlamaz)
 function ultLigOdul(sira,sk){const st=ultSt(),R=ultRng(TID+"lig"+sk+myPid()),sn=st.sans,sc=st.sansCar;
@@ -5952,10 +5964,11 @@ function ultMacTab(){const st=ultSt(),me=myPid(),B=ultBuild();const lg=ultLig();
   const kr=ultKuralH();
   if(mt==="ch")return sub+kr+ultChTab(err,my,kim);
   if(mt==="hz")return sub+ultHzTab(err,my);
-  if(mt==="kupa")return sub+kr+ultKupaTab(err);
+  if(mt==="kupa"){const kt=st.kt==="agac"&&ULT_SRV.kupa?"agac":"mac";const s2=ULT_SRV.kupa?`<div class="ulso ulso-2 ullt" role="tablist">${[["mac","Maçlarım"],["agac","Turnuva Ağacı"]].map(([v,l])=>`<button role="tab" class="${kt===v?"on":""}" aria-selected="${kt===v}" data-act="ultKt" data-v="${v}">${l}</button>`).join("")}</div>`:"";
+    return sub+kr+s2+(kt==="agac"?`<section class="card ulsec ulkp-ag"><div class="ulsec-h"><h3>${esc(ultKpAd(ULT_SRV.kupa.id))}</h3><span class="ulplan-s">Kaydır · maça dokun, izle</span></div>${ultKpAgacH(ULT_SRV.kupa)}</section>`:ultKupaTab(err))}
   if(mt==="efs")return sub+`<section class="card ulsec">${ultEfsBitis()}<div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small></small><em>Maç başı</em></div>${ultRows(ultEfsRows(),me)}</section>${ultOdulH("efs")}`;
   const lt=st.lt==="tablo"?"tablo":"mac";
-  const sub2=`<div class="ulso ulso-2 ullt" role="tablist">${[["mac","Maçlarım"],["tablo","Puan durumu"]].map(([v,l])=>`<button role="tab" class="${lt===v?"on":""}" aria-selected="${lt===v}" data-act="ultLt" data-v="${v}">${l}</button>`).join("")}</div>`;
+  const sub2=`<div class="ulso ulso-2 ullt" role="tablist">${[["mac","Maçlarım"],["tablo","Puan Durumu"]].map(([v,l])=>`<button role="tab" class="${lt===v?"on":""}" aria-selected="${lt===v}" data-act="ultLt" data-v="${v}">${l}</button>`).join("")}</div>`;
   if(lt==="tablo"){const F=r=>`<span class="ulfm" aria-label="Son maçlar: ${(r.f||[]).slice(-5).join(" ")}">${(r.f||[]).slice(-5).map(x=>`<i class="${x}"></i>`).join("")}</span>`;
     return sub+sub2+`<section class="card ulsec">${ultLigBitis(lg)}<div class="ullig ullig2"><div class="ulr-hd"><span>#</span><span></span><span>Oyuncu</span><small>O</small><small>G</small><small>B</small><small>M</small><small>AV</small><em>P</em></div>${ultRows(lg.rows.map(r=>({id:r.id,v:r.p,o:r.o,g:r.g,b:r.b,m:r.m,av:r.ag-r.yg,sub:r.f&&r.f.length?F(r):""})),me,[r=>r.o,r=>r.g,r=>r.b,r=>r.m,r=>(r.av>0?"+":"")+r.av])}</div>
       </section>${ultOdulH("lig")}`}
@@ -6149,17 +6162,7 @@ function sheetUlt(){const v=S.sheet.v;const st=ultSt();const cl=`<button class="
       <section class="card ulsec"><div class="ulsec-h"><h3>2. Yetenek</h3></div><div class="ulys-y">${Object.entries(ULT_YT).map(([k,Y])=>{const ok=!p||!Y.r||Y.r.some(r=>rl.includes(r));return `<button class="${y===k?"on":""}" data-act="ultYtY" data-v="${k}"${ok?"":" disabled"} aria-pressed="${y===k}"><i>${Y.ik}</i><span><b>${Y.ad}</b><small>${ok?Y.ac:"Bu oyuncunun mevkisine uygun değil"}</small></span></button>`}).join("")}</div></section>
       <button class="btn primary ult-w" data-act="ultYtAl"${p&&y?"":" disabled"}>${p&&y?`${esc(shortName(nameOf(p)))} · ${ULT_YT[y].ad} kartını al`:"Oyuncu ve yetenek seç"}</button>`}
   if(v==="bilgi"){const B=ultBilgiH(S.sheet.b);return `<div class="ch"><div><div class="eyebrow">Kurallar ve ödüller</div><h2>${B.t}</h2></div>${cl}</div>${B.h}`}
-  if(v==="kpAgac"){const K=ULT_SRV.kupa;if(!K)return"";const now=ultNow(),me=myPid(),fin=ultKpKaz(K,4,0);let cur=0;
-    const kisi=(id,cls,skor,pen)=>`<span class="ulbr-o ${cls}">${id?avatar(P(id)||{id,name:"?"},"xs"):`<i class="ulbr-q">?</i>`}<i class="ulbr-n">${id?esc(shortName(nameOf(id))):"Belli değil"}</i>${skor!=null?`<b class="num">${skor}${pen!=null?`<sup>${pen}</sup>`:""}</b>`:""}</span>`;
-    const mac=m=>{const tag=m.tk?`button data-act="ultKpIz" data-v="${esc(m.k)}" aria-label="Maçı izle"`:"div",cls=`ulbr-m${m.ben?" ben":""}${m.w&&!m.bay?" bit":""}${m.bek?" bek":""}`;
-      if(m.bay)return `<${tag} class="${cls} bay">${kisi(m.a,"w")}<span class="ulbr-o by"><i class="ulbr-n">Tur atladı</i></span></${tag.split(" ")[0]}>`;
-      return `<${tag} class="${cls}">${kisi(m.a,m.w===1?"w":m.w===2?"l":"",m.ga,m.pen?m.pen[0]:null)}${kisi(m.b,m.w===2?"w":m.w===1?"l":"",m.gb,m.pen?m.pen[1]:null)}</${tag.split(" ")[0]}>`};
-    const sut=[1,2,3,4].map(r=>{const M=[];for(let x=0;x<(16>>r);x++)M.push(ultKpPair(K,r,x));const bitti=M.every(m=>m.w),bit=ultKpBitis(K,r);if(!bitti&&!cur)cur=r;
-      const durum=bitti?"Bitti":now>bit?"Oynanıyor":"Son "+new Date(bit).toLocaleString("tr-TR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
-      const ciftler=[];if(r<4)for(let i=0;i<M.length;i+=2)ciftler.push(`<div class="ulbr-p">${mac(M[i])}${mac(M[i+1])}</div>`);else ciftler.push(`<div class="ulbr-p f">${mac(M[0])}</div>`);
-      return `<div class="ulbr-c r${r}${cur===r?" cur":""}"><div class="ulbr-h"><b>${ULT_KP_TUR[r-1]}</b><small class="${bitti?"ok":cur===r?"on":""}">${durum}</small></div><div class="ulbr-l">${ciftler.join("")}</div></div>`}).join("");
-    const sp=`<div class="ulbr-c sp"><div class="ulbr-h"><b>Şampiyon</b><small>${fin.ok?"Kupa bitti":"10. gün"}</small></div><div class="ulbr-l"><div class="ulbr-t${fin.ok?" ok":""}"><span class="ulkp-ic">${ULT_KUPA_SVG}</span>${fin.ok?`${avatar(P(fin.w)||{id:fin.w,name:"?"},"sm")}<b>${esc(shortName(nameOf(fin.w)))}</b>`:`<b>?</b>`}</div></div></div>`;
-    return `<div class="ch"><div><div class="eyebrow">${esc(ultKpAd(K.id))}</div><h2>Tur ağacı</h2></div>${cl}</div><div class="ulbr" id="ulBr">${sut}${sp}</div>`}
+  if(v==="kpAgac"){const K=ULT_SRV.kupa;if(!K)return"";return `<div class="ch"><div><div class="eyebrow">${esc(ultKpAd(K.id))}</div><h2>Tur Ağacı</h2></div>${cl}</div>${ultKpAgacH(K)}`}
   if(v==="kpKura"){const K=ULT_SRV.kupa;if(!K)return"";const Y=ultKpBen(K)||[],c=Y[0]||{},me=myPid();
     return `<div class="ch"><div><div class="eyebrow">Kura çekildi</div><h2>${esc(ultKpAd(K.id))}</h2></div>${cl}</div><section class="card ulsec ulkp-h ulkp-kura"><div class="ulkp-t"><span class="ulkp-ic">${ULT_KUPA_SVG}</span><span><small>${K.players.filter(Boolean).length} OYUNCU · 4 TUR</small><b>${c.bay?"İlk turu maçsız geçtin":"İlk rakibin "+esc(shortName(nameOf(c.op)))}</b><em>${new Date(K.start).toLocaleDateString("tr-TR",{day:"numeric",month:"long"})} – ${new Date(Date.parse(K.start)+240*36e5).toLocaleDateString("tr-TR",{day:"numeric",month:"long"})}</em></span></div>
       ${c.op?`<div class="ulinv-c ulkp-vs"><span>${avatar(P(me)||{id:me,name:"?"},"sm")}<small>Sen</small></span><em>vs</em><span>${avatar(P(c.op)||{id:c.op,name:"?"},"sm")}<small>${esc(shortName(nameOf(c.op)))}</small></span></div>`:""}
@@ -6273,6 +6276,7 @@ case"ultBf":ULT.bf=el.dataset.v||null;render(true);break;
     case"ultKpGonder":ultKpGonder(el.dataset.v);break;
     case"ultKpKabul":ultKpKabul(el.dataset.v);break;
     case"ultKpIz":ultDvIzle("kp",el.dataset.v);break;
+    case"ultKt":st.kt=el.dataset.v;ultSave();render(true);if(st.kt==="agac")setTimeout(()=>{const b=document.getElementById("ulBr"),c=b&&b.querySelector(".ulbr-c.cur");if(b&&c)b.scrollLeft=Math.max(0,c.offsetLeft-b.offsetLeft-8)},60);break;
     case"ultKpAgac":S.sheet={type:"ult",v:"kpAgac"};render(true);setTimeout(()=>{const b=document.getElementById("ulBr"),c=b&&b.querySelector(".ulbr-c.cur");if(b&&c)b.scrollLeft=Math.max(0,c.offsetLeft-b.offsetLeft-8)},60);break;
     case"ultKpGit":st.tab="mac";st.mt="kupa";S.sheet=null;ultSave();render(true);break;
     case"ultHzTum":ULT.hzTum=!ULT.hzTum;render(true);break;
