@@ -5486,7 +5486,7 @@ async function ultKpKabul(k){const d=(ULT_SRV.dv||{})[k];if(!d)return;if(ultKpEv
   ULT_SRV.dv[k]=r.dv;await ultDvOyna("kp",k,r.dv)}
 const ultKpGelen=()=>{const K=ULT_SRV.kupa;if(!K)return 0;const Y=ultKpBen(K),c=Y&&Y[Y.length-1];if(!c||!c.su)return 0;const d=ULT_SRV.dv[c.k];return d&&d.b===myPid()&&!d.accepted_at?1:0};
 function ultKpPair(K,r,s){const c=ultKpCift(K,r,s),k=ultKpKey(K.id,r,s),e=ultKpEv(k),me=myPid();
-  if(!c.ok){const x=ultKpCift(K,r-1,2*s),y=ultKpCift(K,r-1,2*s+1),bil=q=>q.ok&&(!q.a||!q.b)?(q.a||q.b):null;return{a:bil(x),b:bil(y),bek:1,ben:false}}
+  if(!c.ok){const x=ultKpCift(K,r-1,2*s),y=ultKpCift(K,r-1,2*s+1),bil=q=>q.ok&&(!q.a||!q.b)?(q.a||q.b):null;const A=c.a||bil(x),B=c.b||bil(y);return{a:A,b:B,bek:1,ben:A===me||B===me}}
   if(!c.a||!c.b)return{a:c.a||c.b,b:null,bay:1,w:1,ben:(c.a||c.b)===me};
   const p=e&&e.p,ga=p?(p.h===c.a?p.ga:p.gb):null,gb=p?(p.h===c.a?p.gb:p.ga):null;
   return{a:c.a,b:c.b,ga,gb,pen:p&&p.pa!=null?(p.h===c.a?[p.pa,p.pb]:[p.pb,p.pa]):null,w:p?(p.w===c.a?1:2):0,ben:c.a===me||c.b===me,k,tk:p&&p.ka&&p.kb}}
@@ -5579,10 +5579,10 @@ function ultDvKayit(kind,k,e){const st=ultSt(),me=myPid(),L=kind==="lig"?st.lig:
   L.push(rec);ultSave();if(ultEvos().length)ultEvoTick();return od}
 const ultLigKayit=(k,e)=>ultDvKayit("lig",k,e);
 function ultDvIzle(kind,k){const e=(ULT_SRV.ev||[]).find(x=>x.kind===kind&&x.k===k);if(!e)return;const me=myPid(),p=e.p||{};let odul=null;if(kind==="hz"||kind==="kp"){const st=ultSt(),g=kind+"G";st[g]=st[g]||[];if(!st[g].includes(k)){st[g]=st[g].concat([k]).slice(-40);ultSave()}}else odul=ultDvKayit(kind,k,e);
-  const opp=p.h===me?(e.a===me?e.b:e.a):p.h;
+  const aw=e.a===p.h?e.b:e.a,izle=kind==="kp"&&me!==p.h&&me!==aw?p.h:null;const opp=izle?aw:p.h===me?(e.a===me?e.b:e.a):p.h;
   if(!p.ka||!p.kb){toast(p.ar?`Tekrar izleme 24 saat açık · sonuç ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`:`Maç otomatik oynandı: ${p.h===me?p.ga+" – "+p.gb:p.gb+" – "+p.ga}`);render(true);return}
-  let P0=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+kind+k,p.v||1);if(p.h!==me)P0=ultFlip(P0);const R0=ultResult(P0);
-  ULT.run={kind,k,opp,odul,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
+  let P0=ultPlan(ultFromSnap(p.ka),ultFromSnap(p.kb),TID+kind+k,p.v||1);if(p.h!==me&&!izle)P0=ultFlip(P0);const R0=ultResult(P0);
+  ULT.run={kind,k,opp,odul,izle,P0,R0,i:0,sk:{a:0,b:0},hiz:1,feed:[],stl:{sa:0,sb:0,ka:0,ka2:0,kb2:0,fa:0,fb:0},dk:0,done:false};S.sheet={type:"ult",v:"mac"};render(true);setTimeout(ultTick,500)}
 function ultStart(kind,opp){if(kind==="lig"){ultLigAks(opp);return}if(kind==="ch"){ultDvAks("ch",ultChKey(opp),opp);return}const st=ultSt();const me=myPid();const err=ultOk(ultMy());if(err){toast(err);return}
   const day=new Date().toISOString().slice(0,10),wk=isoWeek(new Date());
   if(kind==="ch"){const td=st.ch.filter(x=>x.d===day);if(td.length>=3){toast("Bugünkü 3 davet hakkın doldu");return}if(td.some(x=>x.opp===opp)){toast("Bu oyuncuya bugün meydan okudun");return}}
@@ -5713,7 +5713,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.skip){ultFinish();r
       if(kt&&r.pos[kk]){const kx=T2[0]<50?T2[0]+8:T2[0]-8;kt.style.left=kx+"%";kt.classList.add(T2[0]<50?"dvR":"dvL");setTimeout(()=>kt.classList.remove("dvR","dvL"),900)}
       const net=document.getElementById(e.us?"ulNetT":"ulNetB");if(net){net.classList.remove("sal");void net.getBBox;net.classList.add("sal");setTimeout(()=>net.classList.remove("sal"),1100)}
       setTimeout(()=>{if(ULT.run===r)ultPlace(r,ultPose(r,{att:e.us,mode:"gol",ball:[50,e.us?8:92],sh:shj}))},T(450));setTimeout(()=>{if(ULT.run===r&&!r.skip)ultSantra(r,!e.us)},T(1300));
-      ultFeed(`${D}'`,`⚽ ${e.us?"GOL!":"Gol yedik ·"} ${sh}${how}${nas?(e.kind==="kor"?" · orta ":" · asist ")+as:""}`,e.us?"g":"x");ultGoal(e.us,X.cs[P[last]].pid)}
+      ultFeed(`${D}'`,`⚽ ${e.us||r.izle?"GOL!":"Gol yedik ·"} ${sh}${how}${nas?(e.kind==="kor"?" · orta ":" · asist ")+as:""}`,e.us?"g":"x");ultGoal(e.us,X.cs[P[last]].pid)}
     else if(e.miss){const dk2=e.o?e.o==="direk":Math.random()<.3;const T2=dk2?[Math.random()<.5?42:58,gy]:[Math.random()<.5?30+Math.random()*8:62+Math.random()*8,e.us?0:100];ultSut(bp,T2,"kac");ultBall(T2);
       if(dk2)ultBub([T2[0],e.us?6:94],"Direk!","dr");ultFeed(`${D}'`,e.kind==="pen"?`${sh} penaltıyı kaçırdı`:`${sh}${e.kind==="kor"?" kafa vuruşu":" şut"} · ${dk2?"direkten döndü":"auta gitti"}`,"")}
     else{const kl=e.us?r.P0.b.cs[0]:r.P0.a.cs[0];const T2=[44+Math.random()*12,e.us?6:94];ultSut(bp,T2,"kur");ultBall(T2);
@@ -5733,7 +5733,7 @@ function ultOn2(us,j){document.querySelectorAll(".ulm-p.on").forEach(x=>x.classL
 function ultTrail(l){const g=document.getElementById("ulTr");if(!g)return;g.innerHTML="";if(!l)return;const[a0,b,k,us]=l;const a=(ULT.run&&ULT.run.bp)||a0;if(Math.hypot(a[0]-b[0],a[1]-b[1])<3)return;
   g.insertAdjacentHTML("beforeend",`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${k?"k":""} ${us?"":"o"}"/>`)}
 // kupa maçı berabere bitince penaltılar oynatılır (sonuç kayıttaki seriyle aynı)
-function ultPenVar(r){if(r.kind!=="kp"||r.sk.a!==r.sk.b)return null;const e=ultKpEv(r.k);if(!e||!e.p||e.p.pa==null)return null;const ps=ultPenSeri(r.k,{p:e.p},e.p.h);return{K:ps.K,ben:e.p.h===myPid()}}
+function ultPenVar(r){if(r.kind!=="kp"||r.sk.a!==r.sk.b)return null;const e=ultKpEv(r.k);if(!e||!e.p||e.p.pa==null)return null;const ps=ultPenSeri(r.k,{p:e.p},e.p.h);return{K:ps.K,ben:e.p.h===myPid()||!!r.izle}}
 function ultPenOyna(r){const pv=ultPenVar(r);if(!pv){ultFinish();return}const RM2=matchMedia("(prefers-reduced-motion: reduce)").matches,T=ms=>(RM2?Math.min(ms,250):ms*ULT_TM)/r.hiz;
   const sira=X=>{const o=[];for(let j=1;j<7;j++)if(X.cs[j])o.push(j);const w={FV:0,OS:1,DF:2};o.sort((a,b)=>((X.cs[b].y==="penalti")-(X.cs[a].y==="penalti"))||(w[X.sl[a][0]]-w[X.sl[b][0]]));if(X.cs[0])o.push(0);return o};
   const S={a:sira(r.P0.a),b:sira(r.P0.b)},n={a:0,b:0},sk={a:0,b:0},L=[];
@@ -5748,7 +5748,7 @@ function ultPenOyna(r){const pv=ultPenVar(r);if(!pv){ultFinish();return}const RM
   setTimeout(at,T(900))}
 function ultFeedUp(x){const r=ULT.run;if(r&&r.feed[0])r.feed[0]=[r.feed[0][0],x,r.feed[0][2]]}
 function ultFeed(t,x,c){const r=ULT.run;r.feed.unshift([t,x,c]);r.feed=r.feed.slice(0,4)}
-function ultGoal(us,pid){const o=document.getElementById("ulGoal");if(!o)return;o.className="ulgl "+(us?"us":"op");o.innerHTML=`<b>${us?"GOL!":"Gol yedik"}</b>${avatar(P(pid)||{id:pid,name:"?"},"")}<span>${esc(shortName(nameOf(pid)))}</span>`;o.hidden=false;clearTimeout(ultGoal.t);ultGoal.t=setTimeout(()=>{o.hidden=true},1150/(ULT.run?ULT.run.hiz:1))}
+function ultGoal(us,pid){const o=document.getElementById("ulGoal");if(!o)return;const iz=ULT.run&&ULT.run.izle;o.className="ulgl "+(us||iz?"us":"op");o.innerHTML=`<b>${us||iz?"GOL!":"Gol yedik"}</b>${avatar(P(pid)||{id:pid,name:"?"},"")}<span>${esc(shortName(nameOf(pid)))}</span>`;o.hidden=false;clearTimeout(ultGoal.t);ultGoal.t=setTimeout(()=>{o.hidden=true},1150/(ULT.run?ULT.run.hiz:1))}
 function ultDraw(){const r=ULT.run;if(!r)return;const s=document.getElementById("ulSk");if(!s)return;s.textContent=r.sk.a+" – "+r.sk.b;
   const pb=document.getElementById("ulPb");if(pb)pb.style.width=(r.done?100:r.dk/40*100)+"%";
   // baskı: son ~25 dakikadaki ataklar, şutlar, korner ve goller
@@ -5787,13 +5787,14 @@ function ultScH(r){const L=[];for(const[ei,e]of r.P0.ev.entries()){const X=e.us?
   return `<div class="ulsc" id="ulSc"><div>${L.filter(e=>e.us).map(it).join("")}</div><div class="o">${L.filter(e=>!e.us).map(it).join("")}</div></div>`}
 function ultMacSheet(){const r=ULT.run;if(!r)return"";const a=r.P0.a,b=r.P0.b,R0=r.R0,on=shortName(nameOf(r.opp));
   const tok=(X,us)=>X.cs.map((c,j)=>{if(!c)return"";const[x,y]=ultP(r,us,j);return `<span class="ulm-p ${us?"us":"op"}${(r.red||[]).includes((us?"a":"b")+j)?" out":""}" data-s="${us?"a":"b"}${j}" data-n="${esc(String(shortName(nameOf(c.pid))).split(" ")[0])}" data-r="${X.sl[j][0]}" style="left:${x}%;top:${y}%">${avatar(P(c.pid)||{id:c.pid,name:"?"},"sm")}</span>`}).join("");
-  const kpe=r.kind==="kp"&&ultKpEv(r.k),kpp=kpe&&kpe.p&&kpe.p.pa!=null?kpe.p:null,kpPen=kpp?(kpp.w===myPid()?`Penaltılarla kazandın · ${kpp.h===myPid()?kpp.pa+"-"+kpp.pb:kpp.pb+"-"+kpp.pa}`:`Penaltılarla elendin · ${kpp.h===myPid()?kpp.pa+"-"+kpp.pb:kpp.pb+"-"+kpp.pa}`):"";
-  const res=kpp?(kpp.w===myPid()?"Turu geçtin":"Elendin"):R0.ga>R0.gb?(r.kind==="kp"?"Kazandın · turu geçtin":"Kazandın"):R0.ga<R0.gb?(r.kind==="kp"?"Kaybettin · elendin":"Kaybettin"):"Berabere",mv=R0.mvp&&P(R0.mvp);
+  const usP=r.izle||myPid(),usN=r.izle?shortName(nameOf(r.izle)):"Sen";
+  const kpe=r.kind==="kp"&&ultKpEv(r.k),kpp=kpe&&kpe.p&&kpe.p.pa!=null?kpe.p:null,kpPen=kpp&&r.izle?`${shortName(nameOf(kpp.w))} penaltılarla turu geçti · ${kpp.pa}-${kpp.pb}`:kpp?(kpp.w===myPid()?`Penaltılarla kazandın · ${kpp.h===myPid()?kpp.pa+"-"+kpp.pb:kpp.pb+"-"+kpp.pa}`:`Penaltılarla elendin · ${kpp.h===myPid()?kpp.pa+"-"+kpp.pb:kpp.pb+"-"+kpp.pa}`):"";
+  const res=r.izle?(R0.ga===R0.gb&&!kpp?"Berabere":`${shortName(nameOf(kpp?kpp.w:R0.ga>R0.gb?r.izle:r.opp))} turu geçti`):kpp?(kpp.w===myPid()?"Turu geçtin":"Elendin"):R0.ga>R0.gb?(r.kind==="kp"?"Kazandın · turu geçtin":"Kazandın"):R0.ga<R0.gb?(r.kind==="kp"?"Kaybettin · elendin":"Kaybettin"):"Berabere",mv=R0.mvp&&P(R0.mvp);
   // yatay görünüm: telefon yan çevrilince kendiliğinden; dikey kilitliyse "Yatay" düğmesi içeriği 90° döndürür
   const land=ultYatayMi(),yat=land||ULT.yat;
   return `<div class="ulmac${yat?" ulyat":""}${!land&&ULT.yat?" ulyat-z":""}${r.done?" bitti":""}"><div class="ulm2 mg-c"><div class="ulm-cam" id="ulCam"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><g class="ln"><rect x="2" y="1.5" width="96" height="97" rx="2"/><line x1="2" y1="50" x2="98" y2="50"/><circle cx="50" cy="50" r="9"/><rect x="30" y="1.5" width="40" height="12"/><rect x="30" y="86.5" width="40" height="12"/></g><defs><marker id="ulOkU" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#F5C542"/></marker></defs><rect id="ulNetT" class="net" x="42" y="0" width="16" height="1.5"/><rect id="ulNetB" class="net" x="42" y="98.5" width="16" height="1.5"/><circle class="spot" cx="50" cy="12" r=".6"/><circle class="spot" cx="50" cy="88" r=".6"/><g id="ulTr"></g></svg>
-      ${tok(a,true)}${tok(b,false)}<span class="ulm-b" id="ulBall" style="left:50%;top:50%"></span></div><div class="ulgl" id="ulGoal" hidden></div><div class="ulht" id="ulHt" hidden></div></div><div class="ulyat-s"><div class="ch"><div><div class="eyebrow">${r.kind==="lig"?"Sanal Lig":r.kind==="hz"?"Hazırlık maçı · puansız":r.kind==="kp"?esc(ultKpAd(String(r.k).split("|")[1])+" · "+ULT_KP_TUR[+String(r.k).split("|")[2]-1]):"Meydan Okuma"}</div><h2>Sen – ${esc(on)}</h2></div><span class="ulyat-b">${land?"":`<button class="ulhb" data-act="ultYat" aria-pressed="${!!ULT.yat}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 3.5h6M17 20.5h-6"/></svg>${ULT.yat?"Dikey":"Yatay"}</button>`}<button class="ulhb" data-act="close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Kapat</button></span></div>
-    <div class="ulsb2" id="ulSb"><span>${avatar(P(myPid())||{id:myPid(),name:"?"},"sm")}<b>Sen</b></span><span class="ulsb2-m"><strong class="num" id="ulSk">${r.sk.a} – ${r.sk.b}</strong><small class="num" id="ulDk">${r.done?"MS":ultD(r.dk||0)+"'"}</small></span><span><b>${esc(on)}</b>${avatar(P(r.opp)||{id:r.opp,name:"?"},"sm")}</span>${ultSbG(r)}</div>
+      ${tok(a,true)}${tok(b,false)}<span class="ulm-b" id="ulBall" style="left:50%;top:50%"></span></div><div class="ulgl" id="ulGoal" hidden></div><div class="ulht" id="ulHt" hidden></div></div><div class="ulyat-s"><div class="ch"><div><div class="eyebrow">${r.kind==="lig"?"Sanal Lig":r.kind==="hz"?"Hazırlık maçı · puansız":r.kind==="kp"?esc(ultKpAd(String(r.k).split("|")[1])+" · "+ULT_KP_TUR[+String(r.k).split("|")[2]-1]):"Meydan Okuma"}</div><h2>${esc(usN)} – ${esc(on)}</h2></div><span class="ulyat-b">${land?"":`<button class="ulhb" data-act="ultYat" aria-pressed="${!!ULT.yat}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="2"/><path d="M7 3.5h6M17 20.5h-6"/></svg>${ULT.yat?"Dikey":"Yatay"}</button>`}<button class="ulhb" data-act="close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>Kapat</button></span></div>
+    <div class="ulsb2" id="ulSb"><span>${avatar(P(usP)||{id:usP,name:"?"},"sm")}<b>${esc(usN)}</b></span><span class="ulsb2-m"><strong class="num" id="ulSk">${r.sk.a} – ${r.sk.b}</strong><small class="num" id="ulDk">${r.done?"MS":ultD(r.dk||0)+"'"}</small></span><span><b>${esc(on)}</b>${avatar(P(r.opp)||{id:r.opp,name:"?"},"sm")}</span>${ultSbG(r)}</div>
     ${ultScH(r)}<div class="ulmom" id="ulMom" style="--m:50%" role="img" aria-label="Baskı"><i></i></div>${ultTlH(r,"nokta")}
 
     <ul class="ulfeed" id="ulFeed" aria-live="polite">${(r.feed&&r.feed.length?r.feed:[["1'","Düdük çaldı",""]]).map(([t,x,c],i)=>`<li class="${c} ${i?"":"nw"}"><b>${t}</b><span>${esc(x)}</span></li>`).join("")}</ul>
