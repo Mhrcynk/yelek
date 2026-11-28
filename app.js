@@ -6334,12 +6334,12 @@ function ultAnKare(ts){const r=ULT.run,cam=document.getElementById("ulCam");if(!
   requestAnimationFrame(ultAnKare);const dt=Math.min(.05,(ts-(ULT_AN.t||ts))/1000);ULT_AN.t=ts;if(!r.pos||!dt)return;if(!cam.parentElement.classList.contains("can"))cam.parentElement.classList.add("can");
   const hz=Math.min(6,r.hiz||1)*(r.onem?3:1),cl=(v,x,y)=>Math.max(x,Math.min(y,v)),T=ts/1000,bt=r.bp||[50,50],B=ULT_AN.B||(ULT_AN.B=bt.slice());
   {const dx=bt[0]-B[0],dy=bt[1]-B[1],d=Math.hypot(dx,dy);if(d>.05){const s=Math.min(d,(d>26?120:66)*hz*dt);B[0]+=dx/d*s;B[1]+=dy/d*s}}
-  let bl=ULT_AN.E._b;if(!bl||!bl.isConnected)bl=ULT_AN.E._b=document.getElementById("ulBall");if(bl){bl.style.left=B[0]+"%";bl.style.top=B[1]+"%"}
+  let bl=ULT_AN.E._b;if(!bl||!bl.isConnected)bl=ULT_AN.E._b=document.getElementById("ulBall");if(bl){bl.style.left=cl(B[0],11,89)+"%";bl.style.top=B[1]+"%"}
   const dur=r.done||(r.cm&&r.cm.bek)||!!r.lbl||!r.bas;
   for(const k in r.pos){let el=ULT_AN.E[k];if(!el||!el.isConnected)el=ULT_AN.E[k]=document.querySelector(`.ulm-p[data-s="${k}"]`);if(!el)continue;const p=r.pos[k],on=el.classList.contains("on"),kl=k.slice(1)==="0",f=k.charCodeAt(0)*1.7+k.charCodeAt(1)*2.3;
     let tx=p[0],ty=p[1];if(r.pres===k&&!on&&!dur&&k.slice(1)!=="0"){const us=k[0]==="a";tx=B[0]+(B[0]<50?2.5:-2.5);ty=Math.max(6,Math.min(94,B[1]+(us?3.5:-3.5)))}else if(!on&&!dur){tx+=(B[0]-50)*(kl?.04:.09)+Math.sin(T*.9+f)*(kl?.5:1.3);ty+=(kl?0:(B[1]-p[1])*.07)+Math.cos(T*.7+f*1.7)*(kl?.4:1.1)}
     const c=ULT_AN.P[k]||(ULT_AN.P[k]=[tx,ty]),dx=tx-c[0],dy=ty-c[1],d=Math.hypot(dx,dy);if(d>.02){const s=Math.min(d,Math.min(on?26:r.pres===k?36:18,3+d*2.6)*hz*dt);c[0]+=dx/d*s;c[1]+=dy/d*s}
-    el.style.left=cl(c[0],7,93)+"%";el.style.top=cl(c[1],4,96)+"%"}
+    el.style.left=cl(c[0],13,87)+"%";el.style.top=cl(c[1],4,96)+"%"}
   if(!dur){const G=r.gz||(r.gz={z:[0,0,0],k:[0,0,0],t:[0,0]}),w=dt*hz;G.z[B[1]<33.3?2:B[1]<66.7?1:0]+=w;if(r.tops!=null){G.t[r.tops?0:1]+=w;if(r.tops&&B[1]<62)G.k[B[0]<36?0:B[0]>64?2:1]+=w}}}
 function ultPlace(r,pos){r.pos=pos;if(typeof requestAnimationFrame==="function"&&!matchMedia("(prefers-reduced-motion: reduce)").matches){if(!ULT_AN.on){ULT_AN.on=true;requestAnimationFrame(ultAnKare)}return}for(const[k,p]of Object.entries(pos)){const t=document.querySelector(`.ulm-p[data-s="${k}"]`);if(t){t.style.left=Math.min(93,Math.max(7,p[0]))+"%";t.style.top=Math.min(96,Math.max(4,p[1]))+"%"}}}
 // golden sonra santra: herkes kendi yarı sahasındaki yerine döner, gol yiyen takım ortadan başlar
