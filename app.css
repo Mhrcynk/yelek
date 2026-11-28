@@ -6795,3 +6795,5 @@ section.uldr:not(.card){margin:0 0 10px}
 .ultg button.on .ultg-u{background:rgba(0,0,0,.22)!important;color:#1B1300!important}
 /* zaman çizgisinin alt işaretleri sahaya taşmasın */
 .ulmac:not(.ulyat) .ulyat-s>.ultl{margin-bottom:16px}
+
+.mct>.ulcev{background:#F5A623;box-shadow:0 0 0 3px rgba(245,166,35,.22)}
