@@ -6717,19 +6717,21 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulkr-sk>b{font:800 2.75rem/1 "Barlow Condensed",sans-serif;color:#fff}
 .ulkr-i{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.ulkr-i>span{padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.07);font:600 .75rem/1.2 Inter,sans-serif;color:var(--c-ink2)}.ulkr-i b{color:#fff}
 .ulkr-i>#ulKrR{padding:0;background:none}
-.ulkr-o{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ulkr-o button{position:relative;display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:58px;padding:9px 12px;border:0;border-radius:14px;background:#2C2060;box-shadow:inset 0 0 0 1px #3A2C78;color:#fff;cursor:pointer;font:inherit;text-align:left}
-.ulkr-o button.cur{grid-column:1/-1;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+.ulkr-o{display:grid;gap:8px}.ulkr-tk{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:8px}.ulkr-yd{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ulkr-yd.n1{grid-template-columns:1fr}
+.ulkr-o button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:0;height:56px;padding:0 10px;border:0;border-radius:14px;background:#2C2060;box-shadow:inset 0 0 0 1px #3A2C78;color:#fff;cursor:pointer;font:inherit;text-align:center}
+.ulkr-o b,.ulkr-o small{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ulkr-o b{font:800 .9375rem/1.2 Inter,sans-serif}.ulkr-o small{font:600 .75rem/1.25 Inter,sans-serif;color:var(--c-ink2)}
+.ulkr-o button.cur{height:48px;flex-direction:row;gap:8px;background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
 .ulkr-o .iyi small{color:#3DF0A8}.ulkr-o .kot small{color:#FF8FA3}.ulkr-o .one{box-shadow:inset 0 0 0 1.5px #3DF0A8}
-.ulkr-o em{position:absolute;top:-7px;right:10px;padding:2px 7px;border-radius:999px;background:#3DF0A8;color:#06281C;font:800 .75rem/1.2 Inter,sans-serif;font-style:normal}
+.ulkr-o em{position:absolute;top:-8px;left:50%;transform:translateX(-50%);padding:2px 8px;border-radius:999px;background:#3DF0A8;color:#06281C;font:800 .75rem/1.2 Inter,sans-serif;font-style:normal;white-space:nowrap}
 .ulkr-o .yd{box-shadow:inset 0 0 0 1px rgba(63,208,255,.5)}
 .ulkr-s{margin:0;text-align:center;font:600 .75rem/1.3 Inter,sans-serif;color:var(--c-ink3)}
 .ulkr-g{display:grid;gap:4px;padding:16px 12px;border-radius:16px;background:rgba(245,197,66,.1);box-shadow:inset 0 0 0 1.5px rgba(245,197,66,.5);text-align:center}.ulkr-g small{font:800 .75rem Inter,sans-serif;color:#F5C542;text-transform:uppercase;letter-spacing:.08em}.ulkr-g b{font:800 1.5rem/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;color:#fff}
 .ulnok{display:inline-flex;gap:4px;margin-right:8px;vertical-align:middle}.ulnok>i{width:6px;height:6px;border-radius:50%;background:#F5C542;animation:ulnab 1s ease-in-out infinite}.ulnok>i:nth-child(2){animation-delay:.2s}.ulnok>i:nth-child(3){animation-delay:.4s}
 /* yatay görünüm yalnız maç ekranında var: karar kartı maç yataysa (telefon yan ya da "Yatay" düğmesi) ona uyar */
 .ulkr.yat .ulkr-k{width:auto;min-width:420px;max-width:540px;gap:6px;padding:10px 12px}.ulkr.yat .ulkr-sk>b{font-size:1.875rem}.ulkr.yat .ulkr-h .ulring{width:40px;height:40px}.ulkr.yat .ulkr-h .ulring>b{font-size:1.125rem}
-.ulkr.yat .ulkr-o{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.ulkr.yat .ulkr-o button{min-height:46px;padding:6px 10px}.ulkr.yat .ulkr-o button.cur{grid-column:auto}.ulkr.yat .ulkr-o b{font-size:.875rem}
+.ulkr.yat .ulkr-o{gap:8px}.ulkr.yat .ulkr-tk{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ulkr.yat .ulkr-yd{gap:6px}.ulkr.yat .ulkr-o button{height:48px}.ulkr.yat .ulkr-o button.cur{height:44px}.ulkr.yat .ulkr-o b{font-size:.875rem}
+.ulkr.yat .ulkr-k{width:540px}.ulkr.yat .ulkr-o{margin-top:4px}.ulkr.yat .ulkr-o em{top:-11px}.ulkr-o{margin-top:2px}
 .ulkr.yat .ulkr-g{padding:10px 12px}.ulkr.yat .ulkr-g b{font-size:1.25rem}
 .ulkr.dz{inset:auto;top:0;left:0;width:100vh;width:100dvh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);padding:12px max(12px,env(safe-area-inset-bottom,0px)) 12px max(12px,env(safe-area-inset-top,0px))}
 .ulkr.dz .ulkr-k{max-height:calc(100vw - 24px)}

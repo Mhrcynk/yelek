@@ -5337,13 +5337,13 @@ function ultKararSec(r,asama){const h=r.htSor||r.cm,my=h.side==="a"?h.A:h.B,op=h
   const sonT=(X,u)=>{let t=X.t||"dengeli";for(const e of r.P0.ev)if(e.fx==="tak"&&e.us===u&&e.dk<=(asama===2?30:20))t=e.t;return t};
   const cur=c1.t&&ULT_TK[c1.t]?c1.t:sonT(my,true),opT=sonT(op,false),one=Object.keys(ULT_YEN).find(k=>ULT_YEN[k]===opT);
   const sat=k=>{const u=ultTkUyum(x,k),T=[];if(ULT_YEN[k]===opT)T.push(`${ULT_TK[opT][0]} taktiğini yener`);else if(ULT_YEN[opT]===k)T.push(`${ULT_TK[opT][0]} taktiğine yenilir`);else T.push(k==="dengeli"?"Güvenli":"Üstünlük yok");if(u)T.push(u.k>0?"kadrona uygun":u.k<0?"kadrona uymuyor":"orta uyum");return T.join(" · ")};
-  const kis=k=>{const u=ultTkUyum(x,k),d=ULT_YEN[k]===opT?1:ULT_YEN[opT]===k?-1:0;return{d,t2:[d>0?"Rakibi Yener":d<0?"Rakibe Yenilir":"",u?(u.k>0?"Kadrona Uygun":u.k<0?"Kadrona Uymuyor":""):""].filter(Boolean).join(" · ")||"Nötr"}};
-  const O=[{v:{},b:"Değiştirme · "+ULT_TK[cur][0],s:sat(cur),cur:1,t1:"Değiştirme",t2:ULT_TK[cur][0]+" İle Devam",d:0}];for(const k of Object.keys(ULT_TK).filter(k=>k!==cur).sort((p,q)=>(q===one)-(p===one)))O.push({v:{t:k},b:ULT_TK[k][0]+" Taktiğine Geç",s:sat(k),on:k===one,t1:ULT_TK[k][0],...kis(k)});
+  const kis=k=>{const u=ultTkUyum(x,k),d=ULT_YEN[k]===opT?1:ULT_YEN[opT]===k?-1:0;return{d,t2:(d>0?"Yener":d<0?"Yenilir":"Nötr")+" · "+(u&&u.k>0?"Uygun":u&&u.k<0?"Uymuyor":"Orta")}};
+  const O=[{v:{},b:"Değiştirme · "+ULT_TK[cur][0],s:sat(cur),cur:1,t1:"Değiştirme",t2:ULT_TK[cur][0]+" ile devam",d:0}];for(const k of Object.keys(ULT_TK).filter(k=>k!==cur).sort((p,q)=>(q===one)-(p===one)))O.push({v:{t:k},b:ULT_TK[k][0]+" Taktiğine Geç",s:sat(k),on:k===one,t1:ULT_TK[k][0],...kis(k)});
   // yedekler: o anki kadroya göre, mevkisine uyan en yorgun oyuncunun yerine
   const YD=ultYdL(my,x),CS=x.cs.slice(),kul=[];if(Array.isArray(c1.s)){const cd=YD[+c1.s[1]];if(cd){CS[+c1.s[0]]=cd;kul.push(+c1.s[1],"j"+c1.s[0])}}
   const at=c=>c?ultAt(c):[70,70,70,70,70,70],kr=new Set();for(const e of r.P0.ev)if(e.fx==="kirmizi"&&e.us&&e.dk<=(asama===2?30:20))kr.add(e.j);
   YD.forEach((cd,yi)=>{if(kul.includes(yi)||CS.some(q=>q&&q.pid===cd.pid))return;const rl=cd.rl||ultRoles(cd.pid);let bj=null,bv=1e9;for(let j=1;j<7;j++){const q=CS[j];if(!q||kul.includes("j"+j)||kr.has(j)||!rl.includes(x.sl[j][0]))continue;const f=at(q)[4]+((q.r||70)-(cd.r||70))*1.5;if(f<bv){bv=f;bj=j}}
-    if(bj!=null){const q=CS[bj];O.push({v:{s:[bj,yi]},b:`${shortName(nameOf(cd.pid))} Girsin`,s:`${shortName(nameOf(q.pid))} (${q.r}) çıksın · ${cd.r} güç · ${x.sl[bj][3]||x.sl[bj][0]}`,t1:`${shortName(nameOf(cd.pid))} Girsin`,t2:`${shortName(nameOf(q.pid))} Çıkar · ${cd.r} Güç`,d:0})}});
+    if(bj!=null){const q=CS[bj];O.push({v:{s:[bj,yi]},b:`${shortName(nameOf(cd.pid))} Girsin`,s:`${shortName(nameOf(q.pid))} (${q.r}) çıksın · ${cd.r} güç · ${x.sl[bj][3]||x.sl[bj][0]}`,t1:`${shortName(nameOf(cd.pid))} Girsin`,t2:`${shortName(nameOf(q.pid))} çıkar`,d:0})}});
   return{O,opT}}
 // ---------- canlı maç görselleri: ortak parçalar ----------
 const ultCanliH=t=>`<span class="ulcanli"><i></i>${t||"Canlı"}</span>`;
@@ -5359,7 +5359,8 @@ function ultKrH(r,n,O,opT,rakip){let xa=0,xb=0;for(const e of r.P0.ev){if(e.fx||
     <div class="ulkr-h">${ultCanliH()}<small>${n===2?"70. Dakika · 2. Karar":"Devre Arası · 1. Karar"}</small>${ultRingH(20,1,' id="ulKrT"')}</div>
     <div class="ulkr-sk"><span>Sen</span><b class="num">${r.sk.a} – ${r.sk.b}</b><span>${esc(on)}</span></div>
     <div class="ulkr-i"><span>Pozisyon <b class="num">${f(xa)} – ${f(xb)}</b></span><span>Rakip <b>${esc(ULT_TK[opT][0])}</b></span>${rakip!=null?`<span id="ulKrR">${rakip}</span>`:""}</div>
-    <div class="ulkr-o">${O.map((o,i)=>`<button data-act="ultKarar" data-v="${i}" class="${o.cur?"cur":""}${o.v.s?" yd":""}${o.d>0?" iyi":o.d<0?" kot":""}${o.on?" one":""}">${o.on?`<em>Önerilen</em>`:""}<b>${esc(o.t1||o.b)}</b><small>${esc(o.t2||o.s)}</small></button>`).join("")}</div>
+    <div class="ulkr-o">${(()=>{const bt=(o,i)=>`<button data-act="ultKarar" data-v="${i}" class="${o.cur?"cur":""}${o.v.s?" yd":""}${o.d>0?" iyi":o.d<0?" kot":""}${o.on?" one":""}">${o.on?`<em>Önerilen</em>`:""}<b>${esc(o.t1||o.b)}</b><small>${esc(o.t2||o.s)}</small></button>`,G=f=>O.map((o,i)=>f(o)?bt(o,i):"").join(""),yd=O.filter(o=>o.v.s).length;
+      return `<div class="ulkr-tk">${G(o=>o.v.t)}</div>${yd?`<div class="ulkr-yd n${yd}">${G(o=>o.v.s)}</div>`:""}${G(o=>o.cur)}`})()}</div>
     <p class="ulkr-s">Süre biterse ${n===2?"değişiklik yapılmaz":"maç planın uygulanır"}</p></div>`}
 // karar kartı maç ekranının yönünü izler: telefon yansa ya da "Yatay" düğmesi açıksa yatay düzen, düğmeyle çevrildiyse kart da 90° döner
 function ultKrYon(){const el=document.getElementById("ulKarar");if(!el)return;const land=ultYatayMi();el.classList.toggle("yat",land||!!ULT.yat);el.classList.toggle("dz",!land&&!!ULT.yat)}
