@@ -6375,6 +6375,8 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.cm&&r.cm.bek)return
   const mv=document.querySelector(".ulm2");if(mv)mv.style.setProperty("--mv",(RM2?0:Math.round(480*ULT_TM*.85/r.hiz))+"ms");
   if(e.fx==="muc"){r.dk=e.dk;r.vi=r.i+1;ultAs("","","");ultAk(e.us,[e.j]);const p=[50+(e.x||0),e.us?52:48];ultPlace(r,ultPose(r,{att:e.us,mode:"ak",ball:p,car:e.j}));ultTrail(null);ultBall(p);ultOn2(e.us,e.j);{const pp=ultP(r,e.us,e.j)||p;ultDl(pp,"");ultBub([pp[0],pp[1]-8],"Mücadele","bf")}
     ultFeed(`${D}'`,`Orta sahada mücadele · topu ${nm(e.j)}${e.us?"":" (rakip)"} kazandı`,"");r.i++;ultDraw();setTimeout(ultTick,T(1000));return}
+  // oyundan atılmış oyuncu için "yoruldu" gösterilmez
+  if(e.fx==="yor"&&(r.red||[]).includes((e.us?"a":"b")+e.j)){ultSessiz(r,e);r.i++;setTimeout(ultTick,T(90));return}
   if(e.fx){ultAs("","","");ultAk(e.us,[e.j]);r.dk=e.dk;const p0=ultP(r,e.us,e.j);ultPlace(r,ultPose(r,{att:e.us,mode:"ak",ball:e.fx==="tac"?[e.side,p0[1]]:p0,car:e.j}));const p=ultP(r,e.us,e.j),who=nm(e.j),tk=e.us?"":" (rakip)";ultTrail(null);ultOn2(e.us,e.j);
     if(e.fx==="tac"){ultBall([e.side,p[1]]);ultOkCiz([e.side,p[1]],[e.side<50?e.side+13:e.side-13,p[1]+(e.us?-6:6)],"tac",.15);ultFeed(`${D}'`,`Taç · ${who}${tk}`,"")}
     else if(e.fx==="faul"){ultBall(p);ultBub([p[0],p[1]-6],"Faul","bf");ultFeed(`${D}'`,`Faul · ${who}${tk}`,"")}
