@@ -6941,3 +6941,17 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulmac.ulyat.bitti .ulyat-s>#ulFin>*{margin-top:0;margin-bottom:0;flex:none}
 .ulmac.ulyat.bitti .ulyat-s>#ulFin>.ulres{order:-2}
 .ulmac.ulyat.bitti .ulyat-s>#ulFin>.ulodul-an{order:-1}
+
+/* albüm: kazanılmamış kartın durumu (kartın altında) */
+.ulag-i{display:grid;gap:6px;align-content:start;min-width:0}
+.ulag-i .ulet{justify-self:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 .6875rem/1 Inter,sans-serif;font-style:normal;padding:5px 8px;border-radius:99px;background:#2E2356;color:#E9E3FF}
+.ulag-i .ulet.k-s{background:#0F3A2A;color:#7DF3BF}
+.ulag-i .ulet.k-e{background:#3A2E08;color:#FFD95C}
+.ulag-i .ulet.k-x{background:#3A1424;color:#FF9AB8}
+
+/* maç öncesi */
+.ulonce-f{display:flex;justify-content:center;gap:8px;margin-top:10px}.ulonce-f span,.ulonce-d span{font:700 .75rem/1 Inter,sans-serif;padding:6px 10px;border-radius:99px;background:#2E2356;color:#E9E3FF}
+.ulonce-f .ok,.ulonce-d .ok{background:#0F3A2A;color:#7DF3BF}.ulonce-f .no,.ulonce-d .no{background:#3A1424;color:#FF9AB8}
+.ulonce-d{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ulonce-t button{position:relative}.ulonce-t button i{position:absolute;left:50%;top:-8px;transform:translateX(-50%);font:800 .5625rem/1 Inter,sans-serif;font-style:normal;letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:99px;background:#F5C542;color:#2A1F00;white-space:nowrap}
+.ulonce-b{display:flex;justify-content:center;gap:10px;margin:14px 0 6px}.ulonce-b .btn{min-width:130px}
