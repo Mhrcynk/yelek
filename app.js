@@ -5338,7 +5338,7 @@ function ultKararSec(r,asama){const h=r.htSor||r.cm,my=h.side==="a"?h.A:h.B,op=h
   const cur=c1.t&&ULT_TK[c1.t]?c1.t:sonT(my,true),opT=sonT(op,false),one=Object.keys(ULT_YEN).find(k=>ULT_YEN[k]===opT);
   const sat=k=>{const u=ultTkUyum(x,k),T=[];if(ULT_YEN[k]===opT)T.push(`${ULT_TK[opT][0]} taktiğini yener`);else if(ULT_YEN[opT]===k)T.push(`${ULT_TK[opT][0]} taktiğine yenilir`);else T.push(k==="dengeli"?"Güvenli":"Üstünlük yok");if(u)T.push(u.k>0?"kadrona uygun":u.k<0?"kadrona uymuyor":"orta uyum");return T.join(" · ")};
   const kis=k=>{const u=ultTkUyum(x,k),d=ULT_YEN[k]===opT?1:ULT_YEN[opT]===k?-1:0;return{d,t2:(d>0?"Yener":d<0?"Yenilir":"Nötr")+" · "+(u&&u.k>0?"Uygun":u&&u.k<0?"Uymuyor":"Orta")}};
-  const O=[{v:{},b:"Değiştirme · "+ULT_TK[cur][0],s:sat(cur),cur:1,t1:"Değiştirme",t2:ULT_TK[cur][0]+" ile devam",d:0}];for(const k of Object.keys(ULT_TK).filter(k=>k!==cur).sort((p,q)=>(q===one)-(p===one)))O.push({v:{t:k},b:ULT_TK[k][0]+" Taktiğine Geç",s:sat(k),on:k===one,t1:ULT_TK[k][0],...kis(k)});
+  const O=[{v:{},b:"Değiştirme · "+ULT_TK[cur][0],s:sat(cur),cur:1,t1:"Değiştirme",t2:ULT_TK[cur][0]+" Kalsın",d:0}];for(const k of Object.keys(ULT_TK).filter(k=>k!==cur).sort((p,q)=>(q===one)-(p===one)))O.push({v:{t:k},b:ULT_TK[k][0]+" Taktiğine Geç",s:sat(k),on:k===one,t1:ULT_TK[k][0],...kis(k)});
   // yedekler: o anki kadroya göre, mevkisine uyan en yorgun oyuncunun yerine
   const YD=ultYdL(my,x),CS=x.cs.slice(),kul=[];if(Array.isArray(c1.s)){const cd=YD[+c1.s[1]];if(cd){CS[+c1.s[0]]=cd;kul.push(+c1.s[1],"j"+c1.s[0])}}
   const at=c=>c?ultAt(c):[70,70,70,70,70,70],kr=new Set();for(const e of r.P0.ev)if(e.fx==="kirmizi"&&e.us&&e.dk<=(asama===2?30:20))kr.add(e.j);
@@ -5367,7 +5367,7 @@ function ultKrYon(){const el=document.getElementById("ulKarar");if(!el)return;co
 if(typeof window!=="undefined")window.addEventListener("resize",ultKrYon);
 function ultKrSay(kal){const t=document.getElementById("ulKrT");if(t){t.style.setProperty("--p",Math.max(0,kal/20));t.firstElementChild.textContent=String(Math.max(0,kal));t.classList.toggle("az",kal<=5)}}
 function ultKrGitti(o,n,bekle){const el=document.getElementById("ulKarar");if(!el)return;const k=el.querySelector(".ulkr-o"),s=el.querySelector(".ulkr-s"),t=document.getElementById("ulKrT");if(t)t.hidden=true;
-  if(k)k.outerHTML=`<div class="ulkr-g"><small>Kararın</small><b>${o?esc(o.t1==="Değiştirme"?o.b:o.b):n===2?"Değişiklik Yok":"Maç Planın Uygulanacak"}</b></div>`;if(s)s.innerHTML=bekle?`<span class="ulnok"><i></i><i></i><i></i></span>Kararlar birlikte açılacak`:"Kaydediliyor…"}
+  if(k)k.outerHTML=`<div class="ulkr-g"><small>Kararın</small><b>${o?esc(o.cur?"Değişiklik Yok":o.t1||o.b):n===2?"Değişiklik Yok":"Maç Planı"}</b></div>`;if(s)s.innerHTML=bekle?`<span class="ulnok"><i></i><i></i><i></i></span>Kararlar birlikte açılacak`:"Kaydediliyor…"}
 function ultKararAc(r,asama){const h=r.htSor;h.asama=asama;const{O,opT}=ultKararSec(r,asama);h.O=O;
   document.getElementById("ulKarar")?.remove();const el=document.createElement("div");el.id="ulKarar";el.className="ulkr";el.innerHTML=ultKrH(r,asama,O,opT,null);
   document.body.appendChild(el);ultKrYon();h.kal=20;clearInterval(h.tm);h.tm=setInterval(()=>{if(ULT.run!==r||h.kayit){clearInterval(h.tm);return}h.kal--;ultKrSay(h.kal);if(h.kal<=0)ultKarar(null)},1000)}

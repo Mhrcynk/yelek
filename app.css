@@ -6729,9 +6729,11 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulkr-g{display:grid;gap:4px;padding:16px 12px;border-radius:16px;background:rgba(245,197,66,.1);box-shadow:inset 0 0 0 1.5px rgba(245,197,66,.5);text-align:center}.ulkr-g small{font:800 .75rem Inter,sans-serif;color:#F5C542;text-transform:uppercase;letter-spacing:.08em}.ulkr-g b{font:800 1.5rem/1.1 "Barlow Condensed",sans-serif;text-transform:uppercase;color:#fff}
 .ulnok{display:inline-flex;gap:4px;margin-right:8px;vertical-align:middle}.ulnok>i{width:6px;height:6px;border-radius:50%;background:#F5C542;animation:ulnab 1s ease-in-out infinite}.ulnok>i:nth-child(2){animation-delay:.2s}.ulnok>i:nth-child(3){animation-delay:.4s}
 /* yatay görünüm yalnız maç ekranında var: karar kartı maç yataysa (telefon yan ya da "Yatay" düğmesi) ona uyar */
-.ulkr.yat .ulkr-k{width:auto;min-width:420px;max-width:540px;gap:6px;padding:10px 12px}.ulkr.yat .ulkr-sk>b{font-size:1.875rem}.ulkr.yat .ulkr-h .ulring{width:40px;height:40px}.ulkr.yat .ulkr-h .ulring>b{font-size:1.125rem}
-.ulkr.yat .ulkr-o{gap:8px}.ulkr.yat .ulkr-tk{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.ulkr.yat .ulkr-yd{gap:6px}.ulkr.yat .ulkr-o button{height:48px}.ulkr.yat .ulkr-o button.cur{height:44px}.ulkr.yat .ulkr-o b{font-size:.875rem}
-.ulkr.yat .ulkr-k{width:540px}.ulkr.yat .ulkr-o{margin-top:4px}.ulkr.yat .ulkr-o em{top:-11px}.ulkr-o{margin-top:2px}
+.ulkr.yat .ulkr-k{width:auto;min-width:0;max-width:100%;gap:6px;padding:10px 12px}.ulkr.yat .ulkr-sk>b{font-size:1.875rem}.ulkr.yat .ulkr-h .ulring{width:40px;height:40px}.ulkr.yat .ulkr-h .ulring>b{font-size:1.125rem}
+.ulkr.yat .ulkr-o{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}.ulkr.yat .ulkr-tk,.ulkr.yat .ulkr-yd{display:contents}
+.ulkr.yat .ulkr-o button,.ulkr.yat .ulkr-o button.cur{flex:none;width:calc((100% - 24px)/5);height:48px;flex-direction:column;gap:2px;padding:0 3px}.ulkr.yat .ulkr-o button.cur{order:-1}.ulkr.yat .ulkr-o button.yd{width:calc((100% - 24px)/5*1.5 + 3px)}
+.ulkr.yat .ulkr-o b{font-size:.875rem}.ulkr.yat .ulkr-g{justify-self:center;min-width:220px;padding:8px 28px}
+.ulkr.yat .ulkr-k{width:640px}.ulkr.yat .ulkr-o{margin-top:4px}.ulkr.yat .ulkr-o em{top:-11px}.ulkr-o{margin-top:2px}
 .ulkr.yat .ulkr-g{padding:10px 12px}.ulkr.yat .ulkr-g b{font-size:1.25rem}
 .ulkr.dz{inset:auto;top:0;left:0;width:100vh;width:100dvh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);padding:12px max(12px,env(safe-area-inset-bottom,0px)) 12px max(12px,env(safe-area-inset-top,0px))}
 .ulkr.dz .ulkr-k{max-height:calc(100vw - 24px)}
