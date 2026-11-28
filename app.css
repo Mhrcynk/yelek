@@ -6929,3 +6929,6 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulcgb>.btn{flex:none;width:auto;min-height:44px;padding:0 18px;margin:0}
 
 .ulinv-b.es>button{flex:1 1 0;min-width:0;padding-left:8px;padding-right:8px}
+
+/* oyundan atılan oyuncu sahadan çıkar */
+.ulm2 .ulm-p.out{opacity:0;pointer-events:none;transition:opacity .9s ease-out}
