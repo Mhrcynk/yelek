@@ -212,10 +212,6 @@ label.f{display:grid;gap:6px;font-size:.7812rem;color:var(--muted);font-weight:7
 .split{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .tcol{background:var(--card2);border-radius:12px;padding:10px;display:grid;gap:6px;align-content:start;min-width:0}
 .tcol h3{display:flex;justify-content:space-between}
-.pool{display:flex;flex-wrap:wrap;gap:6px}
-.pool button{border:1px solid var(--line2);background:var(--card2);border-radius:12px;padding:8px 10px;font-weight:600;display:flex;gap:6px;align-items:center;min-height:40px}
-.pool button b{font-family:var(--display);font-weight:900}
-.timer{font-family:var(--display);font-weight:900;font-size:2.2rem;color:var(--bib)}
 details>summary{cursor:pointer;font-weight:700;list-style:none;display:flex;align-items:center;gap:8px;min-height:40px}
 details>summary::-webkit-details-marker{display:none}
 details>summary::before{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .2s;flex:none}

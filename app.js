@@ -947,7 +947,7 @@ function _render(force){if(S._route&&S.loaded)setTimeout(routeAfter,0);setTimeou
 function keepOpen(root,fn){if(!root)return fn();const open=new Set([...root.querySelectorAll("details[open]>summary")].map(x=>x.textContent.trim()));fn();
   if(open.size)root.querySelectorAll("details>summary").forEach(x=>{if(open.has(x.textContent.trim()))x.parentElement.open=true})}
 // maç girişi, kadro kurma ve değerlendirme sırasında telefon ekranı kapanmasın
-async function wakeSync(){const need=!!(S.admin&&(S.draft||S.teams||(S.sheet&&["stats","eval"].includes(S.sheet.type))));
+async function wakeSync(){const need=!!(S.admin&&(S.teams||(S.sheet&&["stats","eval"].includes(S.sheet.type))));
   try{if(need&&!S.wake&&navigator.wakeLock&&document.visibilityState==="visible"){S.wake=await navigator.wakeLock.request("screen");S.wake.addEventListener("release",()=>{S.wake=null})}
     else if(!need&&S.wake){const w=S.wake;S.wake=null;await w.release()}}catch(_){}}
 const XS=".pr-s,.ldx,.mtabs,.chips,.mzch,.oyt2,.scroll-x,.mzseg,.kchips,.vsel,.pmi,.pmt,.form-pick,.pv-tabs,.at-g";
@@ -1620,7 +1620,7 @@ function bhWrap(top,mac){const B=BH;BH=null;if(ultOn()){const u=ultKart();if(u)B
   return top+`<div class="bht" role="tablist">${T.map(([id,l])=>`<button class="${id===k?"on":""}" role="tab" aria-selected="${id===k}" data-act="bhTab" data-v="${id}">${l}${id==="haber"&&nh&&k!=="haber"?`<u>${nh}</u>`:""}</button>`).join("")}</div><div class="bhp">${T.find(t=>t[0]===k)[2]}</div>`}
 function viewMac(){if(S.tab==="mac"&&pgRestore())return viewOyun();
   if(!S.players.length)return `<section class="card"><div class="empty emp2">${empIc("kisi","pink")}<h3>Önce kadroyu kur</h3><p>${S.admin?"Kartlar sekmesinden oyuncuları ekle.":"Yönetici oyuncuları ekleyince maçlar burada görünür."}</p>${S.admin?'<button class="btn primary" data-act="tab" data-tab="kartlar">Oyuncu ekle</button>':""}</div></section>`;
-  const om=openMatch();if(om){const busy=(S.draft&&S.draft.mid===om.id)||(S.teams&&S.teams.mid===om.id);if(S.admin&&S.f.macY&&!busy)return macYonet(om);if(busy)return hero(om)+matchBody(om);
+  const om=openMatch();if(om){const busy=!!(S.teams&&S.teams.mid===om.id);if(S.admin&&S.f.macY&&!busy)return macYonet(om);if(busy)return hero(om)+matchBody(om);
     BH={mac:[],oyun:[],haber:[]};bh("haber",SZ_ON?"":odSerit());bh("haber",muafKart(om));bh("haber",duSerit(om));{const lf=lastFinM();if(lf)bh("haber",fzSerit(lf));if(lf&&S.mInfo[lf.id]&&!lf.archived){bh("haber",haberFeed(lf));bh("haber",rztSerit(lf))}}const body=matchBody(om);return bhWrap(hero(om)+(SZ_ON?odSerit():"")+(BH.top||""),body)}
   const lm=lastFinM();if(lm&&!lm.archived&&S.mInfo[lm.id])return macSonra(lm);
   BH={mac:[],oyun:[],haber:[]};bh("haber",odSerit());bh("oyun",duelWait());return bhWrap(S.admin?createHero():noMatchHero(),"")
@@ -2562,7 +2562,6 @@ function macYonet(m){const kay=m.state==="kayit";
 function macYKart(m){const kay=m.state==="kayit";const rs=m.rsvp||{};const n=S.players.filter(p=>!p.guest&&rs[p.id]==="g"&&!UNAVAIL.includes(stOf(p))).length;
   return th2Kart("thN",BN_I('<path d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h12M20 17h0"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="17" r="2"/>'),"Maçı yönet","Yönetici",kay?[["Kadro",n+"/"+CAP],["Aşama","Kadro seçimi"]]:[["Tarih",fmtShort(m.date)],["Saat",esc(String(m.time||"").slice(0,5))]],`<button class="thk-c" data-act="macY" data-v="1">${kay?"Kadroyu düzenle":"Yönet"}</button>`)}
 function matchBody(m){
-  if(S.admin&&S.draft&&S.draft.mid===m.id)return `<section class="card">${draftPanel(m)}</section>`;
   if(S.admin&&S.teams&&S.teams.mid===m.id)return `<section class="card"><div class="ch"><h2>Kadro kur</h2><button class="btn sm" data-act="cancelTeams">Vazgeç</button></div>${editorPanel(m)}</section>`;
   let h=S.admin?nextStep(m):"";
   if(m.state==="kayit"){
@@ -2776,21 +2775,6 @@ function editorPanel(m){
    <button class="ked-c" data-act="cancelTeams">Vazgeç</button>
    <div class="ked-bar"><button data-act="autoPlace" aria-label="Otomatik yerleştir" title="Otomatik yerleştir">${KI.auto}<span>Yerleştir</span></button><button data-act="balance" data-id="${esc(m.id)}" ${t.A.length+t.B.length<4?"disabled":""} aria-label="Dengeli dağıt" title="Dengeli dağıt">${KI.bal}<span>Dengele</span></button><button data-act="swapBibs" aria-label="Yelekleri değiştir" title="Yelekleri değiştir">${KI.swap}<span>Yelek</span></button><button class="ked-s" data-act="saveTeams" aria-label="Kadroları kaydet">${ICON.check} Kaydet</button></div>`;
 }
-function draftPanel(m){
-  const d=S.draft;const ids=rsvpLists(m).kadro.map(p=>p.id);
-  if(!d.capA||!d.capB){const opts=cur=>`<option value="">Seç</option>`+ids.map(id=>`<option value="${esc(id)}"${cur===id?" selected":""}>${esc(nameOf(id))} (${ovrOf(id)})</option>`).join("");
-    return `<div class="ch"><h2>Kaptan draftı</h2></div><div class="note">Kaptanları seç. Yazı tura atılır, kazanan ilk seçer. Her seçim için 20 saniye var; süre dolarsa en yüksek reytingli oyuncu otomatik seçilir.</div>
-      <div class="grid2"><label class="f" for="capA">${TEAM.A} kaptanı<select id="capA" data-act-change="cap" data-k="A">${opts(d.selA)}</select></label>
-      <label class="f" for="capB">${TEAM.B} kaptanı<select id="capB" data-act-change="cap" data-k="B">${opts(d.selB)}</select></label></div>
-      <button class="btn primary block" data-act="draftGo" ${d.selA&&d.selB&&d.selA!==d.selB?"":"disabled"}>${ICON.flip} Yazı tura at, başla</button><button class="btn ghost sm" data-act="draftCancel">Vazgeç</button>`}
-  const pool=ids.filter(id=>!d.A.includes(id)&&!d.B.includes(id));
-  const col=(k,arr)=>`<div class="tcol"><h3><span>${k==="A"?'<span class="bibdot"></span>':'<span class="nobib"></span>'}${TEAM[k]}</span><span class="num">${sumAvg(arr)}</span></h3>${arr.map(id=>`<div class="tp"><span class="o num">${ovrOf(id)}</span><span class="n">${esc(nameOf(id))}</span></div>`).join("")}</div>`;
-  const cols=`<div class="split">${col("A",d.A)}${col("B",d.B)}</div>`;
-  if(!pool.length)return `<div class="ch"><h2>Draft bitti</h2></div>`+cols+`<button class="btn primary block" data-act="draftDone">Sahaya diz</button><button class="btn ghost sm" data-act="draftCancel">Baştan al</button>`;
-  return `<div class="ch"><div><div class="eyebrow">Sıra · ${TEAM[d.turn]}</div><h2>${esc(nameOf(d.turn==="A"?d.capA:d.capB))} seçiyor</h2></div><span class="timer num" id="dtimer">${Math.max(0,Math.ceil((d.deadline-Date.now())/1000))}</span></div>
-    <div class="pool">${pool.sort((a,b)=>genOf(b)-genOf(a)).map(id=>`<button data-act="dpick" data-id="${esc(id)}"><b class="num">${ovrOf(id)}</b>${esc(nameOf(id))} <span class="muted small">${eposOf(P(id))}</span></button>`).join("")}</div>`+cols;
-}
-
 /* ================= Maç sonu girişi ================= */
 function eventsFrom(m){const st=m.stats||{};const ev=[];const gU={},aU={};
   for(const x of(m.links||[])){if(!x||!x.g)continue;ev.push({t:"g",g:x.g,a:x.pk?null:(x.a||null),pk:!!x.pk});gU[x.g]=(gU[x.g]||0)+1;if(x.a)aU[x.a]=(aU[x.a]||0)+1}
@@ -4466,14 +4450,14 @@ document.addEventListener("click",async e=>{
       const r=await A("admin_set_when",{p_id:id,p_date:d,p_time:t},"Tarih ve saat güncellendi");if(r)delete S.f["when_"+id];break}
     case"delMatch":if(S.f.delMatch!==id){S.f.delMatch=id;render(true);break}S.f.delMatch=null;if(S.sheet&&S.sheet.type==="mng")S.sheet=null;S.teams=null;S.view=null;delete S.f["sd_"+id];LS.del("y_sd_"+id);await A("admin_archive_match",{p_id:id},"Maç silindi, tüm etkileri geri alındı");break;
     case"copy":{const tx=el.dataset.txt;try{await navigator.clipboard.writeText(tx);toast("Kopyalandı")}catch(_){toast("Kopyalanamadı, metni elle seç")}break}
-    case"balance":{const ids=t?[...t.A,...t.B]:[];if(ids.length<4){toast("Önce en az 4 oyuncu seç");break}const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
+    case"balance":{const ids=t?[...t.A,...t.B]:[];if(ids.length<4){toast("Önce en az 4 oyuncu seç");break}const r=balanceIds(ids);startEditor(id,r.A,r.B,t?.fa,t?.fb);render(true);break}
     case"editTeams":{const m=S.matches.find(x=>x.id===id);startEditor(id,m.team_a||[],m.team_b||[],m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);render(true);break}
     case"ligAvg":S.f.ligAvg=el.dataset.v==="1";render(true);break;
     case"kTog":{if(!S.admin||el.disabled)break;const m=S.matches.find(x=>x.id===el.dataset.m);if(!m)break;const v=(m.rsvp||{})[el.dataset.p]==="g"?"n":"g";
       m.rsvp={...(m.rsvp||{}),[el.dataset.p]:v};render(true);const r=await act("rsvp",{p_match:m.id,p_player:el.dataset.p,p_value:v});if(!r){toast("Kaydedilemedi");await load()}break}
     case"autoKadro":{const m=S.matches.find(x=>x.id===id);if(!m)break;const ids=rsvpLists(m).kadro.map(p=>p.id);if(ids.length<4){toast("Önce en az 4 oyuncu işaretle");break}
-      const r=balanceIds(ids);S.draft=null;startEditor(id,r.A,r.B);render(true);toast("Dengeli takımlar hazır");break}
-    case"manual":{const m=S.matches.find(x=>x.id===id);S.draft=null;if(m.team_a&&m.team_a.length)startEditor(id,m.team_a,m.team_b,m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);else startEditor(id,[],[],t?.fa,t?.fb);S.teams.poolOpen=true;render(true);break}
+      const r=balanceIds(ids);startEditor(id,r.A,r.B);render(true);toast("Dengeli takımlar hazır");break}
+    case"manual":{const m=S.matches.find(x=>x.id===id);if(m.team_a&&m.team_a.length)startEditor(id,m.team_a,m.team_b,m.form_a,m.form_b,m.lineup_a,m.lineup_b,m.pos_a,m.pos_b);else startEditor(id,[],[],t?.fa,t?.fb);S.teams.poolOpen=true;render(true);break}
     case"backRsvp":if(S.f.rsvpAsk!==id){S.f.rsvpAsk=id;render(true);break}S.f.rsvpAsk=null;await A("admin_set_state",{p_id:id,p_state:"kayit"},"Kadro aşaması yeniden açıldı");break;
     case"rsvpNo":S.f.rsvpAsk=null;render(true);break;
     case"fwdTakim":await A("admin_set_state",{p_id:id,p_state:"takim"},"Kadrolar değişmeden geri açıldı");break;
@@ -4503,11 +4487,6 @@ document.addEventListener("click",async e=>{
       t[k]=t[k].filter(x=>x!==pid);t[o].push(pid);const i=L.indexOf(pid);if(i>=0)L[i]=null;const LO=t["l"+o.toLowerCase()];const em=LO.indexOf(null);if(em>=0)LO[em]=pid;t.sel=null;toast(nameOf(pid)+" "+TEAM[o]+" takımına geçti");render(true);break}
     case"saveTeams":{if(!t.A.length||!t.B.length){toast("İki takımda da oyuncu olmalı");break}if(!t.la[0]||!t.lb[0]){toast("İki takıma da kaleci yerleştir");break}
       const r=await A("admin_save_lineup",{p_id:t.mid,p_team_a:t.A,p_team_b:t.B,p_form_a:t.fa,p_form_b:t.fb,p_lineup_a:t.la,p_lineup_b:t.lb,p_pos_a:t.pa,p_pos_b:t.pb});if(r){const c=capsOf(t);await A("admin_set_captains",{p_id:t.mid,p_cap_a:c.A,p_cap_b:c.B},"Kadrolar kaydedildi");S.teams=null;render(true)}break}
-    case"draftStart":S.teams=null;S.draft={mid:id,selA:"",selB:""};render(true);break;
-    case"draftCancel":stopTimer();S.draft=null;render(true);break;
-    case"draftGo":{const d=S.draft;d.capA=d.selA;d.capB=d.selB;d.A=[d.capA];d.B=[d.capB];d.turn=Math.random()<.5?"A":"B";toast(nameOf(d.turn==="A"?d.capA:d.capB)+" yazı turayı kazandı, ilk o seçiyor");d.deadline=Date.now()+20000;startTimer();render(true);break}
-    case"dpick":dpick(id);break;
-    case"draftDone":{stopTimer();const d=S.draft;startEditor(d.mid,d.A,d.B);S.teams.ca=d.capA;S.teams.cb=d.capB;S.draft=null;render(true);break}
     case"gStart":{const sd=S.f["sd_"+el.dataset.m];if(!sd)break;S.f.stOwn=false;sd.step={ph:"scorer",side:el.dataset.side};render(true);break}
     case"mngOpen":{S.sheet={type:"mng",mid:id};render(true);break}
     case"stTab":{S.f.stTab=el.dataset.v;const sd=Object.values(S.f).find(x=>x&&x.step);if(sd)sd.step=null;render(true);const sh=$(".sheet");if(sh)sh.scrollTop=0;break}
@@ -4716,7 +4695,6 @@ document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.photo&&t.files&&t.files[0]){uploadPhoto(t.dataset.photo,t.files[0]);t.value="";return}
   if(t.dataset.actChange==="sahaK"){S.f.sahaK=t.value;render(true);return}
   if(t.dataset.actChange==="yr"){S.yr=t.value==="all"?"all":+t.value;S.f.ptab=S.f.ptab;S.view=null;render(true);return}
-  if(t.dataset.actChange==="cap"&&S.draft){S.draft["sel"+t.dataset.k]=t.value;render(true)}
   if(t.dataset.actChange==="evA"){const m=S.matches.find(x=>x.id===t.dataset.m);const sd=S.f["sd_"+t.dataset.m];const e=sd&&sd.events[+t.dataset.i];if(e){snap(sd,"asist değişikliği");e.a=t.value||null;S.f.confirmFinish=null;sdSave(m,sd);render(true)}return}
   if(t.dataset.actChange==="aw"){const m=S.matches.find(x=>x.id===t.dataset.m);const sd=S.f["sd_"+t.dataset.m];if(sd){snap(sd,t.dataset.k==="gol"?"Haftanın Golü":"Fiyasko");sd[t.dataset.k]=t.value;sdSave(m,sd);render(true)}return}
   if(t.dataset.actChange==="awR"){const m=S.matches.find(x=>x.id===t.dataset.m);if(m){const g=t.dataset.k==="gol"?(t.value||null):(m.gol_id||null),f=t.dataset.k==="fiy"?(t.value||null):(m.fiy_id||null);A("admin_set_awards",{p_id:m.id,p_gol:g,p_fiy:f},"Kaydedildi")}return}
@@ -4738,7 +4716,7 @@ async function revCheck(force){if(TID===0||!S.loaded||S._rc)return;S._rc=true;
   try{const r=await rpc("team_rev",{});if(!r){if(force)load();return}if(!S.rev||r.r!==S.rev.r||force){S.rev=r;await load()}}catch(_){}finally{S._rc=false}}
 window.addEventListener("pagehide",sesSave);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")sesSave();if(document.visibilityState==="visible"){newVer().then(n=>{if(!n){revCheck();wakeSync()}})}});
-setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.draft&&!S.sheet)revCheck()},30000);
+setInterval(()=>{if(document.visibilityState==="visible"&&!S.teams&&!S.sheet)revCheck()},30000);
 
 /* Sahada sürükle-bırak */
 let DRAG=null,SUPPRESS=false;
@@ -7414,13 +7392,6 @@ case"ultBf":ULT.bf=el.dataset.v||null;render(true);break;
     case"ultReset":ULT.s={};LS.set("y_ult4_"+TID,"");ULT.s=null;ultSt();ultSave();S.sheet=null;render(true);toast("Kulübün sıfırlandı");break;
     default:return false}
   return true}
-
-/* Draft zamanlayıcı */
-function startTimer(){stopTimer();S.tick=setInterval(()=>{const d=S.draft;if(!d||!d.deadline)return stopTimer();const left=Math.ceil((d.deadline-Date.now())/1000);const el=$("#dtimer");if(el)el.textContent=Math.max(0,left);
-  if(left<=0){const m=S.matches.find(x=>x.id===d.mid);const pool=rsvpLists(m).kadro.map(p=>p.id).filter(id=>!d.A.includes(id)&&!d.B.includes(id)).sort((a,b)=>genOf(b)-genOf(a));if(pool[0]){toast("Süre doldu, en yüksek reytingli seçildi");dpick(pool[0])}}},250)}
-function stopTimer(){clearInterval(S.tick);S.tick=null}
-function dpick(id){const d=S.draft;if(!d)return;(d.turn==="A"?d.A:d.B).push(id);d.turn=d.turn==="A"?"B":"A";d.deadline=Date.now()+20000;
-  const m=S.matches.find(x=>x.id===d.mid);if(!rsvpLists(m).kadro.some(p=>!d.A.includes(p.id)&&!d.B.includes(p.id)))stopTimer();render(true)}
 
 setTimeout(async()=>{ // betiğin tamamı yüklendikten sonra başla (sonradan tanımlanan sabitler hazır olsun)
   // takım linki (?t=slug): takımı bul, telefonda hatırla, adres çubuğundan temizle
