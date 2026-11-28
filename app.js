@@ -6320,8 +6320,8 @@ function ultAnKare(ts){const r=ULT.run,cam=document.getElementById("ulCam");if(!
   let bl=ULT_AN.E._b;if(!bl||!bl.isConnected)bl=ULT_AN.E._b=document.getElementById("ulBall");if(bl){bl.style.left=B[0]+"%";bl.style.top=B[1]+"%"}
   const dur=r.done||(r.cm&&r.cm.bek)||!!r.lbl||!r.bas;
   for(const k in r.pos){let el=ULT_AN.E[k];if(!el||!el.isConnected)el=ULT_AN.E[k]=document.querySelector(`.ulm-p[data-s="${k}"]`);if(!el)continue;const p=r.pos[k],on=el.classList.contains("on"),kl=k.slice(1)==="0",f=k.charCodeAt(0)*1.7+k.charCodeAt(1)*2.3;
-    let tx=p[0],ty=p[1];if(!on&&!dur){tx+=(B[0]-50)*(kl?.04:.09)+Math.sin(T*.9+f)*(kl?.5:1.3);ty+=(kl?0:(B[1]-p[1])*.07)+Math.cos(T*.7+f*1.7)*(kl?.4:1.1)}
-    const c=ULT_AN.P[k]||(ULT_AN.P[k]=[tx,ty]),dx=tx-c[0],dy=ty-c[1],d=Math.hypot(dx,dy);if(d>.02){const s=Math.min(d,Math.min(on?26:18,3+d*2.4)*hz*dt);c[0]+=dx/d*s;c[1]+=dy/d*s}
+    let tx=p[0],ty=p[1];if(r.pres===k&&!on&&!dur&&k.slice(1)!=="0"){const us=k[0]==="a";tx=B[0]+(B[0]<50?2.5:-2.5);ty=Math.max(6,Math.min(94,B[1]+(us?3.5:-3.5)))}else if(!on&&!dur){tx+=(B[0]-50)*(kl?.04:.09)+Math.sin(T*.9+f)*(kl?.5:1.3);ty+=(kl?0:(B[1]-p[1])*.07)+Math.cos(T*.7+f*1.7)*(kl?.4:1.1)}
+    const c=ULT_AN.P[k]||(ULT_AN.P[k]=[tx,ty]),dx=tx-c[0],dy=ty-c[1],d=Math.hypot(dx,dy);if(d>.02){const s=Math.min(d,Math.min(on?26:r.pres===k?36:18,3+d*2.6)*hz*dt);c[0]+=dx/d*s;c[1]+=dy/d*s}
     el.style.left=cl(c[0],7,93)+"%";el.style.top=cl(c[1],4,96)+"%"}
   if(!dur){const G=r.gz||(r.gz={z:[0,0,0],k:[0,0,0],t:[0,0]}),w=dt*hz;G.z[B[1]<33.3?2:B[1]<66.7?1:0]+=w;if(r.tops!=null){G.t[r.tops?0:1]+=w;if(r.tops&&B[1]<62)G.k[B[0]<36?0:B[0]>64?2:1]+=w}}}
 function ultPlace(r,pos){r.pos=pos;if(typeof requestAnimationFrame==="function"&&!matchMedia("(prefers-reduced-motion: reduce)").matches){if(!ULT_AN.on){ULT_AN.on=true;requestAnimationFrame(ultAnKare)}return}for(const[k,p]of Object.entries(pos)){const t=document.querySelector(`.ulm-p[data-s="${k}"]`);if(t){t.style.left=Math.min(93,Math.max(7,p[0]))+"%";t.style.top=Math.min(96,Math.max(4,p[1]))+"%"}}}
@@ -6338,9 +6338,11 @@ function ultBub(p,txt,cls,ms){const c=document.getElementById("ulCam");if(!c||!p
   // yatayda saha döndüğü için "üst" ekranda yana düşer: etiket oyuncunun üstüne binmesin diye ekranın üstüne (kenardaysa altına) alınır
   if(document.querySelector(".ulmac.ulyat")){const y=Math.max(4,Math.min(96,p[1]+6));el.style.left=(p[0]>16?p[0]-12:p[0]+12)+"%";el.style.top=y+"%"}else{el.style.left=p[0]+"%";el.style.top=p[1]+"%"}el.innerHTML=txt;c.appendChild(el);setTimeout(()=>el.remove(),(ms||1300)/((ULT.run&&ULT.run.hiz)||1))}
 // eğri ok: köşeden ceza sahasına, barajın üstünden kaleye, taçtan içeri
-function ultOkCiz(a,b,cls,bend){const g=document.getElementById("ulTr");if(!g||!a||!b)return;const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1,k=(bend||0)*L;
+function ultOkCiz(a,b,cls,bend){const g=document.getElementById("ulTr");if(!g||!a||!b)return;const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1;let k=(bend||0)*L;
+  // eğri sahanın dışına taşmasın: kavis her zaman saha ortasına doğru bükülür
+  {const c1=[mx-dy/L*k,my+dx/L*k],c2=[mx+dy/L*k,my-dx/L*k];if(Math.hypot(c2[0]-50,c2[1]-50)<Math.hypot(c1[0]-50,c1[1]-50))k=-k;const qx=mx-dy/L*k,qy=my+dx/L*k;if(qx<4||qx>96||qy<3||qy>97)k*=.4}
   g.insertAdjacentHTML("beforeend",`<path class="ok ${cls||""}" d="M${a[0]} ${a[1]} Q${mx-dy/L*k} ${my+dx/L*k} ${b[0]} ${b[1]}" marker-end="url(#ulOkU)"/>`)}
-function ultKoseIsaret(p){const g=document.getElementById("ulTr");if(!g||!p)return;const cx=p[0]<50?2:98,cy=p[1]<50?1.5:98.5;g.insertAdjacentHTML("beforeend",`<circle class="kark" cx="${cx}" cy="${cy}" r="4.5"/><line class="kbay" x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy+(cy<50?-0:0)}"/>`)}
+function ultKoseIsaret(p){const g=document.getElementById("ulTr");if(!g||!p)return;const cx=p[0]<50?5:95,cy=p[1]<50?4.5:95.5;g.insertAdjacentHTML("beforeend",`<circle class="kark" cx="${cx}" cy="${cy}" r="3"/><line class="kbay" x1="${cx}" y1="${cy}" x2="${cx}" y2="${cy+(cy<50?-0:0)}"/>`)}
 // atağın aşaması: Kurulum › Kilit Pas › Şut. Durum: "" (sönük), on (sürüyor), ok (geçildi), no (takıldı)
 function ultAs(a,b,c){const el=document.getElementById("ulAs");if(!el)return;[a,b,c].forEach((v,i)=>{const s=el.children[i];if(s)s.className=v||""})}
 // düello halkası: topun kazanıldığı ya da kaybedildiği yer
@@ -6383,6 +6385,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.cm&&r.cm.bek)return
   // top sürme: oyuncu topla birkaç adım ilerler
   const drb=(j,q)=>()=>{const p=ultP(r,e.us,j),np=j===0?[p[0],p[1]]:[cl(p[0]+(50-p[0])*.12+(Math.random()-.5)*8,8,92),cl(p[1]+dir*(6+Math.random()*5),12,88)];
     ultPlace(r,ultPose(r,{att:e.us,mode:md==="kon"?"kon":"ak",ball:np,car:j,step:q}));ultTrail(null);ultBall([np[0],np[1]+dir*1.8]);ultOn2(e.us,j)};
+  r.pres=(e.lost&&e.lost.j!=null)?(e.us?"b":"a")+e.lost.j:e.df!=null?(e.us?"b":"a")+e.df:null;
   const steps=[()=>{r.dk=e.dk;ultTrail(null);ultOn2(e.us,P[0]);ultAk(e.us,P);if(e.kind==="kor")ultAs("ok","on","");else if(e.kind==="sv"||e.kind==="pen"||P.length===1)ultAs("ok","ok","on");else ultAs("on","","");
     {const hp=ultP(r,e.us,P[0]);ultPlace(r,ultPose(r,{att:e.us,mode:md,ball:e.from||[hp[0],e.us?Math.max(hp[1],55):Math.min(hp[1],45)],car:e.from?null:P[0],tk:tkj,sh:shj,step:0,zone:P.length===1&&!e.from?(e.kind==="uz"?"uz":"ak"):null}))}
     if(e.from){ultBall(e.from);
@@ -6404,7 +6407,9 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.cm&&r.cm.bek)return
   if((e.cal&&e.cal.includes(last))||(e.lost&&e.lost.how==="calim"))steps.push(()=>{drb(P[last],last)();const p=ultP(r,e.us,P[last]);if(!e.lost){ultDl(p,"us");ultBub([p[0],p[1]-6],"Çalım!","kn");ultFeed(`${D}'`,`${nm(P[last])} çalımla rakibini geçti`,"")}});
   // top kaybı: şut yok, top rakibe geçer
   if(e.lost){const L=e.lost,O=e.us?r.P0.b:r.P0.a,on=O.cs[L.j]?shortName(nameOf(O.cs[L.j].pid))+(e.us?" (rakip)":""):"rakip",cn=nm(P[last]);
-    steps.push(()=>{const pj=ultP(r,!e.us,L.j);ultTrail([ultP(r,e.us,P[last]),pj,false,e.us]);ultBall(pj);ultOn2(!e.us,L.j);ultDl(pj,"no");if(P.length<=1&&L.how!=="ara"&&L.how!=="calim")ultAs("no","","");else ultAs("ok","no","");
+    steps.push(()=>{const pc=(r.bp||ultP(r,e.us,P[last])).slice(),kk=(e.us?"b":"a")+L.j,an=ULT_AN.on&&ULT_AN.P[kk];
+      // topu kapan oyuncu topun yanında olmalı: baskıyla zaten yaklaşmıştır; uzaksa top ona değil o topa gelir
+      const pj=an&&Math.hypot(an[0]-pc[0],an[1]-pc[1])<14?an.slice():[Math.max(8,Math.min(92,pc[0]+(pc[0]<50?3:-3))),Math.max(6,Math.min(94,pc[1]+(e.us?-3:3)))];if(r.pos)r.pos[kk]=pj.slice();r.pres=null;ultTrail([ultP(r,e.us,P[last]),pj,false,e.us]);ultBall(pj);ultOn2(!e.us,L.j);ultDl(pj,"no");if(P.length<=1&&L.how!=="ara"&&L.how!=="calim")ultAs("no","","");else ultAs("ok","no","");
       ultBub([pj[0],pj[1]-6],{pas:"Pas hatası",kes:"Araya girdi",calim:"Top kaptı",ara:"Pas kesildi"}[L.how]||"Top kaybı","bf");
       ultFeed(`${D}'`,L.how==="pas"?`${cn} pas hatası yaptı · ${on} topu aldı`:L.how==="kes"?`${on} araya girdi, topu kaptı`:L.how==="calim"?`${cn} çalım denedi · ${on} topu kaptı`:`${cn} ara pası denedi · ${on} kesti`,"")});}
   else steps.push(()=>{if(e.us)r.stl.sa++;else r.stl.sb++;const nas=as&&e.kind!=="pen";ultAs("ok","ok",e.goal?"gl":"no");
@@ -6421,7 +6426,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.cm&&r.cm.bek)return
     else{const kl=e.us?r.P0.b.cs[0]:r.P0.a.cs[0];const T2=[44+Math.random()*12,e.us?6:94];ultSut(bp,T2,"kur");ultBall(T2);
       if(kt){const kx=T2[0];kt.style.left=kx+"%";kt.classList.add(kx<50?"dvL":"dvR");setTimeout(()=>kt.classList.remove("dvR","dvL"),900)}
       const nx=r.P0.ev[r.i+1],kn2=kl?shortName(nameOf(kl.pid)):"kaleci";if(e.o==="blok"){ultBub([bp[0],bp[1]+(e.us?-5:5)],"Blok!","bf");ultFeed(`${D}'`,`${sh} şut · savunmadan döndü`,"")}else if(e.o==="cizgi"){ultBub([50,e.us?5:95],"Çizgiden!","dr");ultFeed(`${D}'`,`${sh} şut · top çizgiden çıkarıldı`,"")}else ultFeed(`${D}'`,`${sh}${e.kind==="pen"?" penaltı":" şut"} · ${kn2} ${nx&&nx.ard&&nx.us===e.us?"kornere çeldi":e.kind==="ara"?"birebirde kurtardı":"kurtardı"}`,"")}});
-  let k=0;const go=()=>{if(ULT.run!==r)return;if(r.skip){ultFinish();return}if(k<steps.length){r.sonAdim=Date.now();steps[k++]();ultDraw();setTimeout(go,T(520))}else{r.vi=r.i+1;r.i++;setTimeout(ultTick,T(e.goal?1700:420))}};go()}
+  let k=0;const go=()=>{if(ULT.run!==r)return;if(r.skip){ultFinish();return}if(k<steps.length){r.sonAdim=Date.now();steps[k++]();ultDraw();setTimeout(go,T(520))}else{r.pres=null;r.vi=r.i+1;r.i++;setTimeout(ultTick,T(e.goal?1700:420))}};go()}
 // şut çizgisi: topun bulunduğu yerden kaleye
 function ultSut(a,b,cls){const g=document.getElementById("ulTr");if(!g)return;g.innerHTML="";g.insertAdjacentHTML("beforeend",`<line class="sut ${cls}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`)}
 // saat: olaylar arasında da dakika ilerler
@@ -6437,7 +6442,10 @@ function ultOn2(us,j){if(ULT.run)ULT.run.tops=!!us;document.querySelectorAll(".u
 function ultTrail(l){const g=document.getElementById("ulTr");if(!g)return;g.innerHTML="";if(!l)return;const[a0,b,k,us]=l;const a=(ULT.run&&ULT.run.bp)||a0;if(Math.hypot(a[0]-b[0],a[1]-b[1])<3)return;
   g.insertAdjacentHTML("beforeend",`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" class="${k?"k":""} ${us?"":"o"}"/>`)}
 // kupa maçı berabere bitince penaltılar oynatılır (sonuç kayıttaki seriyle aynı)
-function ultPenVar(r){if(r.kind!=="kp"||r.sk.a!==r.sk.b)return null;const e=ultKpEv(r.k);if(!e||!e.p||e.p.pa==null)return null;const ps=ultPenSeri(r.k,{p:e.p},e.p.h);return{K:ps.K,ben:e.p.h===myPid()||!!r.izle}}
+function ultPenVar(r){
+  // Meydan serisi: 3. maçın sonunda galibiyetler eşitse penaltılar sahada oynanır (sonuç seriye bağlı tohumdan, herkeste aynı)
+  if(r.kind==="ch"&&r.k&&ultChAyak(r.k)===3){try{const bk=ultChBaz(r.k),sr=ultSeri(bk);if(sr&&sr.pen&&sr.R[2]&&sr.R[2].e){const P2=ultPenSeri(bk,sr.R[2].e,sr.d.a);return{K:P2.K,ben:sr.d.a===myPid()}}}catch(_){}return null}
+  if(r.kind!=="kp"||r.sk.a!==r.sk.b)return null;const e=ultKpEv(r.k);if(!e||!e.p||e.p.pa==null)return null;const ps=ultPenSeri(r.k,{p:e.p},e.p.h);return{K:ps.K,ben:e.p.h===myPid()||!!r.izle}}
 function ultPenOyna(r){const pv=ultPenVar(r);if(!pv){ultFinish();return}const RM2=matchMedia("(prefers-reduced-motion: reduce)").matches,T=ms=>(RM2?Math.min(ms,250):ms*ULT_TM)/r.hiz;
   const sira=X=>{const o=[];for(let j=1;j<7;j++)if(X.cs[j])o.push(j);const w={FV:0,OS:1,DF:2};o.sort((a,b)=>((X.cs[b].y==="penalti")-(X.cs[a].y==="penalti"))||(w[X.sl[a][0]]-w[X.sl[b][0]]));if(X.cs[0])o.push(0);return o};
   const S={a:sira(r.P0.a),b:sira(r.P0.b)},n={a:0,b:0},sk={a:0,b:0},L=[];
