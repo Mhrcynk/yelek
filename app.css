@@ -2756,7 +2756,7 @@ html.dk .meBtn.ask>span:last-child,html.dk .meBtn.ask{font-size:.7812rem}
 .mzf{display:flex;align-items:center;gap:8px;margin:2px 0 12px;min-width:0}
 .mzseg{display:flex;gap:2px;background:#1A1140;border-radius:12px;padding:4px;min-width:0}
 .mzseg.grow{flex:1}
-.mzseg button{flex:1;height:36px;padding:0 12px;border:0;border-radius:12px;background:none;color:var(--c-ink3);font:600 .875rem/1 Inter,sans-serif;white-space:nowrap;cursor:pointer;transition:background .2s,color .2s}
+.mzseg button{flex:1;height:36px;padding:0 12px;border:0;border-radius:12px;background:none;color:var(--c-ink3);font:600 .875rem/1 Inter,sans-serif;white-space:nowrap;cursor:pointer;transition:none}
 .mzseg button.on{background:#fff;color:#24105E;font-weight:700}
 .mzsel{position:relative;flex:1;min-width:0;height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 12px 0 16px;border-radius:12px;background:var(--c-card);font:700 .875rem/1 Inter,sans-serif;color:#fff}
 .mzsel span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mzsel svg{width:18px;height:18px;flex:none;color:var(--c-ink3)}
@@ -6077,7 +6077,7 @@ body.uldrag-s .ulbn{box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}body.uldrag
 .ulbub.sr,.ulbub.kr{padding:0;background:none}.ulbub.sr i,.ulbub.kr i{display:block;width:12px;height:16px;border-radius:2px;background:#F2C94C;box-shadow:0 2px 8px rgba(0,0,0,.5);transform:rotate(-8deg)}.ulbub.kr i{background:#E53950}
 .ulbub.pn,.ulbub.kn{background:#F5C542}.ulbub.dr{background:#8EEFFB}
 @keyframes ulbub{from{opacity:0;transform:translate(-50%,-60%)}to{opacity:1;transform:translate(-50%,-100%)}}
-.ulyat .ulbub{transform:translate(-50%,-100%) rotate(-90deg)}.ulyat .ulm2 .ulm-p.dvL{transform:translate(-50%,-50%) rotate(-145deg)!important}.ulyat .ulm2 .ulm-p.dvR{transform:translate(-50%,-50%) rotate(-35deg)!important}
+.ulyat .ulbub{transform:translate(-50%,-50%) rotate(-90deg)}.ulyat .ulm2 .ulm-p.dvL{transform:translate(-50%,-50%) rotate(-145deg)!important}.ulyat .ulm2 .ulm-p.dvR{transform:translate(-50%,-50%) rotate(-35deg)!important}
 .ulsp button{padding:0 4px;font-size:.8125rem}
 @media (prefers-reduced-motion:reduce){#ulTr path.ok,#ulTr line.sut,.ulbub,.ulm2 rect.net.sal,#ulTr circle.kark{animation:none}}
 .ulsb2>span:nth-child(3){justify-content:flex-end}
@@ -6808,15 +6808,20 @@ section.uldr:not(.card){margin:0 0 10px}
 @media (prefers-reduced-motion:reduce){.ulmd>.ulcev{animation:none}}
 
 .ulas{display:flex;gap:6px;margin:8px 0 0}
-.ulas>span{flex:1;min-width:0;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:4px;font:700 .75rem/1 Inter,sans-serif;background:rgba(255,255,255,.06);color:rgba(255,255,255,.62);transition:background .2s,color .2s}
-.ulas>span.on{background:rgba(255,255,255,.18);color:#fff}
-.ulas>span.ok{background:rgba(245,197,66,.2);color:#F5C542}
-.ulas>span.no{background:rgba(229,57,80,.22);color:#FFB3BF}
+.ulas>span{flex:1;min-width:0;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:4px;font:700 .75rem/1 Inter,sans-serif;background:rgba(255,255,255,.06);color:rgba(255,255,255,.62);transition:none}
+.ulas>span.on{background:#F5C542;color:#1B1300;box-shadow:0 0 0 2px rgba(245,197,66,.3)}
+.ulas>span.ok{background:rgba(245,197,66,.1);color:rgba(245,197,66,.8)}
+.ulas>span.no{background:#E53950;color:#fff}
+.ulas>span.gl{background:#3DF0A8;color:#06281C;box-shadow:0 0 0 2px rgba(61,240,168,.3)}
 .ulas>span.ok::before{content:"✓"}
 .ulas>span.no::before{content:"✕"}
+.ulas>span.gl::before{content:"⚽"}
 .ulas+.ulfeed{margin-top:6px}
 .uldl{position:absolute;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;border:2px dashed #fff;box-shadow:0 0 16px rgba(255,255,255,.55);z-index:3;pointer-events:none;animation:uldl .5s ease-out}
 .uldl.no{border-color:#FF8FA0;box-shadow:0 0 16px rgba(255,143,160,.7)}
 .uldl.us{border-color:#F5C542;box-shadow:0 0 16px rgba(245,197,66,.7)}
 @keyframes uldl{from{transform:translate(-50%,-50%) scale(.4);opacity:0}}
 @media (prefers-reduced-motion:reduce){.uldl{animation:none}.ulas>span{transition:none}}
+
+.ulyat .ulbub{animation-name:ulbubY}
+@keyframes ulbubY{from{opacity:0}}

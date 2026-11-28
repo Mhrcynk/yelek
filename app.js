@@ -6291,7 +6291,9 @@ const ULT_KN={kor:"Korner",sv:"Serbest vuruş",uz:"Uzaktan şut",pen:"Penaltı",
 // motorun dakikası 0-40; ekranda 0-90'a yayılır (gol sayısı ve sonuç aynı kalır)
 const ULT_TM=3.2;// süre çarpanı: 1x hızda maç yaklaşık 3 dakika
 const ultD=dk=>Math.max(1,Math.min(90,Math.round(dk*90/40)));
-function ultBub(p,txt,cls,ms){const c=document.getElementById("ulCam");if(!c||!p)return;const el=document.createElement("span");el.className="ulbub "+(cls||"");el.style.left=p[0]+"%";el.style.top=p[1]+"%";el.innerHTML=txt;c.appendChild(el);setTimeout(()=>el.remove(),(ms||1300)/((ULT.run&&ULT.run.hiz)||1))}
+function ultBub(p,txt,cls,ms){const c=document.getElementById("ulCam");if(!c||!p)return;const el=document.createElement("span");el.className="ulbub "+(cls||"");
+  // yatayda saha döndüğü için "üst" ekranda yana düşer: etiket oyuncunun üstüne binmesin diye ekranın üstüne (kenardaysa altına) alınır
+  if(document.querySelector(".ulmac.ulyat")){const y=Math.max(4,Math.min(96,p[1]+6));el.style.left=(p[0]>16?p[0]-12:p[0]+12)+"%";el.style.top=y+"%"}else{el.style.left=p[0]+"%";el.style.top=p[1]+"%"}el.innerHTML=txt;c.appendChild(el);setTimeout(()=>el.remove(),(ms||1300)/((ULT.run&&ULT.run.hiz)||1))}
 // eğri ok: köşeden ceza sahasına, barajın üstünden kaleye, taçtan içeri
 function ultOkCiz(a,b,cls,bend){const g=document.getElementById("ulTr");if(!g||!a||!b)return;const mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,dx=b[0]-a[0],dy=b[1]-a[1],L=Math.hypot(dx,dy)||1,k=(bend||0)*L;
   g.insertAdjacentHTML("beforeend",`<path class="ok ${cls||""}" d="M${a[0]} ${a[1]} Q${mx-dy/L*k} ${my+dx/L*k} ${b[0]} ${b[1]}" marker-end="url(#ulOkU)"/>`)}
@@ -6362,7 +6364,7 @@ function ultTick(){const r=ULT.run;if(!r||r.done)return;if(r.cm&&r.cm.bek)return
     steps.push(()=>{const pj=ultP(r,!e.us,L.j);ultTrail([ultP(r,e.us,P[last]),pj,false,e.us]);ultBall(pj);ultOn2(!e.us,L.j);ultDl(pj,"no");if(P.length<=1&&L.how!=="ara"&&L.how!=="calim")ultAs("no","","");else ultAs("ok","no","");
       ultBub([pj[0],pj[1]-6],{pas:"Pas hatası",kes:"Araya girdi",calim:"Top kaptı",ara:"Pas kesildi"}[L.how]||"Top kaybı","bf");
       ultFeed(`${D}'`,L.how==="pas"?`${cn} pas hatası yaptı · ${on} topu aldı`:L.how==="kes"?`${on} araya girdi, topu kaptı`:L.how==="calim"?`${cn} çalım denedi · ${on} topu kaptı`:`${cn} ara pası denedi · ${on} kesti`,"")});}
-  else steps.push(()=>{if(e.us)r.stl.sa++;else r.stl.sb++;const nas=as&&e.kind!=="pen";ultAs("ok","ok","on");setTimeout(()=>{if(ULT.run===r&&r.P0.ev[r.i-1]===e||ULT.run===r&&r.P0.ev[r.i]===e)ultAs("ok","ok",e.goal?"ok":"no")},T(450));
+  else steps.push(()=>{if(e.us)r.stl.sa++;else r.stl.sb++;const nas=as&&e.kind!=="pen";ultAs("ok","ok",e.goal?"gl":"no");
     if(e.teh){const gp=[50,e.us?16:84];ultBub(gp,"Tehlikeli!","pn",900)}const gy=e.us?1.5:98.5,bp=(r.bp||ultP(r,e.us,shj)).slice();
     const how={kor:" kafayla",sv:" serbest vuruştan",uz:" uzaktan",pen:" penaltıdan",kon:" kontradan",ara:" birebirde",duv:" duvar pasıyla"}[e.kind]||"";
     const kk=(e.us?"b":"a")+"0",kt=document.querySelector(`.ulm-p[data-s="${kk}"]`);
