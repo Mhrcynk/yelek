@@ -5388,7 +5388,7 @@ async function ultKarar(i){const r=ULT.run;if(r&&r.cm){ultCmKarar(i);return}if(!
   if(asama===1){ultHt(r,false);if(r.skip||!r.P0.ev[r.i]){ultTick();return}r.lbl=null;r.ds=45;ultSantra(r,false);ultFeed("46'","İkinci yarı başladı","");ultDraw();setTimeout(ultTick,800*ULT_TM/r.hiz);return}
   void devam;r.lbl=null;setTimeout(ultTick,300)}
 // maç ekranı kapanırsa: karar verilmediyse planla, 1. karar verildiyse o kararla yazılır
-function ultCanliKapat(){document.getElementById("ulKarar")?.remove();const r=ULT.run;if(r&&r.cm){clearInterval(r.cm.tm);if(!r.done){ULT_CM.birak[r.cm.kind+r.cm.k]=1;ultCmIz(r.cm,"kapat",{dk:r.dk});ULT.run=null;toast("Maçtan çıktın · takımın oynamaya devam ediyor")}return}if(!r||!r.htSor||r.htSor.kayit||r.htSor.bek)return;const h=r.htSor,my=h.side==="a"?h.A:h.B;clearInterval(h.tm);r.skip=true;if(h.asama===2&&my.kr)my.kr=[my.kr[0]||{},{}];ultCanliKayit(r).then(ok=>{if(!ok)toast("Maç kaydedilemedi · Maçlar'dan yeniden başlat");else{ULT_SRV.at=0;render(true)}})}
+function ultCanliKapat(){document.getElementById("ulKarar")?.remove();const r=ULT.run;if(r&&r.cm){clearInterval(r.cm.tm);if(!r.done){ULT_CM.birak[r.cm.kind+r.cm.k]=1;if(r.cm.side)ULT_CM.don={kind:r.cm.kind,k:r.cm.k,o:r.opp};ultCmIz(r.cm,"kapat",{dk:r.dk});ULT.run=null;toast(r.cm.side?"Maçtan çıktın · takımın oynuyor, istersen dönebilirsin":"Maçtan çıktın")}return}if(!r||!r.htSor||r.htSor.kayit||r.htSor.bek)return;const h=r.htSor,my=h.side==="a"?h.A:h.B;clearInterval(h.tm);r.skip=true;if(h.asama===2&&my.kr)my.kr=[my.kr[0]||{},{}];ultCanliKayit(r).then(ok=>{if(!ok)toast("Maç kaydedilemedi · Maçlar'dan yeniden başlat");else{ULT_SRV.at=0;render(true)}})}
 // ---------- saatli maç ve çift taraflı canlı maç ----------
 // Lig ve kupa maçının saati bellidir (yönetici belirler); o saatte gelen iki taraf da devre arasında ve 70. dakikada aynı anda karar verir.
 // Kararlar sunucuda saklanır; ikisi de onaylayınca ya da süre dolunca birlikte açılır. Gelmeyen tarafın takımı Maç Planıyla oynar.
@@ -5488,6 +5488,9 @@ async function ultCmAyarKaydet(){const g=id=>{const e=document.getElementById(id
   const r=await rpc("ult_saat_ayar",{p_lig_d:ld,p_lig_m:lm,p_kp_d:kd,p_kp_m:km}).catch(()=>null);if(!r||!r.ok){toast(r&&r.error==="auth"?"Bunu yalnız yönetici değiştirebilir":"Kaydedilemedi, tekrar dene");return}
   ULT_SRV.cfg=r.cfg;S.sheet=null;toast("Maç akşamları kaydedildi");render(true)}
 // bekleme odası
+// kendi isteğiyle maçtan çıkan oyuncu, maç sürdükçe geri dönebilir
+function ultDonH(){const d=ULT_CM.don;if(!d||(ULT.run&&ULT.run.cm))return"";return `<div class="ulmd" role="status"><i class="ulcev" aria-hidden="true"></i><span><b>Maçın Sürüyor</b><small>${esc(shortName(nameOf(d.o)))} · takımın oynuyor</small></span><button class="btn primary" data-act="ultCmDon">Maça Dön</button></div>`}
+function ultCmDon(){const d=ULT_CM.don;if(!d)return;delete ULT_CM.birak[d.kind+d.k];ULT_CM.don=null;ultCmAc(d.kind,d.k)}
 function ultCmAc(kind,k){if(!ULT_SRV.ok){toast("Sunucuya ulaşılamadı");return}if(ultCmOynandi(kind,k)){ultCmIzle(kind,k);return}
   ULT_CM.oda={kind,k,D:null,son:"",hata:null};S.sheet={type:"ult",v:"cmoda",kind,k};render(true);ultCmOdaTik()}
 async function ultCmOdaTik(){const o=ULT_CM.oda;if(!o||o.mesgul)return;if(!S.sheet||S.sheet.v!=="cmoda"||S.sheet.k!==o.k){ULT_CM.oda=null;return}o.mesgul=1;let hiz=3000;
@@ -5577,6 +5580,7 @@ async function ultNabizTik(){if(typeof document==="undefined"||ULT_CM.nb)return;
     document.querySelectorAll("[data-on]").forEach(el=>{el.classList.toggle("cev",ULT_CM.on.has(el.dataset.on));el.classList.toggle("mct",ULT_CM.mc.has(el.dataset.on))});
     const g=ULT_CM.cg.find(x=>!ULT_CM.red[x.k]);if(g&&!S.sheet){S.sheet={type:"ult",v:"cmgelen",k:g.k,a:g.a,t:g.t?1:0,cg:Date.parse(g.cg)+(Date.now()-Date.parse(r.now))};render(true)}
     // süren canlı maçım varsa ve bu cihazda ona girmişsem (sayfa yenilendi, bağlantı koptu) maça kendiliğinden dönülür; kendi isteğiyle çıkan geri çekilmez
+    if(ULT_CM.don&&!(r.ak||[]).some(x=>x.kind===ULT_CM.don.kind&&x.k===ULT_CM.don.k)){ULT_CM.don=null;if(!S.sheet)render(true)}
     else if(!S.sheet&&!(ULT.run&&ULT.run.cm)){const A=ultSt().cmA,ak=A&&(r.ak||[]).find(x=>x.kind===A.kind&&x.k===A.k&&!ULT_CM.birak[x.kind+x.k]);if(ak){toast("Maçın sürüyor · geri dönüyorsun");ultCmAc(ak.kind,ak.k)}}}
   catch(_){}finally{ULT_CM.nb=0}}
 if(typeof window!=="undefined"){setInterval(ultNabizTik,6000);document.addEventListener("visibilitychange",()=>{const r=ULT.run,g=document.visibilityState==="visible";if(r&&r.cm&&!r.done)ultCmIz(r.cm,g?"geri":"gizli",{dk:r.dk},!g);if(g)ultNabizTik();else ultAyril()});window.addEventListener("pagehide",()=>{const r=ULT.run;if(r&&r.cm&&!r.done)ultCmIz(r.cm,"cikis",{dk:r.dk},true);ultAyril()})}
@@ -6508,7 +6512,7 @@ const ULT_TABS=[["kulup","Kulüp"],["kart","Kartlar"],["takim","Takım"],["mac",
 function sheetUltPg(){if(!ultOn()||!myPid())return"";ultLoad();if(!ULT_SRV.ok){const X0=`<button class="oda-bk" data-act="pgBack" aria-label="Geri">${PG_BK}</button>`;return `<header class="bjh gph gph-ult">${X0}<h1>Yelek <span lang="en">Ultimate</span></h1></header><section class="card ulsec"><p class="ult-n">${ULT_SRV.at>0?"Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.":"Kulübün sunucudan yükleniyor…"}</p>${ULT_SRV.at>0?`<button class="btn ult-w" data-act="ultYukle">Tekrar dene</button>`:""}</section>`}const st=ultSt(),B=ultBuild();ultEvoTick();let tab=st.tab;if(!ULT_TABS.some(t=>t[0]===tab))tab={album:"kart",kadro:"takim"}[tab]||"kulup";
   const X=`<button class="oda-bk" data-act="pgBack" aria-label="Geri">${PG_BK}</button>`;
   const nn=ultNotes().filter(x=>x.nw).length;const hd=`<header class="bjh gph gph-ult">${X}<h1>Yelek <span lang="en">Ultimate</span></h1><button class="bj-b" data-act="ultNotes" aria-label="Bildirimler${nn?`, ${nn} yeni`:""}">${GM_BELL}${nn?`<b class="num">${nn>9?"9+":nn}</b>`:""}</button><button class="bj-i" data-act="ultInfo" aria-label="Kurallar">${GM_INFO}</button>${(()=>{const n=ultGrp(ultCards().filter(c=>ultIzin(c,myPid()))).length;return `<button class="bjh-v" data-act="ultKf" data-v="kulub" aria-label="Kulübünde ${n} kart"><b class="num">${n}</b><small>Kulübün</small></button>`})()}</header>
-    <div class="mzseg gtabs" role="tablist">${ULT_TABS.map(([v,l])=>`<button role="tab" data-act="ultTab" data-nav="1" data-v="${v}" class="${tab===v?"on":""}" aria-selected="${tab===v}">${l}</button>`).join("")}</div>`;
+    <div class="mzseg gtabs" role="tablist">${ULT_TABS.map(([v,l])=>`<button role="tab" data-act="ultTab" data-nav="1" data-v="${v}" class="${tab===v?"on":""}" aria-selected="${tab===v}">${l}</button>`).join("")}</div>${ultDonH()}`;
   return hd+(tab==="kart"?ultKartlar():tab==="takim"?ultKadro():tab==="mac"?ultMacTab():ultKulup())}
 // ----- Kulüp: kim olduğun, bugün ne yapacağın, çantan, hedeflerin
 // kulüp: sezon yolu, şans puanı ve aktif yıldız kartlar
@@ -7248,6 +7252,7 @@ case"ultBf":ULT.bf=el.dataset.v||null;render(true);break;
     case"ultSkip":if(ULT.run){ULT.run.skip=true;if(ULT.run.htSor&&!ULT.run.htSor.kayit)ultTick()}break;
     case"ultKarar":ultKarar(el.dataset.v);break;
     case"ultKrSec":ultKrSec(el.dataset.v);break;
+    case"ultCmDon":ultCmDon();break;
     case"ultCmAc":ultCmAc(el.dataset.k,el.dataset.v);break;
     case"ultCmAyar":S.sheet={type:"ult",v:"cmAyar"};render(true);break;
     case"ultCmAyarKaydet":ultCmAyarKaydet();break;

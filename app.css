@@ -6797,3 +6797,12 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulmac:not(.ulyat) .ulyat-s>.ultl{margin-bottom:16px}
 
 .mct>.ulcev{background:#F5A623;box-shadow:0 0 0 3px rgba(245,166,35,.22)}
+
+.ulmd{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:10px 12px;border-radius:16px;background:rgba(61,240,168,.08);border:1px solid rgba(61,240,168,.28)}
+.ulmd>.ulcev{display:block;flex:none;animation:ulmdN 1.4s ease-in-out infinite}
+.ulmd>span{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.ulmd>span>b{font-size:14px}
+.ulmd>span>small{font-size:12px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ulmd>.btn{flex:none;width:auto;min-height:44px;padding:0 16px;margin:0}
+@keyframes ulmdN{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.ulmd>.ulcev{animation:none}}
