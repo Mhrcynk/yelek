@@ -6806,3 +6806,17 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulmd>.btn{flex:none;width:auto;min-height:44px;padding:0 16px;margin:0}
 @keyframes ulmdN{50%{opacity:.35}}
 @media (prefers-reduced-motion:reduce){.ulmd>.ulcev{animation:none}}
+
+.ulas{display:flex;gap:6px;margin:8px 0 0}
+.ulas>span{flex:1;min-width:0;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:4px;font:700 .75rem/1 Inter,sans-serif;background:rgba(255,255,255,.06);color:rgba(255,255,255,.62);transition:background .2s,color .2s}
+.ulas>span.on{background:rgba(255,255,255,.18);color:#fff}
+.ulas>span.ok{background:rgba(245,197,66,.2);color:#F5C542}
+.ulas>span.no{background:rgba(229,57,80,.22);color:#FFB3BF}
+.ulas>span.ok::before{content:"✓"}
+.ulas>span.no::before{content:"✕"}
+.ulas+.ulfeed{margin-top:6px}
+.uldl{position:absolute;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;border:2px dashed #fff;box-shadow:0 0 16px rgba(255,255,255,.55);z-index:3;pointer-events:none;animation:uldl .5s ease-out}
+.uldl.no{border-color:#FF8FA0;box-shadow:0 0 16px rgba(255,143,160,.7)}
+.uldl.us{border-color:#F5C542;box-shadow:0 0 16px rgba(245,197,66,.7)}
+@keyframes uldl{from{transform:translate(-50%,-50%) scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.uldl{animation:none}.ulas>span{transition:none}}
