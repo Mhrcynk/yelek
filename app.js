@@ -5895,7 +5895,7 @@ const ULT_V5={zar:.5,guc:1.3,fren:.82,risk:1.1,yen:1.14,yenil:.9,fit:.06,fitB:60
 const ULT_V8={sav:.93};
 // 12. motor: canlı kararla geçilen taktiğin eşleşme etkisi (kYen/kYenil/kSav), kimya (takım kimyası farkı kG, bağlı pas kP, bağlı pasın kesilmesi kK, bağlı duvar pası kD), yedek (mevkisine uyan taze oyuncu yT, uymayan yU, reyting farkı yR, taze fizik yF)
 const ULT_V12={kYen:1.3,kYenil:.78,kSav:.86,kG:.14,kP:.07,kK:.09,kD:.09,yT:1.4,yU:-2.6,yR:2.2,yF:2};
-const ULT_MV=12;// 12: canlı taktik kararı, kimya bağları ve yedek oyuncu daha belirleyici (ULT_V12) ·// 11: atak olmayan dakikalarda orta saha mücadelesi (yalnız görüntü; sonucu etkilemez, kendi rastgele dizisini kullanır) ·// 10: mevki kuralları: kaleci şut çekmez, her şutta kalecinin kendi özelliği sayılır, top kapma ve çalım bireysel düellodur; korner azaldı, isabet düştü ·// 9: bir kararda taktik ve oyuncu değişikliği birlikte ·// 4: penaltı yarıya indi · // 3: 2-1-3 dizilişi ve biçimler (motor 2 ile aynı kurallar)
+const ULT_MV=13;// 13: aynı oyuncu üst üste en çok iki atağı bitirir; bir dakikada en çok iki gol (üçüncüsü sonraki dakikaya kayar) ·// 12: canlı taktik kararı, kimya bağları ve yedek oyuncu daha belirleyici (ULT_V12) ·// 11: atak olmayan dakikalarda orta saha mücadelesi (yalnız görüntü; sonucu etkilemez, kendi rastgele dizisini kullanır) ·// 10: mevki kuralları: kaleci şut çekmez, her şutta kalecinin kendi özelliği sayılır, top kapma ve çalım bireysel düellodur; korner azaldı, isabet düştü ·// 9: bir kararda taktik ve oyuncu değişikliği birlikte ·// 4: penaltı yarıya indi · // 3: 2-1-3 dizilişi ve biçimler (motor 2 ile aynı kurallar)
 // kartın özellikleri: kayıtlı kadroda o anki değerler (a), yoksa oyuncunun güncel özellikleri
 function ultAt(c){if(!c)return[70,70,70,70,70,70];if(c.a&&c.a.length===6)return c.a;const s=(S.stats||{})[c.pid]||{},p=P(c.pid)||{},A=s.attrs||{},pos=p.pos;
   const g=k=>{const v=A[k]!=null?+A[k]:(p.attrs?mainVal(p.attrs,k,pos):NaN);return isFinite(v)&&v>0?v:(c.r||70)};
@@ -5923,7 +5923,7 @@ function ultFor2(X){const n=r=>X.sl.filter(s=>s[0]===r).length,m={vol:0,qm:1,cm:
   if(n("DF")===3){m.cm*=.9;m.vol-=.6}if(n("OS")===3){m.vol+=.8;m.pl-=.02;m.qm*=.96}if(n("OS")===1){m.vol-=.4;m.qm*=1.03}if(n("FV")===2){m.qm*=1.05;m.cm*=1.03}if(n("FV")===3){m.qm*=1.1;m.cm*=1.08;m.vol+=.2}return m}
 const ULT_K={yen:1.09,yenil:.95,q0:.19,dd:70,kes:.24,cal:.5};
 function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penaltı yarıya indi
-  const v5=(v||ULT_MV)>=5,v6=(v||ULT_MV)>=6,v7=(v||ULT_MV)>=7,v8=(v||ULT_MV)>=8,v10=(v||ULT_MV)>=10,v11=(v||ULT_MV)>=11,v12=(v||ULT_MV)>=12,cnl={a:0,b:0},SW=v10?ULT_SW10:ULT_SW,R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ultLineX(opL),kur=myL.kur||opL.kur;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
+  const v5=(v||ULT_MV)>=5,v6=(v||ULT_MV)>=6,v7=(v||ULT_MV)>=7,v8=(v||ULT_MV)>=8,v10=(v||ULT_MV)>=10,v11=(v||ULT_MV)>=11,v12=(v||ULT_MV)>=12,v13=(v||ULT_MV)>=13,sonB={k:null,j:null,n:0},golDk={},cnl={a:0,b:0},SW=v10?ULT_SW10:ULT_SW,R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ultLineX(opL),kur=myL.kur||opL.kur;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
   let d=(a.str-b.str-(myL.pen||0)+(opL.pen||0)+(kur==="kimya"?(a.chem-b.chem)*.3:v12?((a.chem||0)-(b.chem||0))*ULT_V12.kG:0))*(v5?ULT_V5.guc:1);
   const TK={a:ultTak2(a,b),b:ultTak2(b,a)},FO={a:ultFor2(a),b:ultFor2(b)};a.t0=a.t;b.t0=b.t;
   // takım özellik ortalamaları (kaleci hariç) ve kaleci
@@ -5967,7 +5967,7 @@ function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penal
   // ataklar: dakika ve taraf; işlenirken golden sonra baskı ve top kaybından kontra eklenebilir
   const mins=[];for(let i=0;i<nU+nO;i++)mins.push(1+Math.floor(R()*39));mins.sort((x,y)=>x-y);const sides=[];for(let i=0;i<nU;i++)sides.push(true);for(let i=0;i<nO;i++)sides.push(false);for(let i=sides.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[sides[i],sides[j]]=[sides[j],sides[i]]}
   const Q=sides.map((us,i)=>({us,dk:mins[i]}));
-  const atak=(us,dk,kind0,ek)=>{const k=us?"a":"b",ko=us?"b":"a",X=us?a:b,OX=us?b:a,dd=us?d:-d,T=TK[k],TO=TK[ko],F=FO[k],FY=FO[ko],O=OZ[k],OY=OZ[ko];curEx=exOf(us,dk);
+  const atak=(us,dk,kind0,ek)=>{const k=us?"a":"b",ko=us?"b":"a",X=us?a:b,OX=us?b:a,dd=us?d:-d,T=TK[k],TO=TK[ko],F=FO[k],FY=FO[ko],O=OZ[k],OY=OZ[ko];curEx=exOf(us,dk);if(v13&&sonB.k===k&&sonB.n>=2&&sonB.j!=null&&!curEx.includes(sonB.j))curEx=curEx.concat([sonB.j]);
     const ro=R(),kP=v10?(X.t==="hucum"?.11:.08):X.t==="hucum"?.15:.12,uP=X.t==="savunma"?.12:.09,araP=cl(.1+(O.pas-OY.def)/250,.05,.16),kn0=kind0==="kon"?1:T.kon;
     const ro2=ro>=pP&&ro<.025?-1:ro;let kind=kind0||(ro2<0?"ak":ro2<pP?"pen":ro2<.025+kP?"kor":ro2<.115+kP?"sv":ro2<.115+kP+uP?"uz":ro2<.115+kP+uP+araP?"ara":R()<kn0?"kon":R()<.12?"duv":"ak");
     let path=[],from=null,q,cal=[],lost=null;const at=j=>OZ[k].A[j]||[70,70,70,70,70,70];
@@ -6012,6 +6012,8 @@ function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penal
   // 6: araya giren ataklar dakika sırasına konur; böylece ilk yarı, ikinci yarıdaki hiçbir karardan etkilenmez
   const qYer=(i,dk)=>{if(!v6)return i+1;let j=i+1;while(j<Q.length&&Q[j].dk<=dk)j++;return j};
   for(let i=0;i<Q.length;i++){const{us,dk}=Q[i];if(v6)tKontrol(dk);if(v7)ydKontrol(dk);if(v8)krKontrol(dk);const e=atak(us,dk,Q[i].kind,Q[i].ek);if(!e)continue;ev.push(e);if(e.goal)sk5[us?"a":"b"]++;
+    if(v13){const fj=e.path[e.path.length-1],fk=us?"a":"b";if(sonB.k===fk&&sonB.j===fj)sonB.n++;else{sonB.k=fk;sonB.j=fj;sonB.n=1}
+      if(e.goal){golDk[e.dk]=(golDk[e.dk]||0)+1;if(golDk[e.dk]>2&&e.dk!==20&&e.dk!==30&&e.dk<40){golDk[e.dk]--;e.dk++;golDk[e.dk]=(golDk[e.dk]||0)+1}}}
     // kurtarışın ardından korner
     if(!e.goal&&!e.miss&&!e.lost&&e.kind!=="pen"&&R()<(v10?.2:.3)){const X=us?a:b,sh=pick(X,SW.kafa,[],gF),tk=pick(X,SW.orta,[sh],aF);const P2=tk!=null?[tk,sh]:[sh];const g2=R()<cl(.1+(us?d:-d)/200,.05,.17);const e2={us:!!us,dk,kind:"kor",path:P2,kp:kpOf(X,P2),goal:g2,miss:!g2&&R()<.5,from:[R()<.5?3:97,us?2:98],ard:1,v:2};if(!g2)e2.o=e2.miss?(R()<.16?"direk":"aut"):"kur";if(v5)e2.q=Math.round(cl(.1+(us?d:-d)/200,.05,.17)*100)/100;ev.push(e2);if(g2)sk5[us?"a":"b"]++}
     // top kaybı: rakip kontraya çıkabilir
