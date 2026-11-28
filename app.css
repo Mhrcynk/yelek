@@ -6782,3 +6782,5 @@ section.uldr:not(.card){margin:0 0 10px}
 .uldv-p{display:flex;flex-direction:column;align-items:center;gap:3px;max-width:100%}.uldv-p b{max-width:100%;font:800 .875rem/1.2 Inter,sans-serif;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .uldv-b{font:800 1.125rem/1 var(--display);color:var(--c-ink3);padding:8px 0}.uldv-b.t{font:700 .75rem/1.2 Inter,sans-serif;color:#7FE0FF}
 @media (prefers-reduced-motion:reduce){.ulcl::before,.ulcl-i,.ulcl .ulcn,.ulcl-k,.ulcl-k::after,.ulcn-u.art em,.ulcn-u.art>span i.on{animation:none}}
+/* sahadaki kartların güç ve kimya simgeleri saha çizgilerinin kuralına takılmasın */
+.ulp .ulc-bn svg{position:static;inset:auto;width:11px;height:11px}
