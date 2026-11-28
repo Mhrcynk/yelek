@@ -6738,7 +6738,7 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulkr.yat .ulkr-g{padding:10px 12px}.ulkr.yat .ulkr-g b{font-size:1.25rem}
 .ulkr.dz{inset:auto;top:0;left:0;width:100vh;width:100dvh;height:100vw;transform-origin:top left;transform:rotate(90deg) translateY(-100%);padding:12px max(12px,env(safe-area-inset-bottom,0px)) 12px max(12px,env(safe-area-inset-top,0px))}
 .ulkr.dz .ulkr-k{max-height:calc(100vw - 24px)}
-.ulmac:not(.ulyat) .ulyat-s>.ulcm-dr{order:3;margin:4px 0 0}
+.ulsb2>.ulcm-dr{grid-column:1/-1;margin:2px 0 0}
 @media (prefers-reduced-motion:reduce){.ulcanli>i,.uldur.ara>i,.ulvk-o.can .av,.ulnok>i{animation:none}}
 /* canlı kart bölümleri: Haftanın Olayları ve Yükselenler aynı düzende, hareketli */
 .ulcl{--cl:#F5C542;position:relative;margin:0 0 14px;padding:12px;border-radius:22px;background:linear-gradient(160deg,color-mix(in srgb,var(--cl) 16%,transparent),rgba(30,20,66,0) 60%),var(--c-card);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cl) 45%,transparent);overflow:hidden}
@@ -6784,3 +6784,14 @@ section.uldr:not(.card){margin:0 0 10px}
 @media (prefers-reduced-motion:reduce){.ulcl::before,.ulcl-i,.ulcl .ulcn,.ulcl-k,.ulcl-k::after,.ulcn-u.art em,.ulcn-u.art>span i.on{animation:none}}
 /* sahadaki kartların güç ve kimya simgeleri saha çizgilerinin kuralına takılmasın */
 .ulp .ulc-bn svg{position:static;inset:auto;width:11px;height:11px}
+
+/* karar kartı: seçim ve onay */
+.ulkr-o button.cur{background:#2C2060;box-shadow:inset 0 0 0 1px #3A2C78}
+.ulkr-o button.sec,.ulkr-o button.cur.sec{background:rgba(245,197,66,.18);box-shadow:inset 0 0 0 2px #F5C542}
+.ulkr-o button.sec b{color:#FFE9A8}
+.ulkr-ok{justify-self:center;min-width:180px;min-height:48px;padding:0 28px}
+.ulkr.yat .ulkr-ok{min-height:44px}.ulkr.yat .ulkr-s{display:none}
+/* seçili taktikte uyum etiketi sarı zeminde okunur */
+.ultg button.on .ultg-u{background:rgba(0,0,0,.22)!important;color:#1B1300!important}
+/* zaman çizgisinin alt işaretleri sahaya taşmasın */
+.ulmac:not(.ulyat) .ulyat-s>.ultl{margin-bottom:16px}
