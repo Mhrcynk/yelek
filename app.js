@@ -4248,7 +4248,8 @@ document.addEventListener("click",async e=>{
     case"storyRes":case"storyMotm":{if(S.story)stPause(true);const m=S.matches.find(x=>x.id===id);if(S.sheet&&S.sheet.type==="share"){S.sheet=null;render(true)}if(m)shareStory(m,a==="storyMotm"?"motm":"res");break}
     case"addSheet":S.sheet={type:"add"};render(true);break;
     case"pickMe":if(!id&&S.me)LS.set("y_me_last",S.me);S.me=id||"";if(S.me){LS.set("y_me",S.me);LS.set("y_me_last",S.me)}if(S.me)LS.set("y_me",S.me);else LS.del("y_me");S.sheet=null;if(S.me){S.tab="ben";S.view=null}else if(S.tab==="ben")S.tab="mac";render(true);if(S.me)toast("Merhaba "+firstName(nameOf(S.me))+"!");break;
-    case"close":case"closeBg":if(S.sheet&&S.sheet.type==="ult"&&S.sheet.v==="mac"&&typeof ultCanliKapat==="function")ultCanliKapat();if(S.sheet&&S.sheet.type==="hos")LS.set("y_hos","1");if(S.sheet&&S.sheet.type==="kral")kralSeen();{const tam=S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");S.f.tnSent=null;S.f.bk=null;S.sheet=null;if(tam&&document.activeElement&&document.activeElement.blur)document.activeElement.blur();render(true);if(tam){window.scrollTo(0,0);requestAnimationFrame(()=>window.scrollTo(0,0));setTimeout(()=>window.scrollTo(0,0),320)}setTimeout(sonucPop,400)}break;
+    case"close":case"closeBg":if(S.sheet&&S.sheet.type==="ult"&&S.sheet.v==="mac"&&typeof ultCanliKapat==="function")ultCanliKapat();
+      if(S.sheet&&S.sheet.type==="ult"&&S.sheet.v==="cmoda"&&typeof ULT_CM!=="undefined"&&ULT_CM.oda&&ULT_CM.oda.D&&ULT_CM.oda.D.t0){const D=ULT_CM.oda.D,me=myPid();if((me===D.a||me===D.b)&&Date.parse(D.t0)-ultNow()<20000){ULT_CM.birak[D.kind+D.k]=1;ULT_CM.don={kind:D.kind,k:D.k,o:me===D.a?D.b:D.a,t0:Date.parse(D.t0)};toast("Maç sensiz başlayacak · istersen dönebilirsin")}}if(S.sheet&&S.sheet.type==="hos")LS.set("y_hos","1");if(S.sheet&&S.sheet.type==="kral")kralSeen();{const tam=S.sheet&&(S.sheet.type==="oda"||S.sheet.type==="betCom");S.f.tnSent=null;S.f.bk=null;S.sheet=null;if(tam&&document.activeElement&&document.activeElement.blur)document.activeElement.blur();render(true);if(tam){window.scrollTo(0,0);requestAnimationFrame(()=>window.scrollTo(0,0));setTimeout(()=>window.scrollTo(0,0),320)}setTimeout(sonucPop,400)}break;
     case"hosOk":LS.set("y_hos","1");S.sheet=null;render(true);break;
     case"audLoad":S.audit=null;render(true);break;
     case"oauth":signIn(el.dataset.v);break;
@@ -5517,7 +5518,7 @@ async function ultCmOdaTik(){const o=ULT_CM.oda;if(!o||o.mesgul)return;if(!S.she
     if(r&&r.ok){if(r.now)ULT_SRV.dt=Date.parse(r.now)-Date.now();o.D={...(o.D||{}),...r};o.hata=null;const D=o.D;
       if(D.r2&&D.ka&&D.kb){const e=await ultCmYaz(D);if(e&&ULT_CM.oda===o){ULT_CM.oda=null;S.sheet=null;ultCmIzle(o.kind,o.k);return}}
       else if(Date.parse(D.t0)<=ultNow()&&D.ka&&D.kb){if(ben&&!D.mv){const m=await rpc("ult_cm_mv",{p_kind:o.kind,p_k:o.k,p_mv:ULT_MV}).catch(()=>null);if(m&&m.ok)D.mv=m.mv}if(ULT_CM.oda!==o)return;ULT_CM.oda=null;ultCmBasla(D);return}
-      if(ben&&!o.mvOk&&D.t0){o.mvOk=1;rpc("ult_cm_mv",{p_kind:o.kind,p_k:o.k,p_mv:ULT_MV}).catch(()=>{})}
+      if(ben&&!o.mvOk&&D.t0){const st=ultSt();if(!st.cmA||st.cmA.k!==o.k){st.cmA={kind:o.kind,k:o.k,at:Date.now()};ultSave()}o.mvOk=1;rpc("ult_cm_mv",{p_kind:o.kind,p_k:o.k,p_mv:ULT_MV}).catch(()=>{})}
       if(Date.parse(D.t0)-ultNow()<4000)hiz=700}
     else if(r&&r.error==="oynandi"){ULT_CM.oda=null;if(o.kind==="sk")await ultOzYukle(true);else{ULT_SRV.at=0;await ultLoad(true)}S.sheet=null;render(true);ultCmIzle(o.kind,o.k);return}
     else if(r&&(r.error==="saatsiz"||r.error==="yok")){ULT_CM.oda=null;S.sheet=null;toast(o.kind==="ch"?"Canlı maç kurulamadı":"Bu maçın saati değişti");ULT_SRV.at=0;ultLoad(true);render(true);return}
@@ -5591,13 +5592,21 @@ async function ultCmKayit(r){const c=r.cm;if(c.kay)return;c.kay=1;const e=await 
   if(ULT.run===r&&r.done&&S.sheet&&S.sheet.v==="mac")render(true)}
 // ---------- Meydan: çevrim içi rakibe canlı çağrı ----------
 // uygulama kapanırken ya da Ultimate'ten çıkılırken sunucuya "ayrıldım" denir: rakip beni boşuna canlı maça çağırmasın
+// başka bir pencere açıkken gelen canlı çağrı: pencereyi kapatmadan üstte bant olarak görünür
+function ultCagriBant(gs){let el=document.getElementById("ulCgB");if(!gs){if(el)el.remove();ULT_CM.bant=null;return}ULT_CM.bant=gs;
+  const h=`<i class="ulcev" aria-hidden="true"></i><span><b>${esc(shortName(nameOf(gs.a)))} ${gs.t?"Kabul Etti":"Seni Çağırıyor"}</b><small>Canlı maç · ${Math.max(0,Math.ceil((gs.cg+(gs.t?30000:60000)-Date.now())/1000))} sn</small></span><button class="btn primary" data-act="ultCagriAc">Bak</button>`;
+  if(!el){el=document.createElement("div");el.id="ulCgB";el.className="ulcgb";el.setAttribute("role","alert");document.body.appendChild(el)}el.innerHTML=h}
+function ultCagriAc(){const gs=ULT_CM.bant;ultCagriBant(null);if(!gs||Date.now()>gs.cg+(gs.t?30000:60000))return;S.sheet=gs;render(true)}
 function ultAyril(){if(!ULT_CM.vardi||!S.session)return;ULT_CM.vardi=0;try{fetch(SB_URL+"/rest/v1/rpc/ult_ayril",{method:"POST",keepalive:true,headers:{apikey:SB_KEY,"Content-Type":"application/json",...teamHdr(),...authHdr()},body:"{}"}).catch(()=>{})}catch(_){}}
 async function ultNabizTik(){if(typeof document==="undefined"||ULT_CM.nb)return;if(document.visibilityState!=="visible"||!S.session||!ULT_SRV.ok||!S.pg||S.pg.type!=="ult"){ultAyril();return}ULT_CM.nb=1;
   try{const r=await rpc("ult_nabiz",{p_mac:ultMactayim()});if(!r||!r.ok)return;ULT_CM.vardi=1;ULT_CM.on=new Set(r.on||[]);ULT_CM.mc=new Set(r.mc||[]);ULT_CM.cg=r.cg||[];
     document.querySelectorAll("[data-on]").forEach(el=>{el.classList.toggle("cev",ULT_CM.on.has(el.dataset.on));el.classList.toggle("mct",ULT_CM.mc.has(el.dataset.on))});
-    const g=ULT_CM.cg.find(x=>!ULT_CM.red[x.k]);if(g&&!S.sheet){S.sheet={type:"ult",v:"cmgelen",k:g.k,a:g.a,t:g.t?1:0,cg:Date.parse(g.cg)+(Date.now()-Date.parse(r.now))};render(true)}
+    const g=ULT_CM.cg.find(x=>!ULT_CM.red[x.k]);const gs=g?{type:"ult",v:"cmgelen",k:g.k,a:g.a,t:g.t?1:0,cg:Date.parse(g.cg)+(Date.now()-Date.parse(r.now))}:null,mesgulum=ultMactayim()||(S.sheet&&(S.sheet.v==="cmcagri"||S.sheet.v==="cmgelen"))||!!document.getElementById("ulKarar");
+    if(S.sheet&&S.sheet.v==="cmgelen"&&!ULT_CM.kb&&!ULT_CM.cg.some(x=>x.k===S.sheet.k)){S.sheet=null;toast("Çağrı sona erdi · davet Meydan'da bekliyor");ULT_SRV.at=0;ultLoad(true);render(true)}
+    ultCagriBant(g&&S.sheet&&!mesgulum?gs:null);
+    if(g&&!S.sheet){S.sheet=gs;render(true)}
     // süren canlı maçım varsa ve bu cihazda ona girmişsem (sayfa yenilendi, bağlantı koptu) maça kendiliğinden dönülür; kendi isteğiyle çıkan geri çekilmez
-    if(ULT_CM.don&&!(r.ak||[]).some(x=>x.kind===ULT_CM.don.kind&&x.k===ULT_CM.don.k)){ULT_CM.don=null;if(!S.sheet)render(true)}
+    if(ULT_CM.don&&!(ULT_CM.don.t0&&ultNow()<ULT_CM.don.t0+15000)&&!(r.ak||[]).some(x=>x.kind===ULT_CM.don.kind&&x.k===ULT_CM.don.k)){ULT_CM.don=null;if(!S.sheet)render(true)}
     else if(!S.sheet&&!(ULT.run&&ULT.run.cm)){const A=ultSt().cmA,ak=A&&(r.ak||[]).find(x=>x.kind===A.kind&&x.k===A.k&&!ULT_CM.birak[x.kind+x.k]);if(ak){toast("Maçın sürüyor · geri dönüyorsun");ultCmAc(ak.kind,ak.k)}}}
   catch(_){}finally{ULT_CM.nb=0}}
 if(typeof window!=="undefined"){setInterval(ultNabizTik,6000);document.addEventListener("visibilitychange",()=>{const r=ULT.run,g=document.visibilityState==="visible";if(r&&r.cm&&!r.done)ultCmIz(r.cm,g?"geri":"gizli",{dk:r.dk},!g);if(g)ultNabizTik();else ultAyril()});window.addEventListener("pagehide",()=>{const r=ULT.run;if(r&&r.cm&&!r.done)ultCmIz(r.cm,"cikis",{dk:r.dk},true);ultAyril()})}
@@ -5610,7 +5619,9 @@ async function ultCmCagriBasla(k,opp,ters){const d=(ULT_SRV.dv||{})[k],geri=()=>
 async function ultCmCagriTik(){const g=ULT_CM.cgr;if(!g||g.mesgul)return;g.mesgul=1;try{
   const acik=S.sheet&&S.sheet.v==="cmcagri"&&S.sheet.k===g.k,r=await rpc("ult_cm_durum",{p_kind:"ch",p_k:g.k,p_tam:false}).catch(()=>null);if(ULT_CM.cgr!==g)return;
   if(r&&r.ok&&r.t0){ULT_CM.cgr=null;if(r.now)ULT_SRV.dt=Date.parse(r.now)-Date.now();ULT_CM.oda={kind:"ch",k:g.k,D:r,son:"",hata:null};S.sheet={type:"ult",v:"cmoda",kind:"ch",k:g.k};render(true);ultCmOdaTik();return}
-  if(!acik||Date.now()>g.son){ULT_CM.cgr=null;await rpc("ult_cm_iptal",{p_k:g.k}).catch(()=>{});if(acik)S.sheet=null;
+  const red=r&&!r.ok&&r.error==="yok";if(red)g.yok=(g.yok||0)+1;else g.yok=0;
+  if(!acik||Date.now()>g.son||g.yok>=2){ULT_CM.cgr=null;if(!(g.yok>=2))await rpc("ult_cm_iptal",{p_k:g.k}).catch(()=>{});if(acik)S.sheet=null;
+    if(g.yok>=2&&!g.ters){if(acik)toast("Rakibin şimdi oynamıyor · davetin 6 saat geçerli");ULT_SRV.at=0;ultLoad(true);render(true);return}
     if(g.ters){render(true);await ultDvOyna("ch",g.k,(ULT_SRV.dv||{})[g.k],true);return}
     if(acik)toast("Rakibin cevap vermedi · davetin 6 saat geçerli");ULT_SRV.at=0;ultLoad(true);render(true);return}
 }finally{g.mesgul=0}
@@ -7357,7 +7368,8 @@ case"ultBf":ULT.bf=el.dataset.v||null;render(true);break;
     case"ultCmAyarKaydet":ultCmAyarKaydet();break;
     case"ultCmKadro":S.sheet=null;ULT_CM.oda=null;go("takim");break;
     case"ultCmKabul":ultCmKabul(el.dataset.v);break;
-    case"ultCmSonra":ULT_CM.red[el.dataset.v]=1;S.sheet=null;ULT_SRV.at=0;ultLoad(true);render(true);break;
+    case"ultCagriAc":ultCagriAc();break;
+    case"ultCmSonra":ULT_CM.red[el.dataset.v]=1;rpc("ult_cm_red",{p_k:el.dataset.v}).catch(()=>{});S.sheet=null;ULT_SRV.at=0;ultLoad(true);render(true);break;
     case"ultYd":{const id=el.dataset.v,sec=ultYdSec();if(sec.includes(id))st.yd=sec.filter(x=>x!==id);else if(sec.length>=2){toast("En fazla 2 yedek seçebilirsin");break}else st.yd=sec.concat([id]);ultSave();render(true);break}
     case"ultPl":{const pl=ultPlOk(st.pl)||{};if(el.dataset.v&&ULT_TK[el.dataset.v])pl[el.dataset.d]=el.dataset.v;else delete pl[el.dataset.d];st.pl=pl;ultSave();render(true);break}
     case"ultKesif":ULT.ksG=S.sheet&&S.sheet.type==="ult"&&S.sheet.v==="kesif"&&!S.sheet.p;S.sheet={type:"ult",v:"kesif",p:el.dataset.v||null};if(el.dataset.v)ultKsYukle(el.dataset.v);render(true);break;

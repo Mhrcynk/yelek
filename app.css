@@ -6920,3 +6920,10 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulay>div.ulay-r{cursor:default}
 .ulay>.ulay-r.uy small{color:#F5C542}
 .ulay>.ult-n{margin:4px 0 0}
+
+.ulcgb{position:fixed;left:12px;right:12px;top:max(10px,env(safe-area-inset-top,0px));z-index:1200;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:16px;background:#1f1640;border:1px solid rgba(61,240,168,.45);box-shadow:0 10px 30px rgba(0,0,0,.5);color:#fff}
+.ulcgb>.ulcev{display:block;flex:none}
+.ulcgb>span{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.ulcgb>span>b{font-size:.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ulcgb>span>small{font-size:.75rem;color:rgba(255,255,255,.75)}
+.ulcgb>.btn{flex:none;width:auto;min-height:44px;padding:0 18px;margin:0}
