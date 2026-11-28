@@ -6667,21 +6667,6 @@ function ultYzH(sn,Y){const me=myPid(),b=ultBest(me),base=b?(b.base||b.r):70,s25
     <div class="ulyz-g">${kol("yildiz","Yıldız",base+9,(Math.min(.1,.03+sn*.002)*100).toFixed(1).replace(".",","),"+9 güç · 10 maç")}${kol("ikon","İkon",Math.min(95,base+14),(Math.min(.02,.005+sn*.0005)*100).toFixed(2).replace(".",","),"+14 güç · 5 maç")}</div>
     <div class="ulyz-s"><span><b class="num">${s25}</b>/25 şans puanı</span><span class="ulbar"><i style="width:${s25/25*100}%"></i></span><small>${s25>=25?"Sıradaki pakette Yıldız garanti":"25 olunca Yıldız garanti · Sezon yolu 10. seviye de Yıldız verir"}</small><small class="ulyz-h">Bu hafta <b class="num">${ULT_SANS_HT-ultSansHak()}/${ULT_SANS_HT}</b> · maça çıkmak +3, haftanın takımı +3, maçın adamı +5, 5 görev +5, seri galibiyeti +1</small></div>
     ${Y.length?`<div class="ulyz-l">${Y.map(y=>{const c=ultCard(y.id);return c?`<div>${ultCardH(c,{sm:1})}<small>${y.left} maç kaldı</small></div>`:""}).join("")}</div>`:""}</section>`}
-// ---------- ana ekran: Kulüp açılışında sıradaki maç, bugünkü görevler ve takımın akışı ----------
-function ultAnaH(){try{const st=ultSt(),me=myPid(),my=ultLine(ultMy()),err=ultOk(ultMy());
-  // sıradaki maç: çevrim içi ve müsait bir rakip varsa canlı, yoksa rakip seçimi
-  const kal=3-st.ch.filter(x=>x.d===ultDay()&&x.lg===1).length,on=S.players.filter(q=>q.id!==me&&!q.archived&&ultMusait(q.id)).map(q=>({q,g:ultLine(ULT_SRV.ok?ultRakipKadro(q.id):ultAuto(q.id)).str})).sort((x,y)=>Math.abs(x.g-my.str)-Math.abs(y.g-my.str))[0],saat=ultCmAyarYazi();
-  const mac=`<section class="card ulsec ulan ulan-m"><small class="ulan-e">Sıradaki Maçın</small>${on?`<div class="ulan-vs"><span>${avatar(P(me)||{id:me,name:"?"},"sm")}<b>Sen</b><em>Güç ${fN(my.str)}</em></span><i>VS</i><span>${avatar(on.q,"sm")}<b>${esc(shortName(on.q.name))}</b><em class="on">Güç ${fN(on.g)}</em></span></div>`:`<p class="ulan-b">Şu an müsait çevrim içi rakip yok. Davet gönder; rakibin 6 saat içinde kabul ederse maç oynanır.</p>`}
-    <div class="ulan-d">${on?`<button class="btn primary" data-act="ultPlay" data-k="ch" data-v="${esc(on.q.id)}"${err?" disabled":""}>Canlı Oyna</button>`:""}<button class="btn${on?"":" primary"}" data-act="ultGit" data-v="mac~ch">${on?"Başka Rakip":"Rakip Seç"}</button></div>
-    ${err?`<p class="ulan-n uy">${esc(err)}</p>`:on?`<p class="ulan-n">Rakibin çevrim içi · kabul ederse maç canlı başlar${saat?`<br>Maç akşamları: ${esc(saat)}`:""}</p>`:saat?`<p class="ulan-n">Maç akşamları: ${esc(saat)}</p>`:""}</section>`;
-  // bugün: sıradaki üç görev
-  const G=ultGorev(),bit=G.filter(g=>g.al).length,sir=G.filter(g=>!g.al).sort((a,b)=>(b.ok-a.ok)||(b.n/b.m-a.n/a.m)).slice(0,3);
-  const gorev=`<section class="card ulsec ulan"><div class="ulan-h"><small class="ulan-e">Bugün</small><span>${bit}/${G.length} görev · 5'te +5 şans</span></div>${sir.length?sir.map(g=>`<div class="ulan-g${g.ok?" ok":""}"><i aria-hidden="true"></i><b>${esc(g.t)}</b><span class="num">${g.n}/${g.m}</span></div>`).join(""):`<p class="ulan-b">Bu haftanın görevleri tamam.</p>`}<button class="ulan-l" data-act="ultGit" data-v="kulup~bugun~gorev">${G.some(g=>g.ok&&!g.al)?"Ödülünü Al":"Tümünü Gör"} ›</button></section>`;
-  // takımda neler oluyor: son maçlar ve o an oynayanlar
-  const ad=id=>esc(shortName(nameOf(id))),E=(ULT_SRV.ev||[]).filter(e=>e&&e.p&&e.p.ga!=null&&e.at&&["ch","lig","kp"].includes(e.kind)).sort((x,y)=>Date.parse(y.at)-Date.parse(x.at)).slice(0,4),TUR={lig:"Lig",kp:"Kupa",ch:""};
-  const sat=E.map(e=>{const h=e.p.h||e.a,d=h===e.a?e.b:e.a,t=new Date(Date.parse(e.at));return `<div class="ulan-a"><span class="num">${String(t.getHours()).padStart(2,"0")}.${String(t.getMinutes()).padStart(2,"0")}</span><b>${ad(h)} – ${ad(d)}${TUR[e.kind]?` <em>${TUR[e.kind]}</em>`:""}</b><strong class="num">${e.p.ga} – ${e.p.gb}</strong></div>`}).join("");
-  const nOn=ULT_CM.on.size,nMc=ULT_CM.mc.size,akis=`<section class="card ulsec ulan"><div class="ulan-h"><small class="ulan-e">Takımda Neler Oluyor</small><span class="${nOn?"on":""}">${nOn?`${nOn} kişi çevrim içi${nMc?` · ${nMc} maçta`:""}`:"Şu an kimse yok"}</span></div>${sat||`<p class="ulan-b">Henüz oynanmış maç yok.</p>`}</section>`;
-  return mac+gorev+akis}catch(_){return""}}
 function ultKulup(){const st=ultSt(),B=ultBuild(),me=myPid(),pk=ultPacks();const my=ultBest(me);const mine=B.C.filter(c=>c.pid===me);const lg=ultLig();const li=lg.rows.findIndex(r=>r.id===me)+1;
   const ei=ultEfsRows().findIndex(r=>r.id===me)+1;const set=ultSet();const test=ultTest();
   const guc=ultLine(ultMy()),rz=[set.rz?`🏅 Yıllık Set ×${set.rz}`:"",st.samp?`🏆 Lig Şampiyonu ×${st.samp}`:"",st.skN?`🏆 Süper Kupa ×${st.skN}`:""].filter(Boolean);
@@ -6715,7 +6700,7 @@ function ultKulup(){const st=ultSt(),B=ultBuild(),me=myPid(),pk=ultPacks();const
   if(ks==="odul")return bar+hSy+hHedef;
   if(ks==="saha"){const tk=ultTekrar();return bar+(hSaha||(tk?"":`<section class="card ulsec"><p class="ult-n">Maçın Rövanşı, Süper Kupa ve son maçlarının tekrarları burada görünür.</p></section>`))+tk}
   if(ks==="onur")return bar+hOnur;
-  return bar+(ks==="bugun"?ultAnaH():"")+h}
+  return bar+h}
 // ----- Kartlar: albüm, canlı seri, gelişim, rehber tek yerde
 function ultKartlar(){const st=ultSt();const f=["kulub","album","canli","gelisim"].includes(st.kf)?st.kf:"kulub";
   const HR={kulub:["Kulübüm","Sahip olduğun kartlar · kadroya bunlar girer","c"],gelisim:["Gelişim","Zayıf bir kartı görevlerle kalıcı +4 güçlendir","u"],album:["Albüm","Oyuncuya dokun, bütün kart türlerini gör","a"],canli:["Canlı","Gerçek maçtan doğan kartlar: olaylar ve yükselenler","l"]}[f];
