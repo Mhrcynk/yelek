@@ -5866,7 +5866,9 @@ const ULT_V5={zar:.5,guc:1.3,fren:.82,risk:1.1,yen:1.14,yenil:.9,fit:.06,fitB:60
 // 7: yedek oyuncular (en fazla 2 temel kart; 65. ve 70. dakikada, mevkisine uyan en yorgun oyuncunun yerine girer). Olaylar oyuncuyu o anki kadrodan bulur
 // 8: canlı yönetim (maçı izleyen taraf devre arasında ve 70. dakikada taktik ya da oyuncu değişikliği kararı verir; o tarafta plan ve otomatik yedek işlemez), Savunma taktiği güçlendi
 const ULT_V8={sav:.93};
-const ULT_MV=11;// 11: atak olmayan dakikalarda orta saha mücadelesi (yalnız görüntü; sonucu etkilemez, kendi rastgele dizisini kullanır) ·// 10: mevki kuralları: kaleci şut çekmez, her şutta kalecinin kendi özelliği sayılır, top kapma ve çalım bireysel düellodur; korner azaldı, isabet düştü ·// 9: bir kararda taktik ve oyuncu değişikliği birlikte ·// 4: penaltı yarıya indi · // 3: 2-1-3 dizilişi ve biçimler (motor 2 ile aynı kurallar)
+// 12. motor: canlı kararla geçilen taktiğin eşleşme etkisi (kYen/kYenil/kSav), kimya (takım kimyası farkı kG, bağlı pas kP, bağlı pasın kesilmesi kK, bağlı duvar pası kD), yedek (mevkisine uyan taze oyuncu yT, uymayan yU, reyting farkı yR, taze fizik yF)
+const ULT_V12={kYen:1.3,kYenil:.78,kSav:.86,kG:.14,kP:.07,kK:.09,kD:.09,yT:1.4,yU:-2.6,yR:2.2,yF:2};
+const ULT_MV=12;// 12: canlı taktik kararı, kimya bağları ve yedek oyuncu daha belirleyici (ULT_V12) ·// 11: atak olmayan dakikalarda orta saha mücadelesi (yalnız görüntü; sonucu etkilemez, kendi rastgele dizisini kullanır) ·// 10: mevki kuralları: kaleci şut çekmez, her şutta kalecinin kendi özelliği sayılır, top kapma ve çalım bireysel düellodur; korner azaldı, isabet düştü ·// 9: bir kararda taktik ve oyuncu değişikliği birlikte ·// 4: penaltı yarıya indi · // 3: 2-1-3 dizilişi ve biçimler (motor 2 ile aynı kurallar)
 // kartın özellikleri: kayıtlı kadroda o anki değerler (a), yoksa oyuncunun güncel özellikleri
 function ultAt(c){if(!c)return[70,70,70,70,70,70];if(c.a&&c.a.length===6)return c.a;const s=(S.stats||{})[c.pid]||{},p=P(c.pid)||{},A=s.attrs||{},pos=p.pos;
   const g=k=>{const v=A[k]!=null?+A[k]:(p.attrs?mainVal(p.attrs,k,pos):NaN);return isFinite(v)&&v>0?v:(c.r||70)};
@@ -5894,8 +5896,8 @@ function ultFor2(X){const n=r=>X.sl.filter(s=>s[0]===r).length,m={vol:0,qm:1,cm:
   if(n("DF")===3){m.cm*=.9;m.vol-=.6}if(n("OS")===3){m.vol+=.8;m.pl-=.02;m.qm*=.96}if(n("OS")===1){m.vol-=.4;m.qm*=1.03}if(n("FV")===2){m.qm*=1.05;m.cm*=1.03}if(n("FV")===3){m.qm*=1.1;m.cm*=1.08;m.vol+=.2}return m}
 const ULT_K={yen:1.09,yenil:.95,q0:.19,dd:70,kes:.24,cal:.5};
 function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penaltı yarıya indi
-  const v5=(v||ULT_MV)>=5,v6=(v||ULT_MV)>=6,v7=(v||ULT_MV)>=7,v8=(v||ULT_MV)>=8,v10=(v||ULT_MV)>=10,v11=(v||ULT_MV)>=11,SW=v10?ULT_SW10:ULT_SW,R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ultLineX(opL),kur=myL.kur||opL.kur;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
-  let d=(a.str-b.str-(myL.pen||0)+(opL.pen||0)+(kur==="kimya"?(a.chem-b.chem)*.3:0))*(v5?ULT_V5.guc:1);
+  const v5=(v||ULT_MV)>=5,v6=(v||ULT_MV)>=6,v7=(v||ULT_MV)>=7,v8=(v||ULT_MV)>=8,v10=(v||ULT_MV)>=10,v11=(v||ULT_MV)>=11,v12=(v||ULT_MV)>=12,cnl={a:0,b:0},SW=v10?ULT_SW10:ULT_SW,R=ultRng(seed+"|v2"),a=ultLineX(myL),b=ultLineX(opL),kur=myL.kur||opL.kur;const cl=(v,x,y)=>Math.max(x,Math.min(y,v));
+  let d=(a.str-b.str-(myL.pen||0)+(opL.pen||0)+(kur==="kimya"?(a.chem-b.chem)*.3:v12?((a.chem||0)-(b.chem||0))*ULT_V12.kG:0))*(v5?ULT_V5.guc:1);
   const TK={a:ultTak2(a,b),b:ultTak2(b,a)},FO={a:ultFor2(a),b:ultFor2(b)};a.t0=a.t;b.t0=b.t;
   // takım özellik ortalamaları (kaleci hariç) ve kaleci
   const ozet=X=>{const s=[0,0,0,0,0],A=[];let n=0;for(let j=1;j<7;j++){const c=X.cs[j];const v=ultAt(c);A[j]=v;if(!c)continue;for(let k=0;k<5;k++)s[k]+=v[k];n++}A[0]=ultAt(X.cs[0]);n=n||1;return{sut:s[0]/n,pas:s[1]/n,dri:s[2]/n,def:s[3]/n,fiz:s[4]/n,kl:X.cs[0]?A[0][5]:55,A}};
@@ -5904,18 +5906,20 @@ function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penal
   const tkUy=()=>{for(const[k,X,Y,dx]of[["a",a,b,d],["b",b,a,-d]]){const T=TK[k],O=OZ[k],t=X.t,ort=(O.sut+O.pas+O.dri+O.def+O.fiz)/5,f=x=>cl((x-ort)/ULT_V5.fitB,-ULT_V5.fit,ULT_V5.fit);T.fit=0;
     if(t==="dengeli"||!t)T.qm*=ULT_V5.den;else if(t==="hucum"){T.fit=f(O.sut);T.qm*=1+T.fit}else if(t==="kontra"){T.fit=f(O.dri);T.qm*=1+T.fit}else if(t==="pres"){T.fit=f(O.fiz);T.qm*=1+T.fit}else if(t==="savunma"){T.fit=f(O.def);T.cm*=(1-T.fit)*(v8?ULT_V8.sav:1)}
     if(ULT_YEN[t]===Y.t)T.qm*=ULT_V5.yen/ULT_K.yen*(t==="savunma"?ULT_V5.sav:1);if(ULT_YEN[Y.t]===t)T.qm*=ULT_V5.yenil/ULT_K.yenil;
-    if((t==="kontra"||t==="savunma")&&dx<0)T.qm*=1+Math.min(ULT_V5.alt,-dx/100)}};if(v5)tkUy();
+    if((t==="kontra"||t==="savunma")&&dx<0)T.qm*=1+Math.min(ULT_V5.alt,-dx/100);
+    if(v12&&cnl[k]){if(ULT_YEN[t]===Y.t)T.qm*=ULT_V12.kYen;if(ULT_YEN[Y.t]===t)T.qm*=ULT_V12.kYenil}}
+    if(v12)for(const[k,X,Y]of[["a",a,b],["b",b,a]])if(cnl[k]&&ULT_YEN[X.t]===Y.t)TK[k==="a"?"b":"a"].qm*=ULT_V12.kSav};if(v5)tkUy();
   const sk5={a:0,b:0},acc5=v5?{a:R(),b:R()}:null;
   // 6: taktik değişimi. Rastgele sayı tüketmez; değişime kadarki olaylar aynı kalır
   const PL={a:myL.pl,b:opL.pl},HT={a:myL.ht,b:opL.ht},deg={a:0,b:0};
   const tDeg=(k,t,dk)=>{const X=k==="a"?a:b;if(!ULT_TK[t]||X.t===t)return;X.t=t;TK.a=ultTak2(a,b);TK.b=ultTak2(b,a);tkUy();fx.push({fx:"tak",us:k==="a",dk,t})};
   // 7: yedekler. Rastgele sayı tüketmez. Giren oyuncu yerin bağlarını ve kimyasını devralır; özellikleri ve gücü kendi kartındandır
-  const YD={a:v7?ultYdL(myL,a):[],b:v7?ultYdL(opL,b):[]},ydN={a:0,b:0},ydS={a:[],b:[]};if(v7){a.cs0=a.cs.slice();b.cs0=b.cs.slice()}
+  const YD={a:v7?ultYdL(myL,a):[],b:v7?ultYdL(opL,b):[]},ydN={a:0,b:0},ydS={a:[],b:[]},tz={a:0,b:0};if(v7){a.cs0=a.cs.slice();b.cs0=b.cs.slice()}
   const KR={a:v8&&Array.isArray(myL.kr)?myL.kr:null,b:v8&&Array.isArray(opL.kr)?opL.kr:null},krN={a:0,b:0};
-  const ydUy=(k,j,c,sd)=>{const X=k==="a"?a:b,old=X.cs[j];X.cs=X.cs.slice();X.cs[j]=c;ydS[k].push(j);OZ[k]=ozet(X);d+=(k==="a"?1:-1)*((c.r||70)-(old.r||70))/7*(v5?ULT_V5.guc:1);fx.push({fx:"deg",us:k==="a",dk:sd,j,c,o:old.pid})};
+  const ydUy=(k,j,c,sd)=>{const X=k==="a"?a:b,old=X.cs[j];X.cs=X.cs.slice();X.cs[j]=c;ydS[k].push(j);OZ[k]=ozet(X);if(v12){const uy=(c.rl||ultRoles(c.pid)).includes(X.sl[j][0]);tz[k]+=uy?ULT_V12.yF:0;OZ[k].fiz+=tz[k];d+=(k==="a"?1:-1)*(((c.r||70)-(old.r||70))/ULT_V12.yR+(uy?ULT_V12.yT:ULT_V12.yU))*ULT_V5.guc}else d+=(k==="a"?1:-1)*((c.r||70)-(old.r||70))/7*(v5?ULT_V5.guc:1);fx.push({fx:"deg",us:k==="a",dk:sd,j,c,o:old.pid})};
   // 8: canlı kararlar: 1. karar devre arasında (21), 2. karar 70. dakikada (31). {t: taktik} ya da {s:[yer, yedek sırası]} ya da {} (değişiklik yok)
   const krKontrol=dk=>{for(const k of["a","b"]){const L=KR[k];if(!L)continue;while(krN[k]<L.length&&krN[k]<2&&dk>(krN[k]?30:20)){const c=L[krN[k]],sd=krN[k]?31:21;krN[k]++;if(!c||typeof c!=="object")continue;
-      if(c.t&&ULT_TK[c.t])tDeg(k,c.t,sd);if(Array.isArray(c.s)){const X=k==="a"?a:b,j=+c.s[0],cd=YD[k][+c.s[1]];if(cd&&j>0&&j<7&&X.cs[j]&&!ydS[k].includes(j)&&!X.cs.some(q=>q&&q.pid===cd.pid)&&!(red&&red.us===(k==="a")&&red.j===j&&sd>red.dk))ydUy(k,j,cd,sd)}}}};
+      if(c.t&&ULT_TK[c.t]){if(v12&&(k==="a"?a:b).t!==c.t)cnl[k]=1;tDeg(k,c.t,sd)}if(Array.isArray(c.s)){const X=k==="a"?a:b,j=+c.s[0],cd=YD[k][+c.s[1]];if(cd&&j>0&&j<7&&X.cs[j]&&!ydS[k].includes(j)&&!X.cs.some(q=>q&&q.pid===cd.pid)&&!(red&&red.us===(k==="a")&&red.j===j&&sd>red.dk))ydUy(k,j,cd,sd)}}}};
   const ydKontrol=dk=>{for(const k of["a","b"]){if(KR[k])continue;const X=k==="a"?a:b;while(ydN[k]<YD[k].length&&dk>=29+ydN[k]*2){const sd=29+ydN[k]*2,c=YD[k][ydN[k]++];if(!c||X.cs.some(q=>q&&q.pid===c.pid))continue;const rl=c.rl||ultRoles(c.pid);let bj=null,bv=1e9;
       for(let j=0;j<7;j++){const q=X.cs[j];if(!q||ydS[k].includes(j)||(red&&red.us===(k==="a")&&red.j===j&&sd>red.dk))continue;if(!rl.includes(X.sl[j][0])||(c.r||70)<(q.r||70)-3)continue;const f=OZ[k].A[j][4]+((q.r||70)-(c.r||70))*1.5;if(f<bv){bv=f;bj=j}}
       if(bj==null)continue;ydUy(k,bj,c,sd)}}};
@@ -5953,13 +5957,13 @@ function ultPlan2(myL,opL,seed,v){const pP=(v||ULT_MV)>=4?.0125:.025;// 4: penal
       q=cl(.34+dd/ULT_K.dd+(at(sh)[0]-70)/220-(OY.kl-70)/220,.18,.6)}
     else if(kind==="duv"){const p1=pick(X,{OS:1,FV:.7,DF:.3,KL:0},[],gF),p2=pick(X,{OS:.8,FV:.8,DF:.4,KL:0},[p1],aF);path=p2!=null?[p1,p2,p1]:[p1];
       if(p2!=null&&R()<kes(p2,.12))lost={q:2,how:"kes",j:pick(OX,{DF:1,OS:.6,KL:0,FV:.1},[],one)};
-      q=cl(.28+dd/ULT_K.dd+(at(p1)[0]-70)/220+(kpOf(X,path).some(Boolean)?.04:0)-klF/260,.12,.5)}
+      q=cl(.28+dd/ULT_K.dd+(at(p1)[0]-70)/220+(kpOf(X,path).some(Boolean)?(v12?ULT_V12.kD:.04):0)-klF/260,.12,.5)}
     else{const sh=pick(X,SW.sut,[],gF),as=R()<.85?pick(X,SW.ast,[sh],aF):null;path=[sh];if(as!=null){path.unshift(as);if(R()<.55){const y=X.sl[as][2];const bk=pick(X,{KL:.4,DF:1,OS:.7,FV:.1},[sh,as],one);if(bk!=null&&X.sl[bk][2]>=y)path.unshift(bk)}}
       // paslar ve çalım: her adımda top kaybı olabilir
-      for(let s=1;s<path.length&&!lost;s++){const kp=bag(X,path[s-1],path[s])>0;if(R()<kes(path[s-1],kind==="kon"?ULT_K.kes*.7:ULT_K.kes)-(kp?.04:0))lost={q:s,how:R()<.5?"pas":"kes",j:pick(OX,{DF:1,OS:.8,KL:0,FV:.3},[],one)}}
+      for(let s=1;s<path.length&&!lost;s++){const kp=bag(X,path[s-1],path[s])>0;if(R()<kes(path[s-1],kind==="kon"?ULT_K.kes*.7:ULT_K.kes)-(kp?(v12?ULT_V12.kK:.04):0))lost={q:s,how:R()<.5?"pas":"kes",j:pick(OX,{DF:1,OS:.8,KL:0,FV:.3},[],one)}}
       if(!lost){const cj=path[path.length-1],cv=at(cj)[2];if(R()<cl(ULT_K.cal+(cv-70)/120,.15,.6)){if(R()<cl(.6+(cv-dV)/110,.32,.82))cal.push(path.length-1);else lost={q:path.length-1,how:"calim",j:pick(OX,{DF:1,OS:.5,KL:0,FV:0},[],one),cal:1}}}
       const kc=kpOf(X,path).filter(Boolean).length;
-      q=cl(ULT_K.q0+dd/ULT_K.dd+kc*.03+cal.length*.06+(at(path[path.length-1])[0]-70)/250-(OY.kl-70)/300+(dk>30?TO.late:0)+(kind==="kon"?.06:0),.05,.5)}
+      q=cl(ULT_K.q0+dd/ULT_K.dd+kc*(v12?ULT_V12.kP:.03)+cal.length*.06+(at(path[path.length-1])[0]-70)/250-(OY.kl-70)/300+(dk>30?TO.late:0)+(kind==="kon"?.06:0),.05,.5)}
     path=path.filter(j=>j!=null);if(!path.length)return null;if(v10&&lost&&dj!=null)lost.j=dj;if(lost&&lost.j==null)lost=null;
     // 10: şutu karşılayan savunmacının baskısı
     if(v10&&dj!=null&&kind!=="pen"&&kind!=="kor"&&kind!=="sv")q-=((OZ[ko].A[dj]||[70,70,70,70])[3]-70)/500;
