@@ -6912,3 +6912,11 @@ section.uldr:not(.card){margin:0 0 10px}
 .ulmac.ulyat.bitti .ulyat-s>#ulFin{flex:1 1 0;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .ulmac.ulyat.bitti .ulyat-s{overflow:hidden}
 .ulmac.ulyat.bitti>.ch .ulcanli,.ulmac.ulyat.bitti>.ch .ulcm-dr{display:none}
+
+/* Ayarlar */
+.ulay-b{position:relative}
+.ulay-b>i{position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#F5C542;box-shadow:0 0 0 2px #120A2A}
+.ulay>.ulay-r{width:100%;margin:0 0 8px;text-align:left}
+.ulay>div.ulay-r{cursor:default}
+.ulay>.ulay-r.uy small{color:#F5C542}
+.ulay>.ult-n{margin:4px 0 0}
